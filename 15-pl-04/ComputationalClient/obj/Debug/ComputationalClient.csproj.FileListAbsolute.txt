@@ -1,2 +1,0 @@
-E:\Workspaces\Visual Studio\15-pl-04\ComputationalClient\bin\Debug\ComputationalClient.exe.config
-E:\Workspaces\Visual Studio\15-pl-04\15-pl-04\ComputationalClient\bin\Debug\ComputationalClient.exe.config
