@@ -7,8 +7,8 @@
     <ProjectGuid>{69307DB4-5E49-4993-92A8-3A1725964646}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_15pl04.UCC.ComputationalNode</RootNamespace>
-    <AssemblyName>UCC.ComputationalNode</AssemblyName>
+    <RootNamespace>_15pl04.Ucc.ComputationalNode</RootNamespace>
+    <AssemblyName>Ucc.ComputationalNode</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

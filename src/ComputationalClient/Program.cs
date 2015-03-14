@@ -1,4 +1,4 @@
-﻿namespace _15pl04.UCC.ComputationalClient
+﻿namespace _15pl04.Ucc.ComputationalClient
 {
     // TODO
 

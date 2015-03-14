@@ -1,4 +1,4 @@
-﻿namespace _15pl04.UCC.CommunicationServer
+﻿namespace _15pl04.Ucc.CommunicationServer
 {
     // TODO
 

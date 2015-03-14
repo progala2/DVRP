@@ -6,8 +6,8 @@
     <ProjectGuid>{4E716288-ACAC-4FCC-A982-DCA1C2A298E6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_15pl04.UCC.TaskSolver.Tests</RootNamespace>
-    <AssemblyName>UCC.TaskSolver.Tests</AssemblyName>
+    <RootNamespace>_15pl04.Ucc.TaskSolver.Tests</RootNamespace>
+    <AssemblyName>Ucc.TaskSolver.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

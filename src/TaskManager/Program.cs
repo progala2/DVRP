@@ -1,4 +1,4 @@
-﻿namespace _15pl04.UCC.TaskManager
+﻿namespace _15pl04.Ucc.TaskManager
 {
     // TODO
 

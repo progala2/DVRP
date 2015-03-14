@@ -7,8 +7,8 @@
     <ProjectGuid>{3A85AA30-CCA4-4672-B350-2C2DA11F3DF2}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_15pl04.UCC.TaskManager</RootNamespace>
-    <AssemblyName>UCC.TaskManager</AssemblyName>
+    <RootNamespace>_15pl04.Ucc.TaskManager</RootNamespace>
+    <AssemblyName>Ucc.TaskManager</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

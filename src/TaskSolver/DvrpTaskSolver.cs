@@ -1,4 +1,4 @@
-﻿namespace _15pl04.UCC.TaskSolvers
+﻿namespace _15pl04.Ucc.TaskSolver
 {
     public class DvrpTaskSolver : UCCTaskSolver.TaskSolver
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{CA294784-1827-4830-906D-14A160DCD2F5}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_15pl04.UCC.CommunicationServer</RootNamespace>
-    <AssemblyName>UCC.CommunicationServer</AssemblyName>
+    <RootNamespace>_15pl04.Ucc.CommunicationServer</RootNamespace>
+    <AssemblyName>Ucc.CommunicationServer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

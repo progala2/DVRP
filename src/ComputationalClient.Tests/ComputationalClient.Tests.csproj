@@ -6,8 +6,8 @@
     <ProjectGuid>{EF55FEE1-54F5-4735-A7E3-F1E056070F31}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_15pl04.UCC.ComputationalClient.Tests</RootNamespace>
-    <AssemblyName>UCC.ComputationalClient.Tests</AssemblyName>
+    <RootNamespace>_15pl04.Ucc.ComputationalClient.Tests</RootNamespace>
+    <AssemblyName>Ucc.ComputationalClient.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

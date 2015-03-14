@@ -7,8 +7,8 @@
     <ProjectGuid>{B06EA9C0-DD2C-4708-BE91-8A929E66EAD0}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_15pl04.UCC.ComputationalClient</RootNamespace>
-    <AssemblyName>UCC.ComputationalClient</AssemblyName>
+    <RootNamespace>_15pl04.Ucc.ComputationalClient</RootNamespace>
+    <AssemblyName>Ucc.ComputationalClient</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

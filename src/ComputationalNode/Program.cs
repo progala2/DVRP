@@ -1,4 +1,4 @@
-﻿namespace _15pl04.UCC.ComputationalNode
+﻿namespace _15pl04.Ucc.ComputationalNode
 {
     // TODO
 
