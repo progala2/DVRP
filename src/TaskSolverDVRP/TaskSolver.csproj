@@ -7,8 +7,8 @@
     <ProjectGuid>{5495F07E-3AC5-4B01-B64E-2482B718E5E9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_15pl04.UCC.TaskSolvers</RootNamespace>
-    <AssemblyName>DVRP-04</AssemblyName>
+    <RootNamespace>_15pl04.UCC.TaskSolver</RootNamespace>
+    <AssemblyName>UCC.TaskSolver</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DVRP04TaskSolver.cs" />
+    <Compile Include="DvrpTaskSolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

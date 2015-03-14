@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>_15pl04.UCC.ComputationalClient</RootNamespace>
-    <AssemblyName>ComputationalClient</AssemblyName>
+    <AssemblyName>UCC.ComputationalClient</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

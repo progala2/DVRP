@@ -1,10 +1,10 @@
 ﻿namespace _15pl04.UCC.TaskSolvers
 {
-    public class DVRP04TaskSolver : UCCTaskSolver.TaskSolver
+    public class DvrpTaskSolver : UCCTaskSolver.TaskSolver
     {
         // TODO
 
-        public DVRP04TaskSolver(byte[] problemData)
+        public DvrpTaskSolver(byte[] problemData)
             : base(problemData)
         { }
 

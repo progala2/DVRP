@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>_15pl04.UCC.TaskManager</RootNamespace>
-    <AssemblyName>TaskManager</AssemblyName>
+    <AssemblyName>UCC.TaskManager</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

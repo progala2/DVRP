@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskSolverDVRP", "TaskSolverDVRP\TaskSolverDVRP.csproj", "{5495F07E-3AC5-4B01-B64E-2482B718E5E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskSolver", "TaskSolverDVRP\TaskSolver.csproj", "{5495F07E-3AC5-4B01-B64E-2482B718E5E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager", "TaskManager\TaskManager.csproj", "{3A85AA30-CCA4-4672-B350-2C2DA11F3DF2}"
 EndProject
@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalNode.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Tests", "TaskManager.Tests\TaskManager.Tests.csproj", "{A9C14680-BDFC-4269-8A0E-B4BA360825F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskSolverDVRP.Tests", "TaskSolverDVRP.Tests\TaskSolverDVRP.Tests.csproj", "{4E716288-ACAC-4FCC-A982-DCA1C2A298E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskSolver.Tests", "TaskSolverDVRP.Tests\TaskSolver.Tests.csproj", "{4E716288-ACAC-4FCC-A982-DCA1C2A298E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServer.Tests", "CommunicationServer.Tests\CommunicationServer.Tests.csproj", "{9858B505-D15B-4C41-B385-22B965AF6313}"
 EndProject
