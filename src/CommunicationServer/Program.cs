@@ -1,4 +1,7 @@
-﻿namespace _15pl04.Ucc.CommunicationServer
+﻿using System;
+using System.Configuration;
+
+namespace _15pl04.Ucc.CommunicationServer
 {
     // TODO
 
@@ -6,6 +9,7 @@
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
