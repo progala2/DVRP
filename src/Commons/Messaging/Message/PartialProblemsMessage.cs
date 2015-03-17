@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.Commons.Messaging.Message
 {
-    class PartialProblemsMessage
+    class PartialProblemsMessage : Message
     {
         /*
-         * Keep in mind that root of the XML is called "SolvePartialProblems", NOT "PartialProblems".
+         * Zwracam uwagę, że root XML tej wiadomości to "SolvePartialProblems", a nie "PartialProblems".
          */
     }
 }

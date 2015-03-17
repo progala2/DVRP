@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
     internal class TcpListener
     {
-        public delegate void DataCallback(byte[] data);
+        public delegate byte[] DataCallback(byte[] data);
 
         private static TcpListener() { }
         private static TcpListener _instance = new TcpListener();
@@ -18,6 +14,19 @@ namespace _15pl04.Ucc.CommunicationServer
             get { return _instance; }
         }
 
+        /*
+         ******* Wytyczne *********
+         *  Klasa ma:
+         *      1. Przyjmować klientów i nawiązywać połączenie.
+         *      2. Czytać cały bufor którym "przyszli".
+         *      3. Wywoływać DataCallback dla przeczytanych danych. 
+         *      4. Wysłać do klienta to, co zwróci DataCallback
+         *      5. Kończyć połączenie i sprzątać.
+         *  I to wszystko ma być asynchronicznie, tj. serwer dalej może przyjmować kolejnych klientów nawet, jeżeli jakiś jest obsługiwany.
+         *  Na obsługę jednego klienta powinien wystarczyć jeden wątek.
+         *  Można dorobić prywatne metody żeby to wszystko porozdzielać, ale mają mieć ściśle określone, spójne funkcjonalności.
+         */
+
         private TcpListener()
         {
             /*
@@ -25,10 +34,10 @@ namespace _15pl04.Ucc.CommunicationServer
              */
         }
 
-        public void StartListening(int port, DataCallback callback)
+        public void StartListening(int port, MessageProcessor callback)
         {
             /*
-             * Asynchroniczne przyjmowanie połączeń wywołujące ConnectionEstablishedCallback().
+             * Resztki inicjalizacji. Nasłuchiwanie.
              */ 
         }
 
@@ -37,13 +46,6 @@ namespace _15pl04.Ucc.CommunicationServer
             /*
              * Sprzątanie.
              */ 
-        }
-
-        private void ConnectionEstablishedCallback(IAsyncResult ar)
-        {
-            /*
-             * Przeczytanie *wszystkiego* co jest w buforze klienta oraz puszczenie tego dalej w obieg callbackiem podanym w StartListening()
-             */
         }
     }
 }

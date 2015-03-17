@@ -35,8 +35,8 @@
     <Compile Include="Collections\OutputMessageQueue.cs" />
     <Compile Include="CommunicationServer.cs" />
     <Compile Include="ComponentStateMonitor.cs" />
-    <Compile Include="MessageProcessor.cs" />
-    <Compile Include="MessageQueuingModule.cs" />
+    <Compile Include="Messaging\MessageProcessor.cs" />
+    <Compile Include="Messaging\IDataProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerConfig.cs" />

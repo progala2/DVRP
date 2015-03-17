@@ -1,10 +1,12 @@
 ﻿using System;
 
-namespace _15pl04.Ucc.CommunicationServer
+namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
-    class MessageProcessor
+    internal class MessageProcessor : IDataProcessor
     {
-        public void ProcessMessage(byte[] message)
+        public MessageProcessor() { }
+
+        public void ProcessByteData(byte[] data)
         {
             /* "If messages are sent during a
             single connection they are separated with the sign with decimal code equal 23 (ETB - End transmission
@@ -13,7 +15,7 @@ namespace _15pl04.Ucc.CommunicationServer
             // foreach invoke ProcessMessage(String)
         }
 
-        private void ProcessMessage(string message)
+        private void CastToString(string message)
         {
             // parse to xml
             // check with proper *.xsd file (based on root element)
@@ -27,6 +29,13 @@ namespace _15pl04.Ucc.CommunicationServer
              * 
              * 
              */
+        }
+
+        public byte[] ProcessData(byte[] data)
+        {
+
+
+            throw new NotImplementedException();
         }
     }
 }
