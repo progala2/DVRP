@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _15pl04.Ucc.CommunicationServer
+namespace _15pl04.Ucc.Commons.Messaging.Message
 {
-    class SystemStateMonitoringModule
+    class SolveRequestMessage
     {
     }
 }

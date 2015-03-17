@@ -4,7 +4,7 @@ namespace _15pl04.Ucc.CommunicationServer
 {
     class MessageProcessor
     {
-        public void ProcessMessage(Byte[] message)
+        public void ProcessMessage(byte[] message)
         {
             /* "If messages are sent during a
             single connection they are separated with the sign with decimal code equal 23 (ETB - End transmission

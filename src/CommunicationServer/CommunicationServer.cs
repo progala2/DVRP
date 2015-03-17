@@ -14,16 +14,17 @@ namespace _15pl04.Ucc.CommunicationServer
 
         public CommunicationServer(ServerConfig config)
         {
-            Initilize(config);
+
         }
 
-        private void Initilize(ServerConfig config)
+        public void Start() 
+        { 
+            throw new NotImplementedException(); 
+        }
+
+        public void Stop() 
         {
-            // initialization of modules etc.
-            throw new NotImplementedException();
+            throw new NotImplementedException(); 
         }
-
-        public void Start() { throw new NotImplementedException(); }
-        public void Stop() { throw new NotImplementedException(); }
     }
 }

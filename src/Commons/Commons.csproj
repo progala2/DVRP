@@ -30,8 +30,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Messaging\Message.cs" />
-    <Compile Include="Messaging\MessageReceiver.cs" />
+    <Compile Include="Messaging\Message\DivideProblemMessage.cs" />
+    <Compile Include="Messaging\Message\Base\Message.cs" />
+    <Compile Include="Messaging\Message\NoOperationMessage.cs" />
+    <Compile Include="Messaging\Message\PartialProblemsMessage.cs" />
+    <Compile Include="Messaging\Message\RegisterMessage.cs" />
+    <Compile Include="Messaging\Message\RegisterResponseMessage.cs" />
+    <Compile Include="Messaging\Message\SolutionsMessage.cs" />
+    <Compile Include="Messaging\Message\SolutionRequestMessage.cs" />
+    <Compile Include="Messaging\Message\SolveRequestMessage.cs" />
+    <Compile Include="Messaging\Message\SolveRequestResponseMessage.cs" />
+    <Compile Include="Messaging\Message\StatusMessage.cs" />
+    <Compile Include="Problem\FinalSolution.cs" />
+    <Compile Include="Problem\PartialProblem.cs" />
+    <Compile Include="Problem\PartialSolution.cs" />
+    <Compile Include="Problem\ProblemInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
