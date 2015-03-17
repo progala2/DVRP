@@ -33,11 +33,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CommunicationServer.cs" />
-    <Compile Include="MessageProcessingModule.cs" />
+    <Compile Include="MessageProcessor.cs" />
     <Compile Include="MessageQueuingModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerMode.cs" />
     <Compile Include="ServerConfig.cs" />
     <Compile Include="SystemStateMonitoringModule.cs" />
   </ItemGroup>
