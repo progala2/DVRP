@@ -6,19 +6,17 @@ namespace _15pl04.Ucc.Commons.Messaging
 
     public class MessageReceiver
     {
-        public delegate void MessageReceivedEventHandler(object sender, Message m);
 
-        public event MessageReceivedEventHandler MessageReceived;
 
-        public MessageReceiver()
-        {
+        //public MessageReceiver(ConcurrentQueue)
 
-        }
 
-        public void Start()
-        {
 
-        }// 
+        /*
+         * Klasa przyjmuje i kolejkuje surowe wiadomości
+         * 
+         * 
+         */ 
 
 
 
