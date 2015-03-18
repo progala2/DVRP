@@ -30,17 +30,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Messaging\Message\DivideProblemMessage.cs" />
-    <Compile Include="Messaging\Message\Base\Message.cs" />
-    <Compile Include="Messaging\Message\NoOperationMessage.cs" />
-    <Compile Include="Messaging\Message\PartialProblemsMessage.cs" />
-    <Compile Include="Messaging\Message\RegisterMessage.cs" />
-    <Compile Include="Messaging\Message\RegisterResponseMessage.cs" />
-    <Compile Include="Messaging\Message\SolutionsMessage.cs" />
-    <Compile Include="Messaging\Message\SolutionRequestMessage.cs" />
-    <Compile Include="Messaging\Message\SolveRequestMessage.cs" />
-    <Compile Include="Messaging\Message\SolveRequestResponseMessage.cs" />
-    <Compile Include="Messaging\Message\StatusMessage.cs" />
+    <Compile Include="Messaging\Base\IMarshaller.cs" />
+    <Compile Include="Messaging\Base\IUnmarshaller.cs" />
+    <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
+    <Compile Include="Messaging\Models\Base\Message.cs" />
+    <Compile Include="Messaging\Models\NoOperationMessage.cs" />
+    <Compile Include="Messaging\Models\PartialProblemsMessage.cs" />
+    <Compile Include="Messaging\Models\RegisterMessage.cs" />
+    <Compile Include="Messaging\Models\RegisterResponseMessage.cs" />
+    <Compile Include="Messaging\Models\SolutionsMessage.cs" />
+    <Compile Include="Messaging\Models\SolutionRequestMessage.cs" />
+    <Compile Include="Messaging\Models\SolveRequestMessage.cs" />
+    <Compile Include="Messaging\Models\SolveRequestResponseMessage.cs" />
+    <Compile Include="Messaging\Models\StatusMessage.cs" />
+    <Compile Include="Messaging\RawMessageProcessor.cs" />
     <Compile Include="Problem\FinalSolution.cs" />
     <Compile Include="Problem\PartialProblem.cs" />
     <Compile Include="Problem\PartialSolution.cs" />

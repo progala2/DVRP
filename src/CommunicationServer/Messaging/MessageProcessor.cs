@@ -1,39 +1,29 @@
-﻿using System;
+﻿using _15pl04.Ucc.Commons.Messaging;
+using _15pl04.Ucc.Commons.Messaging.Models;
+using System;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
     internal class MessageProcessor : IDataProcessor
     {
-        public MessageProcessor() { }
+        private IUnmarshaller<Message> _unmarshaller;
 
-        public void ProcessByteData(byte[] data)
+        public MessageProcessor(IUnmarshaller<Message> unmarshaller) 
         {
-            /* "If messages are sent during a
-            single connection they are separated with the sign with decimal code equal 23 (ETB - End transmission
-                blocks)." */
-            // check if there are many messages, parse them individually to string
-            // foreach invoke ProcessMessage(String)
-        }
-
-        private void CastToString(string message)
-        {
-            // parse to xml
-            // check with proper *.xsd file (based on root element)
-            // deserialize
-
-            // deal with it...
-            /*
-             * 
-             * 
-             * 
-             * 
-             * 
-             */
+            _unmarshaller = unmarshaller;
         }
 
         public byte[] ProcessData(byte[] data)
         {
+            _unmarshaller.Unmarshall(data);
 
+            /*
+             * 1. Wrzucić wiadomości do InputMessageQueue
+             * 
+             * 
+             * 
+             * 
+             */ 
 
             throw new NotImplementedException();
         }
