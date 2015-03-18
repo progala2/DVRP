@@ -5,16 +5,16 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
 {
     public class InputMessageQueue
     {
-        private ConcurrentQueue<Tuple<byte[], TcpListener.ResponseCallback>> _queue;
+        private ConcurrentQueue<Tuple<byte[], TcpClientManager.ResponseCallback>> _queue;
 
-        public void Enqueue(byte[] rawMsg, TcpListener.ResponseCallback callback)
+        public void Enqueue(byte[] rawMsg, TcpClientManager.ResponseCallback callback)
         {
-            _queue.Enqueue(new Tuple<byte[], TcpListener.ResponseCallback>(rawMsg, callback));
+            _queue.Enqueue(new Tuple<byte[], TcpClientManager.ResponseCallback>(rawMsg, callback));
         }
 
-        public bool Dequeue(out byte[] rawMsg, out TcpListener.ResponseCallback callback)
+        public bool Dequeue(out byte[] rawMsg, out TcpClientManager.ResponseCallback callback)
         {
-            Tuple<byte[], TcpListener.ResponseCallback> result;
+            Tuple<byte[], TcpClientManager.ResponseCallback> result;
 
             if (!_queue.TryDequeue(out result))
             {

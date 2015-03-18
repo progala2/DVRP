@@ -20,5 +20,7 @@ namespace _15pl04.Ucc.CommunicationServer
         public ServerMode Mode { get; set; }
 
         public IPEndPoint Address { get; set; }
+
+        public ulong Timeout { get; set; }
     }
 }

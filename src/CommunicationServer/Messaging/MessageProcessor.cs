@@ -15,7 +15,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         public byte[] ProcessData(byte[] data)
         {
-            _unmarshaller.Unmarshall(data);
+            Message[] messages = _unmarshaller.Unmarshall(data);
 
             /*
              * 1. Wrzucić wiadomości do InputMessageQueue

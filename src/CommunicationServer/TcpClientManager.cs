@@ -3,17 +3,17 @@ using System.Net.Sockets;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
-    internal class TcpListener
+    internal class TcpClientManager
     {
         public delegate void ResponseCallback(byte[] response);
 
-        public static TcpListener Instance
+        public static TcpClientManager Instance
         {
             get { return _instance; }
         }
 
-        private static TcpListener() { } // Do not delete.
-        private static TcpListener _instance = new TcpListener();
+        private static TcpClientManager() { } // Do not delete.
+        private static TcpClientManager _instance = new TcpClientManager();
 
         /*
          ******* Wytyczne *********
@@ -21,17 +21,16 @@ namespace _15pl04.Ucc.CommunicationServer
          *      1. Przyjąć klienta i nawiązać z nim połączenie.
          *      2. Przeczytać jego cały bufor.
          *      3. Wygenerować callback z użyciem GenerateResponseCallback().
-         *      4. Wrzucić przeczytane dane wraz z callbackiem do InputMessageQueue.
+         *      4. Wrzucić przeczytane dane wraz z callbackiem do InputMessageQueue (podanym w StartListening()).
          *  I to wszystko ma być asynchronicznie, tj. serwer dalej może przyjmować kolejnych klientów nawet, jeżeli jakiś jest obsługiwany.
-         *  Na obsługę jednego klienta powinien wystarczyć jeden wątek.
-         *  Można dorobić prywatne metody żeby to wszystko jakoś sensownie porozdzielać.
+         *  Dorobić prywatne metody żeby to wszystko jakoś sensownie porozdzielać pod względem funkcjonalności.
          *  
          *  Użyć tego (nawiązywanie połączenia i czytanie):
          *  https://msdn.microsoft.com/en-us/library/fx6588te%28v=vs.110%29.aspx
          *  Nie robić samemu Tasków ani Threadów.
          */
 
-        private TcpListener()
+        private TcpClientManager()
         {
             /*
              * Cała inicjalizacja która musi wystąpić (oprócz rzeczy rozpoczynających nasłuchiwanie i ustawień portu).

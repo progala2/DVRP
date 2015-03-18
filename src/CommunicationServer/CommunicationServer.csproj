@@ -41,7 +41,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerConfig.cs" />
-    <Compile Include="TcpListener.cs" />
+    <Compile Include="TcpClientManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
