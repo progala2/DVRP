@@ -30,8 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Messaging\Base\IMarshaller.cs" />
-    <Compile Include="Messaging\Base\IUnmarshaller.cs" />
+    <Compile Include="ComponentType.cs" />
     <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
     <Compile Include="Messaging\Models\Base\Message.cs" />
     <Compile Include="Messaging\Models\NoOperationMessage.cs" />
@@ -43,7 +42,7 @@
     <Compile Include="Messaging\Models\SolveRequestMessage.cs" />
     <Compile Include="Messaging\Models\SolveRequestResponseMessage.cs" />
     <Compile Include="Messaging\Models\StatusMessage.cs" />
-    <Compile Include="Messaging\RawMessageProcessor.cs" />
+    <Compile Include="Messaging\Marshaller.cs" />
     <Compile Include="Problem\FinalSolution.cs" />
     <Compile Include="Problem\PartialProblem.cs" />
     <Compile Include="Problem\PartialSolution.cs" />

@@ -3,17 +3,17 @@ using System.Net.Sockets;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
-    internal class TcpClientManager
+    internal class AsyncTcpServer
     {
         public delegate void ResponseCallback(byte[] response);
 
-        public static TcpClientManager Instance
+        public static AsyncTcpServer Instance
         {
             get { return _instance; }
         }
 
-        static TcpClientManager() { } // Do not delete.
-        private static TcpClientManager _instance = new TcpClientManager();
+        static AsyncTcpServer() { } // Do not delete.
+        private static AsyncTcpServer _instance = new AsyncTcpServer();
 
         /*
          ******* Wytyczne *********
@@ -27,10 +27,10 @@ namespace _15pl04.Ucc.CommunicationServer
          *  
          *  Użyć tego (nawiązywanie połączenia i czytanie):
          *  https://msdn.microsoft.com/en-us/library/fx6588te%28v=vs.110%29.aspx
-         *  Nie robić samemu Tasków ani Threadów.
+         *  Nie robić samemu Tasków ani Threadów (oprócz głównej pętli nasłuchującej).
          */
 
-        private TcpClientManager()
+        private AsyncTcpServer()
         {
             /*
              * Cała inicjalizacja która musi wystąpić (oprócz rzeczy rozpoczynających nasłuchiwanie i ustawień portu).
