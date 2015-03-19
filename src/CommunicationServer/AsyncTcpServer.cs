@@ -33,14 +33,14 @@ namespace _15pl04.Ucc.CommunicationServer
         private AsyncTcpServer()
         {
             /*
-             * Cała inicjalizacja która musi wystąpić (oprócz rzeczy rozpoczynających nasłuchiwanie i ustawień portu).
+             * Początek inicjalizacji (prawdopodobnie tylko ustawienie wielkości bufora).
              */
         }
 
-        public void StartListening(int port, InputMessageQueue queue)
+        public void StartListening(ServerConfig config, InputMessageQueue queue)
         {
             /*
-             * Resztki inicjalizacji. Nasłuchiwanie.
+             * Dalsza inicjalizacja & nasłuchiwanie.
              */
         }
 

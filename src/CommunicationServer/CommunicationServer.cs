@@ -2,25 +2,26 @@
 
 namespace _15pl04.Ucc.CommunicationServer
 {
-    class CommunicationServer
+    public class CommunicationServer
     {
         /*
          * modules etc.
          */
 
-        public CommunicationServer(ServerConfig config)
+        static void Main(string[] args)
         {
+            ServerConfig config = new ServerConfig(args); // TODO
 
-        }
+            // start server with given correct options or exit
 
-        public void Start() 
-        { 
-            throw new NotImplementedException(); 
-        }
-
-        public void Stop() 
-        {
-            throw new NotImplementedException(); 
+            /*
+             * keyboard input handling;
+             * invoking CommuncationServer methods (stop or whatever)
+             */
+            Console.WriteLine("dasd");
+            /*
+             * cleanup
+             */
         }
     }
 }
