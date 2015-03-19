@@ -15,7 +15,7 @@ namespace _15pl04.Ucc.Commons.Messaging
              *     - serializacja
              *     - walidacja
              *     - et cetera
-             *  wszystko w oddzielnych metodach
+             *  wszystko w oddzielnych metodach i klasach (można zrobić klasy XmlValidator/XmlParser etc.)
              */
 
             throw new System.NotImplementedException();

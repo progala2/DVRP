@@ -3,9 +3,14 @@ using System.Collections.Concurrent;
 
 namespace _15pl04.Ucc.CommunicationServer.Collections
 {
-    public class InputMessageQueue
+    internal class InputMessageQueue
     {
         private ConcurrentQueue<Tuple<byte[], TcpClientManager.ResponseCallback>> _queue;
+
+        public InputMessageQueue()
+        {
+            _queue = new ConcurrentQueue<Tuple<byte[], TcpClientManager.ResponseCallback>>();
+        }
 
         public void Enqueue(byte[] rawMsg, TcpClientManager.ResponseCallback callback)
         {

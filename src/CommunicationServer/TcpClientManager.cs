@@ -12,7 +12,7 @@ namespace _15pl04.Ucc.CommunicationServer
             get { return _instance; }
         }
 
-        private static TcpClientManager() { } // Do not delete.
+        static TcpClientManager() { } // Do not delete.
         private static TcpClientManager _instance = new TcpClientManager();
 
         /*
