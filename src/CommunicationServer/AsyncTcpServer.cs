@@ -19,7 +19,7 @@ namespace _15pl04.Ucc.CommunicationServer
          ******* Wytyczne *********
          *  Klasa ma:
          *      1. Przyjąć klienta i nawiązać z nim połączenie.
-         *      2. Przeczytać jego cały bufor.
+         *      2. Przeczytać cały jego bufor.
          *      3. Wygenerować callback z użyciem GenerateResponseCallback().
          *      4. Wrzucić przeczytane dane wraz z callbackiem do InputMessageQueue (podanym w StartListening()).
          *  I to wszystko ma być asynchronicznie, tj. serwer dalej może przyjmować kolejnych klientów nawet, jeżeli jakiś jest obsługiwany.

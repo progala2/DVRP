@@ -5,6 +5,11 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
 {
     internal class OutputMessageQueue
     {
+        public OutputMessageQueue()
+        {
+
+        }
+
         public Message[] Dequeue(ComponentType componentType, string[] problemType, int max)
         {
             return null;

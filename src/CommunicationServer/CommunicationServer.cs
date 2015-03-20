@@ -18,7 +18,7 @@ namespace _15pl04.Ucc.CommunicationServer
              * keyboard input handling;
              * invoking CommuncationServer methods (stop or whatever)
              */
-            Console.WriteLine("dasd");
+
             /*
              * cleanup
              */
