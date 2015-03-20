@@ -33,5 +33,19 @@ namespace _15pl04.Ucc.CommunicationServer
         {
             return false;
         }
+
+        public void Start()
+        {
+            /*
+             * Asynchronously check the dictionary and remove inactive components.
+             */
+        }
+
+        public void Stop()
+        {
+            /*
+             * Cleanup.
+             */
+        }
     }
 }

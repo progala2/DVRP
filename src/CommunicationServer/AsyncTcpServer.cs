@@ -22,17 +22,17 @@ namespace _15pl04.Ucc.CommunicationServer
          *  Nie robić samemu Tasków ani Threadów (oprócz głównej pętli nasłuchującej).
          */
 
-        public AsyncTcpServer()
+        public AsyncTcpServer(ServerConfig config, InputMessageQueue queue)
         {
             /*
-             * Początek inicjalizacji (prawdopodobnie tylko ustawienie wielkości bufora).
+             * Inicjalizacja.
              */
         }
 
-        public void StartListening(ServerConfig config, InputMessageQueue queue)
+        public void StartListening()
         {
             /*
-             * Dalsza inicjalizacja & nasłuchiwanie.
+             * Nasłuchiwanie.
              */
         }
 

@@ -1,16 +1,19 @@
-﻿using System;
+﻿using _15pl04.Ucc.CommunicationServer.Collections;
+using System;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
     public class CommunicationServer
     {
-        /*
-         * modules etc.
-         */
+        private AsyncTcpServer _tcpServer;
+        private ComponentStateMonitor _componentStateMonitor;
 
         static void Main(string[] args)
         {
-            ServerConfig config = new ServerConfig(args); // TODO
+            var config = new ServerConfig(args);
+
+            var inputQueue = new InputMessageQueue();
+            var outputQueue = new OutputMessageQueue();
 
             // start server with given correct options or exit
 
