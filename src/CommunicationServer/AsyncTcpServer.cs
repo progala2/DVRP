@@ -7,14 +7,6 @@ namespace _15pl04.Ucc.CommunicationServer
     {
         public delegate void ResponseCallback(byte[] response);
 
-        public static AsyncTcpServer Instance
-        {
-            get { return _instance; }
-        }
-
-        static AsyncTcpServer() { } // Do not delete.
-        private static AsyncTcpServer _instance = new AsyncTcpServer();
-
         /*
          ******* Wytyczne *********
          *  Klasa ma:
@@ -30,7 +22,7 @@ namespace _15pl04.Ucc.CommunicationServer
          *  Nie robić samemu Tasków ani Threadów (oprócz głównej pętli nasłuchującej).
          */
 
-        private AsyncTcpServer()
+        public AsyncTcpServer()
         {
             /*
              * Początek inicjalizacji (prawdopodobnie tylko ustawienie wielkości bufora).
