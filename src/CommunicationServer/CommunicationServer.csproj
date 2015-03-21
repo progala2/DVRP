@@ -38,7 +38,7 @@
     <Compile Include="Components\ComponentInfo.cs" />
     <Compile Include="Components\ComponentMonitor.cs" />
     <Compile Include="Components\DeregisterationEventArgs.cs" />
-    <Compile Include="Messaging\MessageProcessor.cs" />
+    <Compile Include="Messaging\MessageQueuer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerConfig.cs" />

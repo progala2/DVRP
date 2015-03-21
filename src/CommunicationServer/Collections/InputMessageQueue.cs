@@ -5,6 +5,11 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
 {
     internal class InputMessageQueue
     {
+        public int Count
+        {
+            get { return _queue.Count; }
+        }
+
         private ConcurrentQueue<Tuple<byte[], AsyncTcpServer.ResponseCallback>> _queue;
 
         public InputMessageQueue()
@@ -15,7 +20,6 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
         public void Enqueue(byte[] rawMsg, AsyncTcpServer.ResponseCallback callback)
         {
             _queue.Enqueue(new Tuple<byte[], AsyncTcpServer.ResponseCallback>(rawMsg, callback));
-
         }
 
         public bool TryDequeue(out byte[] rawMsg, out AsyncTcpServer.ResponseCallback callback)

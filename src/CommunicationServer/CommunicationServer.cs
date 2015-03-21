@@ -10,7 +10,7 @@ namespace _15pl04.Ucc.CommunicationServer
 
         private AsyncTcpServer _tcpServer;
         private ComponentMonitor _componentStateMonitor;
-        private MessageProcessor _messageProcessor;
+        private MessageQueuer _messageProcessor;
 
 
         public CommunicationServer(ServerConfig config)
@@ -19,7 +19,7 @@ namespace _15pl04.Ucc.CommunicationServer
 
             var marshaller = new Marshaller();
 
-            _messageProcessor = new MessageProcessor(marshaller);
+            _messageProcessor = new MessageQueuer(marshaller);
             _tcpServer = new AsyncTcpServer(config, _messageProcessor);
             
         }

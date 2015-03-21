@@ -41,8 +41,7 @@ namespace _15pl04.Ucc.CommunicationServer
                 id = (ulong)_random.Next();
             } while (_registeredComponents.ContainsKey(id));
 
-            if (!_registeredComponents.TryAdd(id, component))
-                throw new Exception("Component already registered.");
+            _registeredComponents.TryAdd(id, component);
 
             return id;
         }
