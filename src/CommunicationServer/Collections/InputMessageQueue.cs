@@ -22,17 +22,17 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
         {
             Tuple<byte[], AsyncTcpServer.ResponseCallback> result;
 
-            if (!_queue.TryDequeue(out result))
-            {
-                rawMsg = null;
-                callback = null;
-                return false;
-            }
-            else
+            if (_queue.TryDequeue(out result))
             {
                 rawMsg = result.Item1;
                 callback = result.Item2;
                 return true;
+            }
+            else
+            {
+                rawMsg = null;
+                callback = null;
+                return false;
             }
         }
     }

@@ -6,31 +6,33 @@ namespace _15pl04.Ucc.CommunicationServer
 {
     internal class CommunicationServer
     {
+        public ServerConfig Config { get; private set; }
+
         private AsyncTcpServer _tcpServer;
         private ComponentMonitor _componentStateMonitor;
         private MessageProcessor _messageProcessor;
 
+
         public CommunicationServer(ServerConfig config)
         {
-            var inputQueue = new InputMessageQueue();
-            var outputQueue = new OutputMessageQueue();
+            Config = config;
+
             var marshaller = new Marshaller();
 
-            _tcpServer = new AsyncTcpServer(config, inputQueue);
-            _messageProcessor = new MessageProcessor(inputQueue, outputQueue, marshaller);
+            _messageProcessor = new MessageProcessor(marshaller);
+            _tcpServer = new AsyncTcpServer(config, _messageProcessor);
+            
         }
 
         public void Start()
         {
             _tcpServer.StartListening();
-            _messageProcessor.StartProcessing();
-            _componentStateMonitor.StartMonitoring();
+            _componentStateMonitor.StartMonitoring(Config.Timeout);
         }
 
         public void Stop()
         {
             _tcpServer.StopListening();
-            _messageProcessor.StopProcessing();
             _componentStateMonitor.StopMonitoring();
         }
     }
