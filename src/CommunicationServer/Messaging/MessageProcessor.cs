@@ -4,13 +4,13 @@ using _15pl04.Ucc.CommunicationServer.Collections;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
-    internal class AsyncMessageProcessor
+    internal class MessageProcessor
     {
         private InputMessageQueue _inputQueue;
         private OutputMessageQueue _outputQueue;
         private Marshaller _marshaller;
 
-        public AsyncMessageProcessor(InputMessageQueue inputQueue, OutputMessageQueue outputQueue, Marshaller marshaller) 
+        public MessageProcessor(InputMessageQueue inputQueue, OutputMessageQueue outputQueue, Marshaller marshaller) 
         {
             _inputQueue = inputQueue;
             _outputQueue = outputQueue;
