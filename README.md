@@ -1,4 +1,4 @@
-# SuperbOwl
+# 15-pl-04
 Implementacja klastra obliczeniowego na Inżynierię Oprogramowania 2.
 
 ### Konwencja nazewnicza & coding guidlines
