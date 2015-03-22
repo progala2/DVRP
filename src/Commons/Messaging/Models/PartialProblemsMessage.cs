@@ -1,161 +1,160 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false)]
+    [Serializable]
+    [DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolvePartialProblems")]
     public class PartialProblemsMessage : Message
     {
-        private string problemTypeField;
+        private string _problemTypeField;
 
-        private ulong idField;
+        private ulong _idField;
 
-        private byte[] commonDataField;
+        private byte[] _commonDataField;
 
-        private ulong solvingTimeoutField;
+        private ulong _solvingTimeoutField;
 
-        private bool solvingTimeoutFieldSpecified;
+        private bool _solvingTimeoutFieldSpecified;
 
-        private List<PartialProblemsPartialProblem> partialProblemsField;
+        private List<PartialProblemsPartialProblem> _partialProblemsField;
 
         public PartialProblemsMessage()
         {
-            this.partialProblemsField = new List<PartialProblemsPartialProblem>();
+            _partialProblemsField = new List<PartialProblemsPartialProblem>();
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
+        [XmlElement(Order = 0)]
         public string ProblemType
         {
             get
             {
-                return this.problemTypeField;
+                return _problemTypeField;
             }
             set
             {
-                this.problemTypeField = value;
+                _problemTypeField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 1)]
+        [XmlElement(Order = 1)]
         public ulong Id
         {
             get
             {
-                return this.idField;
+                return _idField;
             }
             set
             {
-                this.idField = value;
+                _idField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(DataType = "base64Binary", Order = 2)]
+        [XmlElement(DataType = "base64Binary", Order = 2)]
         public byte[] CommonData
         {
             get
             {
-                return this.commonDataField;
+                return _commonDataField;
             }
             set
             {
-                this.commonDataField = value;
+                _commonDataField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 3)]
+        [XmlElement(Order = 3)]
         public ulong SolvingTimeout
         {
             get
             {
-                return this.solvingTimeoutField;
+                return _solvingTimeoutField;
             }
             set
             {
-                this.solvingTimeoutField = value;
+                _solvingTimeoutField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [XmlIgnore]
         public bool SolvingTimeoutSpecified
         {
             get
             {
-                return this.solvingTimeoutFieldSpecified;
+                return _solvingTimeoutFieldSpecified;
             }
             set
             {
-                this.solvingTimeoutFieldSpecified = value;
+                _solvingTimeoutFieldSpecified = value;
             }
         }
 
-        [System.Xml.Serialization.XmlArrayAttribute(Order = 4)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("PartialProblem", IsNullable = false)]
+        [XmlArray(Order = 4)]
+        [XmlArrayItem("PartialProblem", IsNullable = false)]
         public List<PartialProblemsPartialProblem> PartialProblems
         {
             get
             {
-                return this.partialProblemsField;
+                return _partialProblemsField;
             }
             set
             {
-                this.partialProblemsField = value;
+                _partialProblemsField = value;
             }
         }
     }
 
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [Serializable]
+    [DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class PartialProblemsPartialProblem
     {
-        private ulong taskIdField;
+        private ulong _taskIdField;
 
-        private byte[] dataField;
+        private byte[] _dataField;
 
-        private ulong nodeIDField;
+        private ulong _nodeIdField;
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
+        [XmlElement(Order = 0)]
         public ulong TaskId
         {
             get
             {
-                return this.taskIdField;
+                return _taskIdField;
             }
             set
             {
-                this.taskIdField = value;
+                _taskIdField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(DataType = "base64Binary", Order = 1)]
+        [XmlElement(DataType = "base64Binary", Order = 1)]
         public byte[] Data
         {
             get
             {
-                return this.dataField;
+                return _dataField;
             }
             set
             {
-                this.dataField = value;
+                _dataField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 2)]
-        public ulong NodeID
+        [XmlElement(Order = 2)]
+        public ulong NodeId
         {
             get
             {
-                return this.nodeIDField;
+                return _nodeIdField;
             }
             set
             {
-                this.nodeIDField = value;
+                _nodeIdField = value;
             }
         }
     }

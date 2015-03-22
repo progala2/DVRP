@@ -1,38 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
-    public class XMLParser<T>
+    public static class XmlParser<T>
     {
-        public Type Type { get; set; }
-
-        public XMLParser()
+        private static readonly Type _type = typeof (T);
+        public static T Deserialize(byte[] buffer)
         {
-            Type = typeof(T);
-        }
-
-        public T Deserialise(byte[] buffer)
-        {
-            using (MemoryStream reader = new MemoryStream(buffer))
+            using (var reader = new MemoryStream(buffer))
             {
-                T instance;
-                XmlSerializer xml = new XmlSerializer(Type);
-                instance = (T)xml.Deserialize(reader);
+                var xml = new XmlSerializer(_type);
+                var instance = (T)xml.Deserialize(reader);
                 return instance;
             }
         }
 
-        public void Serialise(object obj, out byte[] buffer)
+        public static void Serialize(object obj, out byte[] buffer)
         {
-            using (MemoryStream writer = new MemoryStream())
+            using (var writer = new MemoryStream())
             {
-                XmlSerializer xml = new XmlSerializer(Type);
+                var xml = new XmlSerializer(_type);
                 xml.Serialize(writer, obj);
                 buffer = writer.GetBuffer();
             }

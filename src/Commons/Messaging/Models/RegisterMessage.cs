@@ -1,131 +1,130 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false)]
+    [Serializable]
+    [DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Register")]
     public class RegisterMessage : Message
     {
-        private RegisterType typeField;
+        private RegisterType _typeField;
 
-        private List<string> solvableProblemsField;
+        private List<string> _solvableProblemsField;
 
-        private byte parallelThreadsField;
+        private byte _parallelThreadsField;
 
-        private bool deregisterField;
+        private bool _deregisterField;
 
-        private bool deregisterFieldSpecified;
+        private bool _deregisterFieldSpecified;
 
-        private ulong idField;
+        private ulong _idField;
 
-        private bool idFieldSpecified;
+        private bool _idFieldSpecified;
 
         public RegisterMessage()
         {
-            this.solvableProblemsField = new List<string>();
+            _solvableProblemsField = new List<string>();
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
+        [XmlElement(Order = 0)]
         public RegisterType Type
         {
             get
             {
-                return this.typeField;
+                return _typeField;
             }
             set
             {
-                this.typeField = value;
+                _typeField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlArrayAttribute(Order = 1)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("ProblemName", IsNullable = false)]
+        [XmlArray(Order = 1)]
+        [XmlArrayItem("ProblemName", IsNullable = false)]
         public List<string> SolvableProblems
         {
             get
             {
-                return this.solvableProblemsField;
+                return _solvableProblemsField;
             }
             set
             {
-                this.solvableProblemsField = value;
+                _solvableProblemsField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 2)]
+        [XmlElement(Order = 2)]
         public byte ParallelThreads
         {
             get
             {
-                return this.parallelThreadsField;
+                return _parallelThreadsField;
             }
             set
             {
-                this.parallelThreadsField = value;
+                _parallelThreadsField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 3)]
+        [XmlElement(Order = 3)]
         public bool Deregister
         {
             get
             {
-                return this.deregisterField;
+                return _deregisterField;
             }
             set
             {
-                this.deregisterField = value;
+                _deregisterField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [XmlIgnore]
         public bool DeregisterSpecified
         {
             get
             {
-                return this.deregisterFieldSpecified;
+                return _deregisterFieldSpecified;
             }
             set
             {
-                this.deregisterFieldSpecified = value;
+                _deregisterFieldSpecified = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 4)]
+        [XmlElement(Order = 4)]
         public ulong Id
         {
             get
             {
-                return this.idField;
+                return _idField;
             }
             set
             {
-                this.idField = value;
+                _idField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [XmlIgnore]
         public bool IdSpecified
         {
             get
             {
-                return this.idFieldSpecified;
+                return _idFieldSpecified;
             }
             set
             {
-                this.idFieldSpecified = value;
+                _idFieldSpecified = value;
             }
         }
     }
 
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public enum RegisterType
     {
         TaskManager,

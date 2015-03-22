@@ -1,182 +1,181 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false)]
+    [Serializable]
+    [DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Solutions")]
     public class SolutionsMessage : Message
     {
-        private string problemTypeField;
+        private string _problemTypeField;
 
-        private ulong idField;
+        private ulong _idField;
 
-        private byte[] commonDataField;
+        private byte[] _commonDataField;
 
-        private List<SolutionsSolution> solutions1Field;
+        private List<SolutionsSolution> _solutionsField;
 
         public SolutionsMessage()
         {
-            this.solutions1Field = new List<SolutionsSolution>();
+            _solutionsField = new List<SolutionsSolution>();
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
+        [XmlElement(Order = 0)]
         public string ProblemType
         {
             get
             {
-                return this.problemTypeField;
+                return _problemTypeField;
             }
             set
             {
-                this.problemTypeField = value;
+                _problemTypeField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 1)]
+        [XmlElement(Order = 1)]
         public ulong Id
         {
             get
             {
-                return this.idField;
+                return _idField;
             }
             set
             {
-                this.idField = value;
+                _idField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(DataType = "base64Binary", Order = 2)]
+        [XmlElement(DataType = "base64Binary", Order = 2)]
         public byte[] CommonData
         {
             get
             {
-                return this.commonDataField;
+                return _commonDataField;
             }
             set
             {
-                this.commonDataField = value;
+                _commonDataField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlArrayAttribute("Solutions", Order = 3)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("Solution", IsNullable = false)]
-        public List<SolutionsSolution> Solutions1
+        [XmlArray(Order = 3)]
+        [XmlArrayItem("Solution", IsNullable = false)]
+        public List<SolutionsSolution> Solutions
         {
             get
             {
-                return this.solutions1Field;
+                return _solutionsField;
             }
             set
             {
-                this.solutions1Field = value;
+                _solutionsField = value;
             }
         }
     }
 
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [Serializable]
+    [DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class SolutionsSolution
     {
-        private ulong taskIdField;
+        private ulong _taskIdField;
 
-        private bool taskIdFieldSpecified;
+        private bool _taskIdFieldSpecified;
 
-        private bool timeoutOccuredField;
+        private bool _timeoutOccuredField;
 
-        private SolutionType typeField;
+        private SolutionType _typeField;
 
-        private ulong computationsTimeField;
+        private ulong _computationsTimeField;
 
-        private byte[] dataField;
+        private byte[] _dataField;
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
+        [XmlElement(Order = 0)]
         public ulong TaskId
         {
             get
             {
-                return this.taskIdField;
+                return _taskIdField;
             }
             set
             {
-                this.taskIdField = value;
+                _taskIdField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [XmlIgnore]
         public bool TaskIdSpecified
         {
             get
             {
-                return this.taskIdFieldSpecified;
+                return _taskIdFieldSpecified;
             }
             set
             {
-                this.taskIdFieldSpecified = value;
+                _taskIdFieldSpecified = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 1)]
+        [XmlElement(Order = 1)]
         public bool TimeoutOccured
         {
             get
             {
-                return this.timeoutOccuredField;
+                return _timeoutOccuredField;
             }
             set
             {
-                this.timeoutOccuredField = value;
+                _timeoutOccuredField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 2)]
+        [XmlElement(Order = 2)]
         public SolutionType Type
         {
             get
             {
-                return this.typeField;
+                return _typeField;
             }
             set
             {
-                this.typeField = value;
+                _typeField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 3)]
+        [XmlElement(Order = 3)]
         public ulong ComputationsTime
         {
             get
             {
-                return this.computationsTimeField;
+                return _computationsTimeField;
             }
             set
             {
-                this.computationsTimeField = value;
+                _computationsTimeField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(DataType = "base64Binary", Order = 4)]
+        [XmlElement(DataType = "base64Binary", Order = 4)]
         public byte[] Data
         {
             get
             {
-                return this.dataField;
+                return _dataField;
             }
             set
             {
-                this.dataField = value;
+                _dataField = value;
             }
         }
     }
 
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public enum SolutionType
     {
         Ongoing,

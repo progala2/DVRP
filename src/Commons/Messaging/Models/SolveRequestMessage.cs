@@ -1,104 +1,102 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false)]
+    [Serializable]
+    [DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolveRequest")]
     public class SolveRequestMessage : Message
     {
-        private string problemTypeField;
+        private string _problemTypeField;
 
-        private ulong solvingTimeoutField;
+        private ulong _solvingTimeoutField;
 
-        private bool solvingTimeoutFieldSpecified;
+        private bool _solvingTimeoutFieldSpecified;
 
-        private byte[] dataField;
+        private byte[] _dataField;
 
-        private ulong idField;
+        private ulong _idField;
 
-        private bool idFieldSpecified;
+        private bool _idFieldSpecified;
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
+        [XmlElement(Order = 0)]
         public string ProblemType
         {
             get
             {
-                return this.problemTypeField;
+                return _problemTypeField;
             }
             set
             {
-                this.problemTypeField = value;
+                _problemTypeField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 1)]
+        [XmlElement(Order = 1)]
         public ulong SolvingTimeout
         {
             get
             {
-                return this.solvingTimeoutField;
+                return _solvingTimeoutField;
             }
             set
             {
-                this.solvingTimeoutField = value;
+                _solvingTimeoutField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [XmlIgnore]
         public bool SolvingTimeoutSpecified
         {
             get
             {
-                return this.solvingTimeoutFieldSpecified;
+                return _solvingTimeoutFieldSpecified;
             }
             set
             {
-                this.solvingTimeoutFieldSpecified = value;
+                _solvingTimeoutFieldSpecified = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(DataType = "base64Binary", Order = 2)]
+        [XmlElement(DataType = "base64Binary", Order = 2)]
         public byte[] Data
         {
             get
             {
-                return this.dataField;
+                return _dataField;
             }
             set
             {
-                this.dataField = value;
+                _dataField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 3)]
+        [XmlElement(Order = 3)]
         public ulong Id
         {
             get
             {
-                return this.idField;
+                return _idField;
             }
             set
             {
-                this.idField = value;
+                _idField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [XmlIgnore]
         public bool IdSpecified
         {
             get
             {
-                return this.idFieldSpecified;
+                return _idFieldSpecified;
             }
             set
             {
-                this.idFieldSpecified = value;
+                _idFieldSpecified = value;
             }
         }
     }

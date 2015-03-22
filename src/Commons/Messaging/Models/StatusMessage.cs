@@ -1,137 +1,136 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false)]
+    [Serializable]
+    [DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Status")]
     public class StatusMessage : Message
     {
-        private ulong idField;
+        private ulong _idField;
 
-        private List<StatusThread> threadsField;
+        private List<StatusThread> _threadsField;
 
         public StatusMessage()
         {
-            this.threadsField = new List<StatusThread>();
+            _threadsField = new List<StatusThread>();
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
+        [XmlElement(Order = 0)]
         public ulong Id
         {
             get
             {
-                return this.idField;
+                return _idField;
             }
             set
             {
-                this.idField = value;
+                _idField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlArrayAttribute(Order = 1)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("Thread", IsNullable = false)]
+        [XmlArray(Order = 1)]
+        [XmlArrayItem("Thread", IsNullable = false)]
         public List<StatusThread> Threads
         {
             get
             {
-                return this.threadsField;
+                return _threadsField;
             }
             set
             {
-                this.threadsField = value;
+                _threadsField = value;
             }
         }
     }
 
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [Serializable]
+    [DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class StatusThread
     {
-        private StatusThreadState stateField;
+        private StatusThreadState _stateField;
 
-        private ulong howLongField;
+        private ulong _howLongField;
 
-        private ulong problemInstanceIdField;
+        private ulong _problemInstanceIdField;
 
-        private ulong taskIdField;
+        private ulong _taskIdField;
 
-        private string problemTypeField;
+        private string _problemTypeField;
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
+        [XmlElement(Order = 0)]
         public StatusThreadState State
         {
             get
             {
-                return this.stateField;
+                return _stateField;
             }
             set
             {
-                this.stateField = value;
+                _stateField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 1)]
+        [XmlElement(Order = 1)]
         public ulong HowLong
         {
             get
             {
-                return this.howLongField;
+                return _howLongField;
             }
             set
             {
-                this.howLongField = value;
+                _howLongField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 2)]
+        [XmlElement(Order = 2)]
         public ulong ProblemInstanceId
         {
             get
             {
-                return this.problemInstanceIdField;
+                return _problemInstanceIdField;
             }
             set
             {
-                this.problemInstanceIdField = value;
+                _problemInstanceIdField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 3)]
+        [XmlElement(Order = 3)]
         public ulong TaskId
         {
             get
             {
-                return this.taskIdField;
+                return _taskIdField;
             }
             set
             {
-                this.taskIdField = value;
+                _taskIdField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 4)]
+        [XmlElement(Order = 4)]
         public string ProblemType
         {
             get
             {
-                return this.problemTypeField;
+                return _problemTypeField;
             }
             set
             {
-                this.problemTypeField = value;
+                _problemTypeField = value;
             }
         }
     }
 
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public enum StatusThreadState
     {
         Idle,

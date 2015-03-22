@@ -1,71 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false)]
+    [Serializable]
+    [DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "NoOperation")]
     public class NoOperationMessage : Message
     {
-        private List<BackupCommunicationServer> backupCommunicationServersField;
+        private List<BackupCommunicationServer> _backupCommunicationServersField;
 
         public NoOperationMessage()
         {
-            backupCommunicationServersField = new List<BackupCommunicationServer>();
+            _backupCommunicationServersField = new List<BackupCommunicationServer>();
         }
 
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("PartialProblem", IsNullable = true)]
+        [XmlArray(Order = 0)]
+        [XmlArrayItem("BackupCommunicationServer", IsNullable = true)]
         public List<BackupCommunicationServer> BackupCommunicationServers
         {
             get
             {
-                return this.backupCommunicationServersField;
+                return _backupCommunicationServersField;
             }
             set
             {
-                this.backupCommunicationServersField = value;
+                _backupCommunicationServersField = value;
             }
         }
     }
 
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    [Serializable]
+    [DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class BackupCommunicationServer
     {
-        private string addressField;
+        private string _addressField;
 
-        private ushort portField;
+        private ushort _portField;
 
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "anyURI")]
-        public string address
+        [XmlAttribute(DataType = "anyURI")]
+        public string Address
         {
             get
             {
-                return this.addressField;
+                return _addressField;
             }
             set
             {
-                this.addressField = value;
+                _addressField = value;
             }
         }
 
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public ushort port
+        [XmlAttribute]
+        public ushort Port
         {
             get
             {
-                return this.portField;
+                return _portField;
             }
             set
             {
-                this.portField = value;
+                _portField = value;
             }
         }
     }
