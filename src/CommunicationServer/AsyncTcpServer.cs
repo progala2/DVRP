@@ -1,4 +1,5 @@
 ﻿using _15pl04.Ucc.CommunicationServer.Collections;
+using _15pl04.Ucc.CommunicationServer.Messaging;
 using System.Net.Sockets;
 
 namespace _15pl04.Ucc.CommunicationServer
@@ -22,7 +23,7 @@ namespace _15pl04.Ucc.CommunicationServer
          *  Nie robić samemu Tasków ani Threadów (oprócz głównej pętli nasłuchującej).
          */
 
-        public AsyncTcpServer(ServerConfig config, InputMessageQueue queue)
+        public AsyncTcpServer(ServerConfig config, MessageProcessor queue)
         {
             /*
              * Inicjalizacja.
@@ -50,6 +51,9 @@ namespace _15pl04.Ucc.CommunicationServer
                 /*
                  *  1. Wysłać response przez clientSocket.
                  *  2. Zamknąć połączanie i posprzątać.
+                 *  (synchronicznie)
+                 *  
+                 *  Nie ważne co się stanie, funkcja ma się kiedyś kończyć. Nie może nam się zawiesić w nieskończoność i marnować zasoby.
                  */
             });
         }
