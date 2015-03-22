@@ -1,6 +1,5 @@
 ﻿using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Utilities;
 using _15pl04.Ucc.CommunicationServer.Collections;
 using System;
 using System.Collections.Generic;
@@ -73,7 +72,6 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private void ___placeholder(Message msg)
         {
             var type = msg.GetType();
-
 
             if (type == typeof(RegisterMessage))
             {

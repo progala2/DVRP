@@ -9,7 +9,6 @@ namespace _15pl04.Ucc.CommunicationServer
         public ServerConfig Config { get; private set; }
 
         private AsyncTcpServer _tcpServer;
-        private ComponentMonitor _componentStateMonitor;
         private MessageQueuer _messageProcessor;
 
 
@@ -27,13 +26,13 @@ namespace _15pl04.Ucc.CommunicationServer
         public void Start()
         {
             _tcpServer.StartListening();
-            _componentStateMonitor.StartMonitoring(Config.Timeout);
+            ComponentMonitor.Instance.StartMonitoring(Config.Timeout);
         }
 
         public void Stop()
         {
             _tcpServer.StopListening();
-            _componentStateMonitor.StopMonitoring();
+            ComponentMonitor.Instance.StopMonitoring();
         }
     }
 }

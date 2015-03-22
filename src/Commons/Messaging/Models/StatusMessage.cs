@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
 
-    class StatusMessage : Message
+    public class StatusMessage : Message
     {
     }
 }
