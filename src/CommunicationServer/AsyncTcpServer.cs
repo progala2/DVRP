@@ -23,7 +23,7 @@ namespace _15pl04.Ucc.CommunicationServer
          *  Nie robić samemu Tasków ani Threadów (oprócz głównej pętli nasłuchującej).
          */
 
-        public AsyncTcpServer(ServerConfig config, MessageQueuer queue)
+        public AsyncTcpServer(ServerConfig config, MessageProcessor queue)
         {
             /*
              * Inicjalizacja.

@@ -2,20 +2,18 @@
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.CommunicationServer.Collections;
 using System;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
-    internal class MessageQueuer
+    internal class MessageProcessor
     {
         private InputMessageQueue _inputQueue;
         private OutputMessageQueue _outputQueue;
         private Marshaller _marshaller;
         private Task _processingThread;
 
-        public MessageQueuer(Marshaller marshaller)
+        public MessageProcessor(Marshaller marshaller)
         {
             _inputQueue = new InputMessageQueue();
             _outputQueue = new OutputMessageQueue();
@@ -103,7 +101,6 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             }
             else
                 throw new ArgumentException("Unsupported type received: " + type.FullName);
-
         }
 
 

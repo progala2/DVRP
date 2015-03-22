@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.CommunicationServer
         public ServerConfig Config { get; private set; }
 
         private AsyncTcpServer _tcpServer;
-        private MessageQueuer _messageProcessor;
+        private MessageProcessor _messageProcessor;
 
 
         public CommunicationServer(ServerConfig config)
@@ -18,9 +18,8 @@ namespace _15pl04.Ucc.CommunicationServer
 
             var marshaller = new Marshaller();
 
-            _messageProcessor = new MessageQueuer(marshaller);
+            _messageProcessor = new MessageProcessor(marshaller);
             _tcpServer = new AsyncTcpServer(config, _messageProcessor);
-            
         }
 
         public void Start()

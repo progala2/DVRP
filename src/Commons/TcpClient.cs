@@ -24,6 +24,5 @@ namespace _15pl04.Ucc.Commons
 
             return null;
         }
-
     }
 }
