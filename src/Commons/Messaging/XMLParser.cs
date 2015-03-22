@@ -17,7 +17,7 @@ namespace _15pl04.Ucc.Commons.Messaging
             }
         }
 
-        public static void Serialize(object obj, out byte[] buffer)
+        public static void Serialize(T obj, out byte[] buffer)
         {
             using (var writer = new MemoryStream())
             {
