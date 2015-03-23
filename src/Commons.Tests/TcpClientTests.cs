@@ -19,7 +19,7 @@ namespace _15pl04.Ucc.Commons.Tests
 
 
         [TestMethod]
-        public void TcpClientConnectingWithSpecificSocketAndReceivingAnswer()
+        public void TcpClientConnectingWithSpecifiedSocketAndReceivingAnswer()
         {
             TcpClient client = new TcpClient(new IPEndPoint(ipAddress, Port));
 
@@ -27,7 +27,8 @@ namespace _15pl04.Ucc.Commons.Tests
 
             byte[] data = Encoding.ASCII.GetBytes(message);
 
-            new Task(new Action(StartListening)).Start();
+            Task t = new Task(new Action(ListenAndResend));
+            t.Start();
             byte[] received = client.SendData(data);
 
 
@@ -38,15 +39,51 @@ namespace _15pl04.Ucc.Commons.Tests
                 Assert.AreEqual(data[i], received[i]);
                 i++;
             }
+            //check whether wait or dispose
+            t.Wait();
         }
 
-        private void  StartListening()
+        //long test, about 20 seconds
+        [ExpectedException(typeof(Commons.Exceptions.TimeoutException))]
+        [TestMethod]
+        public void TcpClientConnectingToWrongIPAndThrowingOwnException()
         {
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Task t = new Task(new Action(StartListening));
+            t.Start();
+            try
+            {
+                TcpClient client = new TcpClient(
+                new IPEndPoint(new IPAddress(new Byte[] { 126, 0, 0, 1 }), Port));
 
-            _socket.Bind(new IPEndPoint(ipAddress, Port));
-            _socket.Listen(10);
+                const string message = "to jest wiadomosc do przekazania";
+
+                byte[] data = Encoding.ASCII.GetBytes(message);
+                                
+                byte[] received = client.SendData(data);
+            }
+            catch (Commons.Exceptions.TimeoutException e)
+            {
+                EndConnection();
+                throw e;
+            }
+            catch (Exception)
+            {
+                EndConnection();
+                throw;
+            }
             
+            //throw new Exception();
+        }
+
+        private void ListenAndResend()
+        {
+            StartListening();
+            AcceptConnection();
+            EndConnection();
+        }
+
+        private void AcceptConnection()
+        {
             Socket handlerSocket = _socket.Accept();
             byte[] bytes = new byte[BufferSize];
             int bytesReceived = handlerSocket.Receive(bytes);
@@ -55,7 +92,20 @@ namespace _15pl04.Ucc.Commons.Tests
 
             handlerSocket.Send(bytes);
             handlerSocket.Shutdown(SocketShutdown.Both);
-            handlerSocket.Close();
+            handlerSocket.Close();  
+        }
+
+        private void EndConnection()
+        {
+            _socket.Close();
+        }
+
+        private void StartListening()
+        {
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            _socket.Bind(new IPEndPoint(ipAddress, Port));
+            _socket.Listen(10);
         }
     }
 }

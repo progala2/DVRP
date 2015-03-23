@@ -3,13 +3,18 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Collections.Generic;
 
 namespace _15pl04.Ucc.Commons
 {
     public class TcpClient
     {
         private readonly IPEndPoint _serverAddress;
+#if DEBUG
+        private const int BufferSize = 8;
+#else
         private const int BufferSize = 1024;
+#endif
         public TcpClient(IPEndPoint serverAddress)
         {
             _serverAddress = serverAddress;
@@ -17,10 +22,7 @@ namespace _15pl04.Ucc.Commons
 
         public byte[] SendData(byte[] data)
         {
-             /* Wszystko synchronicznie, a więc możliwe, że z blokowaniem.
-             * Wziąć pod uwagę backup serwery w przypadku braku odpowiedzi głównego CS.
-             */
-            byte[] bytes = new byte[BufferSize];
+            List<byte> ret = new List<byte>();
 
             try
             {
@@ -28,38 +30,42 @@ namespace _15pl04.Ucc.Commons
 
                 try
                 {
+                    byte[] buf = new byte[BufferSize];
                     socket.Connect(_serverAddress);
 
                     Debug.WriteLine("Socket connected to " + _serverAddress.ToString());
 
                     socket.Send(data);
 
-                    int bytesRec = socket.Receive(bytes);   //TODO increase buffer in case of bigger data
+                    int bytesRec;
+                    while ((bytesRec = socket.Receive(buf)) > 0)
+                    {
+                        ret.AddRange(buf.Take(bytesRec));
+                        Debug.WriteLine(System.Text.Encoding.ASCII.GetString(ret.ToArray()));
+                    }
 
                     socket.Shutdown(SocketShutdown.Both);
                     socket.Close();
 
-                    bytes = bytes.Take(bytesRec).ToArray();
+                    buf = ret.ToArray();
                 }
                 catch (SocketException e)
                 {
                     switch (e.ErrorCode)
                     {
-                        case 10060: //Timed out
-                        //TODO connect to backup server
-                            break;
+                        case 10060:
+                            throw new Commons.Exceptions.TimeoutException(_serverAddress.ToString(), e);
                         default:
-                            return null;
+                            throw e;
                     }
                     throw;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                
-                throw;
+                throw e;
             }
-            return bytes;
+            return ret.ToArray(); ;
         }
     }
 }
