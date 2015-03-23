@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ComponentType.cs" />
+    <Compile Include="Messaging\MessageValidator.cs" />
     <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
     <Compile Include="Messaging\Models\Base\Message.cs" />
     <Compile Include="Messaging\Models\NoOperationMessage.cs" />
@@ -53,12 +54,14 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
-  <ItemGroup>  
+  <ItemGroup>
     <EmbeddedResource Include="Resources\DivideProblem.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-	<EmbeddedResource Include="Resources\NoOperation.xsd">
+    <EmbeddedResource Include="Resources\NoOperation.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\PartialProblems.xsd">
