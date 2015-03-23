@@ -19,12 +19,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             var className = this.GetType().Name;
             var resourceFileName = className.Remove(className.Length - "Message".Length) + ".xsd";
-            var manifestResourceName = Resources.GetManifestResourceName(resourceFileName);
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(manifestResourceName))
-            using (var streamReader = new StreamReader(stream))
-            {
-                return streamReader.ReadToEnd();
-            }
+            var resourceContent = Resources.GetResourceContent(resourceFileName);
+            return resourceContent;
         }
     }
 }
