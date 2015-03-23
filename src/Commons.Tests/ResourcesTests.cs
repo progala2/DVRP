@@ -7,22 +7,22 @@ namespace _15pl04.Ucc.Commons.Tests
     [TestClass]
     public class ResourcesTests
     {
-        private string drf;
-        private Assembly assembly;
+        private string _drf;
+        private Assembly _assembly;
 
         [TestInitialize]
         public void TestInit()
         {
             var resourcesFolder = "Resources";
-            drf = "." + resourcesFolder + ".";
-            assembly = Assembly.GetAssembly(typeof(Resources));
+            _drf = "." + resourcesFolder + ".";
+            _assembly = Assembly.GetAssembly(typeof(Resources));
         }
 
         [TestMethod]
         public void GetManifestResourceNameReturnesExpectedString()
         {
-            var expectedManifestResourceName = assembly.GetManifestResourceNames().First(s => s.Contains(drf));
-            var position = expectedManifestResourceName.LastIndexOf(drf) + drf.Length;
+            var expectedManifestResourceName = _assembly.GetManifestResourceNames().First(s => s.Contains(_drf));
+            var position = expectedManifestResourceName.LastIndexOf(_drf) + _drf.Length;
             var resourceName = expectedManifestResourceName.Substring(position);
 
             var resultManifestResourceName = Resources.GetManifestResourceName(resourceName);
@@ -33,8 +33,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void GetResourceContentReturnsContentOfExistingResource()
         {
-            var manifestResourceName = assembly.GetManifestResourceNames().First(s => s.Contains(drf));
-            var position = manifestResourceName.LastIndexOf(drf) + drf.Length;
+            var manifestResourceName = _assembly.GetManifestResourceNames().First(s => s.Contains(_drf));
+            var position = manifestResourceName.LastIndexOf(_drf) + _drf.Length;
             var resourceName = manifestResourceName.Substring(position);
 
             var resourceContent = Resources.GetResourceContent(resourceName);
