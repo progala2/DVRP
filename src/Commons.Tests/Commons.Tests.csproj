@@ -50,6 +50,7 @@
     <Compile Include="MessageTests.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MessageValidatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourcesTests.cs" />
   </ItemGroup>

@@ -7,12 +7,20 @@ namespace _15pl04.Ucc.Commons.Tests
     [TestClass]
     public class ResourcesTests
     {
+        private string drf;
+        private Assembly assembly;
+
+        [TestInitialize]
+        public void TestInit()
+        {
+            var resourcesFolder = "Resources";
+            drf = "." + resourcesFolder + ".";
+            assembly = Assembly.GetAssembly(typeof(Resources));
+        }
+
         [TestMethod]
         public void GetManifestResourceNameReturnesExpectedString()
         {
-            var resourcesFolder = "Resources";
-            var drf = "." + resourcesFolder + ".";
-            var assembly = Assembly.GetAssembly(typeof(Resources));
             var expectedManifestResourceName = assembly.GetManifestResourceNames().First(s => s.Contains(drf));
             var position = expectedManifestResourceName.LastIndexOf(drf) + drf.Length;
             var resourceName = expectedManifestResourceName.Substring(position);
@@ -20,6 +28,28 @@ namespace _15pl04.Ucc.Commons.Tests
             var resultManifestResourceName = Resources.GetManifestResourceName(resourceName);
 
             Assert.AreEqual(expectedManifestResourceName, resultManifestResourceName);
+        }
+
+        [TestMethod]
+        public void GetResourceContentReturnsContentOfExistingResource()
+        {
+            var manifestResourceName = assembly.GetManifestResourceNames().First(s => s.Contains(drf));
+            var position = manifestResourceName.LastIndexOf(drf) + drf.Length;
+            var resourceName = manifestResourceName.Substring(position);
+
+            var resourceContent = Resources.GetResourceContent(resourceName);
+
+            Assert.IsNotNull(resourceContent);
+        }
+
+        [TestMethod]
+        public void GetResourceContentReturnsNullForIncorrectResourceName()
+        {
+            var resourceName = "SomeIncorrectResourceName";
+
+            var resourceContent = Resources.GetResourceContent(resourceName);
+
+            Assert.IsNull(resourceContent);
         }
     }
 }
