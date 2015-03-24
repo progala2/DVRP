@@ -90,7 +90,8 @@ namespace _15pl04.Ucc.CommunicationServer
                 };
 
                 // Invoke subscribers' methods synchronously.
-                Deregistration.Invoke(this, eventArgs);
+                if (Deregistration != null)
+                    Deregistration.Invoke(this, eventArgs);
             }
             else
                 throw new Exception("Unregistered component is being deregistered.");
@@ -146,6 +147,17 @@ namespace _15pl04.Ucc.CommunicationServer
                 return;
 
             _cancellationTokenSource.Cancel();            
+        }
+
+        public int GetNumberOfAvailableComputationalThreads(string problemName)
+        {
+            int threadNum = 0;
+
+            foreach (var component in _registeredComponents.Values)
+                if (component.Type == ComponentType.ComputationalNode && component.SolvableProblems.Contains(problemName))
+                    threadNum += component.NumberOfIdleThreads;
+
+            return threadNum;
         }
     }
 }

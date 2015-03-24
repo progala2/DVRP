@@ -11,7 +11,6 @@ namespace _15pl04.Ucc.CommunicationServer
         private AsyncTcpServer _tcpServer;
         private MessageProcessor _messageProcessor;
 
-
         public CommunicationServer(ServerConfig config)
         {
             Config = config;

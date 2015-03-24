@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.Commons.Problem
 {
-    class FinalSolution
+    public class FinalSolution
     {
     }
 }

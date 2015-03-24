@@ -7,28 +7,38 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
 {
     internal class OutputMessageQueue
     {
+        /*  
+         * Messages below are NOT stored in any of the queues:
+         *  - RegisterResponse
+         *  - NoOperation 
+         *  These shall be generated on-the-go instead.
+         */
+
         private Dictionary<string, ConcurrentQueue<Message>> _msgsForComputationalNode;
         private Dictionary<string, ConcurrentQueue<Message>> _msgsForTaskManager;
         private ConcurrentQueue<Message> _msgsForBackupServer;
-        private ConcurrentDictionary<ulong, Message> _finalSolutionMsgs;
+        private ConcurrentDictionary<ulong, Message> _finalSolutionMessages;
 
         public OutputMessageQueue()
         {
-            //TODO
+            _msgsForComputationalNode = new Dictionary<string, ConcurrentQueue<Message>>();
+            _msgsForTaskManager = new Dictionary<string, ConcurrentQueue<Message>>();
+            _msgsForBackupServer = new ConcurrentQueue<Message>();
+            _finalSolutionMessages = new ConcurrentDictionary<ulong, Message>();
         }
 
-        public Message[] Dequeue(ComponentType componentType, string[] problemType, int max)
+        public Message[] GetTaskManagerMessages(string[] problemType, int max)
         {
-            //TODO
+            return null;
+        }
 
-            switch (componentType)
-            {
-                case ComponentType.CommunicationServer:
+        public Message[] GetComputationalNodeMessages(string[] problemType, int max)
+        {
+            return null;
+        }
 
-                    break;
-            }
-
-            
+        public Message GetSolution(ulong id)
+        {
             return null;
         }
 
