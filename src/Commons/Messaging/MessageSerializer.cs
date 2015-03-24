@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
-    public static class XmlParser<T>
+    public static class MessageSerializer<T>
     {
         private static readonly Type Type = typeof (T);
         public static T Deserialize(byte[] buffer)

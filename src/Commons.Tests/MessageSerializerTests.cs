@@ -7,7 +7,7 @@ using _15pl04.Ucc.Commons.Messaging;
 namespace _15pl04.Ucc.Commons.Tests
 {
     [TestClass]
-    public class XmlParserTests
+    public class MessageSerializerTests
     {
         [XmlRoot("Root")]
         public class TestingClass
@@ -24,7 +24,7 @@ namespace _15pl04.Ucc.Commons.Tests
                     new XElement("Child2", "content2")
                 )
             );
-            var tstClass = XmlParser<TestingClass>.Deserialize(Encoding.UTF8.GetBytes(doc1.ToString()));
+            var tstClass = MessageSerializer<TestingClass>.Deserialize(Encoding.UTF8.GetBytes(doc1.ToString()));
             Assert.AreEqual("content1", tstClass.Child1);
             Assert.AreEqual("content2", tstClass.Child2);
         }
@@ -41,7 +41,7 @@ namespace _15pl04.Ucc.Commons.Tests
             var tmp = doc1.ToString();
             byte[] buffer;
             var tstClass = new TestingClass() { Child1 = "content1", Child2 = "content2" };
-            XmlParser<TestingClass>.Serialize(tstClass, out buffer);
+            MessageSerializer<TestingClass>.Serialize(tstClass, out buffer);
             var str = Encoding.UTF8.GetString(buffer);
             Assert.AreEqual(tmp.Contains("<Child1>"), str.Contains("<Child1>"));
             Assert.AreEqual(tmp.Contains("<Child2>"), str.Contains("<Child2>"));
