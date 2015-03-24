@@ -5,7 +5,7 @@ namespace _15pl04.Ucc.Commons
 {
     public static class Resources
     {
-        private const string _resourcesDirectoryPath = "_15pl04.Ucc.Commons.Resources";
+        private const string ResourcesDirectoryPath = "_15pl04.Ucc.Commons.Resources";
 
         /// <summary>
         /// Gets the name of resource in assembly from resource file name.
@@ -14,7 +14,7 @@ namespace _15pl04.Ucc.Commons
         /// <returns>The name of resource in assembly.</returns>
         public static string GetManifestResourceName(string resourceFileName)
         {
-            return _resourcesDirectoryPath + "." + resourceFileName;
+            return ResourcesDirectoryPath + "." + resourceFileName;
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace _15pl04.Ucc.Commons
         public static string GetResourceContent(string resourceFileName)
         {
             string result = null;
-            var manifestResourceName = Resources.GetManifestResourceName(resourceFileName);
+            var manifestResourceName = GetManifestResourceName(resourceFileName);
             var assembly = Assembly.GetExecutingAssembly();
 
             using (var stream = assembly.GetManifestResourceStream(manifestResourceName))

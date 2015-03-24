@@ -42,6 +42,7 @@
     <Compile Include="Messaging\Models\SolutionRequestMessage.cs" />
     <Compile Include="Messaging\Models\SolveRequestMessage.cs" />
     <Compile Include="Messaging\Models\SolveRequestResponseMessage.cs" />
+    <Compile Include="Messaging\Models\ErrorMessage.cs" />
     <Compile Include="Messaging\Models\StatusMessage.cs" />
     <Compile Include="Messaging\Marshaller.cs" />
     <Compile Include="Messaging\XmlParser.cs" />
@@ -87,6 +88,11 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Status.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Error.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

@@ -9,6 +9,9 @@ Obowiązuje konwencja C# ze strony MSDN. Zapoznanie się z poniższym jest w obo
 2. https://msdn.microsoft.com/en-us/library/ff926074.aspx
 3. Kwestie niespecyfikowane przez powyższe:
   * Prywatne pola klas: `_camelCase`
+  * Stałe `const`, niezależnie od widoczności: `PascalCase`*
+  
+_gdy jest wybór, **zawsze** wybieramy `const` zamiast `static readonly`_
 
 Ponadto: nazwy branchy muszą zawierać informacje o właścicielu i funkcjonalności jaką obejmują. Przykłady poniżej (zwróćcie uwagę na kapitalizację literek): 
 

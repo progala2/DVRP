@@ -6,12 +6,12 @@ namespace _15pl04.Ucc.Commons.Messaging
 {
     public static class XmlParser<T>
     {
-        private static readonly Type _type = typeof (T);
+        private static readonly Type Type = typeof (T);
         public static T Deserialize(byte[] buffer)
         {
             using (var reader = new MemoryStream(buffer))
             {
-                var xml = new XmlSerializer(_type);
+                var xml = new XmlSerializer(Type);
                 var instance = (T)xml.Deserialize(reader);
                 return instance;
             }
@@ -21,7 +21,7 @@ namespace _15pl04.Ucc.Commons.Messaging
         {
             using (var writer = new MemoryStream())
             {
-                var xml = new XmlSerializer(_type);
+                var xml = new XmlSerializer(Type);
                 xml.Serialize(writer, obj);
                 buffer = writer.GetBuffer();
             }
