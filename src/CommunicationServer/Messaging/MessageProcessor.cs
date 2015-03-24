@@ -8,6 +8,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
     internal class MessageProcessor
     {
+        public delegate void MessageReceptionEventHandler(object sender, MessageReceptionEventArgs e);
+        public event MessageReceptionEventHandler MessageReception;
+
         private InputMessageQueue _inputQueue;
         private OutputMessageQueue _outputQueue;
         private Marshaller _marshaller;
