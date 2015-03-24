@@ -47,8 +47,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 {
                     Message[] input = _marshaller.Unmarshall(rawMsg);
 
-                    if (input.Length != 1)
-                        throw new Exception("Received more than one message at once from a component.");
+                    // This can happen during synchronization process.
+                    //if (input.Length != 1)
+                    //    throw new Exception("Received more than one message at once from a component.");
+
 
                     /*
                      * 1. Get component's type and id.
@@ -73,7 +75,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
             if (type == typeof(RegisterMessage))
             {
-                
+                var registerMsg = msg as RegisterMessage;
+                   
+
             }
             else if (type == typeof(StatusMessage))
             {

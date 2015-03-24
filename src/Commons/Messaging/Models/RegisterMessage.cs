@@ -128,9 +128,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     public enum RegisterType
     {
         TaskManager,
-
         ComputationalNode,
-
         CommunicationServer,
     }
 }

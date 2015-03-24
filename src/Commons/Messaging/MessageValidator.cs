@@ -1,9 +1,9 @@
-﻿using System;
+﻿using _15pl04.Ucc.Commons.Messaging.Models;
+using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using _15pl04.Ucc.Commons.Messaging.Models;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
