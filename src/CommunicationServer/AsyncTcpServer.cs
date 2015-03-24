@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using _15pl04.Ucc.CommunicationServer.Collections;
@@ -15,10 +16,11 @@ namespace _15pl04.Ucc.CommunicationServer
 {
     internal class AsyncTcpServer
     {
-        private const int MaxConnectionQueue = 100;
+        private const int MaxPendingConnections = 100;
         private readonly ServerConfig _config;
         private readonly MessageProcessor _queue;
         private readonly ManualResetEvent _allDoneEvent;
+        private Socket _listenerSocket;
 
 
         public delegate void ResponseCallback(byte[] response);
@@ -53,18 +55,18 @@ namespace _15pl04.Ucc.CommunicationServer
             /*
              * Nasłuchiwanie.
              */
-            Socket listenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _listenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             try
             {
-                listenerSocket.Bind(_config.Address);
-                listenerSocket.Listen(MaxConnectionQueue);
+                _listenerSocket.Bind(_config.Address);
+                _listenerSocket.Listen(MaxPendingConnections);
 
                 while (true)
                 {
                     _allDoneEvent.Reset();
 
-                    listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), listenerSocket);
+                    _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket);
 
                     _allDoneEvent.WaitOne();
                 }
@@ -81,6 +83,8 @@ namespace _15pl04.Ucc.CommunicationServer
             /*
              * Sprzątanie.
              */
+            _listenerSocket.Shutdown(SocketShutdown.Both);
+            _listenerSocket.Close();
         }
 
         private static ResponseCallback GenerateResponseCallback(Socket clientSocket)
@@ -128,19 +132,20 @@ namespace _15pl04.Ucc.CommunicationServer
             bytesRead = handlerSocket.EndReceive(ar);
             if (bytesRead > 0)
             {
-                state.RawDataList.AddRange(state.Buffer.Take(bytesRead));
-                Debug.WriteLine("ReadCallback rawDataList size part: " + state.RawDataList.Count);
-
+                //state.RawDataList.AddRange(state.Buffer.Take(bytesRead));
+                state.MemoryStream.Write(state.Buffer, 0, bytesRead);
+                Debug.WriteLine("ReadCallback rawDataList size part: " + state.MemoryStream.Length);
+                
                 handlerSocket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReadCallback), state);
             }
             else
             {
-                Debug.WriteLine("ReadCallback rawDataList size whol: " + state.RawDataList.Count);
+                Debug.WriteLine("ReadCallback rawDataList size whol: " + state.MemoryStream.Length);
 
                 //state.workSocket.Send(state.RawDataList.ToArray());
                 //enqueue rawdata
-                _queue.EnqeueInputMessage(state.RawDataList.ToArray(),
+                _queue.EnqeueInputMessage(state.MemoryStream.ToArray(),
                     GenerateResponseCallback(state.WorkSocket));
             }
         }
@@ -158,7 +163,7 @@ namespace _15pl04.Ucc.CommunicationServer
             // Receive buffer.
             public byte[] Buffer = new byte[BufferSize];
             // Received data string.
-            public List<byte> RawDataList = new List<byte>(BufferSize);
+            public MemoryStream MemoryStream = new MemoryStream();
         }
     }
 }

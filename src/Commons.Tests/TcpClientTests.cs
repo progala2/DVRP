@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -13,15 +14,15 @@ namespace _15pl04.Ucc.Commons.Tests
     public class TcpClientTests
     {
         private const int Port = 9123;
-        private readonly IPAddress ipAddress = new IPAddress(new byte[]{127, 0, 0, 1});
-        private const int BufferSize = 1024;
+        private readonly IPAddress _ipAddress = new IPAddress(new byte[]{127, 0, 0, 1});
+        private const int BufferSize = 2048;
         Socket _socket;
 
 
         [TestMethod]
         public void TcpClientConnectingWithSpecifiedSocketAndReceivingAnswer()
         {
-            TcpClient client = new TcpClient(new IPEndPoint(ipAddress, Port));
+            TcpClient client = new TcpClient(new IPEndPoint(_ipAddress, Port));
 
             const string message = "to jest wiadomosc do przekazania";
 
@@ -40,20 +41,22 @@ namespace _15pl04.Ucc.Commons.Tests
                 i++;
             }
             //check whether wait or dispose
+            EndConnection();
             t.Wait();
         }
 
-        //long test, about 20 seconds
-        [ExpectedException(typeof(Commons.Exceptions.TimeoutException))]
+        //long test, takes TimeoutSeconds seconds
+        [ExpectedException(typeof(Commons.TimeoutException))]
         [TestMethod]
-        public void TcpClientConnectingToWrongIPAndThrowingOwnException()
+        public void TcpClientConnectingToWrongIpAndThrowingOwnException()
         {
             Task t = new Task(new Action(StartListening));
             t.Start();
             try
             {
                 TcpClient client = new TcpClient(
-                new IPEndPoint(new IPAddress(new Byte[] { 126, 0, 0, 1 }), Port));
+                new IPEndPoint(new IPAddress(new Byte[] { 126, 0, 0, 1 }), Port),
+                10000);
 
                 const string message = "to jest wiadomosc do przekazania";
 
@@ -61,7 +64,7 @@ namespace _15pl04.Ucc.Commons.Tests
                                 
                 byte[] received = client.SendData(data);
             }
-            catch (Commons.Exceptions.TimeoutException e)
+            catch (Commons.TimeoutException e)
             {
                 EndConnection();
                 throw e;
@@ -79,7 +82,7 @@ namespace _15pl04.Ucc.Commons.Tests
         {
             StartListening();
             AcceptConnection();
-            EndConnection();
+            //EndConnection();
         }
 
         private void AcceptConnection()
@@ -91,12 +94,13 @@ namespace _15pl04.Ucc.Commons.Tests
             bytes = bytes.Take(bytesReceived).ToArray();
 
             handlerSocket.Send(bytes);
-            handlerSocket.Shutdown(SocketShutdown.Both);
+            handlerSocket.Shutdown(SocketShutdown.Send);
             handlerSocket.Close();  
         }
 
         private void EndConnection()
         {
+            //Thread.Sleep(1500);
             _socket.Close();
         }
 
@@ -104,7 +108,7 @@ namespace _15pl04.Ucc.Commons.Tests
         {
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            _socket.Bind(new IPEndPoint(ipAddress, Port));
+            _socket.Bind(new IPEndPoint(_ipAddress, Port));
             _socket.Listen(10);
         }
     }
