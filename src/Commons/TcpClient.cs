@@ -51,7 +51,7 @@ namespace _15pl04.Ucc.Commons
                 Socket socket = new Socket(AddressFamily.InterNetwork, 
                     SocketType.Stream, 
                     ProtocolType.Tcp);
-                
+
                 try
                 {
                     IAsyncResult result = socket.BeginConnect(_serverAddress.Address, _serverAddress.Port, null, null);
@@ -69,18 +69,19 @@ namespace _15pl04.Ucc.Commons
 
                     socket.Send(data);
 
-                    int bytesRec;
-                    MemoryStream memory = new MemoryStream(BufferSize);
-
-                    while ((bytesRec = socket.Receive(buf)) > 0)
+                    using (MemoryStream memory = new MemoryStream(BufferSize))
                     {
-                        memory.Write(buf, 0, bytesRec);
-                        Debug.WriteLine("Capacity: " + memory.Capacity + " Length: " + memory.Length);
-                    }
+                        int bytesRec;
+                        while ((bytesRec = socket.Receive(buf)) > 0)
+                        {
+                            memory.Write(buf, 0, bytesRec);
+                            Debug.WriteLine("Capacity: " + memory.Capacity + " Length: " + memory.Length);
+                        }
 
-                    socket.Shutdown(SocketShutdown.Both);   //both or receive?
-                    socket.Close();
-                    buf = memory.ToArray();
+                        socket.Shutdown(SocketShutdown.Both); //both or receive?
+                        socket.Close();
+                        buf = memory.ToArray();
+                    }
                 }
                 catch (SocketException e)
                 {

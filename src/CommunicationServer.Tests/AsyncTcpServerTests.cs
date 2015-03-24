@@ -5,7 +5,6 @@ using System.Threading;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.CommunicationServer;
 using _15pl04.Ucc.CommunicationServer.Messaging;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests

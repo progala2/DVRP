@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
-using _15pl04.Ucc.CommunicationServer.Collections;
 using _15pl04.Ucc.CommunicationServer.Messaging;
 using System.Net.Sockets;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 
 
@@ -121,12 +116,10 @@ namespace _15pl04.Ucc.CommunicationServer
 
         private void ReadCallback(IAsyncResult ar)
         {
-            String content = String.Empty;
-
             StateObject state = (StateObject)ar.AsyncState;
             Socket handlerSocket = state.WorkSocket;
 
-            int bytesRead = 0;
+            int bytesRead;
 
 
             bytesRead = handlerSocket.EndReceive(ar);
@@ -135,7 +128,7 @@ namespace _15pl04.Ucc.CommunicationServer
                 //state.RawDataList.AddRange(state.Buffer.Take(bytesRead));
                 state.MemoryStream.Write(state.Buffer, 0, bytesRead);
                 Debug.WriteLine("ReadCallback rawDataList size part: " + state.MemoryStream.Length);
-                
+               
                 handlerSocket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReadCallback), state);
             }
@@ -147,10 +140,11 @@ namespace _15pl04.Ucc.CommunicationServer
                 //enqueue rawdata
                 _queue.EnqeueInputMessage(state.MemoryStream.ToArray(),
                     GenerateResponseCallback(state.WorkSocket));
+                state.Dispose();
             }
         }
 
-        internal class StateObject
+        internal class StateObject : IDisposable
         {
             // Client  socket.
             public Socket WorkSocket = null;
@@ -164,6 +158,11 @@ namespace _15pl04.Ucc.CommunicationServer
             public byte[] Buffer = new byte[BufferSize];
             // Received data string.
             public MemoryStream MemoryStream = new MemoryStream();
+
+            public void Dispose()
+            {
+                MemoryStream.Dispose();
+            }
         }
     }
 }
