@@ -121,6 +121,12 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
                 _idFieldSpecified = value;
             }
         }
+
+        [XmlIgnore]
+        public override MessageClassType MessageType
+        {
+            get { return MessageClassType.Register;}
+        }
     }
 
     [Serializable]

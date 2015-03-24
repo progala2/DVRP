@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Reflection;
-
-namespace _15pl04.Ucc.Commons.Messaging.Models
+﻿namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     public abstract class Message
     {
@@ -17,10 +14,27 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         ///  </remarks>
         internal string GetXsdFileContent()
         {
-            var className = this.GetType().Name;
+            var className = GetType().Name;
             var resourceFileName = className.Remove(className.Length - "Message".Length) + ".xsd";
             var resourceContent = Resources.GetResourceContent(resourceFileName);
             return resourceContent;
         }
+
+        public enum MessageClassType
+        {
+            DivideProblem,
+            Error,
+            NoOperation,
+            PartialProblems,
+            Register,
+            RegisterResponse,
+            SolutionRequest,
+            Solutions,
+            SolveRequest,
+            SolveRequestResponse,
+            Status
+        }
+
+        public abstract MessageClassType MessageType { get; }
     }
 }

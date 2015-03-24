@@ -24,5 +24,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
                 _idField = value;
             }
         }
+
+        [XmlIgnore]
+        public override MessageClassType MessageType
+        {
+            get { return MessageClassType.SolutionRequest; }
+        }
     }
 }
