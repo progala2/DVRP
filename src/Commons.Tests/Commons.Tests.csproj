@@ -55,6 +55,7 @@
     <Compile Include="MessagesTests.cs" />
     <Compile Include="ResourcesTests.cs" />
     <Compile Include="XmlParserTests.cs" />
+	<Compile Include="TcpClientTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
