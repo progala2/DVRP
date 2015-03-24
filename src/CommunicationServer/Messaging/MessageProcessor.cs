@@ -67,13 +67,13 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             }
         }
 
-        private void ___placeholder(Message msg)
+        private void ProcessMessage(Message msg)
         {
             var type = msg.GetType();
 
             if (type == typeof(RegisterMessage))
             {
-
+                
             }
             else if (type == typeof(StatusMessage))
             {
