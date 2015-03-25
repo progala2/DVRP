@@ -119,7 +119,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
 
                 pp.SolvingComputationalNodeId = compNodeId;
                 output.Add(pp);
-                _partialProblemsBeingComputed.Enqueue(p.PartialProblemId, pp);
+                _partialProblemsBeingComputed.Enqueue(pp.PartialProblemId, pp);
             }
 
             if (output.Count > 0)
@@ -152,6 +152,13 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
             // TODO: check if all solutions are in
         }
 
+        /// <summary>
+        /// Get all Partial Solutions produced from a single Problem Instance. Mark them as "Being Merged".
+        /// </summary>
+        /// <param name="type">Type name od the problem.</param>
+        /// <param name="partialSolutions">Returned set of Partial Solutions to merge.</param>
+        /// <param name="taskManagerId">Task Manager assigned to make the merge.</param>
+        /// <returns>True if Partial Solutions are returned. False if there are no Partial Solutions of specified type that need merging.</returns>
         public bool GetPartialSolutionsToMerge(string type, out PartialSolution[] partialSolutions, ulong taskManagerId)
         {
             if (_partialSolutionsAwaitingMerge.TryDequeue(type, out partialSolutions))
@@ -166,6 +173,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
                 return false;
         }
 
+        /// <summary>
+        /// Adds newly computed Final Solution and make it available to the Computational Client.
+        /// </summary>
+        /// <param name="finalSolution"></param>
         public void AddFinalSolution(FinalSolution finalSolution)
         {
             ProblemInstance pi;
