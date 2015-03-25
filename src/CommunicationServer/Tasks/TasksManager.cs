@@ -1,7 +1,6 @@
-﻿using _15pl04.Ucc.Commons.Problem;
-using _15pl04.Ucc.CommunicationServer.Collections;
+﻿using _15pl04.Ucc.CommunicationServer.Collections;
+using _15pl04.Ucc.CommunicationServer.Tasks.Models;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace _15pl04.Ucc.CommunicationServer.Tasks
@@ -21,14 +20,14 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
 
         private LexicographicQueue<string, ProblemInstance> _problemsToDivide;
         private LexicographicQueue<string, ProblemInstance> _problemsBeingDivided;
-        private LexicographicQueue<string, ProblemInstance> _problemsToMerge;
-        private LexicographicQueue<string, ProblemInstance> _problemsBeingMerged;
+        private LexicographicQueue<uint, ProblemInstance> _problemsBeingComputed;
 
         private LexicographicQueue<string, PartialProblem> _partialProblemsToCompute;
-        private LexicographicQueue<string, PartialProblem> _partialProblemsBeingComputed;
-        private LexicographicQueue<ulong, PartialProblem> _partialProblemsBeingGathered;
-        private LexicographicQueue<string, PartialProblem[]> _partialProblemsToMerge;
-        private LexicographicQueue<string, PartialProblem[]> _partialProblemsBeingMerged;
+        private LexicographicQueue<ulong, PartialProblem> _partialProblemsBeingComputed;
+
+        private LexicographicQueue<ulong, PartialSolution> _partialSolutionsBeingGathered;
+        private LexicographicQueue<string, PartialSolution[]> _partialSolutionsToMerge;
+        private LexicographicQueue<string, PartialSolution[]> _partialSolutionsBeingMerged;
 
         private Dictionary<ulong, FinalSolution> _finalSolutions;
 
@@ -37,18 +36,19 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
         {
             _problemsToDivide = new LexicographicQueue<string, ProblemInstance>();
             _problemsBeingDivided = new LexicographicQueue<string, ProblemInstance>();
-            _problemsToMerge = new LexicographicQueue<string, ProblemInstance>();
-            _problemsBeingMerged = new LexicographicQueue<string, ProblemInstance>();
+            _problemsBeingComputed = new LexicographicQueue<uint,ProblemInstance>();
 
             _partialProblemsToCompute = new LexicographicQueue<string, PartialProblem>();
-            _partialProblemsBeingComputed = new LexicographicQueue<string, PartialProblem>();
-            _partialProblemsBeingGathered = new LexicographicQueue<ulong, PartialProblem>();
-            _partialProblemsToMerge = new LexicographicQueue<string, PartialProblem[]>();
-            _partialProblemsBeingMerged = new LexicographicQueue<string, PartialProblem[]>();
+            _partialProblemsBeingComputed = new LexicographicQueue<ulong, PartialProblem>();
+
+            _partialSolutionsBeingGathered = new LexicographicQueue<ulong, PartialSolution>();
+            _partialSolutionsToMerge = new LexicographicQueue<string, PartialSolution[]>();
+            _partialSolutionsBeingMerged = new LexicographicQueue<string, PartialSolution[]>();
 
             _finalSolutions = new Dictionary<ulong, FinalSolution>();
         }
 
         
+
     }
 }

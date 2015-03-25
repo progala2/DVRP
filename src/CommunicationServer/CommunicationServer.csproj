@@ -40,6 +40,10 @@
     <Compile Include="Components\ComponentMonitor.cs" />
     <Compile Include="Components\DeregisterationEventArgs.cs" />
     <Compile Include="Messaging\MessageReceptionEventArgs.cs" />
+    <Compile Include="Tasks\Models\FinalSolution.cs" />
+    <Compile Include="Tasks\Models\PartialProblem.cs" />
+    <Compile Include="Tasks\Models\PartialSolution.cs" />
+    <Compile Include="Tasks\Models\ProblemInstance.cs" />
     <Compile Include="Tasks\TasksManager.cs" />
     <Compile Include="Messaging\MessageProcessor.cs" />
     <Compile Include="Program.cs" />
