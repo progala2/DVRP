@@ -15,29 +15,57 @@ namespace _15pl04.Ucc.Commons
     /// </summary>
     public abstract class ComputationalComponent
     {
+        /// <summary>
+        /// The number of threads that could be efficiently run in parallel.
+        /// </summary>
         protected readonly byte _parallelThreads;
 
-        protected Task _messagingTask;
-        protected ComputationalTask[] _computationalTasks;
-        protected ConcurrentQueue<Message> _messagesToSend;
-        protected CancellationTokenSource _cancellationTokenSource;
+        /// <summary>
+        /// The address of Communication Server.
+        /// </summary>
+        protected readonly IPEndPoint _serverAddress;
 
-        // dictionary of TaskSolvers; the keys are names of problems
-        protected Dictionary<string, TaskSolver> _taskSolvers;
+        /// <summary>
+        /// The dictionary of TaskSolvers; the keys are names of problems.
+        /// </summary>
+        protected readonly Dictionary<string, TaskSolver> _taskSolvers;
 
-        protected IPEndPoint _serverAddress;
-        protected TcpClient _tcpClient;
-        protected Marshaller _marshaller;
+        /// <summary>
+        /// The ID assigned by the Communication Server.
+        /// </summary>
+        protected ulong ID { get; private set; }
 
-        protected ulong _id;
-        protected uint _timeout;
+        /// <summary>
+        /// The communication timeout configured on Communication Server.
+        /// </summary>
+        protected uint Timeout { get; private set; }
 
+
+
+        // to change
+        protected readonly TcpClient _tcpClient;
+        protected readonly Marshaller _marshaller;
         /* it could be a List<IPEndPoint> but messages from server give information about
          * backup servers with List<BackupCommunicationServer> so keeping it this way allows to
          * parse to IPEndPoint only after primary server crash
          */
         protected List<BackupCommunicationServer> _backupCommunicationServers;
+        ///////////////////////
 
+
+
+        private Task _messagingTask;
+        private ComputationalTask[] _computationalTasks;
+        private CancellationTokenSource _cancellationTokenSource;
+
+        private ConcurrentQueue<Message> _messagesToSend;
+        private ManualResetEvent _messagesToSendManualResetEvent;
+
+
+        /// <summary>
+        /// Creates component that can register to the server.
+        /// </summary>
+        /// <param name="serverAddress">Communication server address.</param>
         public ComputationalComponent(IPEndPoint serverAddress)
         {
             _serverAddress = serverAddress;
@@ -45,7 +73,9 @@ namespace _15pl04.Ucc.Commons
 
             _taskSolvers = GetTaskSolvers();
             _marshaller = new Marshaller();
+
             _messagesToSend = new ConcurrentQueue<Message>();
+            _messagesToSendManualResetEvent = new ManualResetEvent(false);
 
             // information for registration message; probably it is a temporary solution
             _parallelThreads = (byte)Environment.ProcessorCount;
@@ -64,6 +94,9 @@ namespace _15pl04.Ucc.Commons
             });
         }
 
+        /// <summary>
+        /// Registers component to server and starts work.
+        /// </summary>
         public void Start()
         {
             // get RegisterMessage
@@ -84,6 +117,9 @@ namespace _15pl04.Ucc.Commons
             _messagingTask.Start();
         }
 
+        /// <summary>
+        /// Stops component work.
+        /// </summary>
         public void Stop()
         {
             _cancellationTokenSource.Cancel();
@@ -100,9 +136,66 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="message">A message to handle. It is received from server.</param>
         /// <remarks>
-        /// Here should be started computationl tasks.
+        /// Here should be started computational tasks.
         /// </remarks>
         protected abstract void HandleResponseMessage(Message message);
+
+        /// <summary>
+        /// Enqueues message to be send to server.
+        /// </summary>
+        /// <param name="message">A message to send.</param>
+        protected void EnqueueMessageToSend(Message message)
+        {
+            _messagesToSend.Enqueue(message);
+            _messagesToSendManualResetEvent.Set();
+        }
+
+        /// <summary>
+        /// Starts task if there is an available idle task in pool. This method gets information needed for Status messages.
+        /// </summary>
+        /// <param name="action">An action to be performed.</param>
+        /// <param name="problemType">The name of the type as given by TaskSolver.</param>
+        /// <param name="problemInstanceId">The ID of the problem assigned when client connected.</param>
+        /// <param name="partialProblemId">The ID of the task within given problem instance.</param>
+        /// <returns>Information whether task was successfully started.</returns>
+        protected bool StartComputationalTask(Action action, string problemType, ulong? problemInstanceId, ulong? partialProblemId)
+        {
+            // get index of idle task
+            int? idleTaskIndex = GetIdleTaskIndex();
+            if (idleTaskIndex == null)
+                return false;
+
+            int index = idleTaskIndex.Value;
+
+            // create cancellable task
+            var task = new Task(action, _cancellationTokenSource.Token);
+            // after task completion reset proper ComputationalTask in array to default values
+            task.ContinueWith((t) => _computationalTasks[index] = new ComputationalTask());
+
+            // create ComputationalTask
+            _computationalTasks[index] = new ComputationalTask(task)
+            {
+                ProblemType = problemType,
+                ProblemInstanceId = problemInstanceId,
+                PartialProblemId = partialProblemId
+            };
+            // and start it
+            _computationalTasks[index].Task.Start();
+
+            return true;
+        }
+
+        private int? GetIdleTaskIndex()
+        {
+            int index = 0;
+            while (index < _computationalTasks.Length)
+            {
+                if (_computationalTasks[index].State == StatusThreadState.Idle)
+                    return index;
+                index++;
+            }
+            return null;
+        }
 
 
         private void HandleResponseMessages(Message[] messages)
@@ -127,6 +220,9 @@ namespace _15pl04.Ucc.Commons
             return result;
         }
 
+        /// <summary>
+        /// Message processing loop.
+        /// </summary>
         private void MessagesProcessing()
         {
             try
@@ -142,15 +238,21 @@ namespace _15pl04.Ucc.Commons
                         // and handle response
                         HandleResponseMessages(responseMessages);
                     }
+                    // no more messages to send so reset state to nonsignaled
+                    _messagesToSendManualResetEvent.Reset();
 
-                    // send status message
-                    var statusMessage = GetStatusMessage();
-                    responseMessages = SendMessage(statusMessage);
-                    // and handle response
-                    HandleResponseMessages(responseMessages);
+                    // wait some time for new messages to be enqueued to send (_timeout / 2 is just a proposition)
+                    var anyNewMessageEnqueuedToSend = _messagesToSendManualResetEvent.WaitOne((int)(Timeout / 2));
 
-                    // _timeout / 2 is just a proposition
-                    Thread.Sleep((int)(_timeout / 2));
+                    // if there are no new messages enqueued to send 
+                    if (!anyNewMessageEnqueuedToSend)
+                    {
+                        // send status message
+                        var statusMessage = GetStatusMessage();
+                        responseMessages = SendMessage(statusMessage);
+                        // and handle response
+                        HandleResponseMessages(responseMessages);
+                    }
                 }
             }
             catch (TaskCanceledException)
@@ -165,6 +267,7 @@ namespace _15pl04.Ucc.Commons
             throw new NotImplementedException();
         }
 
+        // probably to delete later
         private Message[] SendMessage(Message message)
         {
             // just because it should be check for possible exceptions
