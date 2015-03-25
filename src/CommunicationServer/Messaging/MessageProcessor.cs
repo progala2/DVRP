@@ -1,4 +1,5 @@
-﻿using _15pl04.Ucc.Commons.Messaging;
+﻿using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.CommunicationServer.Collections;
 using System;
@@ -34,7 +35,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             }
         }
 
-        public void EnqueueOutputMessage(Message msg)
+        public void EnqueueOutputMessage(ComponentType addresseeType, Message msg)
         {
             _outputQueue.Enqueue(msg);
         }

@@ -14,6 +14,9 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks.Models
         public byte[] CommonData { get { return _partialProblem.CommonData; } }
 
 
+        public ulong MergingTaskManagerId { get; set; }
+
+
         private readonly PartialProblem _partialProblem;
 
 

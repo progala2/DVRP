@@ -7,6 +7,16 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
 {
     internal sealed class TasksManager
     {
+        public delegate void ProblemInstanceStateChangeEventHandler(object sender, ProblemInstanceStateChangeEventArgs e);
+        public delegate void PartialProblemStateChangeEventHandler(object sender, PartialProblemStateChangeEventArgs e);
+        public delegate void PartialSolutionStateChangeEventHandler(object sender, PartialSolutionStateChangeEventArgs e);
+        public delegate void FinalSolutionReception(object sender, FinalSolutionReceptionEventArgs e);
+
+        public event ProblemInstanceStateChangeEventHandler ProblemInstanceStateChange;
+        public event PartialProblemStateChangeEventHandler PartialProblemStateChange;
+        public event PartialSolutionStateChangeEventHandler PartialSolutionStateChange;
+        public event FinalSolutionReception FinalSolutionReception;
+
         /// <summary>
         /// Singleton instance.
         /// </summary>
@@ -18,15 +28,15 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
         private static readonly Lazy<TasksManager> _lazy = new Lazy<TasksManager>(() => new TasksManager());
 
 
-        private LexicographicQueue<string, ProblemInstance> _problemsToDivide;
+        private LexicographicQueue<string, ProblemInstance> _problemsAwaitingDivision;
         private LexicographicQueue<string, ProblemInstance> _problemsBeingDivided;
-        private LexicographicQueue<uint, ProblemInstance> _problemsBeingComputed;
+        private LexicographicQueue<uint, ProblemInstance> _problemsAwaitingSolution;
 
-        private LexicographicQueue<string, PartialProblem> _partialProblemsToCompute;
+        private LexicographicQueue<string, PartialProblem> _partialProblemsAwaitingComputation;
         private LexicographicQueue<ulong, PartialProblem> _partialProblemsBeingComputed;
 
         private LexicographicQueue<ulong, PartialSolution> _partialSolutionsBeingGathered;
-        private LexicographicQueue<string, PartialSolution[]> _partialSolutionsToMerge;
+        private LexicographicQueue<string, PartialSolution[]> _partialSolutionsAwaitingMerge;
         private LexicographicQueue<string, PartialSolution[]> _partialSolutionsBeingMerged;
 
         private Dictionary<ulong, FinalSolution> _finalSolutions;
@@ -34,15 +44,15 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
 
         private TasksManager()
         {
-            _problemsToDivide = new LexicographicQueue<string, ProblemInstance>();
+            _problemsAwaitingDivision = new LexicographicQueue<string, ProblemInstance>();
             _problemsBeingDivided = new LexicographicQueue<string, ProblemInstance>();
-            _problemsBeingComputed = new LexicographicQueue<uint,ProblemInstance>();
+            _problemsAwaitingSolution = new LexicographicQueue<uint,ProblemInstance>();
 
-            _partialProblemsToCompute = new LexicographicQueue<string, PartialProblem>();
+            _partialProblemsAwaitingComputation = new LexicographicQueue<string, PartialProblem>();
             _partialProblemsBeingComputed = new LexicographicQueue<ulong, PartialProblem>();
 
             _partialSolutionsBeingGathered = new LexicographicQueue<ulong, PartialSolution>();
-            _partialSolutionsToMerge = new LexicographicQueue<string, PartialSolution[]>();
+            _partialSolutionsAwaitingMerge = new LexicographicQueue<string, PartialSolution[]>();
             _partialSolutionsBeingMerged = new LexicographicQueue<string, PartialSolution[]>();
 
             _finalSolutions = new Dictionary<ulong, FinalSolution>();
