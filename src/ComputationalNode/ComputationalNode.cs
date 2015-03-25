@@ -18,7 +18,7 @@ namespace _15pl04.Ucc.ComputationalNode
         private readonly byte _parallelThreads;
 
         private Task _messagingTask;
-        private Task[] _computationalTasks;
+        private ComputationalTask[] _computationalTasks;
         private ConcurrentQueue<Message> _messagesToSend;
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -49,16 +49,18 @@ namespace _15pl04.Ucc.ComputationalNode
 
             // information for registration message; probably it is a temporary solution
             _parallelThreads = (byte)Environment.ProcessorCount;
-
-            _computationalTasks = new Task[_parallelThreads];
+                        
             
             _cancellationTokenSource = new CancellationTokenSource();
             _cancellationTokenSource.Token.Register(() =>
             {
                 _messagingTask = null;
-                for (int i = 0; i < _computationalTasks.Length; i++)
+                if (_computationalTasks != null)
                 {
-                    _computationalTasks[i] = null;
+                    for (int i = 0; i < _computationalTasks.Length; i++)
+                    {
+                        _computationalTasks[i] = null;
+                    }
                 }
             });
 
@@ -70,6 +72,13 @@ namespace _15pl04.Ucc.ComputationalNode
             // create RegisterMessage
             // TRY to send it and get response with _tcpClient.SendData(marshalledMessage);
             // save information from unmarshalled response
+
+
+            _computationalTasks = new ComputationalTask[_parallelThreads];
+            for (int i = 0; i < _computationalTasks.Length; i++)
+            {
+                _computationalTasks[i] = new ComputationalTask();
+            }
 
             // start informing about status(es) of threads
             _messagingTask = new Task(() => SendMessage(), _cancellationTokenSource.Token);
@@ -122,10 +131,10 @@ namespace _15pl04.Ucc.ComputationalNode
         {
             throw new NotImplementedException();
             /* if it is a PartialProblemsMessage
-             * start new computationalTask running SolvePartialProblem method with available taskIndex
-             * (threadIndex is available if _computationalTasks[taskIndex]==null)
+             * start new task running SolvePartialProblem method with available taskIndex
+             * (threadIndex is available if _computationalTasks[taskIndex].State == Idle)
              */
-            //_computationalTasks[availableTaskIndex] = new Task(()=>SolvePartialProblem(availableTaskIndex,ppmsg),_cancellationTokenSource.Token);
+            //_computationalTasks[availableTaskIndex].Task = new Task(()=>SolvePartialProblem(availableTaskIndex,ppmsg),_cancellationTokenSource.Token);
         }
 
         private StatusMessage GetStatus()
@@ -136,7 +145,7 @@ namespace _15pl04.Ucc.ComputationalNode
 
         private void SolvePartialProblem(int taskIndex, PartialProblemsMessage msg)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
             // get proper TaskSolver by
             // _taskSolvers["nameOfProblem"] = null;
 
@@ -144,7 +153,7 @@ namespace _15pl04.Ucc.ComputationalNode
             // _messagesToSend.Enqueue(...);
 
             // enables starting new computation task
-            _computationalTasks[taskIndex] = null;
+            _computationalTasks[taskIndex].Task = null;
         }
     }
 }
