@@ -31,6 +31,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ComponentType.cs" />
+    <Compile Include="ComputationalComponent.cs" />
+    <Compile Include="ComputationalTask.cs" />
     <Compile Include="Messaging\MessageValidator.cs" />
     <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
     <Compile Include="Messaging\Models\Base\Message.cs" />
@@ -61,6 +63,10 @@
     <Reference Include="System" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="UCCTaskSolver, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\UCCTaskSolver.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\DivideProblem.xsd">
