@@ -7,7 +7,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
         BeingDivided,
         AwaitingSolution
     }
-
+    
     public enum PartialProblemState
     {
         AwaitingComputation = 1,

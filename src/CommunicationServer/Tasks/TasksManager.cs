@@ -10,12 +10,12 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
         public delegate void ProblemInstanceStateChangeEventHandler(object sender, ProblemInstanceStateChangeEventArgs e);
         public delegate void PartialProblemStateChangeEventHandler(object sender, PartialProblemStateChangeEventArgs e);
         public delegate void PartialSolutionStateChangeEventHandler(object sender, PartialSolutionStateChangeEventArgs e);
-        public delegate void FinalSolutionReception(object sender, FinalSolutionReceptionEventArgs e);
+        public delegate void FinalSolutionReceptionEventHandler(object sender, FinalSolutionReceptionEventArgs e);
 
         public event ProblemInstanceStateChangeEventHandler ProblemInstanceStateChange;
         public event PartialProblemStateChangeEventHandler PartialProblemStateChange;
         public event PartialSolutionStateChangeEventHandler PartialSolutionStateChange;
-        public event FinalSolutionReception FinalSolutionReception;
+        public event FinalSolutionReceptionEventHandler FinalSolutionReception;
 
         /// <summary>
         /// Singleton instance.
