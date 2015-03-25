@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -13,7 +14,7 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestInitialize]
         public void TestInit()
         {
-            var resourcesFolder = "Resources";
+            const string resourcesFolder = "Resources";
             _drf = "." + resourcesFolder + ".";
             _assembly = Assembly.GetAssembly(typeof(Resources));
         }
@@ -22,7 +23,7 @@ namespace _15pl04.Ucc.Commons.Tests
         public void GetManifestResourceNameReturnesExpectedString()
         {
             var expectedManifestResourceName = _assembly.GetManifestResourceNames().First(s => s.Contains(_drf));
-            var position = expectedManifestResourceName.LastIndexOf(_drf) + _drf.Length;
+            var position = expectedManifestResourceName.LastIndexOf(_drf, StringComparison.Ordinal) + _drf.Length;
             var resourceName = expectedManifestResourceName.Substring(position);
 
             var resultManifestResourceName = Resources.GetManifestResourceName(resourceName);
@@ -34,7 +35,7 @@ namespace _15pl04.Ucc.Commons.Tests
         public void GetResourceContentReturnsContentOfExistingResource()
         {
             var manifestResourceName = _assembly.GetManifestResourceNames().First(s => s.Contains(_drf));
-            var position = manifestResourceName.LastIndexOf(_drf) + _drf.Length;
+            var position = manifestResourceName.LastIndexOf(_drf, StringComparison.Ordinal) + _drf.Length;
             var resourceName = manifestResourceName.Substring(position);
 
             var resourceContent = Resources.GetResourceContent(resourceName);
@@ -45,7 +46,7 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void GetResourceContentReturnsNullForIncorrectResourceName()
         {
-            var resourceName = "SomeIncorrectResourceName";
+            const string resourceName = "SomeIncorrectResourceName";
 
             var resourceContent = Resources.GetResourceContent(resourceName);
 

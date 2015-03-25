@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             Status
         }
 
-        static Dictionary<string, MessageClassType> _messageClassTypeStringDictionary = null;
+        static Dictionary<string, MessageClassType> _messageClassTypeStringDictionary;
 
         public static MessageClassType GetMessageClassTypeFromString(string str)
         {

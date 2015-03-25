@@ -1,106 +1,54 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System.Xml;
 using _15pl04.Ucc.Commons.Messaging.Models;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
-    public static class Marshaller
+    public class Marshaller
     {
-        static Marshaller() { }
-
-        public static Message[] Unmarshall(byte[] data)
+        public Message[] Unmarshall(byte[] data)
         {
-            List<Message> list = new List<Message>();
-            var str = Encoding.UTF8.GetString(data);
-            var posBegin = str.IndexOf("<", 3, StringComparison.Ordinal) + 1;
-            var posEnd = str.IndexOf(" ", posBegin, StringComparison.Ordinal);
-            var typeStr = str.Substring(posBegin, posEnd - posBegin);
-            var type = Message.GetMessageClassTypeFromString(typeStr);
-
-            switch (type)
+            var list = new List<Message>();
+            var listBytes = new List<byte[]>();
+            for (int i = 0, last = 0; i < data.Length; i++)
             {
-                case Message.MessageClassType.DivideProblem:
-                    if (MessageValidator<DivideProblemMessage>.Validate(str))
-                        list.Add(MessageSerializer<DivideProblemMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                case Message.MessageClassType.Error:
-                    if (MessageValidator<ErrorMessage>.Validate(str))
-                        list.Add(MessageSerializer<ErrorMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                case Message.MessageClassType.NoOperation:
-                    if (MessageValidator<NoOperationMessage>.Validate(str))
-                        list.Add(MessageSerializer<NoOperationMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                case Message.MessageClassType.PartialProblems:
-                    if (MessageValidator<PartialProblemsMessage>.Validate(str))
-                        list.Add(MessageSerializer<PartialProblemsMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                case Message.MessageClassType.Register:
-                    if (MessageValidator<RegisterMessage>.Validate(str))
-                        list.Add(MessageSerializer<RegisterMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                case Message.MessageClassType.RegisterResponse:
-                    if (MessageValidator<RegisterResponseMessage>.Validate(str))
-                        list.Add(MessageSerializer<RegisterResponseMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                case Message.MessageClassType.SolutionRequest:
-                    if (MessageValidator<SolutionRequestMessage>.Validate(str))
-                        list.Add(MessageSerializer<SolutionRequestMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                case Message.MessageClassType.Solutions:
-                    if (MessageValidator<SolutionsMessage>.Validate(str))
-                        list.Add(MessageSerializer<SolutionsMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                case Message.MessageClassType.SolveRequest:
-                    if (MessageValidator<SolveRequestMessage>.Validate(str))
-                        list.Add(MessageSerializer<SolveRequestMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                case Message.MessageClassType.SolveRequestResponse:
-                    if (MessageValidator<SolveRequestResponseMessage>.Validate(str))
-                        list.Add(MessageSerializer<SolveRequestResponseMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                case Message.MessageClassType.Status:
-                    if (MessageValidator<StatusMessage>.Validate(str))
-                        list.Add(MessageSerializer<StatusMessage>.Deserialize(data));
-                    else
-                        throw new Exception("Invalid " + typeStr + " Message");
-                    break;
-                default:
-                    throw new Exception("Message is unknow type: \"" + typeStr + "\"");
+                if (data[i] != 23) continue;
+                var tmp = new byte[i-last];
+                Array.ConstrainedCopy(data, last, tmp, 0, i - last);
+                listBytes.Add(tmp);
+                last = ++i;
             }
+            foreach (var b in listBytes)
+            {
+                var str = Encoding.UTF8.GetString(b);
+                var doc = new XmlDocument();
+                doc.LoadXml(str);
+                if (doc.DocumentElement == null)
+                    throw new Exception("Invalid Message Data");
+                var type = Message.GetMessageClassTypeFromString(doc.DocumentElement.Name);
+
+                if (!MessageValidator.Validate(str, type))
+                    throw new Exception("Invalid " + doc.DocumentElement.Name + " Message");
+                list.Add(MessageSerializer.Deserialize(b, type));
+            }
+            
             return list.ToArray();
         }
 
-        public static byte[] Marshall(Message[] data)
+        public byte[] Marshall(Message[] messages)
         {
-            /* 
-             * To samo, tylko że w drugą stronę.
-             */
-
-            throw new System.NotImplementedException();
+            var list = new List<byte>(messages.Length * 100);
+            foreach (var message in messages)
+            {
+                byte[] data;
+                var type = message.MessageType;
+                MessageSerializer.Serialize(message, type, out data);
+                list.AddRange(data);
+                list.Add(23);
+            }
+            return list.ToArray();
         }
     }
 }

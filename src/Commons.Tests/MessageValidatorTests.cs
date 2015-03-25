@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
-using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
@@ -20,8 +18,8 @@ namespace _15pl04.Ucc.Commons.Tests
                 reader.Read(buffer, 0, 3);
                 reader.Read(buffer, 0, (int)reader.Length - 3);
                 var str = Encoding.ASCII.GetString(buffer);
-                Assert.IsTrue(MessageValidator<NoOperationMessage>.Validate(str));
-                Assert.IsFalse(MessageValidator<StatusMessage>.Validate(str));
+                Assert.IsTrue(MessageValidator.Validate(str, Message.MessageClassType.NoOperation));
+                Assert.IsFalse(MessageValidator.Validate(str, Message.MessageClassType.Status));
             }
             
         }
