@@ -2,9 +2,13 @@
 using System.Threading.Tasks;
 using _15pl04.Ucc.Commons.Messaging.Models;
 
-namespace _15pl04.Ucc.ComputationalNode
+namespace _15pl04.Ucc.Commons
 {
-    internal class ComputationalTask
+    /// <summary>
+    /// Represents a task running in ComputationalNode or TaskManager.
+    /// Provides information needed to create StatusMessage.
+    /// </summary>
+    public class ComputationalTask
     {
         private StatusThreadState _state;
         private Task _task;
@@ -35,6 +39,13 @@ namespace _15pl04.Ucc.ComputationalNode
                 State = _task == null ? StatusThreadState.Idle : StatusThreadState.Busy;
             }
         }
+
+
+        public ulong? ProblemInstanceId { get; set; }
+        public ulong? PartialProblemId { get; set; }
+        public string ProblemType { get; set; }
+
+
 
         public ComputationalTask()
         {

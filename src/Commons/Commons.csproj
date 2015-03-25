@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ComponentType.cs" />
+    <Compile Include="ComputationalTask.cs" />
     <Compile Include="Messaging\MessageValidator.cs" />
     <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
     <Compile Include="Messaging\Models\Base\Message.cs" />

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using _15pl04.Ucc.Commons;
@@ -49,8 +47,8 @@ namespace _15pl04.Ucc.ComputationalNode
 
             // information for registration message; probably it is a temporary solution
             _parallelThreads = (byte)Environment.ProcessorCount;
-                        
-            
+
+
             _cancellationTokenSource = new CancellationTokenSource();
             _cancellationTokenSource.Token.Register(() =>
             {
@@ -64,7 +62,7 @@ namespace _15pl04.Ucc.ComputationalNode
                 }
             });
 
-            
+
         }
 
         public void Start()
@@ -134,6 +132,7 @@ namespace _15pl04.Ucc.ComputationalNode
              * start new task running SolvePartialProblem method with available taskIndex
              * (threadIndex is available if _computationalTasks[taskIndex].State == Idle)
              */
+            // update information in _computationalTasks[availableTaskIndex] needed for getting Status message (ProblemInstanceId,PartialProblemId,ProblemType)
             //_computationalTasks[availableTaskIndex].Task = new Task(()=>SolvePartialProblem(availableTaskIndex,ppmsg),_cancellationTokenSource.Token);
         }
 
@@ -149,11 +148,15 @@ namespace _15pl04.Ucc.ComputationalNode
             // get proper TaskSolver by
             // _taskSolvers["nameOfProblem"] = null;
 
+
+            // solve problem
+
+
             // add proper message to send
             // _messagesToSend.Enqueue(...);
 
-            // enables starting new computation task
-            _computationalTasks[taskIndex].Task = null;
+            // release computation task (create new in idle state)
+            _computationalTasks[taskIndex] = new ComputationalTask();
         }
     }
 }
