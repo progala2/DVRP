@@ -26,15 +26,19 @@ namespace _15pl04.Ucc.TaskManager
 
             /*
              
+             // get availableIndex - search _computationalTasks for ComputationalTask with Idle state
+             // (if we received message with data to compute then there should be at least one Idle ComputationalTask)
+            int availableIndex = ...;
+             
             // possible adding new task to compute like:                        
             var task = new Task(() =>
             {
                 this._taskSolvers[problemName].MergeSolution(someDataFromMessage);
                 
                 // IT IS IMPORTANT to release Task in array at the end of task,
-                // this will change State to Idle and update LastStateChange time
+                // creating new ComputationalTask will set default values like: change State to Idle etc.
                 // probably it will be refactored
-                this._computationalTasks[availableIndex].Task = null;
+                this._computationalTasks[availableIndex] = new ComputationalTask();
             });
             var computationalTask = new ComputationalTask(task)
             {
@@ -42,11 +46,9 @@ namespace _15pl04.Ucc.TaskManager
                 ProblemInstanceId=,
                 PartialProblemId=,
                 ProblemType=,
-            };
+            };       
              
-             // get availableIndex - search _computationalTasks for ComputationalTask with Idle state
-             // (if we received message with data to compute then there should be at least one Idle ComputationalTask)
-            this._computationalTasks[availableIndex] = computationalTask;
+             this._computationalTasks[availableIndex] = computationalTask;
             // and start it
             this._computationalTasks[availableIndex].Task.Start();
              
