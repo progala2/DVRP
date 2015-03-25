@@ -13,7 +13,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks.Models
         public ulong SolvingTimeout { get { return _problemInstance.SolvingTimeout; } }
 
 
-        public ulong SolvingComputationalNodeId { get; set; }
+        public ulong? SolvingComputationalNodeId { get; set; }
 
 
         private readonly ProblemInstance _problemInstance;

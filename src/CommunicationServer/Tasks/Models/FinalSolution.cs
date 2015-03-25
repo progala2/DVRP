@@ -1,7 +1,7 @@
 ﻿
 namespace _15pl04.Ucc.CommunicationServer.Tasks.Models
 {
-    internal     class FinalSolution
+    internal class FinalSolution
     {
         public byte[] SolutionData { get; private set; }
         public ulong ComputationsTime { get; private set; }

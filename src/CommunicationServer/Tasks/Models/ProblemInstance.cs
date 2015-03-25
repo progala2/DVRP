@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks.Models
         public ulong SolvingTimeout { get; private set; }
 
 
-        public ulong DividingTaskManagerId { get; set; }
+        public ulong? DividingTaskManagerId { get; set; }
         public ulong NumberOfParts { get; set; }
 
 
