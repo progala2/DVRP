@@ -17,13 +17,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         private byte _parallelThreadsField;
 
-        private bool _deregisterField;
+        private bool? _deregisterField;
 
-        private bool _deregisterFieldSpecified;
-
-        private ulong _idField;
-
-        private bool _idFieldSpecified;
+        private ulong? _idField;
 
         public RegisterMessage()
         {
@@ -71,7 +67,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 3)]
-        public bool Deregister
+        public bool? Deregister
         {
             get
             {
@@ -83,21 +79,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        [XmlIgnore]
-        public bool DeregisterSpecified
-        {
-            get
-            {
-                return _deregisterFieldSpecified;
-            }
-            set
-            {
-                _deregisterFieldSpecified = value;
-            }
-        }
-
         [XmlElement(Order = 4)]
-        public ulong Id
+        public ulong? Id
         {
             get
             {
@@ -106,19 +89,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             set
             {
                 _idField = value;
-            }
-        }
-
-        [XmlIgnore]
-        public bool IdSpecified
-        {
-            get
-            {
-                return _idFieldSpecified;
-            }
-            set
-            {
-                _idFieldSpecified = value;
             }
         }
 

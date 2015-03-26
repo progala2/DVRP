@@ -12,15 +12,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     {
         private string _problemTypeField;
 
-        private ulong _solvingTimeoutField;
-
-        private bool _solvingTimeoutFieldSpecified;
+        private ulong? _solvingTimeoutField;
 
         private byte[] _dataField;
 
-        private ulong _idField;
-
-        private bool _idFieldSpecified;
+        private ulong? _idField;
 
         [XmlElement(Order = 0)]
         public string ProblemType
@@ -36,7 +32,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 1)]
-        public ulong SolvingTimeout
+        public ulong? SolvingTimeout
         {
             get
             {
@@ -45,19 +41,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             set
             {
                 _solvingTimeoutField = value;
-            }
-        }
-
-        [XmlIgnore]
-        public bool SolvingTimeoutSpecified
-        {
-            get
-            {
-                return _solvingTimeoutFieldSpecified;
-            }
-            set
-            {
-                _solvingTimeoutFieldSpecified = value;
             }
         }
 
@@ -75,7 +58,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 3)]
-        public ulong Id
+        public ulong? Id
         {
             get
             {
@@ -84,19 +67,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             set
             {
                 _idField = value;
-            }
-        }
-
-        [XmlIgnore]
-        public bool IdSpecified
-        {
-            get
-            {
-                return _idFieldSpecified;
-            }
-            set
-            {
-                _idFieldSpecified = value;
             }
         }
 
