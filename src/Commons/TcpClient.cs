@@ -10,8 +10,13 @@ namespace _15pl04.Ucc.Commons
 {
     public class TcpClient
     {
-        private readonly IPEndPoint _serverAddress;
-        private readonly int _timeoutMiliseconds = 5000;
+        public IPEndPoint ServerAddress
+        {
+            get { return _serverAddress; }
+            set { _serverAddress = value; }
+        }
+
+        private IPEndPoint _serverAddress;
 #if DEBUG
         private const int BufferSize = 8;
 #else
@@ -22,18 +27,6 @@ namespace _15pl04.Ucc.Commons
         {
             _serverAddress = serverAddress;
         }
-
-        /// <summary>
-        /// constructr
-        /// </summary>
-        /// <param name="serverAddress">server address</param>
-        /// <param name="timeoutMiliSeconds">how long client will try to connect to host before informing it couldn't</param>
-        public TcpClient(IPEndPoint serverAddress, int timeoutMiliSeconds)
-        {
-            _serverAddress = serverAddress;
-            _timeoutMiliseconds = timeoutMiliSeconds;
-        }
-
 
         /// <summary>
         /// Functions send data to server and returns server's respnse
@@ -48,22 +41,13 @@ namespace _15pl04.Ucc.Commons
 
             try
             {
-                Socket socket = new Socket(AddressFamily.InterNetwork, 
+                Socket socket = new Socket(_serverAddress.AddressFamily, 
                     SocketType.Stream, 
                     ProtocolType.Tcp);
 
                 try
                 {
-                    IAsyncResult result = socket.BeginConnect(_serverAddress.Address, _serverAddress.Port, null, null);
-
-                    result.AsyncWaitHandle.WaitOne(_timeoutMiliseconds, true);
-
-                    if (!socket.Connected)
-                    {
-                        socket.Close();
-                        throw new Commons.TimeoutException();
-                    }
-
+                    socket.Connect(_serverAddress);
 
                     Debug.WriteLine("Socket connected to " + _serverAddress.ToString());
 
@@ -78,7 +62,7 @@ namespace _15pl04.Ucc.Commons
                             Debug.WriteLine("Capacity: " + memory.Capacity + " Length: " + memory.Length);
                         }
 
-                        socket.Shutdown(SocketShutdown.Both); //both or receive?
+                        socket.Shutdown(SocketShutdown.Both);
                         socket.Close();
                         buf = memory.ToArray();
                     }
@@ -92,7 +76,6 @@ namespace _15pl04.Ucc.Commons
                         default:
                             throw e;
                     }
-                    throw;
                 }
             }
             catch (Exception e)
