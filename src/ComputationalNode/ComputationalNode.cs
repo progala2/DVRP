@@ -23,15 +23,19 @@ namespace _15pl04.Ucc.ComputationalNode
             throw new NotImplementedException();
             // switch over possible messages
 
-            // if it is a PartialProblemsMessage start new task:
-            //this.StartComputationalTask(()=>PartialProblemsMessageHandler(msg),...);       
+            // run computations with:
+            // this.ComputationalTaskPool.StartComputationalTask(...);
+
+            // like:
+            //PartialProblemsMessage ppmsg = (PartialProblemsMessage)message;
+            //this.ComputationalTaskPool.StartComputationalTask(()=>PartialProblemsMessage(ppmsg),ppmsg.ProblemType,...)
         }
 
         private void PartialProblemsMessageHandler(PartialProblemsMessage message)
         {
             throw new NotImplementedException();
             // get proper TaskSolver by
-            // _taskSolvers["nameOfProblem"]
+            var taskSolver = this.TaskSolvers[message.ProblemType];
 
             // solve problem
 

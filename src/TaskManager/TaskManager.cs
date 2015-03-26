@@ -23,14 +23,15 @@ namespace _15pl04.Ucc.TaskManager
 
             // switch over possible message types
 
-            /*                          
+
             //possible adding new task to compute like:
-            this.StartComputationalTask(() =>
-            {
-                this._taskSolvers[problemName].MergeSolution(someDataFromMessage);
-              this.EnqueueMessageToSend(messageWithFinalSolution);
-            }, problemName, problemInstanceId, null);
-             */
+            //this.ComputationalTaskPool.StartComputationalTask(() =>
+            //{
+            //    this._taskSolvers[problemName].MergeSolution(someDataFromMessage);
+            //    (...);
+            //    this.EnqueueMessageToSend(messageWithFinalSolution);
+            //}, problemName, problemInstanceId, null);
+
         }
     }
 }
