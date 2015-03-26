@@ -45,7 +45,7 @@
     <Compile Include="Messaging\Models\ErrorMessage.cs" />
     <Compile Include="Messaging\Models\StatusMessage.cs" />
     <Compile Include="Messaging\Marshaller.cs" />
-    <Compile Include="Messaging\XmlParser.cs" />
+    <Compile Include="Messaging\MessageSerializer.cs" />
     <Compile Include="Problem\FinalSolution.cs" />
     <Compile Include="Problem\PartialProblem.cs" />
     <Compile Include="Problem\PartialSolution.cs" />

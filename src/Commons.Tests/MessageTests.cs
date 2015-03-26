@@ -1,7 +1,7 @@
-﻿using System;
+﻿using System.Linq;
 using System.Reflection;
-using _15pl04.Ucc.Commons.Messaging.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using _15pl04.Ucc.Commons.Messaging.Models;
 
 namespace _15pl04.Ucc.Commons.Tests
 {
@@ -14,14 +14,9 @@ namespace _15pl04.Ucc.Commons.Tests
             var typeOfMessage = typeof(Message);
             var assembly = Assembly.GetAssembly(typeOfMessage);
             var types = assembly.GetTypes();
-            foreach (var type in types)
+            foreach (var xsdFileContent in from type in types where typeOfMessage.IsAssignableFrom(type) && !type.IsAbstract select Message.GetXsdFileContent(type))
             {
-                if (typeOfMessage.IsAssignableFrom(type) && !type.IsAbstract)
-                {
-                    var instance = (Message)Activator.CreateInstance(type);
-                    var xsdFileContent = instance.GetXsdFileContent();
-                    Assert.IsFalse(string.IsNullOrEmpty(xsdFileContent));
-                }
+                Assert.IsFalse(string.IsNullOrEmpty(xsdFileContent));
             }
         }
     }

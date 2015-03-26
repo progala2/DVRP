@@ -17,9 +17,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         private byte[] _commonDataField;
 
-        private ulong _solvingTimeoutField;
-
-        private bool _solvingTimeoutFieldSpecified;
+        private ulong? _solvingTimeoutField;
 
         private List<PartialProblemsPartialProblem> _partialProblemsField;
 
@@ -68,7 +66,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 3)]
-        public ulong SolvingTimeout
+        public ulong? SolvingTimeout
         {
             get
             {
@@ -77,19 +75,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             set
             {
                 _solvingTimeoutField = value;
-            }
-        }
-
-        [XmlIgnore]
-        public bool SolvingTimeoutSpecified
-        {
-            get
-            {
-                return _solvingTimeoutFieldSpecified;
-            }
-            set
-            {
-                _solvingTimeoutFieldSpecified = value;
             }
         }
 
