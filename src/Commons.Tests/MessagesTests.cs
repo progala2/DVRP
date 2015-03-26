@@ -26,6 +26,7 @@ namespace _15pl04.Ucc.Commons.Tests
         {
             var msg = XmlFileParser<RegisterMessage>.Deserialize("XmlMessages/Register.xml");
             Assert.IsTrue(msg.Id == 12);
+            Assert.IsTrue(msg.Deregister == null);
         }
 
         [TestMethod]

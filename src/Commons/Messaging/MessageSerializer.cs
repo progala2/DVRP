@@ -62,6 +62,7 @@ namespace _15pl04.Ucc.Commons.Messaging
         {
             return _messageSerializerForMessageTypeDictionary[type];
         }
+
         public static Message Deserialize(byte[] buffer, Message.MessageClassType type)
         {
             return GetSerializerForMessageClassType(type).Deserialize(buffer);

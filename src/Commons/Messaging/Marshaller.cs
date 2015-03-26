@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Xml;
 using _15pl04.Ucc.Commons.Messaging.Models;
@@ -39,14 +40,14 @@ namespace _15pl04.Ucc.Commons.Messaging
 
         public byte[] Marshall(Message[] messages)
         {
-            var list = new List<byte>(messages.Length * 100);
+            var list = new MemoryStream();
             foreach (var message in messages)
             {
                 byte[] data;
                 var type = message.MessageType;
                 MessageSerializer.Serialize(message, type, out data);
-                list.AddRange(data);
-                list.Add(23);
+                list.Write(data, 0, data.Length);
+                list.Write(new byte[] { 23 }, 0, 1);
             }
             return list.ToArray();
         }
