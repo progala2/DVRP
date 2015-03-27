@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolvePartialProblems")]
-    public class PartialProblemsMessage : Message, IIdentifiableBySender
+    public class PartialProblemsMessage : Message
     {
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "PartialProblems.xsd";
@@ -22,11 +22,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         private ulong? _solvingTimeoutField;
 
-        private List<PartialProblemsPartialProblem> _partialProblemsField;
+        private List<RegisterResponsePartialProblem> _partialProblemsField;
 
         public PartialProblemsMessage()
         {
-            _partialProblemsField = new List<PartialProblemsPartialProblem>();
+            _partialProblemsField = new List<RegisterResponsePartialProblem>();
         }
 
         [XmlElement(Order = 0)]
@@ -88,7 +88,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         [XmlArray(Order = 4)]
         [XmlArrayItem("PartialProblem", IsNullable = false)]
-        public List<PartialProblemsPartialProblem> PartialProblems
+        public List<RegisterResponsePartialProblem> PartialProblems
         {
             get
             {
@@ -110,7 +110,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [Serializable]
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public class PartialProblemsPartialProblem
+    public class RegisterResponsePartialProblem
     {
         private ulong _taskIdField;
 

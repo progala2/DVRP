@@ -13,7 +13,7 @@ namespace _15pl04.Ucc.Commons
         private Task _task;
 
 
-        public StatusThreadState State { get; private set; }
+        public ThreadState State { get; private set; }
 
         public DateTime LastStateChange { get; private set; }
 
@@ -33,7 +33,7 @@ namespace _15pl04.Ucc.Commons
         public ComputationalTask()
         {
             _task = null;
-            State = StatusThreadState.Idle;
+            State = ThreadState.Idle;
             LastStateChange = DateTime.UtcNow;
         }
 
@@ -59,7 +59,7 @@ namespace _15pl04.Ucc.Commons
                 throw new ArgumentNullException("task");
 
             _task = task;
-            State = StatusThreadState.Busy;
+            State = ThreadState.Busy;
             LastStateChange = DateTime.UtcNow;
 
             ProblemType = problemType;

@@ -16,7 +16,7 @@ namespace _15pl04.Ucc.TaskManager
         {
             var registerMessage = new RegisterMessage()
             {
-                Type = RegisterType.TaskManager,
+                Type = ComponentType.TaskManager,
                 ParallelThreads = _parallelThreads,
                 SolvableProblems = new List<string>(TaskSolvers.Keys)
             };

@@ -17,7 +17,7 @@ namespace _15pl04.Ucc.ComputationalNode
         {
             var registerMessage = new RegisterMessage()
             {
-                Type = RegisterType.ComputationalNode,
+                Type = ComponentType.ComputationalNode,
                 ParallelThreads = _parallelThreads,
                 SolvableProblems = new List<string>(TaskSolvers.Keys)
             };

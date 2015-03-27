@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Solutions")]
-    public class SolutionsMessage : Message, IIdentifiableBySender
+    public class SolutionsMessage : Message
     {
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "Solutions.xsd";
@@ -66,6 +66,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
+        public bool ShouldSerializeCommonData()
+        {
+            return _commonDataField != null;
+        }
+
         [XmlArray(Order = 3)]
         [XmlArrayItem("Solution", IsNullable = false)]
         public List<SolutionsSolution> Solutions
@@ -92,9 +97,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class SolutionsSolution
     {
-        private ulong _taskIdField;
-
-        private bool _taskIdFieldSpecified;
+        private ulong? _taskIdField;
 
         private bool _timeoutOccuredField;
 
@@ -105,7 +108,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         private byte[] _dataField;
 
         [XmlElement(Order = 0)]
-        public ulong TaskId
+        public ulong? TaskId
         {
             get
             {
@@ -117,17 +120,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        [XmlIgnore]
-        public bool TaskIdSpecified
+        public bool ShouldSerializeTaskId()
         {
-            get
-            {
-                return _taskIdFieldSpecified;
-            }
-            set
-            {
-                _taskIdFieldSpecified = value;
-            }
+            return _taskIdField.HasValue;
         }
 
         [XmlElement(Order = 1)]
@@ -181,16 +176,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
                 _dataField = value;
             }
         }
-    }
 
-    [Serializable]
-    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public enum SolutionType
-    {
-        Ongoing,
-
-        Partial,
-
-        Final,
+        public bool ShouldSerializeData()
+        {
+            return _dataField != null;
+        }
     }
 }

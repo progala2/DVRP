@@ -8,7 +8,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolveRequest")]
-    public class SolveRequestMessage : Message, IIdentifiableBySender
+    public class SolveRequestMessage : Message
     {
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "SolveRequest.xsd";
@@ -18,9 +18,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         private byte[] _dataField;
 
-        private ulong _idField;
-
-        private bool _specifiedIdField;
+        private ulong? _idField;
 
         [XmlElement(Order = 0)]
         public string ProblemType
@@ -48,7 +46,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        public bool ShouldSerializeSolvingTimeout() { return _solvingTimeoutField.HasValue; }
+        public bool ShouldSerializeSolvingTimeout()
+        {
+            return _solvingTimeoutField.HasValue;
+        }
 
         [XmlElement(DataType = "base64Binary", Order = 2)]
         public byte[] Data
@@ -64,7 +65,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 3)]
-        public ulong Id
+        public ulong? Id
         {
             get
             {
@@ -76,11 +77,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        [XmlIgnore]
-        public bool SpecifiedId
+        public bool ShouldSerializeId()
         {
-            get { return _specifiedIdField; }
-            set { _specifiedIdField = value; }
+            return _idField.HasValue;
         }
 
         [XmlIgnore]
