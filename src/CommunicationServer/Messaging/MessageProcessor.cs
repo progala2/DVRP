@@ -49,20 +49,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 {
                     Message[] input = _marshaller.Unmarshall(rawMsg);
 
-                    if (input.Length > 1)
-                        throw new Exception("More than one message received at once during a single connection.");
-
                     foreach (var message in input)
                     {
-                        if (message is IIdentifiableBySender || message is RegisterMessage || message is SolutionRequestMessage || message is SolveRequestMessage)
-                        {
-                            var responseMsgs = GetResponseMessages(message);
+                        var responseMsgs = GetResponseMessages(message);
 
-                            var rawResponse = _marshaller.Marshall(responseMsgs);
-                            new Task(() => { callback(rawResponse); }).Start();
-                        }
-                        else
-                            throw new Exception("Wrong type of Message received.");
+                        var rawResponse = _marshaller.Marshall(responseMsgs);
+                        new Task(() => { callback(rawResponse); }).Start();
                     }
                 }
                 else
@@ -75,37 +67,37 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private Message[] GetResponseMessages(Message msg)
         {
-            switch(msg.MessageType)
+            switch (msg.MessageType)
             {
                 case Message.MessageClassType.Register:
                     var registerMsg = msg as RegisterMessage;
-                    //var id = ComponentMonitor.Instance.Register(registerMsg.Type.
-                    //var registerResponseMessage = new RegisterResponseMessage()
-                   //     .
+                    
 
                     break;
+
                 case Message.MessageClassType.Status:
+                    var statusMsg = msg as StatusMessage;
 
                     break;
                 case Message.MessageClassType.SolveRequest:
+                    var solveRequestMsg = msg as SolveRequestMessage;
 
                     break;
                 case Message.MessageClassType.SolutionRequest:
+                    var solutionRequestMsg = msg as SolutionRequestMessage;
 
                     break;
                 case Message.MessageClassType.PartialProblems:
+                    var partialProblemsMsg = msg as PartialProblemsMessage;
 
                     break;
                 case Message.MessageClassType.Solutions:
+                    var solutionsMessage = msg as SolutionsMessage;
 
                     break;
                 default:
                     throw new Exception("Unsupported type received: " + msg.MessageType.ToString());
-                    break;
             }
-
-
-
             return null;
         }
 

@@ -61,7 +61,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
             ComponentMonitor.Instance.Deregistration += OnComponentDeregistration;
         }
 
-        public void AddProblemInstanceToDivide(ProblemInstance problemInstance)
+        public void AddNewProblemInstance(ProblemInstance problemInstance)
         {
             _problemsAwaitingDivision.Enqueue(problemInstance.Type, problemInstance);
         }
