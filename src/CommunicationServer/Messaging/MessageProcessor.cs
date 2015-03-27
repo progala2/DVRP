@@ -57,7 +57,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     {
                         var responseMsgs = GetResponseMessages(message);
 
-                        var rawResponse = _marshaller.Marshall(new Message[]{responseMsgs});
+                        var rawResponse = _marshaller.Marshall(new Message[] { responseMsgs });
                         new Task(() => { callback(rawResponse); }).Start();
                     }
                 }
@@ -77,15 +77,8 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     {
                         var registerMsg = msg as RegisterMessage;
 
-                        ulong id = ComponentMonitor.Instance.Register(registerMsg.Type, registerMsg.ParallelThreads, registerMsg.SolvableProblems);
-
-                        var registerResponseMsg = new RegisterResponseMessage()
-                        {
-                            Id = id,
-                            Timeout = _communicationTimeout,
-                            BackupCommunicationServers = new List<BackupCommunicationServer>(), // TODO
-                        };
-                        return registerResponseMsg;
+                        // TODO
+                        return null;
                     }
 
                 case Message.MessageClassType.Status:
@@ -99,7 +92,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 case Message.MessageClassType.SolveRequest:
                     {
                         var solveRequestMsg = msg as SolveRequestMessage;
-                        
+
                         var id = Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.GenerateProblemInstanceId();
                         var solvingTimeout = solveRequestMsg.SolvingTimeout.GetValueOrDefault(0);
 
