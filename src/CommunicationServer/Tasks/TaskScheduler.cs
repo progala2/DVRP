@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace _15pl04.Ucc.CommunicationServer.Tasks
 {
-    internal sealed class TasksManager
+    internal sealed class TaskScheduler
     {
         public delegate void ProblemInstanceStateChangeEventHandler(object sender, ProblemInstanceStateChangeEventArgs e);
         public delegate void PartialProblemStateChangeEventHandler(object sender, PartialProblemStateChangeEventArgs e);
@@ -20,33 +20,33 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
         /// <summary>
         /// Singleton instance.
         /// </summary>
-        public static TasksManager Instance
+        public static TaskScheduler Instance
         {
             get { return _lazy.Value; }
         }
 
-        private static readonly Lazy<TasksManager> _lazy = new Lazy<TasksManager>(() => new TasksManager());
+        private static readonly Lazy<TaskScheduler> _lazy = new Lazy<TaskScheduler>(() => new TaskScheduler());
 
 
         private LexicographicQueue<string, ProblemInstance> _problemsAwaitingDivision;          // <ProblemType, PI>
-        private LexicographicQueue<ulong, ProblemInstance> _problemsBeingDivided;               // <ProblemInstanceId, PI>
-        private LexicographicQueue<ulong, ProblemInstance> _problemsAwaitingSolution;           // <ProblemInstanceId, PI>
+        private LexicographicQueue<ulong, ProblemInstance> _problemsBeingDivided;               // <TaskManagerId, PI>
+        private Dictionary<ulong, ProblemInstance> _problemsAwaitingSolution;           // <ProblemInstanceId, PI>
 
         private LexicographicQueue<string, PartialProblem> _partialProblemsAwaitingComputation; // <ProblemType, PP>
-        private LexicographicQueue<ulong, PartialProblem> _partialProblemsBeingComputed;        // <PartialProblemId, PP>
+        private LexicographicQueue<ulong, PartialProblem> _partialProblemsBeingComputed;        // <ComputationalNodeId, PP>
 
         private LexicographicQueue<ulong, PartialSolution> _partialSolutionsBeingGathered;      // <ProblemInstanceId, PS>
         private LexicographicQueue<string, PartialSolution[]> _partialSolutionsAwaitingMerge;   // <ProblemType, PS>
-        private LexicographicQueue<ulong, PartialSolution[]> _partialSolutionsBeingMerged;      // <ProblemInstanceId, PS>
+        private LexicographicQueue<ulong, PartialSolution[]> _partialSolutionsBeingMerged;      // <TaskManagerId, PS>
 
         private Dictionary<ulong, FinalSolution> _finalSolutions;                               // <ProblemInstanceId, FS>
 
 
-        private TasksManager()
+        private TaskScheduler()
         {
             _problemsAwaitingDivision = new LexicographicQueue<string, ProblemInstance>();
             _problemsBeingDivided = new LexicographicQueue<ulong, ProblemInstance>();
-            _problemsAwaitingSolution = new LexicographicQueue<ulong, ProblemInstance>();
+            _problemsAwaitingSolution = new Dictionary<ulong, ProblemInstance>();
 
             _partialProblemsAwaitingComputation = new LexicographicQueue<string, PartialProblem>();
             _partialProblemsBeingComputed = new LexicographicQueue<ulong, PartialProblem>();
@@ -56,6 +56,14 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
             _partialSolutionsBeingMerged = new LexicographicQueue<ulong, PartialSolution[]>();
 
             _finalSolutions = new Dictionary<ulong, FinalSolution>();
+
+
+            ComponentMonitor.Instance.Deregistration += OnComponentDeregistration;
+        }
+
+        public void AddProblemInstanceToDivide(ProblemInstance problemInstance)
+        {
+            _problemsAwaitingDivision.Enqueue(problemInstance.Type, problemInstance);
         }
 
         /// <summary>
@@ -93,7 +101,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
             {
                 problemInstance.NumberOfParts = (ulong)partialProblems.Length; // Perhaps check if those two are equal and throw an exception?
                 problemInstance.DividingTaskManagerId = null;
-                _problemsAwaitingSolution.Enqueue(problemInstance.Id, problemInstance);
+                _problemsAwaitingSolution.Add(problemInstance.Id, problemInstance);
 
                 foreach (var p in partialProblems)
                     _partialProblemsAwaitingComputation.Enqueue(p.ProblemType, p);
@@ -119,7 +127,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
 
                 pp.SolvingComputationalNodeId = compNodeId;
                 output.Add(pp);
-                _partialProblemsBeingComputed.Enqueue(pp.PartialProblemId, pp);
+                _partialProblemsBeingComputed.Enqueue(compNodeId, pp);
             }
 
             if (output.Count > 0)
@@ -140,6 +148,8 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
         /// <param name="partialSolutions">Partial Solutions to add.</param>
         public void AddPartialSolutions(PartialSolution[] partialSolutions)
         {
+            var keys = new HashSet<ulong>();
+
             foreach (var ps in partialSolutions)
             {
                 PartialProblem pp;
@@ -147,9 +157,20 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
                 {
                     pp.SolvingComputationalNodeId = null;
                     _partialSolutionsBeingGathered.Enqueue(ps.ProblemInstanceId, ps);
+                    keys.Add(ps.ProblemInstanceId);
                 }
             }
-            // TODO: check if all solutions are in
+
+            // Check if all solutions are in.
+            foreach (var k in keys)
+            {
+                if ((ulong)_partialSolutionsBeingGathered.GetCount(k) == _problemsAwaitingSolution[k].NumberOfParts)
+                {
+                    var solutions = _partialSolutionsBeingGathered.RemoveAllByKey(k).ToArray();
+                    var problemType = solutions[0].ProblemType;
+                    _partialSolutionsAwaitingMerge.Enqueue(problemType, solutions);
+                }
+            }
         }
 
         /// <summary>
@@ -166,7 +187,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
                 foreach (var ps in partialSolutions)
                     ps.MergingTaskManagerId = taskManagerId;
 
-                _partialSolutionsBeingMerged.Enqueue(partialSolutions[0].ProblemInstanceId, partialSolutions);
+                _partialSolutionsBeingMerged.Enqueue(taskManagerId, partialSolutions);
                 return true;
             }
             else
@@ -179,16 +200,46 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
         /// <param name="finalSolution"></param>
         public void AddFinalSolution(FinalSolution finalSolution)
         {
-            ProblemInstance pi;
-            if (_problemsAwaitingSolution.TryDequeue(finalSolution.ProblemInstanceId, out pi))
-                _finalSolutions.Add(finalSolution.ProblemInstanceId, finalSolution);
+            _finalSolutions.Add(finalSolution.ProblemInstanceId, finalSolution);
+            if (!_problemsAwaitingSolution.Remove(finalSolution.ProblemInstanceId))
+                throw new Exception("Received final solution for a problem that doesn't expect one.");
         }
 
+        /// <summary>
+        /// Makes all ongoing tasks of deregistered components available to process again.
+        /// </summary>
+        /// <param name="sender">Handler caller.</param>
+        /// <param name="e">Information about the component.</param>
+        private void OnComponentDeregistration(object sender, DeregisterationEventArgs e)
+        {
+            // TODO - check if this method is thread safe
+
+            var undividedProblemInstances = _problemsBeingDivided.RemoveAllByKey(e.Id);
+            if (undividedProblemInstances != null)
+            {
+                var problemType = undividedProblemInstances.Peek().Type;
+                _problemsAwaitingDivision.Enqueue(problemType, undividedProblemInstances);
+            }
+
+            var uncomputedPartialProblems = _partialProblemsBeingComputed.RemoveAllByKey(e.Id);
+            if (uncomputedPartialProblems != null)
+            {
+                var problemType = uncomputedPartialProblems.Peek().ProblemType;
+                _partialProblemsAwaitingComputation.Enqueue(problemType, uncomputedPartialProblems);
+            }
+
+            var unmergedPartialSolutions = _partialSolutionsBeingMerged.RemoveAllByKey(e.Id);
+            if (unmergedPartialSolutions != null)
+            {
+                var problemType = unmergedPartialSolutions.Peek()[0].ProblemType;
+                _partialSolutionsAwaitingMerge.Enqueue(problemType, unmergedPartialSolutions);
+            }
+        }
 
         /*
-         * TODO - what if processing components are deregistered?
          * TODO - what is computation timeout occurs?
          * TODO - raise events.
+         * TODO - add comments.
          */
     }
 }

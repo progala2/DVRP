@@ -23,7 +23,7 @@ namespace _15pl04.Ucc.CommunicationServer
         /// <summary>
         /// Number of currently idle threads within the component.
         /// </summary>
-        public int NumberOfIdleThreads 
+        public int NumberOfIdleThreads // TODO - change this value accordingly
         {
             get { return _numberOfIdleThreads; } 
             set { _numberOfIdleThreads = value; } 

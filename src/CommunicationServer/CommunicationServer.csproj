@@ -46,7 +46,7 @@
     <Compile Include="Tasks\Models\PartialSolution.cs" />
     <Compile Include="Tasks\Models\ProblemInstance.cs" />
     <Compile Include="Tasks\TaskStateChangeEventArgs.cs" />
-    <Compile Include="Tasks\TasksManager.cs" />
+    <Compile Include="Tasks\TaskScheduler.cs" />
     <Compile Include="Messaging\MessageProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -24,6 +24,14 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
             _dictionary[key].Enqueue(value);
         }
 
+        public void Enqueue(TKey key, Queue<TVal> values)
+        {
+            if (!_dictionary.ContainsKey(key))
+                _dictionary[key] = values;
+            else
+                _dictionary[key].Concat<TVal>(values);
+        }
+
         public bool TryDequeue(TKey key, out TVal value)
         {
             value = default(TVal);
@@ -35,6 +43,18 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
             return true;
         }
 
+        public Queue<TVal> RemoveAllByKey(TKey key)
+        {
+            if (_dictionary.ContainsKey(key))
+            {
+                var temp = _dictionary[key];
+                _dictionary.Remove(key);
+                return temp;
+            }
+            else
+                return null;
+        }
+
         public int GetCount(TKey key)
         {
             if (!_dictionary.ContainsKey(key))
@@ -42,5 +62,7 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
 
             return _dictionary[key].Count;
         }
+
+
     }
 }

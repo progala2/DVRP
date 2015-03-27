@@ -149,6 +149,7 @@ namespace _15pl04.Ucc.CommunicationServer
             _cancellationTokenSource.Cancel();            
         }
 
+        // TODO comments
         public int GetNumberOfAvailableComputationalThreads(string problemName)
         {
             int threadNum = 0;
