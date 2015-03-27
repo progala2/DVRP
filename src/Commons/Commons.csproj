@@ -33,6 +33,7 @@
     <Compile Include="ComponentType.cs" />
     <Compile Include="ComputationalComponent.cs" />
     <Compile Include="ComputationalTask.cs" />
+    <Compile Include="MessageSender.cs" />
     <Compile Include="Messaging\MessageValidator.cs" />
     <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
     <Compile Include="Messaging\Models\Base\Message.cs" />
@@ -47,8 +48,8 @@
     <Compile Include="Messaging\Models\ErrorMessage.cs" />
     <Compile Include="Messaging\Models\StatusMessage.cs" />
     <Compile Include="Messaging\Marshaller.cs" />
-    <Compile Include="Messaging\XmlParser.cs" />
     <Compile Include="ComputationalTaskPool.cs" />
+    <Compile Include="Messaging\MessageSerializer.cs" />
     <Compile Include="Problem\FinalSolution.cs" />
     <Compile Include="Problem\PartialProblem.cs" />
     <Compile Include="Problem\PartialSolution.cs" />

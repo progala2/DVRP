@@ -10,6 +10,5 @@
     <ProblemName>GraphColoring</ProblemName>
   </SolvableProblems>
   <ParallelThreads>8</ParallelThreads>
-  <Deregister>false</Deregister>
   <Id>12</Id>
 </Register>
