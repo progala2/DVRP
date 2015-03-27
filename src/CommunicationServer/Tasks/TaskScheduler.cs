@@ -30,7 +30,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
 
         private LexicographicQueue<string, ProblemInstance> _problemsAwaitingDivision;          // <ProblemType, PI>
         private LexicographicQueue<ulong, ProblemInstance> _problemsBeingDivided;               // <TaskManagerId, PI>
-        private Dictionary<ulong, ProblemInstance> _problemsAwaitingSolution;           // <ProblemInstanceId, PI>
+        private Dictionary<ulong, ProblemInstance> _problemsAwaitingSolution;                   // <ProblemInstanceId, PI>
 
         private LexicographicQueue<string, PartialProblem> _partialProblemsAwaitingComputation; // <ProblemType, PP>
         private LexicographicQueue<ulong, PartialProblem> _partialProblemsBeingComputed;        // <ComputationalNodeId, PP>

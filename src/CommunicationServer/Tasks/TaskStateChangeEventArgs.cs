@@ -11,14 +11,12 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
 
     internal class PartialProblemStateChangeEventArgs : EventArgs
     {
-        public PartialProblemState State { get; set; }
-        public PartialProblem PartialProblem { get; set; }
+        public Tuple<PartialProblem, PartialProblemState>[] PartialProblems { get; set; }
     }
 
     internal class PartialSolutionStateChangeEventArgs : EventArgs
     {
-        public PartialSolutionState State { get; set; }
-        public PartialSolution PartialSolution { get; set; }
+        public Tuple<PartialSolution, PartialSolutionState>[] PartialSolutions { get; set; }
     }
 
     internal class FinalSolutionReceptionEventArgs : EventArgs

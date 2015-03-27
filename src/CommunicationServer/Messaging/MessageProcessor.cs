@@ -49,14 +49,20 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 {
                     Message[] input = _marshaller.Unmarshall(rawMsg);
 
+                    if (input.Length > 1)
+                        throw new Exception("More than one message received at once during a single connection.");
+
                     foreach (var message in input)
                     {
-                        // TODO check if component is registered (unless it's RegisterMessage)
+                        if (message is IIdentifiableBySender || message is RegisterMessage || message is SolutionRequestMessage || message is SolveRequestMessage)
+                        {
+                            var responseMsgs = GetResponseMessages(message);
 
-                        var responseMsgs = GetResponseMessages(message);
-                        var rawResponse = _marshaller.Marshall(responseMsgs);
-
-                        new Task(() => { callback(rawResponse); }).Start();
+                            var rawResponse = _marshaller.Marshall(responseMsgs);
+                            new Task(() => { callback(rawResponse); }).Start();
+                        }
+                        else
+                            throw new Exception("Wrong type of Message received.");
                     }
                 }
                 else
@@ -73,8 +79,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             {
                 case Message.MessageClassType.Register:
                     var registerMsg = msg as RegisterMessage;
-                   // if (ComponentMonitor.Instance.IsRegistered(reg))
-
+                    //var id = ComponentMonitor.Instance.Register(registerMsg.Type.
+                    //var registerResponseMessage = new RegisterResponseMessage()
+                   //     .
 
                     break;
                 case Message.MessageClassType.Status:
@@ -102,6 +109,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             return null;
         }
 
+        // TODO additional MessageProcessor for backup CS
 
     }
 }
