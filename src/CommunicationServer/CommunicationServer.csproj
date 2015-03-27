@@ -35,9 +35,11 @@
     <Compile Include="Collections\InputMessageQueue.cs" />
     <Compile Include="Collections\LexicographicQueue.cs" />
     <Compile Include="CommunicationServer.cs" />
-    <Compile Include="Components\ComponentInfo.cs" />
+    <Compile Include="Components\BackupServerInfo.cs" />
+    <Compile Include="Components\Base\ComponentInfo.cs" />
     <Compile Include="Components\ComponentMonitor.cs" />
     <Compile Include="Components\DeregisterationEventArgs.cs" />
+    <Compile Include="Components\NodeInfo.cs" />
     <Compile Include="Messaging\MessageReceptionEventArgs.cs" />
     <Compile Include="Messaging\SynchronizationManager.cs" />
     <Compile Include="Tasks\Models\FinalSolution.cs" />

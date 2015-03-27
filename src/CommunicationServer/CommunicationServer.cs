@@ -17,20 +17,25 @@ namespace _15pl04.Ucc.CommunicationServer
 
             var marshaller = new Marshaller();
 
-            _messageProcessor = new MessageProcessor(marshaller);
+            _messageProcessor = new MessageProcessor(marshaller, config.CommunicationTimeout);
             _tcpServer = new AsyncTcpServer(config, _messageProcessor);
         }
 
         public void Start()
         {
             _tcpServer.StartListening();
-            ComponentMonitor.Instance.StartMonitoring(Config.Timeout);
+            ComponentMonitor.Instance.StartMonitoring(Config.CommunicationTimeout);
         }
 
         public void Stop()
         {
             _tcpServer.StopListening();
             ComponentMonitor.Instance.StopMonitoring();
+        }
+
+        public void SwitchToPrimaryMode()
+        {
+            // TODO;
         }
     }
 }

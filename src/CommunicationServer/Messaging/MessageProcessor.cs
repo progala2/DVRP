@@ -2,7 +2,9 @@
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.CommunicationServer.Collections;
+using _15pl04.Ucc.CommunicationServer.Tasks.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
@@ -15,11 +17,13 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private InputMessageQueue _inputQueue;
         private Marshaller _marshaller;
         private Task _processingThread;
+        private uint _communicationTimeout;
 
-        public MessageProcessor(Marshaller marshaller)
+        public MessageProcessor(Marshaller marshaller, uint communicationTimeout)
         {
             _inputQueue = new InputMessageQueue();
             _marshaller = marshaller;
+            _communicationTimeout = communicationTimeout;
         }
 
         public void EnqeueInputMessage(byte[] rawMsg, AsyncTcpServer.ResponseCallback callback)
@@ -53,7 +57,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     {
                         var responseMsgs = GetResponseMessages(message);
 
-                        var rawResponse = _marshaller.Marshall(responseMsgs);
+                        var rawResponse = _marshaller.Marshall(new Message[]{responseMsgs});
                         new Task(() => { callback(rawResponse); }).Start();
                     }
                 }
@@ -65,43 +69,90 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             }
         }
 
-        private Message[] GetResponseMessages(Message msg)
+        private Message GetResponseMessages(Message msg)
         {
             switch (msg.MessageType)
             {
                 case Message.MessageClassType.Register:
-                    var registerMsg = msg as RegisterMessage;
-                    
+                    {
+                        var registerMsg = msg as RegisterMessage;
 
-                    break;
+                        ulong id = ComponentMonitor.Instance.Register(registerMsg.Type, registerMsg.ParallelThreads, registerMsg.SolvableProblems);
+
+                        var registerResponseMsg = new RegisterResponseMessage()
+                        {
+                            Id = id,
+                            Timeout = _communicationTimeout,
+                            BackupCommunicationServers = new List<BackupCommunicationServer>(), // TODO
+                        };
+                        return registerResponseMsg;
+                    }
 
                 case Message.MessageClassType.Status:
-                    var statusMsg = msg as StatusMessage;
+                    {
+                        var statusMsg = msg as StatusMessage;
 
-                    break;
+                        // TODO
+                        return null;
+                    }
+
                 case Message.MessageClassType.SolveRequest:
-                    var solveRequestMsg = msg as SolveRequestMessage;
+                    {
+                        var solveRequestMsg = msg as SolveRequestMessage;
+                        
+                        var id = Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.GenerateProblemInstanceId();
+                        var solvingTimeout = solveRequestMsg.SolvingTimeout.GetValueOrDefault(0);
 
-                    break;
+                        var problemInstance = new ProblemInstance(id, solveRequestMsg.ProblemType, solveRequestMsg.Data, solvingTimeout);
+                        Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.AddNewProblemInstance(problemInstance);
+
+                        var solveRequestResponseMsg = new SolveRequestResponseMessage()
+                        {
+                            Id = problemInstance.Id
+                        };
+                        return solveRequestResponseMsg;
+                    }
+
                 case Message.MessageClassType.SolutionRequest:
-                    var solutionRequestMsg = msg as SolutionRequestMessage;
+                    {
+                        var solutionRequestMsg = msg as SolutionRequestMessage;
 
-                    break;
+                        var id = solutionRequestMsg.Id;
+                        FinalSolution fs;
+
+                        if (Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.TryGetFinalSolution(id, out fs))
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                        // TODO
+                        return null;
+                    }
+
                 case Message.MessageClassType.PartialProblems:
-                    var partialProblemsMsg = msg as PartialProblemsMessage;
+                    {
+                        var partialProblemsMsg = msg as PartialProblemsMessage;
+                        // TODO 
 
-                    break;
+                        return null;
+                    }
+
                 case Message.MessageClassType.Solutions:
-                    var solutionsMessage = msg as SolutionsMessage;
-
-                    break;
+                    {
+                        var solutionsMessage = msg as SolutionsMessage;
+                        // TODO
+                        return null;
+                    }
                 default:
                     throw new Exception("Unsupported type received: " + msg.MessageType.ToString());
             }
-            return null;
         }
 
         // TODO additional MessageProcessor for backup CS
+        // TODO check if senders are registered
 
     }
 }

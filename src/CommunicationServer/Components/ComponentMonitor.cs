@@ -1,6 +1,9 @@
 ﻿using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.CommunicationServer.Components;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,24 +54,30 @@ namespace _15pl04.Ucc.CommunicationServer
             return _registeredComponents.ContainsKey(id);
         }
 
-        /// <summary>
-        /// Register component.
-        /// </summary>
-        /// <param name="type">Component's type.</param>
-        /// <param name="numberOfThreads">Number of threads provided by the component.</param>
-        /// <param name="solvableProblems">Names of computational problems supported by this component.</param>
-        /// <returns>Newly generated id.</returns>
-        public ulong Register(ComponentType type, byte numberOfThreads, string[] solvableProblems)
+        public ulong RegisterNode(ComponentType type, byte numberOfThreads, ICollection<string> solvableProblems)
         {
-            var component = new ComponentInfo(type, numberOfThreads, solvableProblems);
             ulong id;
-
             do 
             {
                 id = (ulong)_random.Next();
             } while (_registeredComponents.ContainsKey(id));
 
-            _registeredComponents.TryAdd(id, component);
+            var ni = new NodeInfo(type, numberOfThreads, solvableProblems);
+            _registeredComponents.TryAdd(id, ni);
+
+            return id;
+        }
+
+        public ulong RegisterBackupServer(IPEndPoint address)
+        {
+            ulong id;
+            do
+            {
+                id = (ulong)_random.Next();
+            } while (_registeredComponents.ContainsKey(id));
+
+            var bsi = new BackupServerInfo(address);
+            _registeredComponents.TryAdd(id, bsi);
 
             return id;
         }
@@ -154,7 +163,7 @@ namespace _15pl04.Ucc.CommunicationServer
         {
             int threadNum = 0;
 
-            foreach (var component in _registeredComponents.Values)
+            foreach (NodeInfo component in _registeredComponents.Values)
                 if (component.Type == ComponentType.ComputationalNode && component.SolvableProblems.Contains(problemName))
                     threadNum += component.NumberOfIdleThreads;
 

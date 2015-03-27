@@ -63,6 +63,7 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
             return _dictionary[key].Count;
         }
 
+        // TODO: implement collection-like interfaces
 
     }
 }

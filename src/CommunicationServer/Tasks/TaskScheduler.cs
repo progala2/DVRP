@@ -205,6 +205,11 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
                 throw new Exception("Received final solution for a problem that doesn't expect one.");
         }
 
+        public bool TryGetFinalSolution(ulong id, out FinalSolution finalSolution)
+        {
+            return _finalSolutions.TryGetValue(id, out finalSolution);
+        }
+
         /// <summary>
         /// Makes all ongoing tasks of deregistered components available to process again.
         /// </summary>
@@ -234,6 +239,11 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
                 var problemType = unmergedPartialSolutions.Peek()[0].ProblemType;
                 _partialSolutionsAwaitingMerge.Enqueue(problemType, unmergedPartialSolutions);
             }
+        }
+
+        public ulong GenerateProblemInstanceId()
+        {
+            return 0; // TODO
         }
 
         /*

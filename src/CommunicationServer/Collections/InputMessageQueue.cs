@@ -56,5 +56,7 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
                 return false;
             }
         }
+
+        // TODO: implement collection-like interfaces
     }
 }
