@@ -83,9 +83,9 @@ namespace _15pl04.Ucc.Commons.Tests
                 new PartialProblemsMessage()
                 {
                     CommonData = new byte[] {1},
-                    PartialProblems = new List<PartialProblemsPartialProblem>()
+                    PartialProblems = new List<RegisterResponsePartialProblem>()
                     {
-                        new PartialProblemsPartialProblem()
+                        new RegisterResponsePartialProblem()
                         {
                             Data = new byte[] {1},
                         }
@@ -99,29 +99,19 @@ namespace _15pl04.Ucc.Commons.Tests
                 },
                 new RegisterMessage()
                 {
-                    Type = RegisterType.CommunicationServer,
+                    Type = ComponentType.CommunicationServer,
                     SolvableProblems = new List<string>()
                     {
                         "s"
                     }
                 },
-                new RegisterResponseMessage()
-                {
-                    BackupCommunicationServers = new List<BackupCommunicationServer>()
-                    {
-                        new BackupCommunicationServer()
-                        {
-                            Address = "dd",
-                        }
-                    }
-                },
+                new RegisterResponseMessage(),
                 new SolutionRequestMessage()
                 {
                     Id = 5
                 },
                 new SolutionsMessage()
                 {
-                    CommonData = new byte[] {1},
                     ProblemType = "s",
                     Solutions = new List<SolutionsSolution>()
                     {
@@ -145,7 +135,7 @@ namespace _15pl04.Ucc.Commons.Tests
                         new StatusThread()
                         {
                             ProblemType = "ss",
-                            State = StatusThreadState.Busy
+                            State = ThreadState.Busy
                         }
                     }
                 }

@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Status")]
-    public class StatusMessage : Message, IIdentifiableBySender
+    public class StatusMessage : Message
     {
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "Status.xsd";
@@ -62,18 +62,18 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class StatusThread
     {
-        private StatusThreadState _stateField;
+        private ThreadState _stateField;
 
-        private ulong _howLongField;
+        private ulong? _howLongField;
 
-        private ulong _problemInstanceIdField;
+        private ulong? _problemInstanceIdField;
 
-        private ulong _taskIdField;
+        private ulong? _taskIdField;
 
         private string _problemTypeField;
 
         [XmlElement(Order = 0)]
-        public StatusThreadState State
+        public ThreadState State
         {
             get
             {
@@ -86,7 +86,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 1)]
-        public ulong HowLong
+        public ulong? HowLong
         {
             get
             {
@@ -98,8 +98,13 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
+        public bool ShouldSerializeHowLong()
+        {
+            return _howLongField.HasValue;
+        }
+
         [XmlElement(Order = 2)]
-        public ulong ProblemInstanceId
+        public ulong? ProblemInstanceId
         {
             get
             {
@@ -111,8 +116,13 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
+        public bool ShouldSerializeProblemInstanceId()
+        {
+            return _problemInstanceIdField.HasValue;
+        }
+
         [XmlElement(Order = 3)]
-        public ulong TaskId
+        public ulong? TaskId
         {
             get
             {
@@ -122,6 +132,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             {
                 _taskIdField = value;
             }
+        }
+
+        public bool ShouldSerializeTaskId()
+        {
+            return _taskIdField.HasValue;
         }
 
         [XmlElement(Order = 4)]
@@ -136,14 +151,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
                 _problemTypeField = value;
             }
         }
-    }
 
-    [Serializable]
-    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public enum StatusThreadState
-    {
-        Idle,
-
-        Busy,
+        public bool ShouldSerializeProblemType()
+        {
+            return _problemTypeField != null;
+        }
     }
 }

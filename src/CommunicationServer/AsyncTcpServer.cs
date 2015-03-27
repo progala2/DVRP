@@ -16,6 +16,7 @@ namespace _15pl04.Ucc.CommunicationServer
         private readonly MessageProcessor _queue;
         private readonly ManualResetEvent _allDoneEvent;
         private Socket _listenerSocket;
+        private bool _isListening;
 
 
         public delegate void ResponseCallback(byte[] response);
@@ -43,6 +44,7 @@ namespace _15pl04.Ucc.CommunicationServer
             _config = config;
             _queue = queue;
             _allDoneEvent = new ManualResetEvent(false);
+            _isListening = false;
         }
 
         public void StartListening()
@@ -50,14 +52,15 @@ namespace _15pl04.Ucc.CommunicationServer
             /*
              * Nasłuchiwanie.
              */
-            _listenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _isListening = true;
+            _listenerSocket = new Socket(_config.Address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             try
             {
                 _listenerSocket.Bind(_config.Address);
                 _listenerSocket.Listen(MaxPendingConnections);
 
-                while (true)
+                while (_isListening)
                 {
                     _allDoneEvent.Reset();
 
@@ -78,7 +81,9 @@ namespace _15pl04.Ucc.CommunicationServer
             /*
              * Sprzątanie.
              */
-            _listenerSocket.Shutdown(SocketShutdown.Both);
+            //_listenerSocket.Shutdown(SocketShutdown.Both);
+            _isListening = false;
+            _allDoneEvent.Set();
             _listenerSocket.Close();
         }
 
@@ -105,13 +110,17 @@ namespace _15pl04.Ucc.CommunicationServer
         {
             _allDoneEvent.Set();
 
+            if (!_isListening)
+                return;
+
             Socket listenerSocket = (Socket)ar.AsyncState;
             Socket handlerSocket = listenerSocket.EndAccept(ar);
 
-            var state = new StateObject();
-            state.WorkSocket = handlerSocket;
+            var state = new StateObject {WorkSocket = handlerSocket};
+
             handlerSocket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0,
                 new AsyncCallback(ReadCallback), state);
+            
         }
 
         private void ReadCallback(IAsyncResult ar)
@@ -119,27 +128,24 @@ namespace _15pl04.Ucc.CommunicationServer
             StateObject state = (StateObject)ar.AsyncState;
             Socket handlerSocket = state.WorkSocket;
 
-            int bytesRead;
 
-
-            bytesRead = handlerSocket.EndReceive(ar);
+            var bytesRead = handlerSocket.EndReceive(ar);
             if (bytesRead > 0)
             {
-                //state.RawDataList.AddRange(state.Buffer.Take(bytesRead));
                 state.MemoryStream.Write(state.Buffer, 0, bytesRead);
-                Debug.WriteLine("ReadCallback rawDataList size part: " + state.MemoryStream.Length);
                
                 handlerSocket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReadCallback), state);
             }
             else
             {
-                Debug.WriteLine("ReadCallback rawDataList size whol: " + state.MemoryStream.Length);
+                Debug.WriteLine("ReadCallback memoryStream size whol: " + state.MemoryStream.Length);
 
-                //state.workSocket.Send(state.RawDataList.ToArray());
+                //state.WorkSocket.Send(state.MemoryStream.ToArray());
                 //enqueue rawdata
                 _queue.EnqeueInputMessage(state.MemoryStream.ToArray(),
                     GenerateResponseCallback(state.WorkSocket));
+
                 state.Dispose();
             }
         }

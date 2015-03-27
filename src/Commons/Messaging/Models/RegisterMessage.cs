@@ -9,12 +9,12 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Register")]
-    public class RegisterMessage : Message, IIdentifiableBySender
+    public class RegisterMessage : Message
     {
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "Register.xsd";
 
-        private RegisterType _typeField;
+        private ComponentType _typeField;
 
         private List<string> _solvableProblemsField;
 
@@ -22,9 +22,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         private bool? _deregisterField;
 
-        private ulong _idField;
-
-        private bool _specifiedIdField;
+        private ulong? _idField;
 
         public RegisterMessage()
         {
@@ -32,7 +30,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 0)]
-        public RegisterType Type
+        public ComponentType Type
         {
             get
             {
@@ -90,7 +88,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 4)]
-        public ulong Id
+        public ulong? Id
         {
             get
             {
@@ -102,11 +100,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        [XmlIgnore]
-        public bool SpecifiedId
+        public bool ShouldSerializeId()
         {
-            get { return _specifiedIdField; }
-            set { _specifiedIdField = value; }
+            return _idField.HasValue;
         }
 
         [XmlIgnore]
@@ -114,14 +110,5 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClassType.Register;}
         }
-    }
-
-    [Serializable]
-    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public enum RegisterType
-    {
-        TaskManager,
-        ComputationalNode,
-        CommunicationServer,
     }
 }

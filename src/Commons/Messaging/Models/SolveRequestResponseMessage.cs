@@ -8,7 +8,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolveRequestResponse")]
-    public class SolveRequestResponseMessage : Message, IIdentifiableBySender
+    public class SolveRequestResponseMessage : Message
     {
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "SolveRequestResponse.xsd";

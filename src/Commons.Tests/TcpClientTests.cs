@@ -14,21 +14,48 @@ namespace _15pl04.Ucc.Commons.Tests
     public class TcpClientTests
     {
         private const int Port = 9123;
-        private readonly IPAddress _ipAddress = new IPAddress(new byte[]{127, 0, 0, 1});
+        private readonly IPAddress _ipAddressv4 = new IPAddress(new byte[]{127, 0, 0, 1});
+        private readonly IPAddress _ipAddressv6 = IPAddress.Parse("0:0:0:0:0:0:0:1");
         private const int BufferSize = 2048;
         Socket _socket;
 
 
         [TestMethod]
-        public void TcpClientConnectingWithSpecifiedSocketAndReceivingAnswer()
+        public void TcpClientConnectingWithSpecifiedSocketAndReceivingAnswerIpV4()
         {
-            TcpClient client = new TcpClient(new IPEndPoint(_ipAddress, Port));
+            TcpClient client = new TcpClient(new IPEndPoint(_ipAddressv4, Port));
 
             const string message = "to jest wiadomosc do przekazania";
 
             byte[] data = Encoding.ASCII.GetBytes(message);
 
-            Task t = new Task(new Action(ListenAndResend));
+            Task t = new Task(new Action(ListenAndResendV4));
+            t.Start();
+            byte[] received = client.SendData(data);
+
+
+
+            Assert.AreEqual(data.Length, received.Length);
+            for (int i = 0; i < data.Length; ++i)
+            {
+                Assert.AreEqual(data[i], received[i]);
+                i++;
+            }
+            //check whether wait or dispose
+            EndConnection();
+            t.Wait();
+        }
+
+        [TestMethod]
+        public void TcpClientConnectingWithSpecifiedSocketAndReceivingAnswerIpv6()
+        {
+            TcpClient client = new TcpClient(new IPEndPoint(_ipAddressv6, Port));
+
+            const string message = "to jest wiadomosc do przekazania";
+
+            byte[] data = Encoding.ASCII.GetBytes(message);
+
+            Task t = new Task(new Action(ListenAndResendV6));
             t.Start();
             byte[] received = client.SendData(data);
 
@@ -50,13 +77,12 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void TcpClientConnectingToWrongIpAndThrowingOwnException()
         {
-            Task t = new Task(new Action(StartListening));
+            Task t = new Task(new Action(StartListeningV4));
             t.Start();
             try
             {
                 TcpClient client = new TcpClient(
-                new IPEndPoint(new IPAddress(new Byte[] { 126, 0, 0, 1 }), Port),
-                10000);
+                new IPEndPoint(new IPAddress(new Byte[] { 126, 0, 0, 1 }), Port));
 
                 const string message = "to jest wiadomosc do przekazania";
 
@@ -78,12 +104,19 @@ namespace _15pl04.Ucc.Commons.Tests
             //throw new Exception();
         }
 
-        private void ListenAndResend()
+        private void ListenAndResendV4()
         {
-            StartListening();
+            StartListeningV4();
             AcceptConnection();
             //EndConnection();
         }
+        private void ListenAndResendV6()
+        {
+            StartListeningV6();
+            AcceptConnection();
+            //EndConnection();
+        }
+
 
         private void AcceptConnection()
         {
@@ -104,11 +137,19 @@ namespace _15pl04.Ucc.Commons.Tests
             _socket.Close();
         }
 
-        private void StartListening()
+        private void StartListeningV4()
         {
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            _socket.Bind(new IPEndPoint(_ipAddress, Port));
+            _socket.Bind(new IPEndPoint(_ipAddressv4, Port));
+            _socket.Listen(10);
+        }
+
+        private void StartListeningV6()
+        {
+            _socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+
+            _socket.Bind(new IPEndPoint(_ipAddressv6, Port));
             _socket.Listen(10);
         }
     }
