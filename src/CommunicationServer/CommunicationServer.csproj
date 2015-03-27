@@ -34,7 +34,6 @@
   <ItemGroup>
     <Compile Include="Collections\InputMessageQueue.cs" />
     <Compile Include="Collections\LexicographicQueue.cs" />
-    <Compile Include="Collections\OutputMessageQueue.cs" />
     <Compile Include="CommunicationServer.cs" />
     <Compile Include="Components\ComponentInfo.cs" />
     <Compile Include="Components\ComponentMonitor.cs" />

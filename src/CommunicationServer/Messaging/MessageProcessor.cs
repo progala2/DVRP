@@ -13,14 +13,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         public event MessageReceptionEventHandler MessageReception;
 
         private InputMessageQueue _inputQueue;
-        private OutputMessageQueue _outputQueue;
         private Marshaller _marshaller;
         private Task _processingThread;
 
         public MessageProcessor(Marshaller marshaller)
         {
             _inputQueue = new InputMessageQueue();
-            _outputQueue = new OutputMessageQueue();
             _marshaller = marshaller;
         }
 
@@ -37,7 +35,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         public void EnqueueOutputMessage(ComponentType addresseeType, Message msg)
         {
-            _outputQueue.Enqueue(msg);
+            // legacy (nie zmieniać dopóki Rad nie skończy pracy nad synchronizacją)
         }
 
         private void ProcessQueuedMessages()
@@ -51,19 +49,15 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 {
                     Message[] input = _marshaller.Unmarshall(rawMsg);
 
-                    // This can happen during synchronization process.
-                    //if (input.Length != 1)
-                    //    throw new Exception("Received more than one message at once from a component.");
+                    foreach (var message in input)
+                    {
+                        // TODO check if component is registered (unless it's RegisterMessage)
 
+                        var responseMsgs = GetResponseMessages(message);
+                        var rawResponse = _marshaller.Marshall(responseMsgs);
 
-                    /*
-                     * 1. Get component's type and id.
-                     * 2. Check if id is registered.
-                     * 3. Dequeue pending messages from the output queue if needed.
-                     * 4. Synchronously generate a response if no messages in the output queue.
-                     * 5. Marshall response messages.
-                     * 6. Call the callback asynchronously.
-                     */
+                        new Task(() => { callback(rawResponse); }).Start();
+                    }
                 }
                 else
                 {
@@ -73,42 +67,39 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             }
         }
 
-        private void ProcessMessage(Message msg)
+        private Message[] GetResponseMessages(Message msg)
         {
-            var type = msg.GetType();
-
-            if (type == typeof(RegisterMessage))
+            switch(msg.MessageType)
             {
-                var registerMsg = msg as RegisterMessage;
-                   
+                case Message.MessageClassType.Register:
+                    var registerMsg = msg as RegisterMessage;
+                   // if (ComponentMonitor.Instance.IsRegistered(reg))
 
-            }
-            else if (type == typeof(StatusMessage))
-            {
 
-            }
-            else if (type == typeof(SolveRequestMessage))
-            {
+                    break;
+                case Message.MessageClassType.Status:
 
-            }
-            else if (type == typeof(SolutionRequestMessage))
-            {
+                    break;
+                case Message.MessageClassType.SolveRequest:
 
-            }
-            else if (type == typeof(PartialProblemsMessage))
-            {
+                    break;
+                case Message.MessageClassType.SolutionRequest:
 
-            }
-            else if (type == typeof(PartialProblemsMessage))
-            {
+                    break;
+                case Message.MessageClassType.PartialProblems:
 
-            }
-            else if (type == typeof(SolutionsMessage))
-            {
+                    break;
+                case Message.MessageClassType.Solutions:
 
+                    break;
+                default:
+                    throw new Exception("Unsupported type received: " + msg.MessageType.ToString());
+                    break;
             }
-            else
-                throw new ArgumentException("Unsupported type received: " + type.FullName);
+
+
+
+            return null;
         }
 
 
