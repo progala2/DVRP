@@ -5,47 +5,25 @@ using _15pl04.Ucc.Commons.Messaging.Models;
 namespace _15pl04.Ucc.Commons
 {
     /// <summary>
-    /// Represents a task running in ComputationalNode or TaskManager.
+    /// Represents a task in ComputationalNode or TaskManager.
     /// Provides information needed to create StatusMessage.
     /// </summary>
     public class ComputationalTask
     {
-        private StatusThreadState _state;
         private Task _task;
 
+
+        public StatusThreadState State { get; private set; }
 
         public DateTime LastStateChange { get; private set; }
 
         public TimeSpan TimeSinceLastStateChange { get { return DateTime.UtcNow - LastStateChange; } }
 
-
-        public StatusThreadState State
-        {
-            get { return _state; }
-            private set
-            {
-                if (_state == value)
-                    return;
-                _state = value;
-                LastStateChange = DateTime.UtcNow;
-            }
-        }
-
-        private Task Task
-        {
-            get { return _task; }
-            set
-            {
-                if (_task == value)
-                    return;
-                _task = value;
-                State = _task == null ? StatusThreadState.Idle : StatusThreadState.Busy;
-            }
-        }
-
-
+        
         public ulong? ProblemInstanceId { get; private set; }
+
         public ulong? PartialProblemId { get; private set; }
+
         public string ProblemType { get; private set; }
 
 
@@ -53,16 +31,19 @@ namespace _15pl04.Ucc.Commons
         /// Creates idle ComputationalTask which does nothing.
         /// </summary>
         public ComputationalTask()
-            : this(null, null, null, null)
-        { }
-        
+        {
+            _task = null;
+            State = StatusThreadState.Idle;
+            LastStateChange = DateTime.UtcNow;
+        }
+
         /// <summary>
         /// Creates ComputationalTask with given <paramref name="task"/> to run and starts it immediately.
         /// </summary>
         /// <param name="task"></param>
         public ComputationalTask(Task task)
             : this(task, null, null, null)
-        {        }
+        { }
 
         /// <summary>
         /// Creates ComputationalTask with given <paramref name="task"/> to run and starts it immediately.
@@ -77,14 +58,15 @@ namespace _15pl04.Ucc.Commons
             if (task == null)
                 throw new ArgumentNullException("task");
 
-            Task = task;
+            _task = task;
+            State = StatusThreadState.Busy;
             LastStateChange = DateTime.UtcNow;
 
             ProblemType = problemType;
             ProblemInstanceId = problemInstanceId;
             PartialProblemId = partialProblemId;
 
-            task.Start();
+            _task.Start();
         }
     }
 }
