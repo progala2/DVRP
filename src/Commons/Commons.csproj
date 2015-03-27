@@ -33,6 +33,7 @@
     <Compile Include="ComponentType.cs" />
     <Compile Include="ComputationalComponent.cs" />
     <Compile Include="ComputationalTask.cs" />
+    <Compile Include="Exceptions\NoResponseException.cs" />
     <Compile Include="Exceptions\RegisterException.cs" />
     <Compile Include="MessageSender.cs" />
     <Compile Include="Messaging\MessageValidator.cs" />

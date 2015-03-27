@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace _15pl04.Ucc.Commons.Exceptions
 {
@@ -16,6 +17,12 @@ namespace _15pl04.Ucc.Commons.Exceptions
 
         public TimeoutException(string message, Exception inner)
             : base(message, inner)
+        {
+        }
+
+        // This constructor is needed for serialization.
+        protected TimeoutException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

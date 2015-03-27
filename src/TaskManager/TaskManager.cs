@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Messaging.Models;
@@ -13,25 +14,40 @@ namespace _15pl04.Ucc.TaskManager
 
         protected override RegisterMessage GetRegisterMessage()
         {
-            // create RegisterMessage proper for TaskManager
-            throw new NotImplementedException();
+            var registerMessage = new RegisterMessage()
+            {
+                Type = RegisterType.TaskManager,
+                ParallelThreads = _parallelThreads,
+                SolvableProblems = new List<string>(TaskSolvers.Keys)
+            };
+            return registerMessage;
         }
 
         protected override void HandleResponseMessage(Message message)
         {
-            throw new NotImplementedException();
-
-            // switch over possible message types
-
-
-            //possible adding new task to compute like:
-            //this.ComputationalTaskPool.StartComputationalTask(() =>
-            //{
-            //    this._taskSolvers[problemName].MergeSolution(someDataFromMessage);
-            //    (...);
-            //    this.EnqueueMessageToSend(messageWithFinalSolution);
-            //}, problemName, problemInstanceId, null);
-
+            switch (message.MessageType)
+            {
+                case Message.MessageClassType.DivideProblem:
+                    DivideProblemMessageHandler((DivideProblemMessage)message);
+                    break;
+                case Message.MessageClassType.Solutions:
+                    SolutionsMessageHandler((SolutionsMessage)message);
+                    break;
+                default:
+                    // maybe other messages to add
+                    throw new NotImplementedException();
+            }
         }
+        private void DivideProblemMessageHandler(DivideProblemMessage divideProblemMessage)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SolutionsMessageHandler(SolutionsMessage solutionsMessage)
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }

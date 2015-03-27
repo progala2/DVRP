@@ -200,6 +200,8 @@ namespace _15pl04.Ucc.Commons
                     {
                         // send message
                         responseMessages = _messageSender.Send(message);
+                        if (responseMessages == null)
+                            throw new Commons.Exceptions.NoResponseException();
                         // and handle response
                         HandleResponseMessages(responseMessages);
                     }
@@ -215,6 +217,8 @@ namespace _15pl04.Ucc.Commons
                         // send status message
                         var statusMessage = GetStatusMessage();
                         responseMessages = _messageSender.Send(statusMessage);
+                        if (responseMessages == null)
+                            throw new Commons.Exceptions.NoResponseException();
                         // and handle response
                         HandleResponseMessages(responseMessages);
                     }
@@ -226,6 +230,10 @@ namespace _15pl04.Ucc.Commons
             }
         }
 
+        /// <summary>
+        /// Gets status of this component.
+        /// </summary>
+        /// <returns>Proper StatusMessage.</returns>
         private StatusMessage GetStatusMessage()
         {
             // to delete after uncommenting
