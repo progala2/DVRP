@@ -8,7 +8,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolveRequest")]
-    public class SolveRequestMessage : Message
+    public class SolveRequestMessage : Message, IIdentifiableBySender
     {
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "SolveRequest.xsd";
@@ -18,7 +18,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         private byte[] _dataField;
 
-        private ulong? _idField;
+        private ulong _idField;
+
+        private bool _specifiedIdField;
 
         [XmlElement(Order = 0)]
         public string ProblemType
@@ -62,7 +64,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 3)]
-        public ulong? Id
+        public ulong Id
         {
             get
             {
@@ -74,7 +76,12 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        public bool ShouldSerializeId() { return _idField.HasValue; }
+        [XmlIgnore]
+        public bool SpecifiedId
+        {
+            get { return _specifiedIdField; }
+            set { _specifiedIdField = value; }
+        }
 
         [XmlIgnore]
         public override MessageClassType MessageType
