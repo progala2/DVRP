@@ -1,10 +1,10 @@
-﻿using System;
+﻿using _15pl04.Ucc.Commons.Messaging.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using _15pl04.Ucc.Commons.Messaging.Models;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
@@ -43,7 +43,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                 throw new ArgumentNullException("xmlDocumentContent");
             }
 
-            var xDocument = XDocument.Parse(xmlDocumentContent);
+                var xDocument = XDocument.Parse(xmlDocumentContent);
             Validate(xDocument);
         }
 
@@ -85,13 +85,13 @@ namespace _15pl04.Ucc.Commons.Messaging
                 };
         }
         static IMessageValidator GetValidatorForMessageClassType(Message.MessageClassType type)
-        {
+            {
             return _messageValidatorForMessageTypeDictionary[type];
-        }
+            }
         public static void Validate(XDocument xDocument, Message.MessageClassType type)
-        {
+            {
             GetValidatorForMessageClassType(type).Validate(xDocument);
-        }
+            }
 
         public static void Validate(string xDocument, Message.MessageClassType type)
         {

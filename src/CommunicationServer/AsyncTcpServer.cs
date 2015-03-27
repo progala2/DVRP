@@ -69,7 +69,7 @@ namespace _15pl04.Ucc.CommunicationServer
                     _allDoneEvent.WaitOne();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //TODO
                 throw;
