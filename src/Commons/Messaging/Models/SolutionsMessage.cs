@@ -99,8 +99,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     {
         private ulong? _taskIdField;
 
-        private bool _taskIdFieldSpecified;
-
         private bool _timeoutOccuredField;
 
         private SolutionType _typeField;
@@ -122,22 +120,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        public bool ShouldSerializeCommonData()
+        public bool ShouldSerializeTaskId()
         {
             return _taskIdField.HasValue;
-        }
-
-        [XmlIgnore]
-        public bool TaskIdSpecified
-        {
-            get
-            {
-                return _taskIdFieldSpecified;
-            }
-            set
-            {
-                _taskIdFieldSpecified = value;
-            }
         }
 
         [XmlElement(Order = 1)]
