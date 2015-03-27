@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using UCCTaskSolver;
 
@@ -50,15 +49,7 @@ namespace _15pl04.Ucc.Commons
         protected ComputationalTaskPool ComputationalTaskPool { get; private set; }
 
 
-        // to change
-        protected readonly TcpClient _tcpClient;
-        protected readonly Marshaller _marshaller;
-        /* it could be a List<IPEndPoint> but messages from server give information about
-         * backup servers with List<BackupCommunicationServer> so keeping it this way allows to
-         * parse to IPEndPoint only after primary server crash
-         */
-        protected List<BackupCommunicationServer> _backupCommunicationServers;
-        ///////////////////////
+        private MessageSender _messageSender;
 
         private const string TaskSolversDirectory = "TaskSolvers";
 
@@ -76,10 +67,9 @@ namespace _15pl04.Ucc.Commons
         public ComputationalComponent(IPEndPoint serverAddress)
         {
             _serverAddress = serverAddress;
-            _tcpClient = new TcpClient(_serverAddress);
+            _messageSender = new MessageSender(_serverAddress);
 
             TaskSolvers = GetTaskSolvers();
-            _marshaller = new Marshaller();
 
             _messagesToSend = new ConcurrentQueue<Message>();
             _messagesToSendManualResetEvent = new ManualResetEvent(false);
@@ -103,10 +93,19 @@ namespace _15pl04.Ucc.Commons
         {
             // get RegisterMessage
             var registerMessage = GetRegisterMessage();
-            // TRY to send it and get response
-            throw new NotImplementedException();
-            // save information from response
-            throw new NotImplementedException();
+            // send it and get response
+            var responseMessages = _messageSender.Send(registerMessage);
+            // and try to save received information
+            try
+            {
+                var registerResponseMessage = (RegisterResponseMessage)responseMessages.FirstOrDefault(m => m.MessageType == Message.MessageClassType.RegisterResponse);
+                ID = registerResponseMessage.Id;
+                Timeout = registerResponseMessage.Timeout;
+            }
+            catch (Exception ex)
+            {
+                throw new Commons.Exceptions.RegisterException(string.Format("Couldn't register component to server: {0}", _serverAddress), ex);
+            }
 
             ComputationalTaskPool = new ComputationalTaskPool(_parallelThreads, _cancellationTokenSource.Token);
 
@@ -200,7 +199,7 @@ namespace _15pl04.Ucc.Commons
                     while (_messagesToSend.TryDequeue(out message))
                     {
                         // send message
-                        responseMessages = SendMessage(message);
+                        responseMessages = _messageSender.Send(message);
                         // and handle response
                         HandleResponseMessages(responseMessages);
                     }
@@ -215,7 +214,7 @@ namespace _15pl04.Ucc.Commons
                     {
                         // send status message
                         var statusMessage = GetStatusMessage();
-                        responseMessages = SendMessage(statusMessage);
+                        responseMessages = _messageSender.Send(statusMessage);
                         // and handle response
                         HandleResponseMessages(responseMessages);
                     }
@@ -229,24 +228,29 @@ namespace _15pl04.Ucc.Commons
 
         private StatusMessage GetStatusMessage()
         {
-            // create StatusMessage based on _id and ComputationalTaskPool.ComputationalTasks
-            throw new NotImplementedException();
-        }
-
-        // probably to delete later
-        private Message[] SendMessage(Message message)
-        {
-            // just because it should be check for possible exceptions
+            // to delete after uncommenting
             throw new NotImplementedException();
 
-
-            var messagesToSend = new Message[] { message };
-            var dataToSend = _marshaller.Marshall(messagesToSend);
-
-            var dataReceived = _tcpClient.SendData(dataToSend);
-
-            var messagesReceived = _marshaller.Unmarshall(dataReceived);
-            return messagesReceived;
+            var threadsStatuses = new List<StatusThread>();
+            foreach (var computationalTask in ComputationalTaskPool.ComputationalTasks)
+            {
+                var threadStatus = new StatusThread()
+                {
+                    // to uncomment after StatusThread will be fixed
+                    //ProblemType=computationalTask.ProblemType,
+                    //ProblemInstanceId=computationalTask.ProblemInstanceId,
+                    //TaskId=computationalTask.PartialProblemId,
+                    State = computationalTask.State,
+                    HowLong = (ulong)computationalTask.TimeSinceLastStateChange.TotalMilliseconds
+                };
+                threadsStatuses.Add(threadStatus);
+            }
+            StatusMessage statusMessage = new StatusMessage()
+            {
+                Id = ID,
+                Threads = threadsStatuses
+            };
+            return statusMessage;
         }
     }
 }
