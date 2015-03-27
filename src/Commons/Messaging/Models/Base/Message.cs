@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
-    [Serializable]
     public abstract class Message
     {
         /// <summary>
@@ -70,10 +68,5 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         [XmlIgnore]
         public abstract MessageClassType MessageType { get; }
-    }
-
-    public interface IIdentifiableBySender
-    {
-        ulong Id { get; set; }
     }
 }
