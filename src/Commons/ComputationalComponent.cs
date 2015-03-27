@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using _15pl04.Ucc.Commons.Messaging;
@@ -16,6 +19,16 @@ namespace _15pl04.Ucc.Commons
     /// </summary>
     public abstract class ComputationalComponent
     {
+        /// <summary>
+        /// The ID assigned by the Communication Server.
+        /// </summary>
+        public ulong ID { get; private set; }
+
+        /// <summary>
+        /// The communication timeout configured on Communication Server.
+        /// </summary>
+        public uint Timeout { get; private set; }
+
         /// <summary>
         /// The number of threads that could be efficiently run in parallel.
         /// </summary>
@@ -36,18 +49,6 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         protected ComputationalTaskPool ComputationalTaskPool { get; private set; }
 
-        /// <summary>
-        /// The ID assigned by the Communication Server.
-        /// </summary>
-        public ulong ID { get; private set; }
-
-        /// <summary>
-        /// The communication timeout configured on Communication Server.
-        /// </summary>
-        public uint Timeout { get; private set; }
-
-
-
 
         // to change
         protected readonly TcpClient _tcpClient;
@@ -59,7 +60,7 @@ namespace _15pl04.Ucc.Commons
         protected List<BackupCommunicationServer> _backupCommunicationServers;
         ///////////////////////
 
-
+        private const string TaskSolversDirectory = "TaskSolvers";
 
         private Task _messagingTask;
         private CancellationTokenSource _cancellationTokenSource;
@@ -167,7 +168,19 @@ namespace _15pl04.Ucc.Commons
             var dictionary = new Dictionary<string, TaskSolver>();
 
             // add <key,value> pairs based on types derived from TaskSolver in *.dll files
-            throw new NotImplementedException();
+            var taskSolversDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), TaskSolversDirectory);
+            var libraries = Directory.GetFiles(taskSolversDirectoryPath, "*.dll");
+            var typeOfTaskSolver = typeof(TaskSolver);
+            foreach (var file in libraries)
+            {
+                Assembly assembly = Assembly.LoadFile(file);
+                var taskSolversTypes = assembly.GetTypes().Where(t => typeOfTaskSolver.IsAssignableFrom(t) && !t.IsAbstract);
+                foreach (var taskSolverType in taskSolversTypes)
+                {
+                    var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType);
+                    dictionary.Add(taskSolver.Name, taskSolver);
+                }
+            }
 
             var readOnlyDictionary = new ReadOnlyDictionary<string, TaskSolver>(dictionary);
             return readOnlyDictionary;
