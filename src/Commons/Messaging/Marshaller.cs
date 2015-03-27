@@ -30,8 +30,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                     throw new Exception("Invalid Message Data");
                 var type = Message.GetMessageClassTypeFromString(doc.DocumentElement.Name);
 
-                if (!MessageValidator.Validate(str, type))
-                    throw new Exception("Invalid " + doc.DocumentElement.Name + " Message");
+                MessageValidator.Validate(str, type);
                 list.Add(MessageSerializer.Deserialize(b, type));
             }
             
