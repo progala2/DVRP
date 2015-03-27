@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Register")]
-    public class RegisterMessage : Message
+    public class RegisterMessage : Message, IIdentifiableBySender
     {
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "Register.xsd";
@@ -22,7 +22,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         private bool? _deregisterField;
 
-        private ulong? _idField;
+        private ulong _idField;
+
+        private bool _specifiedIdField;
 
         public RegisterMessage()
         {
@@ -88,7 +90,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 4)]
-        public ulong? Id
+        public ulong Id
         {
             get
             {
@@ -100,9 +102,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        public bool ShouldSerializeId()
+        [XmlIgnore]
+        public bool SpecifiedId
         {
-            return _idField.HasValue;
+            get { return _specifiedIdField; }
+            set { _specifiedIdField = value; }
         }
 
         [XmlIgnore]
