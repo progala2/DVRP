@@ -11,6 +11,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolvePartialProblems")]
     public class PartialProblemsMessage : Message
     {
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string noNamespaceSchemaLocation = "PartialProblems.xsd";
+
         private string _problemTypeField;
 
         private ulong _idField;
@@ -78,6 +81,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
+        public bool ShouldSerializeSolvingTimeout()
+        {
+            return SolvingTimeout.HasValue;
+        }
+
         [XmlArray(Order = 4)]
         [XmlArrayItem("PartialProblem", IsNullable = false)]
         public List<PartialProblemsPartialProblem> PartialProblems
@@ -136,7 +144,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        [XmlElement(Order = 2)]
+        [XmlElement("NodeID", Order = 2)]
         public ulong NodeId
         {
             get
