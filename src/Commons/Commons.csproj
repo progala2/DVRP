@@ -53,7 +53,9 @@
     <Compile Include="Problem\ProblemInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.cs" />
+    <Compile Include="SolutionType.cs" />
     <Compile Include="TcpClient.cs" />
+    <Compile Include="ThreadState.cs" />
     <Compile Include="TimeoutException.cs">
       <SubType>Code</SubType>
     </Compile>

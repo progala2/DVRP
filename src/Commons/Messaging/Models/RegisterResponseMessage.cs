@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "RegisterResponse")]
-    public class RegisterResponseMessage : Message, IIdentifiableBySender
+    public class RegisterResponseMessage : Message
     {
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "RegisterResponse.xsd";
@@ -52,7 +52,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlArray(Order = 2)]
-        [XmlArrayItem("BackupCommunicationServer", IsNullable = true)]
+        [XmlArrayItem("BackupCommunicationServer")]
         public List<BackupCommunicationServer> BackupCommunicationServers
         {
             get
