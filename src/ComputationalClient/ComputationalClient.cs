@@ -10,14 +10,12 @@ namespace _15pl04.Ucc.ComputationalClient
     {
         private IPEndPoint _serverAddress;
 
-        // to change
-        protected TcpClient _tcpClient;
-        protected Marshaller _marshaller;
+        private MessageSender _messageSender;
 
         public ComputationalClient(IPEndPoint serverAddress)
         {
             _serverAddress = serverAddress;
-            _tcpClient = new TcpClient(serverAddress);
+            _messageSender = new MessageSender(_serverAddress);
         }
 
         /// <summary>
@@ -29,6 +27,15 @@ namespace _15pl04.Ucc.ComputationalClient
         /// <returns>The ID of the problem instance assigned by the server.</returns>
         public uint SendSolveRequest(string problemType, byte[] data, ulong? solvingTimeout)
         {
+            var solveRequestMessage = new SolveRequestMessage()
+            {
+                ProblemType = problemType,
+                Data = data,
+                SolvingTimeout = solvingTimeout
+            };
+            var responseMessages = _messageSender.Send(solveRequestMessage);
+
+            // handle response
             throw new NotImplementedException();
         }
 
@@ -39,7 +46,7 @@ namespace _15pl04.Ucc.ComputationalClient
         public SolutionsMessage SendSolutionRequest(uint id)
         {
             // should return received SolutionsMessage or throw some Exception..?
-            // it can be changed to return something like abstract FinalSolution
+            // it can be changed to return something else (if it'll be better choice)
             throw new NotImplementedException();
         }
     }

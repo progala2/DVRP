@@ -89,6 +89,7 @@ namespace _15pl04.Ucc.Commons
         /// <summary>
         /// Registers component to server and starts work.
         /// </summary>
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.RegisterException"></exception>
         public void Start()
         {
             // get RegisterMessage
@@ -104,7 +105,7 @@ namespace _15pl04.Ucc.Commons
             }
             catch (Exception ex)
             {
-                throw new Commons.Exceptions.RegisterException(string.Format("Couldn't register component to server: {0}", _serverAddress), ex);
+                throw new Commons.Exceptions.RegisterException("Couldn't register component to server.", ex);
             }
 
             ComputationalTaskPool = new ComputationalTaskPool(_parallelThreads, _cancellationTokenSource.Token);
@@ -188,6 +189,7 @@ namespace _15pl04.Ucc.Commons
         /// <summary>
         /// Message processing loop.
         /// </summary>
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.NoResponseException"></exception>
         private void MessagesProcessing()
         {
             try
