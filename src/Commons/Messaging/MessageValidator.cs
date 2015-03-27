@@ -10,9 +10,9 @@ namespace _15pl04.Ucc.Commons.Messaging
 {
     interface IMessageValidator
     {
-        bool Validate(string xmlDocumentContent);
+        void Validate(string xmlDocumentContent);
 
-        bool Validate(XDocument xDocument);
+        void Validate(XDocument xDocument);
     }
     /// <summary>
     /// Provides validating messages of <typeparamref name="T"/> type.
@@ -27,7 +27,7 @@ namespace _15pl04.Ucc.Commons.Messaging
         {
             var xsdFileContent = Message.GetXsdFileContent(typeof(T));
             _xmlSchemaSet = new XmlSchemaSet();
-            _xmlSchemaSet.Add(null, XmlReader.Create(new StringReader(xsdFileContent)));
+            _xmlSchemaSet.Add("http://www.mini.pw.edu.pl/ucc/", XmlReader.Create(new StringReader(xsdFileContent)));
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace _15pl04.Ucc.Commons.Messaging
         /// <param name="xmlDocumentContent">Content of XML document to validate.</param>
         /// <returns>True if content of document is valid; false otherwise.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public bool Validate(string xmlDocumentContent)
+        public void Validate(string xmlDocumentContent)
         {
             if (xmlDocumentContent == null)
             {
@@ -44,8 +44,7 @@ namespace _15pl04.Ucc.Commons.Messaging
             }
 
             var xDocument = XDocument.Parse(xmlDocumentContent);
-            var result = Validate(xDocument);
-            return result;
+            Validate(xDocument);
         }
 
         /// <summary>
@@ -54,24 +53,13 @@ namespace _15pl04.Ucc.Commons.Messaging
         /// <param name="xDocument">XDocument to validate.</param>
         /// <returns>True if document is valid; false otherwise.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public bool Validate(XDocument xDocument)
+        public void Validate(XDocument xDocument)
         {
             if (xDocument == null)
             {
                 throw new ArgumentNullException("xDocument");
             }
-
-            bool result;
-            try
-            {
-                xDocument.Validate(_xmlSchemaSet, null);
-                result = true;
-            }
-            catch (Exception)
-            {
-                result = false;
-            }
-            return result;
+             xDocument.Validate(_xmlSchemaSet, null);
         }
     }
 
@@ -100,14 +88,14 @@ namespace _15pl04.Ucc.Commons.Messaging
         {
             return _messageValidatorForMessageTypeDictionary[type];
         }
-        public static bool Validate(XDocument xDocument, Message.MessageClassType type)
+        public static void Validate(XDocument xDocument, Message.MessageClassType type)
         {
-            return GetValidatorForMessageClassType(type).Validate(xDocument);
+            GetValidatorForMessageClassType(type).Validate(xDocument);
         }
 
-        public static bool Validate(string xDocument, Message.MessageClassType type)
+        public static void Validate(string xDocument, Message.MessageClassType type)
         {
-            return GetValidatorForMessageClassType(type).Validate(xDocument);
+            GetValidatorForMessageClassType(type).Validate(xDocument);
         }
     }
 }

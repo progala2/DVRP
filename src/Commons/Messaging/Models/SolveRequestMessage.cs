@@ -10,6 +10,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolveRequest")]
     public class SolveRequestMessage : Message
     {
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string noNamespaceSchemaLocation = "SolveRequest.xsd";
         private string _problemTypeField;
 
         private ulong? _solvingTimeoutField;
@@ -44,6 +46,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
+        public bool ShouldSerializeSolvingTimeout() { return _solvingTimeoutField.HasValue; }
+
         [XmlElement(DataType = "base64Binary", Order = 2)]
         public byte[] Data
         {
@@ -69,6 +73,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
                 _idField = value;
             }
         }
+
+        public bool ShouldSerializeId() { return _idField.HasValue; }
 
         [XmlIgnore]
         public override MessageClassType MessageType

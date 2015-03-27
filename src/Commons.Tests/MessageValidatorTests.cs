@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Messaging;
@@ -14,12 +15,20 @@ namespace _15pl04.Ucc.Commons.Tests
         {
             using (var reader = new FileStream("XmlMessages/NoOperation.xml", FileMode.Open))
             {
-                byte[] buffer = new byte[reader.Length - 3];
+                var buffer = new byte[reader.Length - 3];
                 reader.Read(buffer, 0, 3);
                 reader.Read(buffer, 0, (int)reader.Length - 3);
                 var str = Encoding.ASCII.GetString(buffer);
-                Assert.IsTrue(MessageValidator.Validate(str, Message.MessageClassType.NoOperation));
-                Assert.IsFalse(MessageValidator.Validate(str, Message.MessageClassType.Status));
+                MessageValidator.Validate(str, Message.MessageClassType.NoOperation);
+                try
+                {
+                    MessageValidator.Validate(str, Message.MessageClassType.Status);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+                Assert.Fail();
             }
             
         }

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
+    [Serializable]
+    [XmlInclude(typeof(SolutionRequestMessage))]
     public abstract class Message
     {
         /// <summary>
@@ -64,6 +68,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             return _messageClassTypeStringDictionary[str];
         }
 
+        [XmlIgnore]
         public abstract MessageClassType MessageType { get; }
     }
 }

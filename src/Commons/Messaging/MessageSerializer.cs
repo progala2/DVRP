@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 using _15pl04.Ucc.Commons.Messaging.Models;
 
@@ -31,8 +33,10 @@ namespace _15pl04.Ucc.Commons.Messaging
             using (var writer = new MemoryStream())
             {
                 var xml = new XmlSerializer(_type);
-                xml.Serialize(writer, obj);
-                buffer = writer.GetBuffer();
+                XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+                ns.Add("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+                xml.Serialize(writer, obj, ns);
+                buffer = writer.ToArray();
             }
         }
     }
