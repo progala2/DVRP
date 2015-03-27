@@ -15,18 +15,16 @@ namespace _15pl04.Ucc.Commons
 
         public MessageSender(IPEndPoint endPoint)
         {
-            _servers = new List<BackupCommunicationServer>
-            {
-                new BackupCommunicationServer()
-                {
-                    Address = endPoint.Address.ToString(),
-                    Port = (ushort) endPoint.Port
-                }
-            };
+            _servers = new List<BackupCommunicationServer>();
             _tcpClient = new TcpClient(endPoint);
             _marshaller = new Marshaller();
         }
 
+        /// <summary>
+        /// Functions sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to other exception
+        /// </summary>
+        /// <param name="messages">messages to send</param>
+        /// <returns>messages returned or null</returns>
         public Message[] SendMessages(Message[] messages)
         {
             var data = _marshaller.Marshall(messages);
@@ -42,11 +40,11 @@ namespace _15pl04.Ucc.Commons
                 catch (Commons.TimeoutException)
                 {
                     again = true;
-                    _servers.RemoveAt(0);
                     if (_servers.Count > 0)
                     {
                         _tcpClient.ServerAddress = new IPEndPoint(
-                            new IPAddress(long.Parse(_servers[0].Address)), _servers[0].Port );
+                            new IPAddress(long.Parse(_servers[0].Address)), _servers[0].Port);
+                        _servers.RemoveAt(0);
                     }
                     else
                     {
@@ -54,7 +52,7 @@ namespace _15pl04.Ucc.Commons
                         return null;
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     //can not send to server
                     return null;
@@ -71,26 +69,20 @@ namespace _15pl04.Ucc.Commons
         {
             if (messages == null)
                 return;
-
-            bool isRemovingDuplicatesNecessary = false;
-            foreach (var message in messages)
+            
+            for (int i = messages.Length - 1; i >= 0; --i)
             {
+                var message = messages[i];
                 switch (message.MessageType)
                 {
                     case Message.MessageClassType.NoOperation:
-                        _servers.AddRange(((NoOperationMessage)message).BackupCommunicationServers);
-                        isRemovingDuplicatesNecessary = true;
-                        break;
+                        _servers = ((NoOperationMessage)message).BackupCommunicationServers;
+                        return;
                     case Message.MessageClassType.RegisterResponse:
-                        _servers.AddRange(((RegisterResponseMessage)message).BackupCommunicationServers);
-                        isRemovingDuplicatesNecessary = true;
-                        break;
-                    default:
-                        break;
+                        _servers = ((RegisterResponseMessage)message).BackupCommunicationServers;
+                        return;
                 }
             }
-            if (isRemovingDuplicatesNecessary)
-                _servers = _servers.Distinct().ToList();
         }
     }
 }

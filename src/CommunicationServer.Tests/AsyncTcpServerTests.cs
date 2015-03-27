@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -14,10 +16,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
     {
         private static readonly IPAddress TestIp = new IPAddress(new byte[] { 127, 0, 0, 1 });
         private const int Port = 9123;
-        private const int BufferSize = 2048;
+        private const int BufferSize = 204800;
         private AsyncTcpServer _tcpServer;
 
-        [TestMethod]
+        //[TestMethod]
         public void Test1() //not working properly yet
         {
             //Preparing TcpServer
@@ -27,18 +29,19 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             Socket socket;
             InitSocket(out socket);
 
-            const string message = "Test message, longer than 8 bytes for testing";
+            const string message = "To jest wiadomosc testowa majaca wiecej bajtow niz 8";
             byte[] expectedResponse = Encoding.ASCII.GetBytes(message);
 
-            Send(socket, message);
-            string receivedMessage;
-            Receive(socket, out receivedMessage);
-            for (int i = 0; i < receivedMessage.Length; ++i)
+            byte[] response =  Send(socket, message);
+
+
+            Assert.AreEqual(expectedResponse.Length, response.Length);
+            for (int i = 0; i < response.Length; ++i)
             {
-                Assert.AreEqual(receivedMessage[i], message[i]);
+                Assert.AreEqual(expectedResponse[i], response[i]);
                 i++;
             }
-            Assert.AreEqual(expectedResponse, message);
+            _tcpServer.StopListening();
         }
 
         private void Init()
@@ -67,25 +70,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             catch (Exception e)
             {
                 throw e;
-                //Console.WriteLine(e.ToString());
             }
         }
 
-        private void Receive(Socket socket, out string message)
-        {
-            message = String.Empty;
-            int bytesReceived = 0;
-            var bytes = new byte[BufferSize];
-
-            while ((bytesReceived = socket.Receive(bytes)) > 0)
-            {
-                message += Encoding.ASCII.GetString(bytes, 0, bytesReceived);
-            }
-            //should server or client close socket?
-            socket.Close();
-        }
-
-        private void Send(Socket socket, string message)
+        private byte[] Send(Socket socket, string message)
         {
             byte[] bytes = new byte[BufferSize];
 
@@ -99,25 +87,18 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                 if (bytesSent != msg.Length)
                 {
                     //TODO break
-                    return;
+                    return null;
                 }
                 socket.Shutdown(SocketShutdown.Send);
 
                 int bytesRec = socket.Receive(bytes);
-                Console.WriteLine("Echoed test = {0}",
-                    Encoding.ASCII.GetString(bytes, 0, bytesRec));
-
-                //sender.Close();
+                Debug.WriteLine("Length of echoed test = {0}",
+                    bytesRec);
+                //should server or client close socket?
+                socket.Close();
+                return bytes.Take(bytesRec).ToArray();
 
             }
-            //catch (ArgumentNullException ane)
-            //{
-            //    Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
-            //}
-            //catch (SocketException se)
-            //{
-            //    Console.WriteLine("SocketException : {0}", se.ToString());
-            //}
             catch (Exception e)
             {
                 Console.WriteLine("Unexpected exception : {0}", e.ToString());

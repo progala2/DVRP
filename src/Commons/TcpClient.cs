@@ -41,8 +41,8 @@ namespace _15pl04.Ucc.Commons
 
             try
             {
-                Socket socket = new Socket(_serverAddress.AddressFamily, 
-                    SocketType.Stream, 
+                Socket socket = new Socket(_serverAddress.AddressFamily,
+                    SocketType.Stream,
                     ProtocolType.Tcp);
 
                 try
@@ -78,9 +78,9 @@ namespace _15pl04.Ucc.Commons
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                throw;
             }
             return buf;
         }
