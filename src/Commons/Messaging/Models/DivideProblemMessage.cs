@@ -8,8 +8,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName="DivideProblem")]
-    public class DivideProblemMessage : Message
+    public class DivideProblemMessage : Message, IIdentifiableBySender
     {
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string noNamespaceSchemaLocation = "DivideProblem.xsd";
+
         private string _problemTypeField;
 
         private ulong _idField;
@@ -72,7 +75,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        [XmlElement(Order = 4)]
+        [XmlElement("NodeID", Order = 4)]
         public ulong NodeId
         {
             get

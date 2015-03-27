@@ -9,8 +9,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Status")]
-    public class StatusMessage : Message
+    public class StatusMessage : Message, IIdentifiableBySender
     {
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string noNamespaceSchemaLocation = "Status.xsd";
+
         private ulong _idField;
 
         private List<StatusThread> _threadsField;

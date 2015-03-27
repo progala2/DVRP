@@ -9,17 +9,18 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolvePartialProblems")]
-    public class PartialProblemsMessage : Message
+    public class PartialProblemsMessage : Message, IIdentifiableBySender
     {
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string noNamespaceSchemaLocation = "PartialProblems.xsd";
+
         private string _problemTypeField;
 
         private ulong _idField;
 
         private byte[] _commonDataField;
 
-        private ulong _solvingTimeoutField;
-
-        private bool _solvingTimeoutFieldSpecified;
+        private ulong? _solvingTimeoutField;
 
         private List<PartialProblemsPartialProblem> _partialProblemsField;
 
@@ -68,7 +69,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 3)]
-        public ulong SolvingTimeout
+        public ulong? SolvingTimeout
         {
             get
             {
@@ -80,17 +81,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        [XmlIgnore]
-        public bool SolvingTimeoutSpecified
+        public bool ShouldSerializeSolvingTimeout()
         {
-            get
-            {
-                return _solvingTimeoutFieldSpecified;
-            }
-            set
-            {
-                _solvingTimeoutFieldSpecified = value;
-            }
+            return SolvingTimeout.HasValue;
         }
 
         [XmlArray(Order = 4)]
@@ -151,7 +144,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        [XmlElement(Order = 2)]
+        [XmlElement("NodeID", Order = 2)]
         public ulong NodeId
         {
             get

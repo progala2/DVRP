@@ -9,21 +9,22 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Register")]
-    public class RegisterMessage : Message
+    public class RegisterMessage : Message, IIdentifiableBySender
     {
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string noNamespaceSchemaLocation = "Register.xsd";
+
         private RegisterType _typeField;
 
         private List<string> _solvableProblemsField;
 
         private byte _parallelThreadsField;
 
-        private bool _deregisterField;
-
-        private bool _deregisterFieldSpecified;
+        private bool? _deregisterField;
 
         private ulong _idField;
 
-        private bool _idFieldSpecified;
+        private bool _specifiedIdField;
 
         public RegisterMessage()
         {
@@ -71,7 +72,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlElement(Order = 3)]
-        public bool Deregister
+        public bool? Deregister
         {
             get
             {
@@ -83,17 +84,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        [XmlIgnore]
-        public bool DeregisterSpecified
+        public bool ShouldSerializeDeregister()
         {
-            get
-            {
-                return _deregisterFieldSpecified;
-            }
-            set
-            {
-                _deregisterFieldSpecified = value;
-            }
+            return _deregisterField.HasValue;
         }
 
         [XmlElement(Order = 4)]
@@ -110,16 +103,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlIgnore]
-        public bool IdSpecified
+        public bool SpecifiedId
         {
-            get
-            {
-                return _idFieldSpecified;
-            }
-            set
-            {
-                _idFieldSpecified = value;
-            }
+            get { return _specifiedIdField; }
+            set { _specifiedIdField = value; }
         }
 
         [XmlIgnore]

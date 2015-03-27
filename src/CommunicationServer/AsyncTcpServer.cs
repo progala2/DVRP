@@ -1,11 +1,23 @@
-﻿using _15pl04.Ucc.CommunicationServer.Collections;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using _15pl04.Ucc.CommunicationServer.Messaging;
 using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+
 
 namespace _15pl04.Ucc.CommunicationServer
 {
     internal class AsyncTcpServer
     {
+        private const int MaxPendingConnections = 100;
+        private readonly ServerConfig _config;
+        private readonly MessageProcessor _queue;
+        private readonly ManualResetEvent _allDoneEvent;
+        private Socket _listenerSocket;
+
+
         public delegate void ResponseCallback(byte[] response);
 
         /*
@@ -28,6 +40,9 @@ namespace _15pl04.Ucc.CommunicationServer
             /*
              * Inicjalizacja.
              */
+            _config = config;
+            _queue = queue;
+            _allDoneEvent = new ManualResetEvent(false);
         }
 
         public void StartListening()
@@ -35,6 +50,27 @@ namespace _15pl04.Ucc.CommunicationServer
             /*
              * Nasłuchiwanie.
              */
+            _listenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            try
+            {
+                _listenerSocket.Bind(_config.Address);
+                _listenerSocket.Listen(MaxPendingConnections);
+
+                while (true)
+                {
+                    _allDoneEvent.Reset();
+
+                    _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket);
+
+                    _allDoneEvent.WaitOne();
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO
+                throw;
+            }
         }
 
         public void StopListening()
@@ -42,6 +78,8 @@ namespace _15pl04.Ucc.CommunicationServer
             /*
              * Sprzątanie.
              */
+            _listenerSocket.Shutdown(SocketShutdown.Both);
+            _listenerSocket.Close();
         }
 
         private static ResponseCallback GenerateResponseCallback(Socket clientSocket)
@@ -55,7 +93,76 @@ namespace _15pl04.Ucc.CommunicationServer
                  *  
                  *  Nie ważne co się stanie, funkcja ma się kiedyś kończyć. Nie może nam się zawiesić w nieskończoność i marnować zasoby.
                  */
+
+                //needs reworking, currently unable to test it correctly
+                clientSocket.Send(response);
+                clientSocket.Shutdown(SocketShutdown.Send);
+                clientSocket.Close();
             });
+        }
+
+        private void AcceptCallback(IAsyncResult ar)
+        {
+            _allDoneEvent.Set();
+
+            Socket listenerSocket = (Socket)ar.AsyncState;
+            Socket handlerSocket = listenerSocket.EndAccept(ar);
+
+            var state = new StateObject();
+            state.WorkSocket = handlerSocket;
+            handlerSocket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0,
+                new AsyncCallback(ReadCallback), state);
+        }
+
+        private void ReadCallback(IAsyncResult ar)
+        {
+            StateObject state = (StateObject)ar.AsyncState;
+            Socket handlerSocket = state.WorkSocket;
+
+            int bytesRead;
+
+
+            bytesRead = handlerSocket.EndReceive(ar);
+            if (bytesRead > 0)
+            {
+                //state.RawDataList.AddRange(state.Buffer.Take(bytesRead));
+                state.MemoryStream.Write(state.Buffer, 0, bytesRead);
+                Debug.WriteLine("ReadCallback rawDataList size part: " + state.MemoryStream.Length);
+               
+                handlerSocket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0,
+                    new AsyncCallback(ReadCallback), state);
+            }
+            else
+            {
+                Debug.WriteLine("ReadCallback rawDataList size whol: " + state.MemoryStream.Length);
+
+                //state.workSocket.Send(state.RawDataList.ToArray());
+                //enqueue rawdata
+                _queue.EnqeueInputMessage(state.MemoryStream.ToArray(),
+                    GenerateResponseCallback(state.WorkSocket));
+                state.Dispose();
+            }
+        }
+
+        internal class StateObject : IDisposable
+        {
+            // Client  socket.
+            public Socket WorkSocket = null;
+            // Size of receive buffer.
+#if DEBUG
+            public const int BufferSize = 8;
+#else
+        public const int BufferSize = 1024;
+#endif
+            // Receive buffer.
+            public byte[] Buffer = new byte[BufferSize];
+            // Received data string.
+            public MemoryStream MemoryStream = new MemoryStream();
+
+            public void Dispose()
+            {
+                MemoryStream.Dispose();
+            }
         }
     }
 }

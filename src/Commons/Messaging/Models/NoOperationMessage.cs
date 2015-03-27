@@ -11,6 +11,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "NoOperation")]
     public class NoOperationMessage : Message
     {
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string noNamespaceSchemaLocation = "NoOperation.xsd";
+
         private List<BackupCommunicationServer> _backupCommunicationServersField;
 
         public NoOperationMessage()
@@ -48,7 +51,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         private ushort _portField;
 
-        [XmlAttribute(DataType = "anyURI")]
+        [XmlAttribute("address", DataType = "anyURI")]
         public string Address
         {
             get
@@ -61,7 +64,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             }
         }
 
-        [XmlAttribute]
+        [XmlAttribute("port")]
         public ushort Port
         {
             get

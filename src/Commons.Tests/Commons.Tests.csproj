@@ -54,7 +54,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MessagesTests.cs" />
     <Compile Include="ResourcesTests.cs" />
-    <Compile Include="XmlParserTests.cs" />
+    <Compile Include="TcpClientTests.cs" />
+    <Compile Include="Tools\XmlFileParser.cs" />
+    <Compile Include="MessageSerializerTests.cs" />
+    <Compile Include="MarshallerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
