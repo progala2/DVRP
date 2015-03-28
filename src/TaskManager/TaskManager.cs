@@ -59,7 +59,7 @@ namespace _15pl04.Ucc.TaskManager
 
         private void NoOperationMessageHandler(NoOperationMessage message)
         {
-            throw new NotImplementedException();
+            // nothing to do, backuping is handled by MessageSender
         }
 
         /// <exception cref="System.InvalidOperationException">Thrown when:
@@ -80,7 +80,7 @@ namespace _15pl04.Ucc.TaskManager
             }
             var taskSolverType = TaskSolvers[message.ProblemType];
 
-            // should be started properly cause server sends at most as many partial problems as count of component's tasks in idle state
+            // should be started properly cause server sends at most as many tasks to do as count of component's tasks in idle state
             bool started = ComputationalTaskPool.StartComputationalTask(() =>
             {
                 var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.Data);

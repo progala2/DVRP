@@ -56,7 +56,7 @@ namespace _15pl04.Ucc.ComputationalNode
 
         private void NoOperationMessageHandler(NoOperationMessage message)
         {
-            throw new NotImplementedException();
+            // nothing to do, backuping is handled by MessageSender
         }
 
         /// <exception cref="System.InvalidOperationException">Thrown when:
