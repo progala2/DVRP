@@ -18,7 +18,7 @@ namespace _15pl04.Ucc.Commons.Tests
             doc.Add(root);
 
             var str = doc.ToString();
-            var tstClass = MessageSerializer.Deserialize(Encoding.ASCII.GetBytes(str), Message.MessageClassType.SolutionRequest);
+            var tstClass = MessageSerializer.Deserialize(Encoding.UTF8.GetBytes(str), Message.MessageClassType.SolutionRequest);
             var solutionRequestMessage = tstClass as SolutionRequestMessage;
             Assert.IsTrue(solutionRequestMessage != null); 
             Assert.IsTrue(2 == solutionRequestMessage.Id);

@@ -27,7 +27,7 @@ namespace _15pl04.Ucc.Commons.Tests
 
             const string message = "to jest wiadomosc do przekazania";
 
-            byte[] data = Encoding.ASCII.GetBytes(message);
+            byte[] data = Encoding.UTF8.GetBytes(message);
 
             Task t = new Task(new Action(ListenAndResendV4));
             t.Start();
@@ -53,7 +53,7 @@ namespace _15pl04.Ucc.Commons.Tests
 
             const string message = "to jest wiadomosc do przekazania";
 
-            byte[] data = Encoding.ASCII.GetBytes(message);
+            byte[] data = Encoding.UTF8.GetBytes(message);
 
             Task t = new Task(new Action(ListenAndResendV6));
             t.Start();
@@ -86,7 +86,7 @@ namespace _15pl04.Ucc.Commons.Tests
 
                 const string message = "to jest wiadomosc do przekazania";
 
-                byte[] data = Encoding.ASCII.GetBytes(message);
+                byte[] data = Encoding.UTF8.GetBytes(message);
                                 
                 byte[] received = client.SendData(data);
             }

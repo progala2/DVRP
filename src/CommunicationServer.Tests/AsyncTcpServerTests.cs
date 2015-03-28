@@ -30,7 +30,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             InitSocket(out socket);
 
             const string message = "To jest wiadomosc testowa majaca wiecej bajtow niz 8";
-            byte[] expectedResponse = Encoding.ASCII.GetBytes(message);
+            byte[] expectedResponse = Encoding.UTF8.GetBytes(message);
 
             byte[] response =  Send(socket, message);
 
@@ -79,7 +79,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
             try
             {
-                byte[] msg = Encoding.ASCII.GetBytes(message);
+                byte[] msg = Encoding.UTF8.GetBytes(message);
 
                 // Send the data through the socket.
                 int bytesSent = socket.Send(msg);

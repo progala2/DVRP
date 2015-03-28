@@ -63,7 +63,7 @@ namespace _15pl04.Ucc.TaskManager
         }
 
         /// <exception cref="System.InvalidOperationException">Thrown when:
-        /// - message is designated for TaskManger with differnet ID,
+        /// - message is designated for TaskManger with different ID,
         /// - problem type can't be solved with this TaskManger,
         /// - dividing problem cannot be started bacause no tasks are available in task pool.</exception>
         private void DivideProblemMessageHandler(DivideProblemMessage message)
@@ -71,7 +71,7 @@ namespace _15pl04.Ucc.TaskManager
             if (ID != message.NodeId)
             {
                 // shouldn't ever get here - received message for other TaskManager
-                throw new InvalidOperationException(string.Format("TaskManager manager with ID={0} received message for TaskManager wiht ID={1}.", ID, message.NodeId));
+                throw new InvalidOperationException(string.Format("TaskManager manager with ID={0} received message for TaskManager with ID={1}.", ID, message.NodeId));
             }
             if (!TaskSolvers.ContainsKey(message.ProblemType))
             {

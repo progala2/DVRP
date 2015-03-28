@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void SolutionsMessageTest()
         {
-            var msg = XmlFileParser<SolutionsMessage>.Deserialize("XmlMessages/Solution.xml");
+            var msg = XmlFileParser<SolutionsMessage>.Deserialize("XmlMessages/Solutions.xml");
             Assert.IsTrue(msg.Id == 12);
         }
 
