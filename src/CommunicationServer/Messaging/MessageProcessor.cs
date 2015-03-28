@@ -77,8 +77,28 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     {
                         var registerMsg = msg as RegisterMessage;
 
-                        // TODO
-                        return null;
+                        ulong id;
+
+                        switch (registerMsg.Type)
+                        {
+                            case ComponentType.ComputationalNode:
+                            case ComponentType.TaskManager:
+                                id = ComponentMonitor.Instance.RegisterNode(registerMsg.Type, registerMsg.ParallelThreads, registerMsg.SolvableProblems);
+                                break;
+
+                            //TODO - case ComponentType.CommunicationServer:
+
+                            default:
+                                throw new Exception("Wrong type of component is trying to register.");
+                        }
+
+                        var registerResponseMsg = new RegisterResponseMessage()
+                        {
+                            Id = id,
+                            BackupCommunicationServers = new List<BackupCommunicationServer>(),
+                            Timeout = _communicationTimeout,
+                        };
+                        return registerResponseMsg;
                     }
 
                 case Message.MessageClassType.Status:
@@ -93,8 +113,8 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     {
                         var solveRequestMsg = msg as SolveRequestMessage;
 
-                        var id = Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.GenerateProblemInstanceId();
-                        var solvingTimeout = solveRequestMsg.SolvingTimeout.GetValueOrDefault(0);
+                        ulong id = Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.GenerateProblemInstanceId();
+                        ulong solvingTimeout = solveRequestMsg.SolvingTimeout.GetValueOrDefault(0);
 
                         var problemInstance = new ProblemInstance(id, solveRequestMsg.ProblemType, solveRequestMsg.Data, solvingTimeout);
                         Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.AddNewProblemInstance(problemInstance);
@@ -110,34 +130,67 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     {
                         var solutionRequestMsg = msg as SolutionRequestMessage;
 
-                        var id = solutionRequestMsg.Id;
+                        ulong id = solutionRequestMsg.Id;
                         FinalSolution fs;
+                        SolutionsMessage solutionMsg;
 
                         if (Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.TryGetFinalSolution(id, out fs))
                         {
+                            var ss = new SolutionsSolution()
+                            {
+                                ComputationsTime = fs.ComputationsTime,
+                                Data = fs.SolutionData,
+                                TaskId = fs.ProblemInstanceId,
+                                TimeoutOccured = fs.TimeoutOccured,
+                                Type = SolutionType.Final
+                            };
 
+                            solutionMsg = new SolutionsMessage()
+                            {
+                                Id = id,
+                                CommonData = null,
+                                ProblemType = fs.ProblemType,
+                                Solutions = new List<SolutionsSolution>() { ss },
+                            };
                         }
                         else
                         {
-
+                            // TODO - stuff below is merely a temporary solution
+                            var ss = new SolutionsSolution()
+                            {
+                                ComputationsTime = 0,
+                                Data = new byte[0],
+                                TaskId = id,
+                                TimeoutOccured = true,
+                                Type = SolutionType.Ongoing
+                            };
+                            solutionMsg = new SolutionsMessage()
+                            {
+                                Id = id,
+                                CommonData = null,
+                                ProblemType = "dummy",
+                                Solutions = new List<SolutionsSolution>() { ss },
+                            };
                         }
-                        // TODO
-                        return null;
+                        return solutionMsg;
                     }
 
                 case Message.MessageClassType.PartialProblems:
                     {
                         var partialProblemsMsg = msg as PartialProblemsMessage;
-                        // TODO 
 
-                        return null;
+                        // TODO
+
+                        return new NoOperationMessage();
                     }
 
                 case Message.MessageClassType.Solutions:
                     {
                         var solutionsMessage = msg as SolutionsMessage;
+
                         // TODO
-                        return null;
+
+                        return new NoOperationMessage();
                     }
                 default:
                     throw new Exception("Unsupported type received: " + msg.MessageType.ToString());
