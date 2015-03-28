@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Collections.Generic;
-using System.IO;
 
 namespace _15pl04.Ucc.Commons
 {
@@ -33,7 +32,7 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="data">data to send</param>
         /// <returns>data received from host</returns>
-        /// <exception cref="Commons.TimeoutException">connection to host timed out</exception>
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TimeoutException">connection to host timed out</exception>
         public byte[] SendData(byte[] data)
         {
             List<byte> ret = new List<byte>();
@@ -72,7 +71,7 @@ namespace _15pl04.Ucc.Commons
                     switch (e.ErrorCode)
                     {
                         case 10060: //timeout
-                            throw new Commons.TimeoutException(_serverAddress.ToString(), e);
+                            throw new Commons.Exceptions.TimeoutException(_serverAddress.ToString(), e);
                         default:
                             throw e;
                     }
