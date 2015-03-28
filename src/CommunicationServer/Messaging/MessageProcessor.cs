@@ -1,23 +1,29 @@
-﻿using _15pl04.Ucc.Commons.Messaging;
+﻿using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.CommunicationServer.Collections;
+using _15pl04.Ucc.CommunicationServer.Tasks.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
     internal class MessageProcessor
     {
+        public delegate void MessageReceptionEventHandler(object sender, MessageReceptionEventArgs e);
+        public event MessageReceptionEventHandler MessageReception;
+
         private InputMessageQueue _inputQueue;
-        private OutputMessageQueue _outputQueue;
         private Marshaller _marshaller;
         private Task _processingThread;
+        private uint _communicationTimeout;
 
-        public MessageProcessor(Marshaller marshaller)
+        public MessageProcessor(Marshaller marshaller, uint communicationTimeout)
         {
             _inputQueue = new InputMessageQueue();
-            _outputQueue = new OutputMessageQueue();
             _marshaller = marshaller;
+            _communicationTimeout = communicationTimeout;
         }
 
         public void EnqeueInputMessage(byte[] rawMsg, AsyncTcpServer.ResponseCallback callback)
@@ -31,9 +37,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             }
         }
 
-        public void EnqueueOutputMessage(Message msg)
+        public void EnqueueOutputMessage(ComponentType addresseeType, Message msg)
         {
-            _outputQueue.Enqueue(msg);
+            // legacy (nie zmieniać dopóki Rad nie skończy pracy nad synchronizacją)
         }
 
         private void ProcessQueuedMessages()
@@ -47,17 +53,13 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 {
                     Message[] input = _marshaller.Unmarshall(rawMsg);
 
-                    if (input.Length != 1)
-                        throw new Exception("Received more than one message at once from a component.");
+                    foreach (var message in input)
+                    {
+                        var responseMsgs = GetResponseMessages(message);
 
-                    /*
-                     * 1. Get component's type and id.
-                     * 2. Check if id is registered.
-                     * 3. Dequeue pending messages from the output queue if needed.
-                     * 4. Synchronously generate a response if no messages in the output queue.
-                     * 5. Marshall response messages.
-                     * 6. Call the callback asynchronously.
-                     */
+                        var rawResponse = _marshaller.Marshall(new Message[] { responseMsgs });
+                        new Task(() => { callback(rawResponse); }).Start();
+                    }
                 }
                 else
                 {
@@ -67,42 +69,83 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             }
         }
 
-        private void ___placeholder(Message msg)
+        private Message GetResponseMessages(Message msg)
         {
-            var type = msg.GetType();
-
-            if (type == typeof(RegisterMessage))
+            switch (msg.MessageType)
             {
+                case Message.MessageClassType.Register:
+                    {
+                        var registerMsg = msg as RegisterMessage;
 
-            }
-            else if (type == typeof(StatusMessage))
-            {
+                        // TODO
+                        return null;
+                    }
 
-            }
-            else if (type == typeof(SolveRequestMessage))
-            {
+                case Message.MessageClassType.Status:
+                    {
+                        var statusMsg = msg as StatusMessage;
 
-            }
-            else if (type == typeof(SolutionRequestMessage))
-            {
+                        // TODO
+                        return null;
+                    }
 
-            }
-            else if (type == typeof(PartialProblemsMessage))
-            {
+                case Message.MessageClassType.SolveRequest:
+                    {
+                        var solveRequestMsg = msg as SolveRequestMessage;
 
-            }
-            else if (type == typeof(PartialProblemsMessage))
-            {
+                        var id = Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.GenerateProblemInstanceId();
+                        var solvingTimeout = solveRequestMsg.SolvingTimeout.GetValueOrDefault(0);
 
-            }
-            else if (type == typeof(SolutionsMessage))
-            {
+                        var problemInstance = new ProblemInstance(id, solveRequestMsg.ProblemType, solveRequestMsg.Data, solvingTimeout);
+                        Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.AddNewProblemInstance(problemInstance);
 
+                        var solveRequestResponseMsg = new SolveRequestResponseMessage()
+                        {
+                            Id = problemInstance.Id
+                        };
+                        return solveRequestResponseMsg;
+                    }
+
+                case Message.MessageClassType.SolutionRequest:
+                    {
+                        var solutionRequestMsg = msg as SolutionRequestMessage;
+
+                        var id = solutionRequestMsg.Id;
+                        FinalSolution fs;
+
+                        if (Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.TryGetFinalSolution(id, out fs))
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                        // TODO
+                        return null;
+                    }
+
+                case Message.MessageClassType.PartialProblems:
+                    {
+                        var partialProblemsMsg = msg as PartialProblemsMessage;
+                        // TODO 
+
+                        return null;
+                    }
+
+                case Message.MessageClassType.Solutions:
+                    {
+                        var solutionsMessage = msg as SolutionsMessage;
+                        // TODO
+                        return null;
+                    }
+                default:
+                    throw new Exception("Unsupported type received: " + msg.MessageType.ToString());
             }
-            else
-                throw new ArgumentException("Unsupported type received: " + type.FullName);
         }
 
+        // TODO additional MessageProcessor for backup CS
+        // TODO check if senders are registered
 
     }
 }

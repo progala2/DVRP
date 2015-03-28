@@ -2,8 +2,6 @@
 {
     public class DvrpTaskSolver : UCCTaskSolver.TaskSolver
     {
-        // TODO
-
         public DvrpTaskSolver(byte[] problemData)
             : base(problemData)
         { }

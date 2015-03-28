@@ -50,10 +50,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 Address = new IPEndPoint(new IPAddress(new byte[]{127, 0, 0, 1}), 9123),
                 Mode = ServerConfig.ServerMode.Primary,
-                Timeout = 10
+                CommunicationTimeout = 10
             } ;
 
-            _tcpServer = new AsyncTcpServer(config, new MessageProcessor(new Marshaller()));
+            _tcpServer = new AsyncTcpServer(config, new MessageProcessor(new Marshaller(), config.CommunicationTimeout));
             
             new Thread(_tcpServer.StartListening).Start();
         }

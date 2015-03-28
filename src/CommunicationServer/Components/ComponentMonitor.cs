@@ -1,18 +1,31 @@
 ﻿using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.CommunicationServer.Components;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
+    /// <summary>
+    /// Singleton class that takes care of components' (de)registration and (if running on the primary Pommunication Server) checks if any of those 
+    /// exceeds the timeout between subsequent messages.
+    /// </summary>
     internal sealed class ComponentMonitor
-    {
+    {   
+        /// <summary>
+        /// Sleeping time between every timeout check for registered components.
+        /// </summary>
         public const int TimeBetweenStateChecks = 500;
 
         public delegate void DeregisterationEventHandler(object sender, DeregisterationEventArgs e);
         public event DeregisterationEventHandler Deregistration;
 
+        /// <summary>
+        /// Singleton instance.
+        /// </summary>
         public static ComponentMonitor Instance
         {
             get { return _lazy.Value; }
@@ -31,26 +44,72 @@ namespace _15pl04.Ucc.CommunicationServer
             _random = new Random();
         }
 
-        public ulong Register(ComponentType type, byte numberOfThreads, string[] solvableProblems)
-        {
-            var component = new ComponentInfo(type, numberOfThreads, solvableProblems);
-            ulong id;
-
-            do 
-            {
-                id = (ulong)_random.Next();
-            } while (_registeredComponents.ContainsKey(id));
-
-            _registeredComponents.TryAdd(id, component);
-
-            return id;
-        }
-
+        /// <summary>
+        /// Check if there is a registred component with the given id.
+        /// </summary>
+        /// <param name="id">Component's id.</param>
+        /// <returns>Boolean value that indicates whether the component is currently registered.</returns>
         public bool IsRegistered(ulong id)
         {
             return _registeredComponents.ContainsKey(id);
         }
 
+        public ulong RegisterNode(ComponentType type, byte numberOfThreads, ICollection<string> solvableProblems)
+        {
+            ulong id;
+            do 
+            {
+                id = (ulong)_random.Next();
+            } while (_registeredComponents.ContainsKey(id));
+
+            var ni = new NodeInfo(type, numberOfThreads, solvableProblems);
+            _registeredComponents.TryAdd(id, ni);
+
+            return id;
+        }
+
+        public ulong RegisterBackupServer(IPEndPoint address)
+        {
+            ulong id;
+            do
+            {
+                id = (ulong)_random.Next();
+            } while (_registeredComponents.ContainsKey(id));
+
+            var bsi = new BackupServerInfo(address);
+            _registeredComponents.TryAdd(id, bsi);
+
+            return id;
+        }
+
+        /// <summary>
+        /// Deregister component.
+        /// </summary>
+        /// <param name="id">Component's id assigned by the CS during registration.</param>
+        public void Deregister(ulong id)
+        {
+            ComponentInfo info;
+
+            if (_registeredComponents.TryRemove(id, out info))
+            {
+                var eventArgs = new DeregisterationEventArgs()
+                {
+                    ComponentInfo = info,
+                    Id = id
+                };
+
+                // Invoke subscribers' methods synchronously.
+                if (Deregistration != null)
+                    Deregistration.Invoke(this, eventArgs);
+            }
+            else
+                throw new Exception("Unregistered component is being deregistered.");
+        }
+
+        /// <summary>
+        /// Start components' timeouts checking thread.
+        /// </summary>
+        /// <param name="timeout">Timeout for component's messages.</param>
         public void StartMonitoring(ulong timeout)
         {
             if (_stateCheckThread != null)
@@ -63,6 +122,10 @@ namespace _15pl04.Ucc.CommunicationServer
             {
                 _stateCheckThread = null;
             });
+
+            // Reset timestamps in case some backup server took over.
+            foreach (var component in _registeredComponents)
+                component.Value.UpdateTimestamp();
 
             _stateCheckThread = new Task(() =>
             {
@@ -84,31 +147,27 @@ namespace _15pl04.Ucc.CommunicationServer
             _stateCheckThread.Start();
         }
 
-        private void Deregister(ulong id)
-        {
-            ComponentInfo info;
-
-            if (_registeredComponents.TryRemove(id, out info))
-            {
-                var eventArgs = new DeregisterationEventArgs()
-                {
-                    ComponentInfo = info,
-                    Id = id
-                };
-
-                // Invoke subscribers' methods synchronously.
-                Deregistration.Invoke(this, eventArgs);
-            }
-            else
-                throw new Exception("Unregistered component is being deregistered.");
-        }
-
+        /// <summary>
+        /// Stop components' timeouts checking thread.
+        /// </summary>
         public void StopMonitoring()
         {
             if (_stateCheckThread == null)
                 return;
 
             _cancellationTokenSource.Cancel();            
+        }
+
+        // TODO comments
+        public int GetNumberOfAvailableComputationalThreads(string problemName)
+        {
+            int threadNum = 0;
+
+            foreach (NodeInfo component in _registeredComponents.Values)
+                if (component.Type == ComponentType.ComputationalNode && component.SolvableProblems.Contains(problemName))
+                    threadNum += component.NumberOfIdleThreads;
+
+            return threadNum;
         }
     }
 }
