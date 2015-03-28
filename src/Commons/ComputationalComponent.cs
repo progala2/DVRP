@@ -34,14 +34,9 @@ namespace _15pl04.Ucc.Commons
         protected readonly byte _parallelThreads;
 
         /// <summary>
-        /// The address of Communication Server.
+        /// The dictionary of TaskSolvers types; the keys are names of problems.
         /// </summary>
-        protected readonly IPEndPoint _serverAddress;
-
-        /// <summary>
-        /// The dictionary of TaskSolvers; the keys are names of problems.
-        /// </summary>
-        protected ReadOnlyDictionary<string, TaskSolver> TaskSolvers { get; private set; }
+        protected ReadOnlyDictionary<string, Type> TaskSolvers { get; private set; }
 
         /// <summary>
         /// The task pool that provides starting computations in tasks.
@@ -49,9 +44,9 @@ namespace _15pl04.Ucc.Commons
         protected ComputationalTaskPool ComputationalTaskPool { get; private set; }
 
 
-        private MessageSender _messageSender;
-
         private const string TaskSolversDirectory = "TaskSolvers";
+
+        private MessageSender _messageSender;
 
         private Task _messagingTask;
         private CancellationTokenSource _cancellationTokenSource;
@@ -66,15 +61,14 @@ namespace _15pl04.Ucc.Commons
         /// <param name="serverAddress">Communication server address.</param>
         public ComputationalComponent(IPEndPoint serverAddress)
         {
-            _serverAddress = serverAddress;
-            _messageSender = new MessageSender(_serverAddress);
+            _messageSender = new MessageSender(serverAddress);
 
             TaskSolvers = GetTaskSolvers();
 
             _messagesToSend = new ConcurrentQueue<Message>();
             _messagesToSendManualResetEvent = new ManualResetEvent(false);
 
-            // information for registration message; probably it is a temporary solution
+            // information for registration message; probably it could be changed
             _parallelThreads = (byte)Environment.ProcessorCount;
 
             _cancellationTokenSource = new CancellationTokenSource();
@@ -110,7 +104,7 @@ namespace _15pl04.Ucc.Commons
 
             ComputationalTaskPool = new ComputationalTaskPool(_parallelThreads, _cancellationTokenSource.Token);
 
-            // start informing about status(es) of threads
+            // start informing about statuses of threads
             _messagingTask = new Task(() => MessagesProcessing(), _cancellationTokenSource.Token);
             _messagingTask.Start();
         }
@@ -131,7 +125,8 @@ namespace _15pl04.Ucc.Commons
         protected abstract RegisterMessage GetRegisterMessage();
 
         /// <summary>
-        /// Handles a message received from server.
+        /// Handles each message received from server after registration is completed.
+        /// So it does not handle RegisterResponseMessage.
         /// </summary>
         /// <param name="message">A message to handle. It is received from server.</param>
         /// <remarks>
@@ -163,9 +158,9 @@ namespace _15pl04.Ucc.Commons
         /// Gets dictionary with names of solvable problems as keys and proper TaskSolvers as values.
         /// </summary>
         /// <returns>A dictionary with names of solvable problems as keys and proper TaskSolvers as values.</returns>
-        private ReadOnlyDictionary<string, TaskSolver> GetTaskSolvers()
+        private ReadOnlyDictionary<string, Type> GetTaskSolvers()
         {
-            var dictionary = new Dictionary<string, TaskSolver>();
+            var dictionary = new Dictionary<string, Type>();
 
             // add <key,value> pairs based on types derived from TaskSolver in *.dll files
             var taskSolversDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), TaskSolversDirectory);
@@ -177,12 +172,15 @@ namespace _15pl04.Ucc.Commons
                 var taskSolversTypes = assembly.GetTypes().Where(t => typeOfTaskSolver.IsAssignableFrom(t) && !t.IsAbstract);
                 foreach (var taskSolverType in taskSolversTypes)
                 {
-                    var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType);
-                    dictionary.Add(taskSolver.Name, taskSolver);
+                    /* NOTE: there's a possibilty of throwing an Exception because TaskSolver has
+                     * only one constructor which takes byte[] as parameter and behavior of it can
+                     * vary on specific implementation */
+                    var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, new byte[0]);
+                    dictionary.Add(taskSolver.Name, taskSolverType);
                 }
             }
 
-            var readOnlyDictionary = new ReadOnlyDictionary<string, TaskSolver>(dictionary);
+            var readOnlyDictionary = new ReadOnlyDictionary<string, Type>(dictionary);
             return readOnlyDictionary;
         }
 
@@ -238,24 +236,20 @@ namespace _15pl04.Ucc.Commons
         /// <returns>Proper StatusMessage.</returns>
         private StatusMessage GetStatusMessage()
         {
-            // to delete after uncommenting
-            throw new NotImplementedException();
-
             var threadsStatuses = new List<StatusThread>();
             foreach (var computationalTask in ComputationalTaskPool.ComputationalTasks)
             {
                 var threadStatus = new StatusThread()
                 {
-                    // to uncomment after StatusThread will be fixed
-                    //ProblemType=computationalTask.ProblemType,
-                    //ProblemInstanceId=computationalTask.ProblemInstanceId,
-                    //TaskId=computationalTask.PartialProblemId,
+                    ProblemType = computationalTask.ProblemType,
+                    ProblemInstanceId = computationalTask.ProblemInstanceId,
+                    TaskId = computationalTask.PartialProblemId,
                     State = computationalTask.State,
                     HowLong = (ulong)computationalTask.TimeSinceLastStateChange.TotalMilliseconds
                 };
                 threadsStatuses.Add(threadStatus);
             }
-            StatusMessage statusMessage = new StatusMessage()
+            var statusMessage = new StatusMessage()
             {
                 Id = ID,
                 Threads = threadsStatuses

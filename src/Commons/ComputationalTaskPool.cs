@@ -6,19 +6,32 @@ using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.Commons
 {
+    /// <summary>
+    /// Represents a task pool in ComputationalNode or TaskManager.
+    /// </summary>
     public class ComputationalTaskPool
     {
+        /// <summary>
+        /// Collection of either idle and busy computational tasks from this task pool.
+        /// </summary>
+        public ReadOnlyCollection<ComputationalTask> ComputationalTasks { get; private set; }
+
         private ComputationalTask[] _computationalTasks;
         private ConcurrentQueue<int> _availableTasks;
         private CancellationToken _cancellationToken;
 
-        public ReadOnlyCollection<ComputationalTask> ComputationalTasks { get; private set; }
 
-        public ComputationalTaskPool(byte parallelThreads, CancellationToken cancellationToken)
+        /// <summary>
+        /// Creates task pool with given <paramref name="parallelTasks"/> maximum number of tasks which
+        /// will be running in parallel and can be cancelled with given <paramref name="cancellationToken"/>. 
+        /// </summary>
+        /// <param name="parallelTasks">The maximum number of tasks which will be running in parallel.</param>
+        /// <param name="cancellationToken">The cancellation token which can cancel running tasks from task pool.</param>
+        public ComputationalTaskPool(byte parallelTasks, CancellationToken cancellationToken)
         {
             _cancellationToken = cancellationToken;
 
-            _computationalTasks = new ComputationalTask[parallelThreads];
+            _computationalTasks = new ComputationalTask[parallelTasks];
             ComputationalTasks = Array.AsReadOnly(_computationalTasks);
             _availableTasks = new ConcurrentQueue<int>();
 

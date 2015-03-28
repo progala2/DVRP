@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using _15pl04.Ucc.Commons.Messaging.Models;
 
 namespace _15pl04.Ucc.Commons
 {
@@ -10,21 +9,38 @@ namespace _15pl04.Ucc.Commons
     /// </summary>
     public class ComputationalTask
     {
-        private Task _task;
-
-
+        /// <summary>
+        /// Gets state of this task.
+        /// </summary>
         public ThreadState State { get; private set; }
 
+        /// <summary>
+        /// Gets date of the last state change.
+        /// </summary>
         public DateTime LastStateChange { get; private set; }
 
+        /// <summary>
+        /// Gets time since last state change.
+        /// </summary>
         public TimeSpan TimeSinceLastStateChange { get { return DateTime.UtcNow - LastStateChange; } }
 
-        
+        /// <summary>
+        /// Gets the ID of the problem assigned when client connected which current computations refer to.
+        /// </summary>
         public ulong? ProblemInstanceId { get; private set; }
 
+        /// <summary>
+        /// Gets the ID of the task within given problem instance which current computations refer to.
+        /// </summary>
         public ulong? PartialProblemId { get; private set; }
 
+        /// <summary>
+        /// Gets the name of the type as given by TaskSolver which current computations refer to.
+        /// </summary>
         public string ProblemType { get; private set; }
+
+
+        private Task _task;
 
 
         /// <summary>
@@ -43,7 +59,8 @@ namespace _15pl04.Ucc.Commons
         /// <param name="task"></param>
         public ComputationalTask(Task task)
             : this(task, null, null, null)
-        { }
+        {
+        }
 
         /// <summary>
         /// Creates ComputationalTask with given <paramref name="task"/> to run and starts it immediately.

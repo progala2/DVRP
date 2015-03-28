@@ -20,7 +20,7 @@ namespace _15pl04.Ucc.Commons
         }
 
         /// <summary>
-        /// Functions sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to other exception
+        /// Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to other exception
         /// </summary>
         /// <param name="message">message to send</param>
         /// <returns>messages returned or null</returns>
@@ -30,7 +30,7 @@ namespace _15pl04.Ucc.Commons
         }
 
         /// <summary>
-        /// Functions sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to other exception
+        /// Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to other exception
         /// </summary>
         /// <param name="messages">messages to send</param>
         /// <returns>messages returned or null</returns>
