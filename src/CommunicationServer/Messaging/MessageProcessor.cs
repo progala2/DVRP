@@ -104,9 +104,24 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 case Message.MessageClassType.Status:
                     {
                         var statusMsg = msg as StatusMessage;
-
-                        // TODO
-                        return null;
+                        // TODO - implement
+                        if (ComponentMonitor.Instance.IsRegistered(statusMsg.Id))
+                        {
+                            var noOperationMsg = new NoOperationMessage()
+                            {
+                                BackupCommunicationServers = new List<BackupCommunicationServer>(),
+                            };
+                            return noOperationMsg;
+                        }
+                        else
+                        {
+                            var errorMsg = new ErrorMessage()
+                            {
+                                ErrorMessageText = "Unregistered component error.",
+                                ErrorMessageType = ErrorMessageErrorType.UnknownSender,
+                            };
+                            return errorMsg;
+                        }
                     }
 
                 case Message.MessageClassType.SolveRequest:

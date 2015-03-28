@@ -12,6 +12,8 @@ namespace _15pl04.Ucc.CommunicationServer
             var config = new ServerConfig(args);
 
             var communicationServer = new CommunicationServer(config);
+
+
         }
     }
 }
