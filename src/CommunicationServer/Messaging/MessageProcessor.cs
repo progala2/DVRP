@@ -73,20 +73,57 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         {
             switch (msg.MessageType)
             {
+                //for AsyncTcp tests to work, from pie/architecture, can (even should) be replaced later
                 case Message.MessageClassType.Register:
                     {
                         var registerMsg = msg as RegisterMessage;
 
-                        // TODO
-                        return null;
+                        ulong id;
+
+                        switch (registerMsg.Type)
+                        {
+                            case ComponentType.ComputationalNode:
+                            case ComponentType.TaskManager:
+                                id = ComponentMonitor.Instance.RegisterNode(registerMsg.Type, registerMsg.ParallelThreads, registerMsg.SolvableProblems);
+                                break;
+
+                            //TODO - case ComponentType.CommunicationServer:
+
+                            default:
+                                throw new Exception("Wrong type of component is trying to register.");
+                        }
+
+                        var registerResponseMsg = new RegisterResponseMessage()
+                        {
+                            Id = id,
+                            BackupCommunicationServers = new List<BackupCommunicationServer>(),
+                            Timeout = _communicationTimeout,
+                        };
+                        return registerResponseMsg;
                     }
 
+                //for AsyncTcp tests to work, from pie/architecture, can (even should) be replaced later
                 case Message.MessageClassType.Status:
                     {
                         var statusMsg = msg as StatusMessage;
-
-                        // TODO
-                        return null;
+                        // TODO - implement
+                        if (ComponentMonitor.Instance.IsRegistered(statusMsg.Id))
+                        {
+                            var noOperationMsg = new NoOperationMessage()
+                            {
+                                BackupCommunicationServers = new List<BackupCommunicationServer>(),
+                            };
+                            return noOperationMsg;
+                        }
+                        else
+                        {
+                            var errorMsg = new ErrorMessage()
+                            {
+                                ErrorMessageText = "Unregistered component error.",
+                                ErrorMessageType = ErrorMessageErrorType.UnknownSender,
+                            };
+                            return errorMsg;
+                        }
                     }
 
                 case Message.MessageClassType.SolveRequest:

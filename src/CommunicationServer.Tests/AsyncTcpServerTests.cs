@@ -20,7 +20,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
     {
         private static readonly IPAddress TestIp = new IPAddress(new byte[] { 127, 0, 0, 1 });
         private const int Port = 9123;
-        private const int BufferSize = 204800;
+        private const int BufferSize = 2048;
         private AsyncTcpServer _tcpServer;
         private readonly Marshaller _marshaller = new Marshaller();
         private Socket _socket;
@@ -31,7 +31,6 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         {
             //Creating TcpServer
             Init();
-            
             InitSocket();
 
             Message message = new StatusMessage()
