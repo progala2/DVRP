@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace _15pl04.Ucc.Commons
+namespace _15pl04.Ucc.Commons.Exceptions
 {
     public class TimeoutException : Exception
     {
@@ -20,6 +17,12 @@ namespace _15pl04.Ucc.Commons
 
         public TimeoutException(string message, Exception inner)
             : base(message, inner)
+        {
+        }
+
+        // This constructor is needed for serialization.
+        protected TimeoutException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

@@ -31,6 +31,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ComponentType.cs" />
+    <Compile Include="ComputationalComponent.cs" />
+    <Compile Include="ComputationalTask.cs" />
+    <Compile Include="Exceptions\NoResponseException.cs" />
+    <Compile Include="Exceptions\RegisterException.cs" />
     <Compile Include="MessageSender.cs" />
     <Compile Include="Messaging\MessageValidator.cs" />
     <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
@@ -46,6 +50,7 @@
     <Compile Include="Messaging\Models\ErrorMessage.cs" />
     <Compile Include="Messaging\Models\StatusMessage.cs" />
     <Compile Include="Messaging\Marshaller.cs" />
+    <Compile Include="ComputationalTaskPool.cs" />
     <Compile Include="Messaging\MessageSerializer.cs" />
 
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,7 +58,7 @@
     <Compile Include="SolutionType.cs" />
     <Compile Include="TcpClient.cs" />
     <Compile Include="ThreadState.cs" />
-    <Compile Include="TimeoutException.cs">
+    <Compile Include="Exceptions\TimeoutException.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -61,6 +66,10 @@
     <Reference Include="System" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="UCCTaskSolver, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\UCCTaskSolver.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\DivideProblem.xsd">

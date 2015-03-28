@@ -31,7 +31,7 @@ namespace _15pl04.Ucc.Commons.Tests
             Task t = new Task(new Action(ListenAndResend));
             t.Start();
 
-            Message[] receivedMessage = sender.SendMessages(new Message[]{message});
+            Message[] receivedMessage = sender.Send(new Message[]{message});
 
             Assert.AreEqual(1, receivedMessage.Length);
             Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
@@ -63,7 +63,7 @@ namespace _15pl04.Ucc.Commons.Tests
             Task t = new Task(new Action(ListenAndResend));
             t.Start();
 
-            Message[] receivedMessage = sender.SendMessages(new Message[] { message });
+            Message[] receivedMessage = sender.Send(new Message[] { message });
 
             Assert.AreEqual(1, receivedMessage.Length);
             Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 
 namespace _15pl04.Ucc.Commons
 {
-    class MessageSender
+    public class MessageSender
     {
         private readonly TcpClient _tcpClient;
         private List<BackupCommunicationServer> _servers;
@@ -21,11 +20,21 @@ namespace _15pl04.Ucc.Commons
         }
 
         /// <summary>
-        /// Functions sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to other exception
+        /// Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to other exception
+        /// </summary>
+        /// <param name="message">message to send</param>
+        /// <returns>messages returned or null</returns>
+        public Message[] Send(Message message)
+        {
+            return Send(new Message[] { message });
+        }
+
+        /// <summary>
+        /// Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to other exception
         /// </summary>
         /// <param name="messages">messages to send</param>
         /// <returns>messages returned or null</returns>
-        public Message[] SendMessages(Message[] messages)
+        public Message[] Send(Message[] messages)
         {
             var data = _marshaller.Marshall(messages);
             byte[] retBytes = null;
@@ -37,7 +46,7 @@ namespace _15pl04.Ucc.Commons
                     again = false;
                     retBytes = _tcpClient.SendData(data);
                 }
-                catch (Commons.TimeoutException)
+                catch (Commons.Exceptions.TimeoutException)
                 {
                     again = true;
                     if (_servers.Count > 0)
@@ -52,7 +61,7 @@ namespace _15pl04.Ucc.Commons
                         return null;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //can not send to server
                     return null;
@@ -69,7 +78,7 @@ namespace _15pl04.Ucc.Commons
         {
             if (messages == null)
                 return;
-            
+
             for (int i = messages.Length - 1; i >= 0; --i)
             {
                 var message = messages[i];

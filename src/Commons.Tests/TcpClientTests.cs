@@ -73,7 +73,7 @@ namespace _15pl04.Ucc.Commons.Tests
         }
 
         //long test, takes TimeoutSeconds seconds
-        [ExpectedException(typeof(Commons.TimeoutException))]
+        [ExpectedException(typeof(Commons.Exceptions.TimeoutException))]
         [TestMethod]
         public void TcpClientConnectingToWrongIpAndThrowingOwnException()
         {
@@ -90,7 +90,7 @@ namespace _15pl04.Ucc.Commons.Tests
                                 
                 byte[] received = client.SendData(data);
             }
-            catch (Commons.TimeoutException e)
+            catch (Commons.Exceptions.TimeoutException e)
             {
                 EndConnection();
                 throw e;
