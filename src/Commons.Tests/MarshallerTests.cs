@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
+using System;
 
 namespace _15pl04.Ucc.Commons.Tests
 {
@@ -14,14 +15,19 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void TestUnmarshall()
         {
-            using (var reader = new FileStream("XmlMessages/NoOperation.xml", FileMode.Open))
+            using (var noOperationStreamReader = new StreamReader("XmlMessages/NoOperation.xml", Encoding.UTF8))
+            using (var statusStreamReader = new StreamReader("XmlMessages/Status.xml", Encoding.UTF8))
             {
-                var buffer = new byte[(reader.Length - 2)*2];
-                reader.Position = 3;
-                reader.Read(buffer, 0, (int) reader.Length - 3);
-                reader.Position = 3;
-                buffer[buffer.Length - 1] = buffer[reader.Length - 3] = 23;
-                reader.Read(buffer, (int)reader.Length - 2, (int)reader.Length - 3);
+                var noOperationMessageContent = noOperationStreamReader.ReadToEnd();
+                var noOperationMessageBytes = Encoding.UTF8.GetBytes(noOperationMessageContent);
+                var statusMessageContent = statusStreamReader.ReadToEnd();
+                var statusMessageBytes = Encoding.UTF8.GetBytes(statusMessageContent);
+
+                var buffer = new byte[noOperationMessageBytes.Length + 1 + statusMessageBytes.Length];
+                Buffer.BlockCopy(noOperationMessageBytes, 0, buffer, 0, noOperationMessageBytes.Length);
+                buffer[noOperationMessageBytes.Length] = 23;
+                Buffer.BlockCopy(statusMessageBytes, 0, buffer, noOperationMessageBytes.Length + 1, statusMessageBytes.Length);
+
                 Assert.IsTrue((new Marshaller()).Unmarshall(buffer).Length == 2);
             }
         }
@@ -52,8 +58,8 @@ namespace _15pl04.Ucc.Commons.Tests
                 }
             };
             var data = (new Marshaller()).Marshall(tstClass);
-            Assert.IsTrue(data.Count(i => i == 23) == 3);
-            var str = Encoding.ASCII.GetString(data);
+            Assert.IsTrue(data.Count(i => i == 23) == 2);
+            var str = Encoding.UTF8.GetString(data);
             Assert.IsTrue(str.Contains("SolutionRequest"));
             Assert.IsTrue(str.Contains("NoOperation"));
             Assert.IsTrue(str.Contains("DivideProblem"));

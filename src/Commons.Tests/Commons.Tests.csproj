@@ -76,7 +76,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="XmlMessages\Error.xml" />
+    <Content Include="XmlMessages\Error.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="XmlMessages\NoOperation.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -89,7 +91,7 @@
     <Content Include="XmlMessages\RegisterResponse.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="XmlMessages\Solution.xml">
+    <Content Include="XmlMessages\Solutions.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XmlMessages\SolveRequest.xml">

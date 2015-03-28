@@ -11,16 +11,27 @@ namespace _15pl04.Ucc.Commons.Messaging
     interface IMessageSerializer
     {
         Message Deserialize(byte[] buffer);
+        Message Deserialize(byte[] buffer, int index, int count);
 
         void Serialize(Message obj, out byte[] buffer);
     }
     class MessageSerializerHelper<T> : IMessageSerializer
          where T : Message
     {
-        private readonly Type _type = typeof (T);
+        private readonly Type _type = typeof(T);
         public Message Deserialize(byte[] buffer)
         {
             using (var reader = new MemoryStream(buffer))
+            {
+                var xml = new XmlSerializer(_type);
+                var instance = (T)xml.Deserialize(reader);
+                return instance;
+            }
+        }
+
+        public Message Deserialize(byte[] buffer, int index, int count)
+        {
+            using (var reader = new MemoryStream(buffer, index, count))
             {
                 var xml = new XmlSerializer(_type);
                 var instance = (T)xml.Deserialize(reader);
@@ -70,6 +81,11 @@ namespace _15pl04.Ucc.Commons.Messaging
         public static Message Deserialize(byte[] buffer, Message.MessageClassType type)
         {
             return GetSerializerForMessageClassType(type).Deserialize(buffer);
+        }
+
+        public static Message Deserialize(byte[] buffer, int index, int count, Message.MessageClassType type)
+        {
+            return GetSerializerForMessageClassType(type).Deserialize(buffer, index, count);
         }
 
         public static void Serialize(Message obj, Message.MessageClassType type, out byte[] buffer)

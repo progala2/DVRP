@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -11,19 +12,22 @@ namespace _15pl04.Ucc.Commons.Messaging
     {
         public Message[] Unmarshall(byte[] data)
         {
-            var list = new List<Message>();
-            var listBytes = new List<byte[]>();
-            for (int i = 0, last = 0; i < data.Length; i++)
+            var listOfMessages = new List<Message>();
+
+            var separatorsPositions = new List<int>();
+            for (int i = 0; i < data.Length; i++)
             {
-                if (data[i] != 23) continue;
-                var tmp = new byte[i-last];
-                Array.ConstrainedCopy(data, last, tmp, 0, i - last);
-                listBytes.Add(tmp);
-                last = ++i;
+                if (data[i] == 23)
+                {
+                    separatorsPositions.Add(i);
+                }
             }
-            foreach (var b in listBytes)
+            separatorsPositions.Add(data.Length);
+
+            for (int i = 0, begin = 0; i < separatorsPositions.Count; i++)
             {
-                var str = Encoding.UTF8.GetString(b);
+                var str = Encoding.UTF8.GetString(data, begin, separatorsPositions[i] - begin);
+
                 var doc = new XmlDocument();
                 doc.LoadXml(str);
                 if (doc.DocumentElement == null)
@@ -31,24 +35,36 @@ namespace _15pl04.Ucc.Commons.Messaging
                 var type = Message.GetMessageClassTypeFromString(doc.DocumentElement.Name);
 
                 MessageValidator.Validate(str, type);
-                list.Add(MessageSerializer.Deserialize(b, type));
+                var message = MessageSerializer.Deserialize(data, begin, separatorsPositions[i] - begin, type);
+                listOfMessages.Add(message);
+
+                begin = separatorsPositions[i] + 1;
             }
-            
-            return list.ToArray();
+
+            return listOfMessages.ToArray();
         }
 
         public byte[] Marshall(Message[] messages)
         {
-            var list = new MemoryStream();
-            foreach (var message in messages)
+            using (var list = new MemoryStream())
             {
-                byte[] data;
-                var type = message.MessageType;
-                MessageSerializer.Serialize(message, type, out data);
-                list.Write(data, 0, data.Length);
-                list.Write(new byte[] { 23 }, 0, 1);
+                if (messages != null && messages.Length > 0)
+                {
+                    byte[] data;
+                    Message.MessageClassType type;
+                    for (int i = 0; i < messages.Length - 1; i++)
+                    {
+                        type = messages[i].MessageType;
+                        MessageSerializer.Serialize(messages[i], type, out data);
+                        list.Write(data, 0, data.Length);
+                        list.WriteByte(23);
+                    }
+                    type = messages[messages.Length - 1].MessageType;
+                    MessageSerializer.Serialize(messages[messages.Length - 1], type, out data);
+                    list.Write(data, 0, data.Length);
+                }
+                return list.ToArray();
             }
-            return list.ToArray();
         }
     }
 }
