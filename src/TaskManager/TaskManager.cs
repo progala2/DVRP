@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.TaskManager
             var registerMessage = new RegisterMessage()
             {
                 Type = ComponentType.TaskManager,
-                ParallelThreads = _parallelThreads,
+                ParallelThreads = ParallelThreads,
                 SolvableProblems = new List<string>(TaskSolvers.Keys)
             };
             return registerMessage;
@@ -141,7 +141,15 @@ namespace _15pl04.Ucc.TaskManager
 
         private void ErrorMessageHandler(ErrorMessage message)
         {
-            throw new NotImplementedException();
+            switch (message.ErrorMessageType)
+            {
+                case ErrorMessageErrorType.UnknownSender:
+                    Register();
+                    return;
+                case ErrorMessageErrorType.InvalidOperation:
+                case ErrorMessageErrorType.ExceptionOccured:
+                    throw new NotImplementedException();
+            }
         }
     }
 }
