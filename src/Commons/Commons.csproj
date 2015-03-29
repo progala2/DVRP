@@ -36,6 +36,7 @@
     <Compile Include="Computations\MessageHandlingExceptionEventArgs.cs" />
     <Compile Include="Exceptions\NoResponseException.cs" />
     <Compile Include="Exceptions\RegisterException.cs" />
+    <Compile Include="IPEndPointParser.cs" />
     <Compile Include="Messaging\MessageEventArgs.cs" />
     <Compile Include="MessageSender.cs" />
     <Compile Include="Messaging\MessageValidator.cs" />
