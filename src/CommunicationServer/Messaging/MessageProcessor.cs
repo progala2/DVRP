@@ -55,8 +55,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                     foreach (var message in input)
                     {
+                        Console.WriteLine("Received: " + message.GetType().Name);
                         var responseMsgs = GetResponseMessages(message);
 
+                        Console.WriteLine("Sending: " + responseMsgs.GetType().Name);
                         var rawResponse = _marshaller.Marshall(new Message[] { responseMsgs });
                         new Task(() => { callback(rawResponse); }).Start();
                     }
@@ -109,6 +111,8 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         // TODO - implement
                         if (ComponentMonitor.Instance.IsRegistered(statusMsg.Id))
                         {
+                            ComponentMonitor.Instance.UpdateTimestamp(statusMsg.Id);
+
                             var noOperationMsg = new NoOperationMessage()
                             {
                                 BackupCommunicationServers = new List<BackupCommunicationServer>(),

@@ -65,7 +65,17 @@ namespace _15pl04.Ucc.CommunicationServer
             var ni = new NodeInfo(type, numberOfThreads, solvableProblems);
             _registeredComponents.TryAdd(id, ni);
 
+            Console.WriteLine("Registering component. id = " + id);
+
             return id;
+        }
+
+        public void UpdateTimestamp(ulong id)
+        {
+            if (IsRegistered(id))
+            {
+                _registeredComponents[id].UpdateTimestamp();
+            }
         }
 
         public ulong RegisterBackupServer(IPEndPoint address)
@@ -98,6 +108,8 @@ namespace _15pl04.Ucc.CommunicationServer
                     Id = id
                 };
 
+                Console.WriteLine("Deregistering component. id = " + id);
+
                 // Invoke subscribers' methods synchronously.
                 if (Deregistration != null)
                     Deregistration.Invoke(this, eventArgs);
@@ -112,6 +124,8 @@ namespace _15pl04.Ucc.CommunicationServer
         /// <param name="timeout">Timeout for component's messages.</param>
         public void StartMonitoring(ulong timeout)
         {
+            Console.WriteLine("Component monitoring started...");
+
             if (_stateCheckThread != null)
                 return;
 

@@ -1,6 +1,7 @@
 ﻿using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.CommunicationServer.Collections;
 using _15pl04.Ucc.CommunicationServer.Messaging;
+using System;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
@@ -23,8 +24,12 @@ namespace _15pl04.Ucc.CommunicationServer
 
         public void Start()
         {
-            _tcpServer.StartListening();
+            Console.WriteLine("Starting Communication Server...");
+
             ComponentMonitor.Instance.StartMonitoring(Config.CommunicationTimeout);
+            _tcpServer.StartListening();
+
+            Console.WriteLine("Communication Server started");
         }
 
         public void Stop()

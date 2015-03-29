@@ -16,7 +16,7 @@ namespace _15pl04.Ucc.Commons.Computations
     public abstract class ComputationalComponent
     {
         public event EventHandler<MessageEventArgs> MessageEnqueuedToSend;
-        public event EventHandler<MessageEventArgs> MessageSended;
+        public event EventHandler<MessageEventArgs> MessageSent;
         public event EventHandler<MessageEventArgs> MessageReceived;
 
         public event EventHandler<MessageHandlingExceptionEventArgs> MessageHandlingException;
@@ -305,7 +305,7 @@ namespace _15pl04.Ucc.Commons.Computations
         private Message[] SendMessage(Message message)
         {
             var receivedMessages = _messageSender.Send(message);
-            RaiseMessageEvent(MessageSended, message);
+            RaiseMessageEvent(MessageSent, message);
             if (receivedMessages == null)
                 throw new Commons.Exceptions.NoResponseException();
             foreach (var receivedMessage in receivedMessages)

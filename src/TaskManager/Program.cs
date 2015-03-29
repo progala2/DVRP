@@ -17,8 +17,9 @@ namespace _15pl04.Ucc.TaskManager
 
             taskManager.MessageEnqueuedToSend += taskManager_MessageEnqueuedToSend;
             taskManager.MessageHandlingException += taskManager_MessageHandlingException;
-            taskManager.MessageSended += taskManager_MessageSended;
+            taskManager.MessageSent += taskManager_MessageSended;
             taskManager.MessageReceived += taskManager_MessageReceived;
+
 
 
             try
@@ -63,7 +64,7 @@ namespace _15pl04.Ucc.TaskManager
 
         static void taskManager_MessageSended(object sender, MessageEventArgs e)
         {
-            Console.WriteLine("Sended: " + e.Message.GetType().Name);
+            Console.WriteLine("Sent: " + e.Message.GetType().Name);
         }
     }
 }

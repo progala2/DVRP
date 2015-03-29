@@ -31,6 +31,8 @@ namespace _15pl04.Ucc.CommunicationServer
 
         public void StartListening()
         {
+            Console.WriteLine("Listening for incoming connections...");
+
             _isListening = true;
             _listenerSocket = new Socket(_config.Address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
