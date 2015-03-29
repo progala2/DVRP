@@ -18,11 +18,14 @@ namespace _15pl04.Ucc.CommunicationServer
 
             NameValueCollection appSettings = ConfigurationManager.AppSettings;
 
-            int listeningPort = int.Parse(appSettings["listeningPort"]);
-            int backupMode = int.Parse(appSettings["backupMode"]);
-            uint timeout = uint.Parse(appSettings["timeout"]);
+            //int listeningPort = int.Parse(appSettings["listeningPort"]);
+            //int backupMode = int.Parse(appSettings["backupMode"]);
+           // uint timeout = uint.Parse(appSettings["timeout"]);
+            int backupMode = 0;
+            uint timeout = 0;
 
-            Address = new IPEndPoint(new IPAddress(new byte[] { 127, 0, 0, 1 }), listeningPort);
+
+            Address = new IPEndPoint(new IPAddress(new byte[] { 127, 0, 0, 1 }), 0);
             if (backupMode == 0)
                 Mode = ServerMode.Primary;
             else

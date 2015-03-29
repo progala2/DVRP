@@ -102,7 +102,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var msg = new StatusMessage()
             {
                 Id = 5,
-                Threads = new List<StatusThread>(){new StatusThread() { ProblemType = "dvrp"}},                
+                Threads = new List<ThreadStatus>(){new ThreadStatus() { ProblemType = "dvrp"}},                
             };
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
 
@@ -129,7 +129,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var msg = new StatusMessage()
             {
                 Id = 5,
-                Threads = new List<StatusThread>() { new StatusThread() { ProblemType = "dvrp" } },
+                Threads = new List<ThreadStatus>() { new ThreadStatus() { ProblemType = "dvrp" } },
             };
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
 
