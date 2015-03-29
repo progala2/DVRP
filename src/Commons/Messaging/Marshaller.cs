@@ -46,24 +46,26 @@ namespace _15pl04.Ucc.Commons.Messaging
 
         public byte[] Marshall(Message[] messages)
         {
-            using (var list = new MemoryStream())
+            if (messages == null)
+                throw new ArgumentNullException();
+
+            using (var memStream = new MemoryStream())
             {
-                if (messages != null && messages.Length > 0)
+                if (messages.Length > 0)
                 {
                     byte[] data;
                     Message.MessageClassType type;
-                    for (int i = 0; i < messages.Length - 1; i++)
+                    for (int i = 0; i < messages.Length; ++i)
                     {
                         type = messages[i].MessageType;
                         MessageSerializer.Serialize(messages[i], type, out data);
-                        list.Write(data, 0, data.Length);
-                        list.WriteByte(23);
+                        memStream.Write(data, 0, data.Length);
+
+                        if (i != messages.Length - 1)
+                            memStream.WriteByte(23);
                     }
-                    type = messages[messages.Length - 1].MessageType;
-                    MessageSerializer.Serialize(messages[messages.Length - 1], type, out data);
-                    list.Write(data, 0, data.Length);
                 }
-                return list.ToArray();
+                return memStream.ToArray();
             }
         }
     }

@@ -51,6 +51,7 @@ namespace _15pl04.Ucc.Commons
                     Debug.WriteLine("Socket connected to " + _serverAddress.ToString());
 
                     socket.Send(data);
+                    socket.Shutdown(SocketShutdown.Send);
 
                     using (MemoryStream memory = new MemoryStream(BufferSize))
                     {
@@ -61,7 +62,7 @@ namespace _15pl04.Ucc.Commons
                             Debug.WriteLine("Capacity: " + memory.Capacity + " Length: " + memory.Length);
                         }
 
-                        socket.Shutdown(SocketShutdown.Both);
+                        socket.Shutdown(SocketShutdown.Receive);
                         socket.Close();
                         buf = memory.ToArray();
                     }
