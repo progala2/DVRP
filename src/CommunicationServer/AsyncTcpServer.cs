@@ -95,7 +95,6 @@ namespace _15pl04.Ucc.CommunicationServer
 
             handlerSocket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0,
                 new AsyncCallback(ReadCallback), state);
-            
         }
 
         private void ReadCallback(IAsyncResult ar)

@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Collections.Specialized;
+using System.Configuration;
+using System.Net;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
@@ -12,9 +14,23 @@ namespace _15pl04.Ucc.CommunicationServer
 
         public ServerConfig(string[] consoleArgs)
         {
-            /*
-             * Ustalenie konfiguracji na podstawie App.config i argumentów z konsoli.
-             */ 
+            // TODO - proper constructor
+
+            NameValueCollection appSettings = ConfigurationManager.AppSettings;
+
+            //int listeningPort = int.Parse(appSettings["listeningPort"]);
+            //int backupMode = int.Parse(appSettings["backupMode"]);
+           // uint timeout = uint.Parse(appSettings["timeout"]);
+            int backupMode = 0;
+            uint timeout = 0;
+
+
+            Address = new IPEndPoint(new IPAddress(new byte[] { 127, 0, 0, 1 }), 0);
+            if (backupMode == 0)
+                Mode = ServerMode.Primary;
+            else
+                Mode = ServerMode.Backup;
+            CommunicationTimeout = timeout;
         }
 
         public ServerMode Mode { get; set; }

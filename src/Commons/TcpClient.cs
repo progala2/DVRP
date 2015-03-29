@@ -74,7 +74,7 @@ namespace _15pl04.Ucc.Commons
                         case 10060: //timeout
                             throw new Commons.Exceptions.TimeoutException(_serverAddress.ToString(), e);
                         default:
-                            throw e;
+                            throw;
                     }
                 }
             }

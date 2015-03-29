@@ -97,7 +97,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
         public void AddPartialProblems(PartialProblem[] partialProblems)
         {
             ProblemInstance problemInstance;
-            if (_problemsBeingDivided.TryDequeue(partialProblems[0].ProblemInstanceId, out problemInstance))
+            if (_problemsBeingDivided.TryDequeue(partialProblems[0].DividingTaskManagerId, out problemInstance))
             {
                 problemInstance.NumberOfParts = (ulong)partialProblems.Length; // Perhaps check if those two are equal and throw an exception?
                 problemInstance.DividingTaskManagerId = null;
@@ -243,7 +243,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks
 
         public ulong GenerateProblemInstanceId()
         {
-            return 0; // TODO
+            return (ulong)new Random().Next(); // TODO
         }
 
         /*

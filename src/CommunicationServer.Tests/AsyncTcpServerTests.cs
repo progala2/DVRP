@@ -148,7 +148,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 _socket.Connect(remoteEp);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -163,7 +163,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 _socket.Connect(remoteEp);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

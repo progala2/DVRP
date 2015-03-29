@@ -11,6 +11,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tasks.Models
         public ulong ProblemInstanceId { get { return _problemInstance.Id; } }
         public string ProblemType { get { return _problemInstance.Type; } }
         public ulong SolvingTimeout { get { return _problemInstance.SolvingTimeout; } }
+        public ulong DividingTaskManagerId { get { return _problemInstance.DividingTaskManagerId.Value; } }
 
 
         public ulong? SolvingComputationalNodeId { get; set; }
