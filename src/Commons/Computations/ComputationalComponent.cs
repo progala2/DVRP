@@ -185,12 +185,7 @@ namespace _15pl04.Ucc.Commons.Computations
                     else
                     {
                         // shouldn't ever happen
-                        var errorMessage = new ErrorMessage()
-                        {
-                            ErrorMessageType = ErrorMessageErrorType.ExceptionOccured,
-                            ErrorMessageText = "Received " + receivedMessage.MessageType + "Message before RegisterResponseMessage."
-                        };
-                        EnqueueMessageToSend(errorMessage);
+                        RaiseEvent(MessageSendingException, receivedMessage, new InvalidOperationException("RegisterResponseMessage expected."));
                     }
                 }
             }

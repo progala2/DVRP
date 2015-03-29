@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.Commons.Computations;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 
@@ -8,15 +9,19 @@ namespace _15pl04.Ucc.ComputationalClient
 {
     public class ComputationalClient
     {
-        private IPEndPoint _serverAddress;
+        public event EventHandler<MessageEventArgs> MessageSent;
+        public event EventHandler<MessageEventArgs> MessageReceived;
+
+        public event EventHandler<MessageExceptionEventArgs> MessageSendingException;
 
         private MessageSender _messageSender;
 
+
         public ComputationalClient(IPEndPoint serverAddress)
         {
-            _serverAddress = serverAddress;
-            _messageSender = new MessageSender(_serverAddress);
+            _messageSender = new MessageSender(serverAddress);
         }
+
 
         /// <summary>
         /// Sends request for solving the problem.
@@ -24,8 +29,8 @@ namespace _15pl04.Ucc.ComputationalClient
         /// <param name="problemType">The name of the type as given by TaskSolver.</param>
         /// <param name="data">The serialized problem data.</param>
         /// <param name="solvingTimeout">The optional time restriction for solving the problem (in ms).</param>
-        /// <returns>The ID of the problem instance assigned by the server.</returns>
-        public uint SendSolveRequest(string problemType, byte[] data, ulong? solvingTimeout)
+        /// <returns>The ID of the problem instance assigned by the server or null if server is not responding.</returns>
+        public uint? SendSolveRequest(string problemType, byte[] data, ulong? solvingTimeout)
         {
             var solveRequestMessage = new SolveRequestMessage()
             {
@@ -33,10 +38,24 @@ namespace _15pl04.Ucc.ComputationalClient
                 Data = data,
                 SolvingTimeout = solvingTimeout
             };
-            var responseMessages = _messageSender.Send(solveRequestMessage);
+            var receivedMessages = SendMessage(solveRequestMessage);
+            if (receivedMessages == null)
+                return null;
 
-            // handle response
-            throw new NotImplementedException();
+            uint? problemId = null;
+            SolveRequestResponseMessage solveRequestResponseMessage;
+            foreach (var receivedMessage in receivedMessages)
+            {
+                if ((solveRequestResponseMessage = receivedMessage as SolveRequestResponseMessage) != null)
+                {
+                    problemId = (uint?)solveRequestResponseMessage.Id;
+                }
+                else
+                {
+                    RaiseEvent(MessageSendingException, receivedMessage, new InvalidOperationException("SolveRequestResponseMessage expected."));
+                }
+            }
+            return problemId;
         }
 
         /// <summary>
@@ -45,9 +64,59 @@ namespace _15pl04.Ucc.ComputationalClient
         /// <param name="id">The ID of the problem instance assigned by the server.</param>
         public SolutionsMessage SendSolutionRequest(uint id)
         {
-            // should return received SolutionsMessage or throw some Exception..?
-            // it can be changed to return something else (if it'll be better choice)
-            throw new NotImplementedException();
+            var solutionRequestMessage = new SolutionRequestMessage()
+            {
+                Id = id
+            };
+            var receivedMessages = SendMessage(solutionRequestMessage);
+            if (receivedMessages == null)
+                return null;
+
+            SolutionsMessage solutionsMessage = null;
+            foreach (var receivedMessage in receivedMessages)
+            {
+                if ((solutionsMessage = receivedMessage as SolutionsMessage) == null)
+                {
+                    RaiseEvent(MessageSendingException, receivedMessage, new InvalidOperationException("SolutionsMessage expected."));
+                }
+            }
+            return solutionsMessage;
+        }
+
+
+        private Message[] SendMessage(Message message)
+        {
+            var receivedMessages = _messageSender.Send(message);
+            RaiseEvent(MessageSent, message);
+            if (receivedMessages == null)
+            {
+                var exception = new Commons.Exceptions.NoResponseException("Server is not responding.");
+                RaiseEvent(MessageSendingException, message, exception);
+            }
+            else
+            {
+                foreach (var receivedMessage in receivedMessages)
+                {
+                    RaiseEvent(MessageReceived, receivedMessage);
+                }
+            }
+            return receivedMessages;
+        }
+
+        private void RaiseEvent(EventHandler<MessageEventArgs> eventHandler, Message message)
+        {
+            if (eventHandler != null)
+            {
+                eventHandler(this, new MessageEventArgs(message));
+            }
+        }
+
+        private void RaiseEvent(EventHandler<MessageExceptionEventArgs> eventHandler, Message message, Exception exception)
+        {
+            if (eventHandler != null)
+            {
+                eventHandler(this, new MessageExceptionEventArgs(message, exception));
+            }
         }
     }
 }

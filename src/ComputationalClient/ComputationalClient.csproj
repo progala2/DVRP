@@ -44,6 +44,10 @@
       <Project>{6ee7686f-d191-4151-ad36-b8b7199310f5}</Project>
       <Name>Commons</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MinMaxTaskSolver\MinMaxTaskSolver.csproj">
+      <Project>{8530bffd-ee0e-4e0f-928d-c4769d770762}</Project>
+      <Name>MinMaxTaskSolver</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
