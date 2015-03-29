@@ -1,4 +1,5 @@
-﻿namespace _15pl04.Ucc.ComputationalNode
+﻿using System;
+namespace _15pl04.Ucc.ComputationalNode
 {
     public class Program
     {

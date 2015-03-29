@@ -37,9 +37,9 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 Id = 1,
                 noNamespaceSchemaLocation = "?",
-                Threads = new List<StatusThread>()
+                Threads = new List<ThreadStatus>()
                     {
-                        new StatusThread()
+                        new ThreadStatus()
                         {
                             ProblemType = "ss",
                             State = Commons.ThreadState.Busy
@@ -104,9 +104,9 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 Id = (messagesReturned[0] as RegisterResponseMessage).Id,
                 noNamespaceSchemaLocation = "?",
-                Threads = new List<StatusThread>()
+                Threads = new List<ThreadStatus>()
                     {
-                        new StatusThread()
+                        new ThreadStatus()
                         {
                             ProblemType = "s",
                             State = Commons.ThreadState.Idle

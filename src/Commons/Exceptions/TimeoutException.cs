@@ -3,7 +3,10 @@ using System.Runtime.Serialization;
 
 namespace _15pl04.Ucc.Commons.Exceptions
 {
-    public class TimeoutException : Exception
+    /// <summary>
+    /// Description of TimeoutException
+    /// </summary>
+    public class TimeoutException : Exception, ISerializable
     {
         public TimeoutException()
             : base()

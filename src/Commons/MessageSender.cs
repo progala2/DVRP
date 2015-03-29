@@ -12,10 +12,10 @@ namespace _15pl04.Ucc.Commons
         private List<BackupCommunicationServer> _servers;
         private readonly Marshaller _marshaller;
 
-        public MessageSender(IPEndPoint endPoint)
+        public MessageSender(IPEndPoint serverAddress)
         {
             _servers = new List<BackupCommunicationServer>();
-            _tcpClient = new TcpClient(endPoint);
+            _tcpClient = new TcpClient(serverAddress);
             _marshaller = new Marshaller();
         }
 

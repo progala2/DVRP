@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.Commons.Computations;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using UCCTaskSolver;
 
@@ -9,8 +10,23 @@ namespace _15pl04.Ucc.TaskManager
 {
     public sealed class TaskManager : ComputationalComponent
     {
+        /// <summary>
+        /// Creates TaskManager which looks for task solvers in current directory.
+        /// </summary>
+        /// <param name="serverAddress">The primary server address.</param>
         public TaskManager(IPEndPoint serverAddress)
             : base(serverAddress)
+        {
+        }
+
+        /// <summary>
+        /// Creates TaskManager.
+        /// </summary>
+        /// <param name="serverAddress">The primary server address.</param>
+        /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers.</param>
+        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
+        public TaskManager(IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
+            : base(serverAddress, taskSolversDirectoryRelativePath)
         {
         }
 

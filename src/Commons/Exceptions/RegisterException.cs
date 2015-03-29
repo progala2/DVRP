@@ -3,7 +3,10 @@ using System.Runtime.Serialization;
 
 namespace _15pl04.Ucc.Commons.Exceptions
 {
-    public class RegisterException : Exception
+    /// <summary>
+    /// Description of RegisterException
+    /// </summary>
+    public class RegisterException : Exception, ISerializable
     {
         public RegisterException()
             : base()
