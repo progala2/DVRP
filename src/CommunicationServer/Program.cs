@@ -1,7 +1,4 @@
-﻿using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.CommunicationServer.Collections;
-using _15pl04.Ucc.CommunicationServer.Messaging;
-using System;
+﻿using System;
 using _15pl04.Ucc.Commons;
 
 namespace _15pl04.Ucc.CommunicationServer
@@ -12,8 +9,8 @@ namespace _15pl04.Ucc.CommunicationServer
         {
             var config = new ServerConfig(args);
 
-            config.Address= IPEndPointParser.Parse("127.0.0.1:12345");
-            config.CommunicationTimeout = 100;
+            config.Address = IPEndPointParser.Parse("127.0.0.1:12345");
+            config.CommunicationTimeout = 500;
             config.Mode = ServerConfig.ServerMode.Primary;
 
             var communicationServer = new CommunicationServer(config);
