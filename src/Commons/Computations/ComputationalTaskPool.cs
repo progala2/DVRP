@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace _15pl04.Ucc.Commons
+namespace _15pl04.Ucc.Commons.Computations
 {
     /// <summary>
     /// Represents a task pool in ComputationalNode or TaskManager.

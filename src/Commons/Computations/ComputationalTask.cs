@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace _15pl04.Ucc.Commons
+namespace _15pl04.Ucc.Commons.Computations
 {
     /// <summary>
     /// Represents a task in ComputationalNode or TaskManager.

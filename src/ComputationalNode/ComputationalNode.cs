@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.Commons.Computations;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using UCCTaskSolver;
 
@@ -11,6 +12,11 @@ namespace _15pl04.Ucc.ComputationalNode
     {
         public ComputationalNode(IPEndPoint serverAddress)
             : base(serverAddress)
+        {
+        }
+
+        public ComputationalNode(IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
+            : base(serverAddress, taskSolversDirectoryRelativePath)
         {
         }
 

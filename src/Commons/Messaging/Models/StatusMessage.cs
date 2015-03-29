@@ -16,11 +16,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         private ulong _idField;
 
-        private List<StatusThread> _threadsField;
+        private List<ThreadStatus> _threadsField;
 
         public StatusMessage()
         {
-            _threadsField = new List<StatusThread>();
+            _threadsField = new List<ThreadStatus>();
         }
 
         [XmlElement(Order = 0)]
@@ -38,7 +38,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         [XmlArray(Order = 1)]
         [XmlArrayItem("Thread", IsNullable = false)]
-        public List<StatusThread> Threads
+        public List<ThreadStatus> Threads
         {
             get
             {
@@ -60,7 +60,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [Serializable]
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public class StatusThread
+    public class ThreadStatus
     {
         private ThreadState _stateField;
 

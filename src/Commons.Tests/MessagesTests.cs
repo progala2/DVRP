@@ -8,21 +8,21 @@ namespace _15pl04.Ucc.Commons.Tests
     public class MessagesTests
     {
         [TestMethod]
-        public void NoOperationMessageTest()
+        public void NoOperationMessageDeserialization()
         {
             var msg = XmlFileParser<NoOperationMessage>.Deserialize("XmlMessages/NoOperation.xml");
             Assert.IsTrue(msg.BackupCommunicationServers.Count == 1);
         }
 
         [TestMethod]
-        public void PartialProblemsMessageTest()
+        public void PartialProblemsMessageDeserialization()
         {
             var msg = XmlFileParser<PartialProblemsMessage>.Deserialize("XmlMessages/PartialProblems.xml");
             Assert.IsTrue(msg.Id == 12);
         }
 
         [TestMethod]
-        public void RegisterMessageTest()
+        public void RegisterMessageDeserialization()
         {
             var msg = XmlFileParser<RegisterMessage>.Deserialize("XmlMessages/Register.xml");
             Assert.IsTrue(msg.Id == 12);
@@ -30,42 +30,42 @@ namespace _15pl04.Ucc.Commons.Tests
         }
 
         [TestMethod]
-        public void RegisterResponseMessageTest()
+        public void RegisterResponseMessageDeserialization()
         {
             var msg = XmlFileParser<RegisterResponseMessage>.Deserialize("XmlMessages/RegisterResponse.xml");
             Assert.IsTrue(msg.Id == 12);
         }
 
         [TestMethod]
-        public void SolutionsMessageTest()
+        public void SolutionsMessageDeserialization()
         {
             var msg = XmlFileParser<SolutionsMessage>.Deserialize("XmlMessages/Solutions.xml");
             Assert.IsTrue(msg.Id == 12);
         }
 
         [TestMethod]
-        public void SolutionRequestMessageTest()
+        public void SolutionRequestMessageDeserialization()
         {
             var msg = XmlFileParser<SolutionRequestMessage>.Deserialize("XmlMessages/SolutionRequest.xml");
             Assert.IsTrue(msg.Id == 12);
         }
 
         [TestMethod]
-        public void SolveRequestMessageTest()
+        public void SolveRequestMessageDeserialization()
         {
             var msg = XmlFileParser<SolveRequestMessage>.Deserialize("XmlMessages/SolveRequest.xml");
             Assert.IsTrue(msg.Id == 12);
         }
 
         [TestMethod]
-        public void SolveRequestResponseMessageTest()
+        public void SolveRequestResponseMessageDeserialization()
         {
             var msg = XmlFileParser<SolveRequestResponseMessage>.Deserialize("XmlMessages/SolveRequestResponse.xml");
             Assert.IsTrue(msg.Id == 12);
         }
 
         [TestMethod]
-        public void StatusMessageTest()
+        public void StatusMessageDeserialization()
         {
             var msg = XmlFileParser<StatusMessage>.Deserialize("XmlMessages/Status.xml");
             Assert.IsTrue(msg.Id == 12);

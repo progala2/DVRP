@@ -28,7 +28,8 @@ namespace _15pl04.Ucc.Commons.Tests
                 buffer[noOperationMessageBytes.Length] = 23;
                 Buffer.BlockCopy(statusMessageBytes, 0, buffer, noOperationMessageBytes.Length + 1, statusMessageBytes.Length);
 
-                Assert.IsTrue((new Marshaller()).Unmarshall(buffer).Length == 2);
+                var messages = (new Marshaller()).Unmarshall(buffer);
+                Assert.IsTrue(messages.Length == 2);
             }
         }
 
@@ -136,9 +137,9 @@ namespace _15pl04.Ucc.Commons.Tests
                 new SolveRequestResponseMessage(),
                 new StatusMessage()
                 {
-                    Threads = new List<StatusThread>()
+                    Threads = new List<ThreadStatus>()
                     {
-                        new StatusThread()
+                        new ThreadStatus()
                         {
                             ProblemType = "ss",
                             State = ThreadState.Busy
