@@ -9,6 +9,7 @@ namespace _15pl04.Ucc.Commons.Exceptions
     public class NoResponseException : Exception, ISerializable
     {
         public NoResponseException()
+            : base()
         {
         }
 

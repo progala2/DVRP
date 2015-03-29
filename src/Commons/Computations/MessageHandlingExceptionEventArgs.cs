@@ -4,9 +4,6 @@ using _15pl04.Ucc.Commons.Messaging.Models;
 
 namespace _15pl04.Ucc.Commons.Computations
 {
-    public delegate void MessageHandlingExceptionHandler(object sender, MessageHandlingExceptionEventArgs e);
-
-
     public class MessageHandlingExceptionEventArgs : MessageEventArgs
     {
         public Exception Exception { get; private set; }

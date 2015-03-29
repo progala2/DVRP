@@ -15,8 +15,9 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="taskSolversDirectoryRelativePath">The relative path of directory to search.</param>
         /// <returns>A dictionary with names of solvable problems as keys and proper TaskSolvers as values.</returns>
+        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
         public static ReadOnlyDictionary<string, Type> GetTaskSolversFromRelativePath(string taskSolversDirectoryRelativePath)
-        {
+        {            
             var taskSolversDirectoryPath = Path.GetFullPath(Directory.GetCurrentDirectory() + taskSolversDirectoryRelativePath);
             return GetTaskSolversFromPath(taskSolversDirectoryPath);
         }
@@ -26,6 +27,7 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="taskSolversDirectoryPath">The path of directory to search.</param>
         /// <returns>A dictionary with names of solvable problems as keys and proper TaskSolvers as values.</returns>
+        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
         public static ReadOnlyDictionary<string, Type> GetTaskSolversFromPath(string taskSolversDirectoryPath)
         {
             var dictionary = new Dictionary<string, Type>();

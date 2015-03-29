@@ -10,11 +10,21 @@ namespace _15pl04.Ucc.ComputationalNode
 {
     public sealed class ComputationalNode : ComputationalComponent
     {
+        /// <summary>
+        /// Creates ComputationalNode which looks for task solvers in current directory.
+        /// </summary>
+        /// <param name="serverAddress">The primary server address.</param>
         public ComputationalNode(IPEndPoint serverAddress)
             : base(serverAddress)
         {
         }
 
+        /// <summary>
+        /// Creates ComputationalNode.
+        /// </summary>
+        /// <param name="serverAddress">The primary server address.</param>
+        /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers.</param>
+        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
         public ComputationalNode(IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
             : base(serverAddress, taskSolversDirectoryRelativePath)
         {

@@ -15,11 +15,11 @@ namespace _15pl04.Ucc.Commons.Computations
     /// </summary>
     public abstract class ComputationalComponent
     {
-        public event MessageEventHandler MessageEnqueued;
-        public event MessageEventHandler MessageSended;
-        public event MessageEventHandler MessageReceived;
+        public event EventHandler<MessageEventArgs> MessageEnqueuedToSend;
+        public event EventHandler<MessageEventArgs> MessageSended;
+        public event EventHandler<MessageEventArgs> MessageReceived;
 
-        public event MessageHandlingExceptionHandler MessageHandlingException;
+        public event EventHandler<MessageHandlingExceptionEventArgs> MessageHandlingException;
 
         /// <summary>
         /// The ID assigned by the Communication Server.
@@ -69,6 +69,7 @@ namespace _15pl04.Ucc.Commons.Computations
         /// </summary>
         /// <param name="serverAddress">Communication server address.</param>
         /// <param name="taskSolversDirectoryRelativePath">Relative path to directory containging task solvers libraries.</param>
+        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
         public ComputationalComponent(IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
         {
             TaskSolvers = TaskSolversLoader.GetTaskSolversFromRelativePath(taskSolversDirectoryRelativePath);
@@ -146,7 +147,7 @@ namespace _15pl04.Ucc.Commons.Computations
         {
             _messagesToSend.Enqueue(message);
             _messagesToSendManualResetEvent.Set();
-            RaiseMessageEvent(MessageEnqueued, message);
+            RaiseMessageEvent(MessageEnqueuedToSend, message);
         }
 
         /// <exception cref="_15pl04.Ucc.Commons.Exceptions.RegisterException"></exception>
@@ -314,7 +315,7 @@ namespace _15pl04.Ucc.Commons.Computations
             return receivedMessages;
         }
 
-        private void RaiseMessageEvent(MessageEventHandler messageEventHandler, Message message)
+        private void RaiseMessageEvent(EventHandler<MessageEventArgs> messageEventHandler, Message message)
         {
             if (messageEventHandler != null)
             {
