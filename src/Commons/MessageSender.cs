@@ -51,8 +51,15 @@ namespace _15pl04.Ucc.Commons
                     again = true;
                     if (_servers.Count > 0)
                     {
-                        _tcpClient.ServerAddress = new IPEndPoint(
-                            new IPAddress(long.Parse(_servers[0].Address)), _servers[0].Port);
+                        try
+                        {
+                            _tcpClient.ServerAddress = IPEndPointParser.Parse(_servers[0].Address, _servers[0].Port);
+                        }
+                        catch (Exception)
+                        {
+                            // just skip incorrect address
+                        }
+                        
                         _servers.RemoveAt(0);
                     }
                     else

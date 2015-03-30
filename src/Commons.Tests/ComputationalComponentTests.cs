@@ -32,7 +32,7 @@ namespace _15pl04.Ucc.Commons.Tests
                 throw new NotImplementedException();
             }
 
-            protected override void HandleResponseMessage(Message message)
+            protected override void HandleReceivedMessage(Message message)
             {
                 throw new NotImplementedException();
             }

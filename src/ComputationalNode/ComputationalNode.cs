@@ -52,7 +52,7 @@ namespace _15pl04.Ucc.ComputationalNode
         /// <remarks>
         /// RegisterResponse is handled in base class.
         /// </remarks>
-        protected override void HandleResponseMessage(Message message)
+        protected override void HandleReceivedMessage(Message message)
         {
             switch (message.MessageType)
             {

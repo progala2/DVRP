@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ColorfulConsole.cs" />
     <Compile Include="ComponentType.cs" />
     <Compile Include="Computations\ComputationalComponent.cs" />
     <Compile Include="Computations\ComputationalTask.cs" />

@@ -55,10 +55,11 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                     foreach (var message in input)
                     {
-                        Console.WriteLine("Received: " + message.GetType().Name);
+                        ColorfulConsole.WriteMessageInfo("Received", message);
+
                         var responseMsgs = GetResponseMessages(message);
 
-                        Console.WriteLine("Sending: " + responseMsgs.GetType().Name);
+                        ColorfulConsole.WriteMessageInfo("Sending", responseMsgs);
                         var rawResponse = _marshaller.Marshall(new Message[] { responseMsgs });
                         new Task(() => { callback(rawResponse); }).Start();
                     }

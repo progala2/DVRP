@@ -6,28 +6,42 @@ namespace _15pl04.Ucc.Commons
 {
     public static class IPEndPointParser
     {
-        public static IPEndPoint Parse(string endpointstring)
+
+        /// <exception cref="System.FormatException"></exception>
+        /// <exception cref="System.ArgumentException"></exception>
+        public static IPEndPoint Parse(string endPointString)
         {
-            return Parse(endpointstring, -1);
+            return Parse(endPointString, -1);
         }
 
-        public static IPEndPoint Parse(string endpointstring, int defaultport)
+        /// <exception cref="System.FormatException"></exception>
+        /// <exception cref="System.ArgumentException"></exception>
+        public static IPEndPoint Parse(string endPointString, string defaultPort)
         {
-            if (string.IsNullOrEmpty(endpointstring)
-                || endpointstring.Trim().Length == 0)
+            int port;
+            if (int.TryParse(defaultPort, out port))
+                return Parse(endPointString, port);
+            return Parse(endPointString);
+        }
+        /// <exception cref="System.FormatException"></exception>
+        /// <exception cref="System.ArgumentException"></exception>
+        public static IPEndPoint Parse(string endPointString, int defaultPort)
+        {
+            if (string.IsNullOrEmpty(endPointString)
+                || endPointString.Trim().Length == 0)
             {
                 throw new ArgumentException("Endpoint descriptor may not be empty.");
             }
 
-            if (defaultport != -1 &&
-                (defaultport < IPEndPoint.MinPort
-                || defaultport > IPEndPoint.MaxPort))
+            if (defaultPort != -1 &&
+                (defaultPort < IPEndPoint.MinPort
+                || defaultPort > IPEndPoint.MaxPort))
             {
-                throw new ArgumentException(string.Format("Invalid default port '{0}'", defaultport));
+                throw new ArgumentException(string.Format("Invalid default port '{0}'", defaultPort));
             }
 
-            string[] values = endpointstring.Split(new char[] { ':' });
-            IPAddress ipaddy;
+            string[] values = endPointString.Split(new char[] { ':' });
+            IPAddress ipAddress;
             int port = -1;
 
             // check if we have an IPv6 or ports
@@ -35,13 +49,13 @@ namespace _15pl04.Ucc.Commons
             {
                 if (values.Length == 1)
                     // no port is specified, default
-                    port = defaultport;
+                    port = defaultPort;
                 else
-                    port = getPort(values[1]);
+                    port = GetPort(values[1]);
 
                 // try to use the address as IPv4, otherwise get hostname
-                if (!IPAddress.TryParse(values[0], out ipaddy))
-                    ipaddy = getIPfromHost(values[0]);
+                if (!IPAddress.TryParse(values[0], out ipAddress))
+                    ipAddress = GetIPFromHost(values[0]);
             }
             else if (values.Length > 2) // ipv6
             {
@@ -49,27 +63,27 @@ namespace _15pl04.Ucc.Commons
                 if (values[0].StartsWith("[") && values[values.Length - 2].EndsWith("]"))
                 {
                     string ipaddressstring = string.Join(":", values.Take(values.Length - 1).ToArray());
-                    ipaddy = IPAddress.Parse(ipaddressstring);
-                    port = getPort(values[values.Length - 1]);
+                    ipAddress = IPAddress.Parse(ipaddressstring);
+                    port = GetPort(values[values.Length - 1]);
                 }
                 else // [a:b:c] or a:b:c
                 {
-                    ipaddy = IPAddress.Parse(endpointstring);
-                    port = defaultport;
+                    ipAddress = IPAddress.Parse(endPointString);
+                    port = defaultPort;
                 }
             }
             else
             {
-                throw new FormatException(string.Format("Invalid endpoint ipaddress '{0}'", endpointstring));
+                throw new FormatException(string.Format("Invalid endpoint ipaddress '{0}'", endPointString));
             }
 
             if (port == -1)
-                throw new ArgumentException(string.Format("No port specified: '{0}'", endpointstring));
+                throw new ArgumentException(string.Format("No port specified: '{0}'", endPointString));
 
-            return new IPEndPoint(ipaddy, port);
+            return new IPEndPoint(ipAddress, port);
         }
 
-        private static int getPort(string p)
+        private static int GetPort(string p)
         {
             int port;
 
@@ -83,7 +97,7 @@ namespace _15pl04.Ucc.Commons
             return port;
         }
 
-        private static IPAddress getIPfromHost(string p)
+        private static IPAddress GetIPFromHost(string p)
         {
             var hosts = Dns.GetHostAddresses(p);
 

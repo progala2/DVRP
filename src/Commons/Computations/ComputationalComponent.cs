@@ -65,6 +65,8 @@ namespace _15pl04.Ucc.Commons.Computations
         private ConcurrentQueue<Message> _messagesToSend;
         private ManualResetEvent _messagesToSendManualResetEvent;
 
+        private readonly object startStopLock = new object();
+
 
         /// <summary>
         /// Creates component that can register to the server.
@@ -96,21 +98,24 @@ namespace _15pl04.Ucc.Commons.Computations
         /// </summary>
         public void Start()
         {
-            if (IsRunning)
-                return;
+            lock (startStopLock)
+            {
+                if (IsRunning)
+                    return;
 
-            RaiseEvent(OnStarting);
+                RaiseEvent(OnStarting);
 
-            ResetComponent();
+                ResetComponent();
 
-            if (!Register())
-                return;
+                if (!Register())
+                    return;
 
-            // start informing about statuses of threads            
-            _messagesProcessingTask.Start();
-            IsRunning = true;
+                // start informing about statuses of threads            
+                _messagesProcessingTask.Start();
+                IsRunning = true;
 
-            RaiseEvent(OnStarted);
+                RaiseEvent(OnStarted);
+            }
         }
 
         /// <summary>
@@ -118,12 +123,15 @@ namespace _15pl04.Ucc.Commons.Computations
         /// </summary>
         public void Stop()
         {
-            if (IsRunning)
+            lock (startStopLock)
             {
-                RaiseEvent(OnStopping);
-                _cancellationTokenSource.Cancel();
-                IsRunning = false;
-                RaiseEvent(OnStopped);
+                if (IsRunning)
+                {
+                    RaiseEvent(OnStopping);
+                    _cancellationTokenSource.Cancel();
+                    IsRunning = false;
+                    RaiseEvent(OnStopped);
+                }
             }
         }
 
@@ -142,7 +150,7 @@ namespace _15pl04.Ucc.Commons.Computations
         /// <remarks>
         /// Here can be started computational tasks using ComputationalTaskPool property.
         /// </remarks>
-        protected abstract void HandleResponseMessage(Message message);
+        protected abstract void HandleReceivedMessage(Message message);
 
 
         /// <summary>
@@ -180,7 +188,7 @@ namespace _15pl04.Ucc.Commons.Computations
                 {
                     if (registered)
                     {
-                        InternalHandleResponseMessage(receivedMessage);
+                        InternalHandleReceivedMessage(receivedMessage);
                     }
                     else
                     {
@@ -218,33 +226,27 @@ namespace _15pl04.Ucc.Commons.Computations
         {
             try
             {
+                var reliability = 0.75;
+                var rand = new Random();
                 Message message;
                 Message[] receivedMessages;
                 while (true)
                 {
-                    /////////////////////////////
-                    /////////////////////////////
-                    /////////////////////////////
-                    /////////////////////////////
-                    /////////////////////////////
-                    /////////////////////////////
-                    /////////////////////////////
-                    /////////////////////////////
-                    /////////////////////////////
-                    /////////////////////////////
-                    //////////////////
                     while (_messagesToSend.TryDequeue(out message))
                     {
                         // send message
                         receivedMessages = SendMessageAndStopIfNoResponse(message);
                         // and handle response
-                        HandleResponseMessages(receivedMessages);
+                        HandleReceivedMessages(receivedMessages);
                     }
                     // no more messages to send so reset state to nonsignaled
                     _messagesToSendManualResetEvent.Reset();
 
+                    var multiplier = 1 - reliability + rand.NextDouble();
+                    Console.WriteLine("Sleeping {0} sec", Timeout * multiplier / 1000.0);
+
                     // wait some time for new messages to be enqueued to send (_timeout / 2 is just a proposition)
-                    var anyNewMessageEnqueuedToSend = _messagesToSendManualResetEvent.WaitOne((int)(Timeout / 2));
+                    var anyNewMessageEnqueuedToSend = _messagesToSendManualResetEvent.WaitOne((int)(Timeout * multiplier));
 
                     // if there are no new messages enqueued to send 
                     if (!anyNewMessageEnqueuedToSend)
@@ -253,7 +255,7 @@ namespace _15pl04.Ucc.Commons.Computations
                         var statusMessage = GetStatusMessage();
                         receivedMessages = SendMessageAndStopIfNoResponse(statusMessage);
                         // and handle response
-                        HandleResponseMessages(receivedMessages);
+                        HandleReceivedMessages(receivedMessages);
                     }
                 }
             }
@@ -290,19 +292,19 @@ namespace _15pl04.Ucc.Commons.Computations
             return statusMessage;
         }
 
-        private void HandleResponseMessages(Message[] messages)
+        private void HandleReceivedMessages(Message[] messages)
         {
             foreach (var message in messages)
             {
-                InternalHandleResponseMessage(message);
+                InternalHandleReceivedMessage(message);
             }
         }
 
-        private void InternalHandleResponseMessage(Message message)
+        private void InternalHandleReceivedMessage(Message message)
         {
             try
             {
-                HandleResponseMessage(message);
+                HandleReceivedMessage(message);
             }
             catch (Exception ex)
             {

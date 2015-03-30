@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Computations;
@@ -62,7 +63,8 @@ namespace _15pl04.Ucc.ComputationalClient
         /// Sends request for solution of the problem.
         /// </summary>
         /// <param name="id">The ID of the problem instance assigned by the server.</param>
-        public SolutionsMessage SendSolutionRequest(uint id)
+        /// <returns>Solutions message(s) or null if server is not responding.</returns>
+        public SolutionsMessage[] SendSolutionRequest(uint id)
         {
             var solutionRequestMessage = new SolutionRequestMessage()
             {
@@ -72,15 +74,20 @@ namespace _15pl04.Ucc.ComputationalClient
             if (receivedMessages == null)
                 return null;
 
-            SolutionsMessage solutionsMessage = null;
+            var solutionsMessages = new List<SolutionsMessage>();
+            SolutionsMessage solutionsMessage;
             foreach (var receivedMessage in receivedMessages)
             {
-                if ((solutionsMessage = receivedMessage as SolutionsMessage) == null)
+                if ((solutionsMessage = receivedMessage as SolutionsMessage) != null)
+                {
+                    solutionsMessages.Add(solutionsMessage);
+                }
+                else
                 {
                     RaiseEvent(MessageSendingException, receivedMessage, new InvalidOperationException("SolutionsMessage expected."));
                 }
             }
-            return solutionsMessage;
+            return solutionsMessages.ToArray();
         }
 
 

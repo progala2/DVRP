@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using _15pl04.Ucc.Commons;
@@ -14,7 +15,11 @@ namespace _15pl04.Ucc.ComputationalClient
     {
         static void Main(string[] args)
         {
-            var serverAddress = IPEndPointParser.Parse("127.0.0.1:12345");
+            var appSettings = ConfigurationManager.AppSettings;
+            var primaryCSaddress = appSettings["primaryCSaddress"];
+            var primaryCSport = appSettings["primaryCSport"];
+            var serverAddress = IPEndPointParser.Parse(primaryCSaddress, primaryCSport);
+            Console.WriteLine("server address from App.config: " + serverAddress);
 
             var computationalClient = new ComputationalClient(serverAddress);
 
@@ -34,58 +39,31 @@ namespace _15pl04.Ucc.ComputationalClient
                     var minMaxProblem = new MinMaxProblem(numbers);
                     var problemData = GenerateProblemData(minMaxProblem);
                     computationalClient.SendSolveRequest(problemType, problemData, null);
-                    
+
                 }
                 if (line == "solution")
                 {
                     Console.Write("Enter problem id: ");
                     uint id;
                     uint.TryParse(Console.ReadLine(), out id);
-                    var solutionsMessage = computationalClient.SendSolutionRequest(id);
-                    if (solutionsMessage != null)
-                        ShowSolutionsMessageInfo(solutionsMessage);
+                    var solutionsMessages = computationalClient.SendSolutionRequest(id);
                 }
             }
         }
 
         static void computationalClient_MessageSent(object sender, MessageEventArgs e)
         {
-            Console.WriteLine("Sent: " + e.Message.GetType().Name);
+            ColorfulConsole.WriteMessageInfo("Sent", e.Message);
         }
 
         static void computationalClient_MessageReceived(object sender, MessageEventArgs e)
         {
-            Console.WriteLine("Received: " + e.Message.GetType().Name);
-            if (e.Message.MessageType == Message.MessageClassType.SolveRequestResponse)
-            {
-                var msg = (SolveRequestResponseMessage)e.Message;
-                Console.WriteLine(" Received problem id=" + msg.Id);
-            }
-            if (e.Message.MessageType == Message.MessageClassType.Solutions)
-            {
-                var msg = (SolutionsMessage)e.Message;
-                ShowSolutionsMessageInfo(msg);
-            }
+            ColorfulConsole.WriteMessageInfo("Received", e.Message);
         }
 
-        static void computationalClient_MessageSendingException(object sender,MessageExceptionEventArgs e)
+        static void computationalClient_MessageSendingException(object sender, MessageExceptionEventArgs e)
         {
-            Console.WriteLine("Message sending exception:");
-            Console.WriteLine(" Message: " + e.Message.GetType().Name);
-            Console.WriteLine(" Exception: " + e.Exception.GetType() + "\n  " + e.Exception.Message);
-        }
-
-        private static void ShowSolutionsMessageInfo(SolutionsMessage solutionsMessage)
-        {
-            Console.WriteLine("SolutionsMessage:");
-            Console.WriteLine(" ProblemType=" + solutionsMessage.ProblemType);
-            Console.WriteLine(" Id=" + solutionsMessage.Id);
-            foreach (var solution in solutionsMessage.Solutions)
-            {
-                Console.WriteLine("  TaskId=" + solution.TaskId);
-                Console.WriteLine("  ComputationsTime=" + solution.ComputationsTime);
-                Console.WriteLine("  TimeoutOccured=" + solution.TimeoutOccured);
-            }
+            ColorfulConsole.WriteMessageExceptionInfo("Message sending exception", e.Message, e.Exception);
         }
 
         private static byte[] GenerateProblemData(MinMaxProblem minMaxProblem)
