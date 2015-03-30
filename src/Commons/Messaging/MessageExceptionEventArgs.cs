@@ -1,8 +1,7 @@
 ﻿using System;
-using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 
-namespace _15pl04.Ucc.Commons.Computations
+namespace _15pl04.Ucc.Commons.Messaging
 {
     public class MessageExceptionEventArgs : MessageEventArgs
     {

@@ -34,7 +34,7 @@
     <Compile Include="ComponentType.cs" />
     <Compile Include="Computations\ComputationalComponent.cs" />
     <Compile Include="Computations\ComputationalTask.cs" />
-    <Compile Include="Computations\MessageExceptionEventArgs.cs" />
+    <Compile Include="Messaging\MessageExceptionEventArgs.cs" />
     <Compile Include="Exceptions\NoResponseException.cs" />
     <Compile Include="IPEndPointParser.cs" />
     <Compile Include="Messaging\MessageEventArgs.cs" />

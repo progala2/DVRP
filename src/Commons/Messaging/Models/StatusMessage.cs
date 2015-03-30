@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -54,6 +55,19 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public override MessageClassType MessageType
         {
             get { return MessageClassType.Status; }
+        }
+
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[");
+            sb.Append("Id=" + Id + ";");
+            sb.Append("Threads={");
+            foreach (var thread in Threads)
+                sb.Append(thread.ToString());
+            sb.Append("}]");
+            return sb.ToString();
         }
     }
 
@@ -155,6 +169,19 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public bool ShouldSerializeProblemType()
         {
             return _problemTypeField != null;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[");
+            sb.Append("State=" + State.ToString() + ";");
+            sb.Append("HowLong=" + (HowLong.HasValue ? HowLong.ToString() : "null") + ";");
+            sb.Append("ProblemInstanceId=" + (ProblemInstanceId.HasValue ? ProblemInstanceId.ToString() : "null") + ";");
+            sb.Append("TaskId=" + (TaskId.HasValue ? TaskId.ToString() : "null") + ";");
+            sb.Append("ProblemType=" + ProblemType);
+            sb.Append("]");
+            return sb.ToString();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -40,6 +41,17 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClassType.NoOperation; }
         }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[");
+            sb.Append("BackupCommunicationServers={");
+            foreach (var backup in BackupCommunicationServers)
+                sb.Append(backup.ToString());
+            sb.Append("}]");
+            return sb.ToString();
+        }
     }
 
     [Serializable]
@@ -75,6 +87,16 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             {
                 _portField = value;
             }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[");
+            sb.Append("Address=" + Address + ";");
+            sb.Append("Port=" + Port);
+            sb.Append("]");
+            return sb.ToString();
         }
     }
 }
