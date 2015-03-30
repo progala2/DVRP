@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -89,6 +90,22 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public override MessageClassType MessageType
         {
             get { return MessageClassType.Solutions; }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[");
+            sb.Append("ProblemType=" + ProblemType.ToString() + ";");
+            sb.Append("Id=" + Id.ToString() + ";");
+            sb.Append("CommonData.Length=" + (CommonData == null ? "null" : CommonData.Length.ToString()) + ";");
+            sb.Append("Solutions={");
+            foreach (var solution in Solutions)
+            {
+                sb.Append("[" + solution.ToString() + "]");
+            }
+            sb.Append("}]");
+            return sb.ToString();
         }
     }
 
@@ -180,6 +197,19 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public bool ShouldSerializeData()
         {
             return _dataField != null;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[");
+            sb.Append("TaskId=" + (TaskId.HasValue ? TaskId.ToString() : "null") + ";");
+            sb.Append("TimeoutOccured=" + TimeoutOccured.ToString() + ";");
+            sb.Append("Type=" + Type.ToString() + ";");
+            sb.Append("ComputationsTime=" + ComputationsTime.ToString() + ";");
+            sb.Append("Data.Length=" + (Data == null ? "null" : Data.Length.ToString()));
+            sb.Append("]");
+            return sb.ToString();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -86,6 +87,18 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public override MessageClassType MessageType
         {
             get { return MessageClassType.SolveRequest; }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[");
+            sb.Append("ProblemType=" + ProblemType + ";");
+            sb.Append("SolvingTimeout=" + (SolvingTimeout.HasValue ? SolvingTimeout.ToString() : "null") + ";");
+            sb.Append("Data=" + Data.ToString() + ";");
+            sb.Append("Id=" + (Id.HasValue ? Id.ToString() : "null"));
+            sb.Append("]");
+            return sb.ToString();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -108,7 +109,22 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlIgnore]
         public override MessageClassType MessageType
         {
-            get { return MessageClassType.Register;}
+            get { return MessageClassType.Register; }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[");
+            sb.Append("Type=" + Type.ToString() + ";");
+            sb.Append("SolvableProblems={");
+            foreach (var solvableProblem in SolvableProblems)
+                sb.Append("[" + solvableProblem + "]");
+            sb.Append("}ParallelThreads=" + ParallelThreads + ";");
+            sb.Append("Deregister=" + (Deregister.HasValue ? Deregister.ToString() : "null") + ";");
+            sb.Append("Id=" + (Id.HasValue ? Id.ToString() : "null"));
+            sb.Append("]");
+            return sb.ToString();
         }
     }
 }

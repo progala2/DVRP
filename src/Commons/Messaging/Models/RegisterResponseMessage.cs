@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -69,6 +70,19 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public override MessageClassType MessageType
         {
             get { return MessageClassType.RegisterResponse;}
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[");
+            sb.Append("Id=" + Id.ToString()+";");
+            sb.Append("Timeout=" + Timeout.ToString() + ";");
+            sb.Append("BackupCommunicationServers={");
+            foreach (var backup in BackupCommunicationServers)
+                sb.Append(backup.ToString());
+            sb.Append("}]");
+            return sb.ToString();
         }
     }
 }

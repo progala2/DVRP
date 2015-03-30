@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -47,6 +48,16 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public override MessageClassType MessageType
         {
             get { return MessageClassType.Error; }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[");
+            sb.Append("ErrorMessageType="+ErrorMessageType+";");
+            sb.Append("ErrorMessageText="+ErrorMessageText);
+            sb.Append("]");
+            return sb.ToString();
         }
     }
 
