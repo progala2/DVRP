@@ -65,7 +65,7 @@ namespace _15pl04.Ucc.Commons.Computations
         private ConcurrentQueue<Message> _messagesToSend;
         private ManualResetEvent _messagesToSendManualResetEvent;
 
-        private readonly object startStopLock = new object();
+        private readonly object _startStopLock = new object();
 
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace _15pl04.Ucc.Commons.Computations
         /// </summary>
         public void Start()
         {
-            lock (startStopLock)
+            lock (_startStopLock)
             {
                 if (IsRunning)
                     return;
@@ -123,7 +123,7 @@ namespace _15pl04.Ucc.Commons.Computations
         /// </summary>
         public void Stop()
         {
-            lock (startStopLock)
+            lock (_startStopLock)
             {
                 if (IsRunning)
                 {
