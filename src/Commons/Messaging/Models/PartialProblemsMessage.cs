@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml.Serialization;
@@ -101,9 +102,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlIgnore]
-        public override MessageClassType MessageType
+        public override MessageClass MessageType
         {
-            get { return MessageClassType.PartialProblems;}
+            get { return MessageClass.PartialProblems;}
         }
     }
 

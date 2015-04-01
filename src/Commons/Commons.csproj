@@ -34,12 +34,15 @@
     <Compile Include="ComponentType.cs" />
     <Compile Include="Computations\ComputationalComponent.cs" />
     <Compile Include="Computations\ComputationalTask.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Messaging\MessageExceptionEventArgs.cs" />
     <Compile Include="Exceptions\NoResponseException.cs" />
     <Compile Include="IPEndPointParser.cs" />
     <Compile Include="Messaging\MessageEventArgs.cs" />
     <Compile Include="MessageSender.cs" />
     <Compile Include="Messaging\MessageValidator.cs" />
+    <Compile Include="Messaging\Models\Base\MessageClass.cs" />
     <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
     <Compile Include="Messaging\Models\Base\Message.cs" />
     <Compile Include="Messaging\Models\NoOperationMessage.cs" />

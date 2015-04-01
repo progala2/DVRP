@@ -1,5 +1,6 @@
 ﻿using System;
 using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons
 {
@@ -11,15 +12,15 @@ namespace _15pl04.Ucc.Commons
             ConsoleColor consoleColor;
             switch (message.MessageType)
             {
-                case Message.MessageClassType.Status: consoleColor = ConsoleColor.Cyan; break;
-                case Message.MessageClassType.NoOperation: consoleColor = ConsoleColor.DarkCyan; break;
-                case Message.MessageClassType.Register: consoleColor = ConsoleColor.Green; break;
-                case Message.MessageClassType.RegisterResponse: consoleColor = ConsoleColor.DarkGreen; break;
-                case Message.MessageClassType.Error: consoleColor = ConsoleColor.Red; break;
-                case Message.MessageClassType.SolveRequest: consoleColor = ConsoleColor.Magenta; break;
-                case Message.MessageClassType.SolveRequestResponse: consoleColor = ConsoleColor.DarkMagenta; break;
-                case Message.MessageClassType.SolutionRequest: consoleColor = ConsoleColor.Yellow; break;
-                case Message.MessageClassType.Solutions: consoleColor = ConsoleColor.DarkYellow; break;
+                case MessageClass.Status: consoleColor = ConsoleColor.Cyan; break;
+                case MessageClass.NoOperation: consoleColor = ConsoleColor.DarkCyan; break;
+                case MessageClass.Register: consoleColor = ConsoleColor.Green; break;
+                case MessageClass.RegisterResponse: consoleColor = ConsoleColor.DarkGreen; break;
+                case MessageClass.Error: consoleColor = ConsoleColor.Red; break;
+                case MessageClass.SolveRequest: consoleColor = ConsoleColor.Magenta; break;
+                case MessageClass.SolveRequestResponse: consoleColor = ConsoleColor.DarkMagenta; break;
+                case MessageClass.SolutionRequest: consoleColor = ConsoleColor.Yellow; break;
+                case MessageClass.Solutions: consoleColor = ConsoleColor.DarkYellow; break;
                 default: consoleColor = ConsoleColor.Gray; break;
             }
             Console.ForegroundColor = consoleColor;

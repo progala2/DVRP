@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
@@ -54,7 +55,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                 if (messages.Length > 0)
                 {
                     byte[] data;
-                    Message.MessageClassType type;
+                    MessageClass type;
                     for (int i = 0; i < messages.Length; ++i)
                     {
                         type = messages[i].MessageType;

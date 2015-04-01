@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Tests
 {
@@ -18,7 +19,7 @@ namespace _15pl04.Ucc.Commons.Tests
             doc.Add(root);
 
             var str = doc.ToString();
-            var tstClass = MessageSerializer.Deserialize(Encoding.UTF8.GetBytes(str), Message.MessageClassType.SolutionRequest);
+            var tstClass = MessageSerializer.Deserialize(Encoding.UTF8.GetBytes(str), MessageClass.SolutionRequest);
             var solutionRequestMessage = tstClass as SolutionRequestMessage;
             Assert.IsTrue(solutionRequestMessage != null); 
             Assert.IsTrue(2 == solutionRequestMessage.Id);
@@ -35,7 +36,7 @@ namespace _15pl04.Ucc.Commons.Tests
              var tmp = doc1.ToString();
              byte[] buffer;
              var tstClass = new SolutionRequestMessage { Id = 2 };
-             MessageSerializer.Serialize(tstClass, Message.MessageClassType.SolutionRequest, out buffer);
+             MessageSerializer.Serialize(tstClass, MessageClass.SolutionRequest, out buffer);
              var str = Encoding.UTF8.GetString(buffer);
              Assert.AreEqual(tmp.Contains("<Id>"), str.Contains("<Id>"));
         }

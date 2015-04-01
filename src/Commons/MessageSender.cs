@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons
 {
@@ -91,10 +92,10 @@ namespace _15pl04.Ucc.Commons
                 var message = messages[i];
                 switch (message.MessageType)
                 {
-                    case Message.MessageClassType.NoOperation:
+                    case MessageClass.NoOperation:
                         _servers = ((NoOperationMessage)message).BackupCommunicationServers;
                         return;
-                    case Message.MessageClassType.RegisterResponse:
+                    case MessageClass.RegisterResponse:
                         _servers = ((RegisterResponseMessage)message).BackupCommunicationServers;
                         return;
                 }

@@ -4,6 +4,7 @@ using System.Net;
 using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Computations;
 using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using UCCTaskSolver;
 
 namespace _15pl04.Ucc.TaskManager
@@ -56,16 +57,16 @@ namespace _15pl04.Ucc.TaskManager
         {
             switch (message.MessageType)
             {
-                case Message.MessageClassType.NoOperation:
+                case MessageClass.NoOperation:
                     NoOperationMessageHandler((NoOperationMessage)message);
                     break;
-                case Message.MessageClassType.DivideProblem:
+                case MessageClass.DivideProblem:
                     DivideProblemMessageHandler((DivideProblemMessage)message);
                     break;
-                case Message.MessageClassType.Solutions:
+                case MessageClass.Solutions:
                     SolutionsMessageHandler((SolutionsMessage)message);
                     break;
-                case Message.MessageClassType.Error:
+                case MessageClass.Error:
                     ErrorMessageHandler((ErrorMessage)message);
                     break;
                 default:

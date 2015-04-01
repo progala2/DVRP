@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
@@ -25,47 +26,34 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             return resourceContent;
         }
 
-        public enum MessageClassType
-        {
-            DivideProblem,
-            Error,
-            NoOperation,
-            PartialProblems,
-            Register,
-            RegisterResponse,
-            SolutionRequest,
-            Solutions,
-            SolveRequest,
-            SolveRequestResponse,
-            Status
-        }
 
-        static Dictionary<string, MessageClassType> _messageClassTypeStringDictionary;
 
-        public static MessageClassType GetMessageClassTypeFromString(string str)
+        static Dictionary<string, MessageClass> _messageClassTypeStringDictionary;
+
+        public static MessageClass GetMessageClassTypeFromString(string str)
         {
             if (_messageClassTypeStringDictionary == null)
             {
-                _messageClassTypeStringDictionary = new Dictionary<string, MessageClassType>
+                _messageClassTypeStringDictionary = new Dictionary<string, MessageClass>
                 {
-                    {"NoOperation", MessageClassType.NoOperation},
-                    {"DivideProblem", MessageClassType.DivideProblem},
-                    {"Error", MessageClassType.Error},
-                    {"SolvePartialProblems", MessageClassType.PartialProblems},
-                    {"PartialProblems", MessageClassType.PartialProblems},
-                    {"Register", MessageClassType.Register},
-                    {"RegisterResponse", MessageClassType.RegisterResponse},
-                    {"SolutionRequest", MessageClassType.SolutionRequest},
-                    {"Solutions", MessageClassType.Solutions},
-                    {"SolveRequest", MessageClassType.SolveRequest},
-                    {"SolveRequestResponse", MessageClassType.SolveRequestResponse},
-                    {"Status", MessageClassType.Status}
+                    {"NoOperation", MessageClass.NoOperation},
+                    {"DivideProblem", MessageClass.DivideProblem},
+                    {"Error", MessageClass.Error},
+                    {"SolvePartialProblems", MessageClass.PartialProblems},
+                    {"PartialProblems", MessageClass.PartialProblems},
+                    {"Register", MessageClass.Register},
+                    {"RegisterResponse", MessageClass.RegisterResponse},
+                    {"SolutionRequest", MessageClass.SolutionRequest},
+                    {"Solutions", MessageClass.Solutions},
+                    {"SolveRequest", MessageClass.SolveRequest},
+                    {"SolveRequestResponse", MessageClass.SolveRequestResponse},
+                    {"Status", MessageClass.Status}
                 };
             }
             return _messageClassTypeStringDictionary[str];
         }
 
         [XmlIgnore]
-        public abstract MessageClassType MessageType { get; }
+        public abstract MessageClass MessageType { get; }
     }
 }

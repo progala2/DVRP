@@ -3,6 +3,7 @@ using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.CommunicationServer.Collections;
 using _15pl04.Ucc.CommunicationServer.Tasks.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -77,7 +78,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             switch (msg.MessageType)
             {
                 //for AsyncTcp tests to work, from pie/architecture, can (even should) be replaced later
-                case Message.MessageClassType.Register:
+                case MessageClass.Register:
                     {
                         var registerMsg = msg as RegisterMessage;
 
@@ -106,7 +107,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     }
 
                 //for AsyncTcp tests to work, from pie/architecture, can (even should) be replaced later
-                case Message.MessageClassType.Status:
+                case MessageClass.Status:
                     {
                         var statusMsg = msg as StatusMessage;
                         // TODO - implement
@@ -131,7 +132,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         }
                     }
 
-                case Message.MessageClassType.SolveRequest:
+                case MessageClass.SolveRequest:
                     {
                         var solveRequestMsg = msg as SolveRequestMessage;
 
@@ -148,7 +149,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         return solveRequestResponseMsg;
                     }
 
-                case Message.MessageClassType.SolutionRequest:
+                case MessageClass.SolutionRequest:
                     {
                         var solutionRequestMsg = msg as SolutionRequestMessage;
 
@@ -197,7 +198,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         return solutionMsg;
                     }
 
-                case Message.MessageClassType.PartialProblems:
+                case MessageClass.PartialProblems:
                     {
                         var partialProblemsMsg = msg as PartialProblemsMessage;
 
@@ -206,7 +207,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         return new NoOperationMessage();
                     }
 
-                case Message.MessageClassType.Solutions:
+                case MessageClass.Solutions:
                     {
                         var solutionsMessage = msg as SolutionsMessage;
 

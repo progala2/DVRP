@@ -5,6 +5,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
@@ -54,41 +55,41 @@ namespace _15pl04.Ucc.Commons.Messaging
 
     public static class MessageSerializer
     {
-        static readonly Dictionary<Message.MessageClassType, IMessageSerializer> _messageSerializerForMessageTypeDictionary;
+        static readonly Dictionary<MessageClass, IMessageSerializer> _messageSerializerForMessageTypeDictionary;
 
         static MessageSerializer()
         {
-            _messageSerializerForMessageTypeDictionary = new Dictionary<Message.MessageClassType, IMessageSerializer>
+            _messageSerializerForMessageTypeDictionary = new Dictionary<MessageClass, IMessageSerializer>
                 {
-                    {Message.MessageClassType.NoOperation, new MessageSerializerHelper<NoOperationMessage>()},
-                    {Message.MessageClassType.DivideProblem, new MessageSerializerHelper<DivideProblemMessage>()},
-                    {Message.MessageClassType.Error, new MessageSerializerHelper<ErrorMessage>()},
-                    {Message.MessageClassType.PartialProblems, new MessageSerializerHelper<PartialProblemsMessage>()},
-                    {Message.MessageClassType.Register, new MessageSerializerHelper<RegisterMessage>()},
-                    {Message.MessageClassType.RegisterResponse, new MessageSerializerHelper<RegisterResponseMessage>()},
-                    {Message.MessageClassType.SolutionRequest, new MessageSerializerHelper<SolutionRequestMessage>()},
-                    {Message.MessageClassType.Solutions, new MessageSerializerHelper<SolutionsMessage>()},
-                    {Message.MessageClassType.SolveRequest, new MessageSerializerHelper<SolveRequestMessage>()},
-                    {Message.MessageClassType.SolveRequestResponse, new MessageSerializerHelper<SolveRequestResponseMessage>()},
-                    {Message.MessageClassType.Status, new MessageSerializerHelper<StatusMessage>()}
+                    {MessageClass.NoOperation, new MessageSerializerHelper<NoOperationMessage>()},
+                    {MessageClass.DivideProblem, new MessageSerializerHelper<DivideProblemMessage>()},
+                    {MessageClass.Error, new MessageSerializerHelper<ErrorMessage>()},
+                    {MessageClass.PartialProblems, new MessageSerializerHelper<PartialProblemsMessage>()},
+                    {MessageClass.Register, new MessageSerializerHelper<RegisterMessage>()},
+                    {MessageClass.RegisterResponse, new MessageSerializerHelper<RegisterResponseMessage>()},
+                    {MessageClass.SolutionRequest, new MessageSerializerHelper<SolutionRequestMessage>()},
+                    {MessageClass.Solutions, new MessageSerializerHelper<SolutionsMessage>()},
+                    {MessageClass.SolveRequest, new MessageSerializerHelper<SolveRequestMessage>()},
+                    {MessageClass.SolveRequestResponse, new MessageSerializerHelper<SolveRequestResponseMessage>()},
+                    {MessageClass.Status, new MessageSerializerHelper<StatusMessage>()}
                 };
         }
-        static IMessageSerializer GetSerializerForMessageClassType(Message.MessageClassType type)
+        static IMessageSerializer GetSerializerForMessageClassType(MessageClass type)
         {
             return _messageSerializerForMessageTypeDictionary[type];
         }
 
-        public static Message Deserialize(byte[] buffer, Message.MessageClassType type)
+        public static Message Deserialize(byte[] buffer, MessageClass type)
         {
             return GetSerializerForMessageClassType(type).Deserialize(buffer);
         }
 
-        public static Message Deserialize(byte[] buffer, int index, int count, Message.MessageClassType type)
+        public static Message Deserialize(byte[] buffer, int index, int count, MessageClass type)
         {
             return GetSerializerForMessageClassType(type).Deserialize(buffer, index, count);
         }
 
-        public static void Serialize(Message obj, Message.MessageClassType type, out byte[] buffer)
+        public static void Serialize(Message obj, MessageClass type, out byte[] buffer)
         {
             GetSerializerForMessageClassType(type).Serialize(obj, out buffer);
         }

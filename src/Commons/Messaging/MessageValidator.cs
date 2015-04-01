@@ -1,4 +1,5 @@
 ﻿using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,35 +66,35 @@ namespace _15pl04.Ucc.Commons.Messaging
 
     public static class MessageValidator
     {
-        static readonly Dictionary<Message.MessageClassType, IMessageValidator> _messageValidatorForMessageTypeDictionary;
+        static readonly Dictionary<MessageClass, IMessageValidator> _messageValidatorForMessageTypeDictionary;
 
         static MessageValidator()
         {
-            _messageValidatorForMessageTypeDictionary = new Dictionary<Message.MessageClassType, IMessageValidator>
+            _messageValidatorForMessageTypeDictionary = new Dictionary<MessageClass, IMessageValidator>
                 {
-                    {Message.MessageClassType.NoOperation, new MessageValidatorHelper<NoOperationMessage>()},
-                    {Message.MessageClassType.DivideProblem, new MessageValidatorHelper<DivideProblemMessage>()},
-                    {Message.MessageClassType.Error, new MessageValidatorHelper<ErrorMessage>()},
-                    {Message.MessageClassType.PartialProblems, new MessageValidatorHelper<PartialProblemsMessage>()},
-                    {Message.MessageClassType.Register, new MessageValidatorHelper<RegisterMessage>()},
-                    {Message.MessageClassType.RegisterResponse, new MessageValidatorHelper<RegisterResponseMessage>()},
-                    {Message.MessageClassType.SolutionRequest, new MessageValidatorHelper<SolutionRequestMessage>()},
-                    {Message.MessageClassType.Solutions, new MessageValidatorHelper<SolutionsMessage>()},
-                    {Message.MessageClassType.SolveRequest, new MessageValidatorHelper<SolveRequestMessage>()},
-                    {Message.MessageClassType.SolveRequestResponse, new MessageValidatorHelper<SolveRequestResponseMessage>()},
-                    {Message.MessageClassType.Status, new MessageValidatorHelper<StatusMessage>()}
+                    {MessageClass.NoOperation, new MessageValidatorHelper<NoOperationMessage>()},
+                    {MessageClass.DivideProblem, new MessageValidatorHelper<DivideProblemMessage>()},
+                    {MessageClass.Error, new MessageValidatorHelper<ErrorMessage>()},
+                    {MessageClass.PartialProblems, new MessageValidatorHelper<PartialProblemsMessage>()},
+                    {MessageClass.Register, new MessageValidatorHelper<RegisterMessage>()},
+                    {MessageClass.RegisterResponse, new MessageValidatorHelper<RegisterResponseMessage>()},
+                    {MessageClass.SolutionRequest, new MessageValidatorHelper<SolutionRequestMessage>()},
+                    {MessageClass.Solutions, new MessageValidatorHelper<SolutionsMessage>()},
+                    {MessageClass.SolveRequest, new MessageValidatorHelper<SolveRequestMessage>()},
+                    {MessageClass.SolveRequestResponse, new MessageValidatorHelper<SolveRequestResponseMessage>()},
+                    {MessageClass.Status, new MessageValidatorHelper<StatusMessage>()}
                 };
         }
-        static IMessageValidator GetValidatorForMessageClassType(Message.MessageClassType type)
+        static IMessageValidator GetValidatorForMessageClassType(MessageClass type)
             {
             return _messageValidatorForMessageTypeDictionary[type];
             }
-        public static void Validate(XDocument xDocument, Message.MessageClassType type)
+        public static void Validate(XDocument xDocument, MessageClass type)
             {
             GetValidatorForMessageClassType(type).Validate(xDocument);
             }
 
-        public static void Validate(string xDocument, Message.MessageClassType type)
+        public static void Validate(string xDocument, MessageClass type)
         {
             GetValidatorForMessageClassType(type).Validate(xDocument);
         }
