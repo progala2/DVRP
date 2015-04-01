@@ -10,12 +10,12 @@ namespace _15pl04.Ucc.Commons
     public class MessageSender
     {
         private readonly TcpClient _tcpClient;
-        private List<BackupCommunicationServer> _servers;
+        private List<BackupServerInfo> _servers;
         private readonly Marshaller _marshaller;
 
         public MessageSender(IPEndPoint serverAddress)
         {
-            _servers = new List<BackupCommunicationServer>();
+            _servers = new List<BackupServerInfo>();
             _tcpClient = new TcpClient(serverAddress);
             _marshaller = new Marshaller();
         }
@@ -93,7 +93,7 @@ namespace _15pl04.Ucc.Commons
                 switch (message.MessageType)
                 {
                     case MessageClass.NoOperation:
-                        _servers = ((NoOperationMessage)message).BackupCommunicationServers;
+                        _servers = ((NoOperationMessage)message).BackupServers;
                         return;
                     case MessageClass.RegisterResponse:
                         _servers = ((RegisterResponseMessage)message).BackupCommunicationServers;

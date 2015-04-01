@@ -11,7 +11,7 @@ namespace _15pl04.Ucc.Commons.Tests
         public void NoOperationMessageDeserialization()
         {
             var msg = XmlFileParser<NoOperationMessage>.Deserialize("XmlMessages/NoOperation.xml");
-            Assert.IsTrue(msg.BackupCommunicationServers.Count == 1);
+            Assert.IsTrue(msg.BackupServers.Count == 1);
         }
 
         [TestMethod]

@@ -16,15 +16,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "NoOperation.xsd";
 
-
-        public NoOperationMessage()
-        {
-            BackupCommunicationServers = new List<BackupCommunicationServer>();
-        }
-
         [XmlArray(Order = 0)]
         [XmlArrayItem("BackupCommunicationServer", IsNullable = true)]
-        public List<BackupCommunicationServer> BackupCommunicationServers { get; set; }
+        public List<BackupServerInfo> BackupServers { get; set; }
 
         [XmlIgnore]
         public override MessageClass MessageType
@@ -32,38 +26,26 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.NoOperation; }
         }
 
-        public override string ToString()
+        public NoOperationMessage()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("BackupCommunicationServers={");
-            foreach (var backup in BackupCommunicationServers)
-                sb.Append(backup.ToString());
-            sb.Append("}]");
-            return sb.ToString();
+            BackupServers = new List<BackupServerInfo>();
         }
-    }
-
-    [Serializable]
-    [DesignerCategory("code")]
-    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public class BackupCommunicationServer
-    {
-        [XmlAttribute("address", DataType = "anyURI")]
-        public string IpAddress { get; set; }
-
-        [XmlAttribute("port")]
-        public ushort Port { get; set; }
-
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("Address=" + IpAddress + ";");
-            sb.Append("Port=" + Port);
-            sb.Append("]");
-            return sb.ToString();
+            var builder = new StringBuilder(base.ToString());
+
+            builder.Append(" BackupServers={");
+            foreach (var backup in BackupServers)
+            {
+                builder.Append(backup.IpAddress);
+                builder.Append(":");
+                builder.Append(backup.Port.ToString("0000"));
+                builder.Append("|");
+            }
+            builder.Append("}");
+
+            return builder.ToString();
         }
     }
 }

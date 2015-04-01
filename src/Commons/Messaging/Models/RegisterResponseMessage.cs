@@ -20,11 +20,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         private uint _timeoutField;
 
-        private List<BackupCommunicationServer> _backupCommunicationServersField;
+        private List<BackupServerInfo> _backupCommunicationServersField;
 
         public RegisterResponseMessage()
         {
-            _backupCommunicationServersField = new List<BackupCommunicationServer>();
+            _backupCommunicationServersField = new List<BackupServerInfo>();
         }
 
         [XmlElement(Order = 0)]
@@ -55,7 +55,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         [XmlArray(Order = 2)]
         [XmlArrayItem("BackupCommunicationServer")]
-        public List<BackupCommunicationServer> BackupCommunicationServers
+        public List<BackupServerInfo> BackupCommunicationServers
         {
             get
             {

@@ -41,9 +41,9 @@ namespace _15pl04.Ucc.Commons.Tests
                 new SolutionRequestMessage { Id = 2 }, 
                 new NoOperationMessage
                 {
-                    BackupCommunicationServers = new List<BackupCommunicationServer>
+                    BackupServers = new List<BackupServerInfo>
                     {
-                        new BackupCommunicationServer
+                        new BackupServerInfo
                         {
                             IpAddress = "ff", Port = 999
                         }
@@ -74,9 +74,9 @@ namespace _15pl04.Ucc.Commons.Tests
                 new SolutionRequestMessage { Id = 2 }, 
                 new NoOperationMessage
                 {
-                    BackupCommunicationServers = new List<BackupCommunicationServer>
+                    BackupServers = new List<BackupServerInfo>
                     {
-                        new BackupCommunicationServer
+                        new BackupServerInfo
                         {
                             IpAddress = "ff"
                         }

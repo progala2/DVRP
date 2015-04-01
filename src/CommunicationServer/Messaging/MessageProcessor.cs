@@ -100,7 +100,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         var registerResponseMsg = new RegisterResponseMessage()
                         {
                             Id = id,
-                            BackupCommunicationServers = new List<BackupCommunicationServer>(),
+                            BackupCommunicationServers = new List<BackupServerInfo>(),
                             Timeout = _communicationTimeout,
                         };
                         return registerResponseMsg;
@@ -117,7 +117,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                             var noOperationMsg = new NoOperationMessage()
                             {
-                                BackupCommunicationServers = new List<BackupCommunicationServer>(),
+                                BackupServers = new List<BackupServerInfo>(),
                             };
                             return noOperationMsg;
                         }

@@ -87,7 +87,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             Message expectedMessage1 = new RegisterResponseMessage()
             {
                 Id = 1,
-                BackupCommunicationServers = new List<BackupCommunicationServer>(),
+                BackupCommunicationServers = new List<BackupServerInfo>(),
                 Timeout = _config.CommunicationTimeout
             };
             var messagesReturned = Send(new Message[] { messageRegister });
