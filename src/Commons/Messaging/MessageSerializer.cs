@@ -64,7 +64,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                     {MessageClass.NoOperation, new MessageSerializerHelper<NoOperationMessage>()},
                     {MessageClass.DivideProblem, new MessageSerializerHelper<DivideProblemMessage>()},
                     {MessageClass.Error, new MessageSerializerHelper<ErrorMessage>()},
-                    {MessageClass.PartialProblems, new MessageSerializerHelper<PartialProblemsMessage>()},
+                    {MessageClass.SolvePartialProblems, new MessageSerializerHelper<PartialProblemsMessage>()},
                     {MessageClass.Register, new MessageSerializerHelper<RegisterMessage>()},
                     {MessageClass.RegisterResponse, new MessageSerializerHelper<RegisterResponseMessage>()},
                     {MessageClass.SolutionRequest, new MessageSerializerHelper<SolutionRequestMessage>()},

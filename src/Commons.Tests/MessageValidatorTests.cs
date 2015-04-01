@@ -35,7 +35,7 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void PartialProblemsMessageValidation()
         {
-            var validationResult = Validate("XmlMessages/PartialProblems.xml", MessageClass.PartialProblems);
+            var validationResult = Validate("XmlMessages/PartialProblems.xml", MessageClass.SolvePartialProblems);
             Assert.IsTrue(validationResult);
         }
 

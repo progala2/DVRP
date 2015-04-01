@@ -33,7 +33,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                 doc.LoadXml(str);
                 if (doc.DocumentElement == null)
                     throw new Exception("Invalid Message Data");
-                var type = Message.GetMessageClassTypeFromString(doc.DocumentElement.Name);
+                var type = Message.GetMessageClassFromString(doc.DocumentElement.Name);
 
                 MessageValidator.Validate(str, type);
                 var message = MessageSerializer.Deserialize(data, begin, separatorsPositions[i] - begin, type);

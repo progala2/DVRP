@@ -2,11 +2,26 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using System.Linq;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     public abstract class Message
     {
+        private static Dictionary<string, MessageClass> _messageClassDictionary;
+
+        [XmlIgnore]
+        public abstract MessageClass MessageType { get; }
+
+        static Message()
+        {
+            int capacity = Enum.GetValues(typeof(MessageClass)).Length;
+            _messageClassDictionary = new Dictionary<string, MessageClass>(capacity);
+
+            foreach (MessageClass type in Enum.GetValues(typeof(MessageClass)).Cast<MessageClass>())
+                _messageClassDictionary.Add(type.ToString(), type);
+        }
+
         /// <summary>
         /// Gets content of corresponding .xsd file.
         /// </summary>
@@ -26,34 +41,14 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             return resourceContent;
         }
 
-
-
-        static Dictionary<string, MessageClass> _messageClassTypeStringDictionary;
-
-        public static MessageClass GetMessageClassTypeFromString(string str)
+        public static MessageClass GetMessageClassFromString(string str)
         {
-            if (_messageClassTypeStringDictionary == null)
-            {
-                _messageClassTypeStringDictionary = new Dictionary<string, MessageClass>
-                {
-                    {"NoOperation", MessageClass.NoOperation},
-                    {"DivideProblem", MessageClass.DivideProblem},
-                    {"Error", MessageClass.Error},
-                    {"SolvePartialProblems", MessageClass.PartialProblems},
-                    {"PartialProblems", MessageClass.PartialProblems},
-                    {"Register", MessageClass.Register},
-                    {"RegisterResponse", MessageClass.RegisterResponse},
-                    {"SolutionRequest", MessageClass.SolutionRequest},
-                    {"Solutions", MessageClass.Solutions},
-                    {"SolveRequest", MessageClass.SolveRequest},
-                    {"SolveRequestResponse", MessageClass.SolveRequestResponse},
-                    {"Status", MessageClass.Status}
-                };
-            }
-            return _messageClassTypeStringDictionary[str];
+            return _messageClassDictionary[str];
         }
 
-        [XmlIgnore]
-        public abstract MessageClass MessageType { get; }
+        public override string ToString()
+        {
+            return "[" + MessageType.ToString() + "] ";
+        }
     }
 }

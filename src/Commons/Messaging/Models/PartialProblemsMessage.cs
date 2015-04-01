@@ -104,7 +104,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlIgnore]
         public override MessageClass MessageType
         {
-            get { return MessageClass.PartialProblems;}
+            get { return MessageClass.SolvePartialProblems;}
         }
     }
 

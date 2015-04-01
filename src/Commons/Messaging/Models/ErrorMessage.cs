@@ -15,41 +15,19 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "Error.xsd";
 
-        private ErrorMessageErrorType _errorMessageTypeField;
-
-        private string _errorMessageField;
 
         [XmlElement(Order = 0)]
-        public ErrorMessageErrorType ErrorMessageType
-        {
-            get
-            {
-                return _errorMessageTypeField;
-            }
-            set
-            {
-                _errorMessageTypeField = value;
-            }
-        }
+        public ErrorMessageErrorType ErrorMessageType { get; set; }
 
         [XmlElement(Order = 1, ElementName = "ErrorMessage")]
-        public string ErrorMessageText
-        {
-            get
-            {
-                return _errorMessageField;
-            }
-            set
-            {
-                _errorMessageField = value;
-            }
-        }
+        public string ErrorMessageText { get; set; }
 
         [XmlIgnore]
         public override MessageClass MessageType
         {
             get { return MessageClass.Error; }
         }
+
 
         public override string ToString()
         {

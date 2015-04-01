@@ -6,7 +6,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models.Base
         DivideProblem,
         Error,
         NoOperation,
-        PartialProblems,
+        SolvePartialProblems, 
         Register,
         RegisterResponse,
         SolutionRequest,
@@ -15,4 +15,5 @@ namespace _15pl04.Ucc.Commons.Messaging.Models.Base
         SolveRequestResponse,
         Status
     }
+
 }

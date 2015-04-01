@@ -198,7 +198,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         return solutionMsg;
                     }
 
-                case MessageClass.PartialProblems:
+                case MessageClass.SolvePartialProblems:
                     {
                         var partialProblemsMsg = msg as PartialProblemsMessage;
 

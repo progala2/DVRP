@@ -75,7 +75,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                     {MessageClass.NoOperation, new MessageValidatorHelper<NoOperationMessage>()},
                     {MessageClass.DivideProblem, new MessageValidatorHelper<DivideProblemMessage>()},
                     {MessageClass.Error, new MessageValidatorHelper<ErrorMessage>()},
-                    {MessageClass.PartialProblems, new MessageValidatorHelper<PartialProblemsMessage>()},
+                    {MessageClass.SolvePartialProblems, new MessageValidatorHelper<PartialProblemsMessage>()},
                     {MessageClass.Register, new MessageValidatorHelper<RegisterMessage>()},
                     {MessageClass.RegisterResponse, new MessageValidatorHelper<RegisterResponseMessage>()},
                     {MessageClass.SolutionRequest, new MessageValidatorHelper<SolutionRequestMessage>()},

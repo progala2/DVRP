@@ -60,7 +60,7 @@ namespace _15pl04.Ucc.ComputationalNode
                 case MessageClass.NoOperation:
                     NoOperationMessageHandler((NoOperationMessage)message);
                     break;
-                case MessageClass.PartialProblems:
+                case MessageClass.SolvePartialProblems:
                     PartialProblemsMessageHandler((PartialProblemsMessage)message);
                     break;
                 case MessageClass.Error:
