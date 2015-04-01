@@ -125,8 +125,8 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         {
                             var errorMsg = new ErrorMessage()
                             {
-                                ErrorMessageText = "Unregistered component error.",
-                                ErrorMessageType = ErrorMessageErrorType.UnknownSender,
+                                ErrorText = "Unregistered component error.",
+                                ErrorType = ErrorMessageErrorType.UnknownSender,
                             };
                             return errorMsg;
                         }

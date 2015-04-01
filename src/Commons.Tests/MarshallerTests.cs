@@ -45,15 +45,15 @@ namespace _15pl04.Ucc.Commons.Tests
                     {
                         new BackupCommunicationServer
                         {
-                            Address = "ff", Port = 999
+                            IpAddress = "ff", Port = 999
                         }
                     }
                 },
                 new DivideProblemMessage()
                 {
                     ComputationalNodes = 10, 
-                    Data = new byte[] {1},
-                    Id = 2,
+                    ProblemData = new byte[] {1},
+                    ProblemInstanceId = 2,
                     NodeId = 3,
                     ProblemType = "ss"
                 }
@@ -78,13 +78,13 @@ namespace _15pl04.Ucc.Commons.Tests
                     {
                         new BackupCommunicationServer
                         {
-                            Address = "ff"
+                            IpAddress = "ff"
                         }
                     }
                 },
                 new DivideProblemMessage()
                 {
-                    Data = new byte[] {1},
+                    ProblemData = new byte[] {1},
                     ProblemType = "ss"
                 },
                 new PartialProblemsMessage()
@@ -101,8 +101,8 @@ namespace _15pl04.Ucc.Commons.Tests
                 },
                 new ErrorMessage()
                 {
-                    ErrorMessageText = "",
-                    ErrorMessageType = ErrorMessageErrorType.ExceptionOccured
+                    ErrorText = "",
+                    ErrorType = ErrorMessageErrorType.ExceptionOccured
                 },
                 new RegisterMessage()
                 {

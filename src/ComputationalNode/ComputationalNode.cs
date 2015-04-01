@@ -132,7 +132,7 @@ namespace _15pl04.Ucc.ComputationalNode
 
         private void ErrorMessageHandler(ErrorMessage message)
         {
-            switch (message.ErrorMessageType)
+            switch (message.ErrorType)
             {
                 case ErrorMessageErrorType.UnknownSender:
                     Register();

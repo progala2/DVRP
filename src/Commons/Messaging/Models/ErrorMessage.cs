@@ -1,7 +1,6 @@
 ﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using System;
 using System.ComponentModel;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -16,11 +15,12 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public string noNamespaceSchemaLocation = "Error.xsd";
 
 
-        [XmlElement(Order = 0)]
-        public ErrorMessageErrorType ErrorMessageType { get; set; }
+        [XmlElement(Order = 0, ElementName = "ErrorMessageType")]
+        public ErrorMessageErrorType ErrorType { get; set; }
 
         [XmlElement(Order = 1, ElementName = "ErrorMessage")]
-        public string ErrorMessageText { get; set; }
+        public string ErrorText { get; set; }
+
 
         [XmlIgnore]
         public override MessageClass MessageType
@@ -28,15 +28,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.Error; }
         }
 
-
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("ErrorMessageType="+ErrorMessageType+";");
-            sb.Append("ErrorMessageText="+ErrorMessageText);
-            sb.Append("]");
-            return sb.ToString();
+            return base.ToString() +
+                "|ErrorType=" + ErrorType +
+                "|ErrorMessage=" + ErrorText;
         }
     }
 
@@ -45,9 +41,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     public enum ErrorMessageErrorType
     {
         UnknownSender,
-
         InvalidOperation,
-
         ExceptionOccured,
     }
 }

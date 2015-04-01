@@ -48,18 +48,18 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             };
             Message expectedMessage = new ErrorMessage()
             {
-                ErrorMessageText = "Unregistered component error.",
-                ErrorMessageType = ErrorMessageErrorType.UnknownSender,
+                ErrorText = "Unregistered component error.",
+                ErrorType = ErrorMessageErrorType.UnknownSender,
             };
 
             var messagesReturned = Send(new Message[] {message});
 
             Assert.AreEqual(1, messagesReturned.Length);
             Assert.AreEqual(expectedMessage.MessageType, messagesReturned[0].MessageType);
-            Assert.AreEqual((expectedMessage as ErrorMessage).ErrorMessageText,
-                (messagesReturned[0] as ErrorMessage).ErrorMessageText);
-            Assert.AreEqual((expectedMessage as ErrorMessage).ErrorMessageType,
-                (messagesReturned[0] as ErrorMessage).ErrorMessageType);
+            Assert.AreEqual((expectedMessage as ErrorMessage).ErrorText,
+                (messagesReturned[0] as ErrorMessage).ErrorText);
+            Assert.AreEqual((expectedMessage as ErrorMessage).ErrorType,
+                (messagesReturned[0] as ErrorMessage).ErrorType);
             
             _tcpServer.StopListening();
         }

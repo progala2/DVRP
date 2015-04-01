@@ -16,26 +16,15 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "NoOperation.xsd";
 
-        private List<BackupCommunicationServer> _backupCommunicationServersField;
 
         public NoOperationMessage()
         {
-            _backupCommunicationServersField = new List<BackupCommunicationServer>();
+            BackupCommunicationServers = new List<BackupCommunicationServer>();
         }
 
         [XmlArray(Order = 0)]
         [XmlArrayItem("BackupCommunicationServer", IsNullable = true)]
-        public List<BackupCommunicationServer> BackupCommunicationServers
-        {
-            get
-            {
-                return _backupCommunicationServersField;
-            }
-            set
-            {
-                _backupCommunicationServersField = value;
-            }
-        }
+        public List<BackupCommunicationServer> BackupCommunicationServers { get; set; }
 
         [XmlIgnore]
         public override MessageClass MessageType
@@ -60,41 +49,18 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class BackupCommunicationServer
     {
-        private string _addressField;
-
-        private ushort _portField;
-
         [XmlAttribute("address", DataType = "anyURI")]
-        public string Address
-        {
-            get
-            {
-                return _addressField;
-            }
-            set
-            {
-                _addressField = value;
-            }
-        }
+        public string IpAddress { get; set; }
 
         [XmlAttribute("port")]
-        public ushort Port
-        {
-            get
-            {
-                return _portField;
-            }
-            set
-            {
-                _portField = value;
-            }
-        }
+        public ushort Port { get; set; }
+
 
         public override string ToString()
         {
             var sb = new StringBuilder();
             sb.Append("[");
-            sb.Append("Address=" + Address + ";");
+            sb.Append("Address=" + IpAddress + ";");
             sb.Append("Port=" + Port);
             sb.Append("]");
             return sb.ToString();

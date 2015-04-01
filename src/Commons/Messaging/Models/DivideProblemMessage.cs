@@ -18,16 +18,16 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlElement(Order = 0)]
         public string ProblemType { get; set; }
 
-        [XmlElement(Order = 1)]
-        public ulong Id { get; set; }
+        [XmlElement(ElementName = "Id", Order = 1)]
+        public ulong ProblemInstanceId { get; set; }
 
-        [XmlElement(DataType = "base64Binary", Order = 2)]
-        public byte[] Data { get; set; }
+        [XmlElement(ElementName = "Data", DataType = "base64Binary", Order = 2)]
+        public byte[] ProblemData { get; set; }
 
-        [XmlElement(Order = 3)]
+        [XmlElement(ElementName = "ComputationalNodes", Order = 3)]
         public ulong ComputationalNodes { get; set; }
 
-        [XmlElement("NodeID", Order = 4)]
+        [XmlElement(ElementName = "NodeID", Order = 4)]
         public ulong NodeId { get; set; }
 
 
@@ -39,7 +39,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         public override string ToString()
         {
-            base.ToString();
+            return base.ToString() +
+                "|ProblemId=" + ProblemInstanceId +
+                "|NodeId=" + NodeId +
+                "|ComputationalNodes=" + ComputationalNodes;
         }
     }
 }

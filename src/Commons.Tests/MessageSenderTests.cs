@@ -24,8 +24,8 @@ namespace _15pl04.Ucc.Commons.Tests
             MessageSender sender = new MessageSender(new IPEndPoint(TestIp, Port));
             Message message = new ErrorMessage()
             {
-                ErrorMessageText = "TestErrorMessage",
-                ErrorMessageType = ErrorMessageErrorType.UnknownSender
+                ErrorText = "TestErrorMessage",
+                ErrorType = ErrorMessageErrorType.UnknownSender
             };
 
             Task t = new Task(new Action(ListenAndResend));
@@ -36,8 +36,8 @@ namespace _15pl04.Ucc.Commons.Tests
             Assert.AreEqual(1, receivedMessage.Length);
             Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
             Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
-            Assert.AreEqual(((ErrorMessage)message).ErrorMessageText, ((ErrorMessage)receivedMessage[0]).ErrorMessageText);
-            Assert.AreEqual(((ErrorMessage)message).ErrorMessageType, ((ErrorMessage)receivedMessage[0]).ErrorMessageType);
+            Assert.AreEqual(((ErrorMessage)message).ErrorText, ((ErrorMessage)receivedMessage[0]).ErrorText);
+            Assert.AreEqual(((ErrorMessage)message).ErrorType, ((ErrorMessage)receivedMessage[0]).ErrorType);
 
             EndConnection();
             t.Wait();
@@ -51,7 +51,7 @@ namespace _15pl04.Ucc.Commons.Tests
             {
                 new BackupCommunicationServer()
                 {
-                    Address = "123.123.123.123",
+                    IpAddress = "123.123.123.123",
                     Port = 9876
                 }
             };
@@ -70,8 +70,8 @@ namespace _15pl04.Ucc.Commons.Tests
             Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
             Assert.AreEqual(((NoOperationMessage)message).BackupCommunicationServers.Count, 
                 ((NoOperationMessage)receivedMessage[0]).BackupCommunicationServers.Count);
-            Assert.AreEqual(((NoOperationMessage)message).BackupCommunicationServers[0].Address,
-                ((NoOperationMessage)receivedMessage[0]).BackupCommunicationServers[0].Address);
+            Assert.AreEqual(((NoOperationMessage)message).BackupCommunicationServers[0].IpAddress,
+                ((NoOperationMessage)receivedMessage[0]).BackupCommunicationServers[0].IpAddress);
             Assert.AreEqual(((NoOperationMessage)message).BackupCommunicationServers[0].Port,
                 ((NoOperationMessage)receivedMessage[0]).BackupCommunicationServers[0].Port);
             

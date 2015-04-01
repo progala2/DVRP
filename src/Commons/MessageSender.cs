@@ -54,7 +54,7 @@ namespace _15pl04.Ucc.Commons
                     {
                         try
                         {
-                            _tcpClient.ServerAddress = IPEndPointParser.Parse(_servers[0].Address, _servers[0].Port);
+                            _tcpClient.ServerAddress = IPEndPointParser.Parse(_servers[0].IpAddress, _servers[0].Port);
                         }
                         catch (Exception)
                         {

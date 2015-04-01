@@ -100,7 +100,7 @@ namespace _15pl04.Ucc.TaskManager
             // should be started properly cause server sends at most as many tasks to do as count of component's tasks in idle state
             bool started = ComputationalTaskPool.StartComputationalTask(() =>
             {
-                var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.Data);
+                var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.ProblemData);
 
                 // measure time using DateTime cause StopWatch is not guaranteed to be thread safe
                 var start = DateTime.UtcNow;
@@ -121,13 +121,13 @@ namespace _15pl04.Ucc.TaskManager
                 var partialProblemsMessage = new PartialProblemsMessage()
                 {
                     ProblemType = message.ProblemType,
-                    Id = message.Id,
-                    CommonData = message.Data,
+                    Id = message.ProblemInstanceId,
+                    CommonData = message.ProblemData,
                     PartialProblems = partialProblems,
                 };
 
                 EnqueueMessageToSend(partialProblemsMessage);
-            }, message.ProblemType, message.Id, null);
+            }, message.ProblemType, message.ProblemInstanceId, null);
             if (!started)
             {
                 // tragedy, CommunicationServer surprised us like the Spanish Inquisition
@@ -142,7 +142,7 @@ namespace _15pl04.Ucc.TaskManager
 
         private void ErrorMessageHandler(ErrorMessage message)
         {
-            switch (message.ErrorMessageType)
+            switch (message.ErrorType)
             {
                 case ErrorMessageErrorType.UnknownSender:
                     Register();
