@@ -18,7 +18,7 @@ namespace _15pl04.Ucc.Commons.Tests
         public void PartialProblemsMessageDeserialization()
         {
             var msg = XmlFileParser<PartialProblemsMessage>.Deserialize("XmlMessages/PartialProblems.xml");
-            Assert.IsTrue(msg.Id == 12);
+            Assert.IsTrue(msg.ProblemInstanceId == 12);
         }
 
         [TestMethod]

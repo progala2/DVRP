@@ -105,7 +105,7 @@ namespace _15pl04.Ucc.ComputationalNode
                     var solutions = new List<SolutionsSolution>();
                     solutions.Add(new SolutionsSolution()
                     {
-                        TaskId = partialProblem.TaskId,
+                        TaskId = partialProblem.PartialProblemId,
                         TimeoutOccured = taskSolver.State == TaskSolver.TaskSolverState.Timeout,
                         Type = SolutionType.Partial,
                         ComputationsTime = (ulong)(stop - start).TotalMilliseconds,
@@ -114,14 +114,14 @@ namespace _15pl04.Ucc.ComputationalNode
                     var solutionsMessage = new SolutionsMessage()
                     {
                         ProblemType = message.ProblemType,
-                        Id = message.Id,
+                        Id = message.ProblemInstanceId,
                         CommonData = message.CommonData,
                         Solutions = solutions,
                     };
 
                     EnqueueMessageToSend(solutionsMessage);
 
-                }, message.ProblemType, message.Id, partialProblem.TaskId);
+                }, message.ProblemType, message.ProblemInstanceId, partialProblem.PartialProblemId);
                 if (!started)
                 {
                     // tragedy, CommunicationServer surprised us like the Spanish Inquisition

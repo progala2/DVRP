@@ -90,9 +90,9 @@ namespace _15pl04.Ucc.Commons.Tests
                 new PartialProblemsMessage()
                 {
                     CommonData = new byte[] {1},
-                    PartialProblems = new List<RegisterResponsePartialProblem>()
+                    PartialProblems = new List<PartialProblem>()
                     {
-                        new RegisterResponsePartialProblem()
+                        new PartialProblem()
                         {
                             Data = new byte[] {1},
                         }

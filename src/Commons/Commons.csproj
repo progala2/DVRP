@@ -33,6 +33,7 @@
     <Compile Include="ColorfulConsole.cs" />
     <Compile Include="Components\BackupServerInfo.cs" />
     <Compile Include="Components\ComponentType.cs" />
+    <Compile Include="Components\PartialProblem.cs" />
     <Compile Include="Computations\ComputationalComponent.cs" />
     <Compile Include="Computations\ComputationalTask.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />

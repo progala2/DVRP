@@ -107,12 +107,12 @@ namespace _15pl04.Ucc.TaskManager
                 var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
                 var stop = DateTime.UtcNow;
 
-                var partialProblems = new List<RegisterResponsePartialProblem>();
+                var partialProblems = new List<PartialProblem>();
                 for (int i = 0; i < partialProblemsData.GetLength(0); i++)
                 {
-                    partialProblems.Add(new RegisterResponsePartialProblem()
+                    partialProblems.Add(new PartialProblem()
                     {
-                        TaskId = (ulong)i,
+                        PartialProblemId = (ulong)i,
                         Data = partialProblemsData[i],
                         NodeId = ID,
                     });
@@ -121,7 +121,7 @@ namespace _15pl04.Ucc.TaskManager
                 var partialProblemsMessage = new PartialProblemsMessage()
                 {
                     ProblemType = message.ProblemType,
-                    Id = message.ProblemInstanceId,
+                    ProblemInstanceId = message.ProblemInstanceId,
                     CommonData = message.ProblemData,
                     PartialProblems = partialProblems,
                 };
