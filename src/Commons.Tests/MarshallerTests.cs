@@ -28,7 +28,7 @@ namespace _15pl04.Ucc.Commons.Tests
                 buffer[noOperationMessageBytes.Length] = 23;
                 Buffer.BlockCopy(statusMessageBytes, 0, buffer, noOperationMessageBytes.Length + 1, statusMessageBytes.Length);
 
-                var messages = (new Marshaller()).Unmarshall(buffer);
+                var messages = (new MessageMarshaller()).Unmarshall(buffer);
                 Assert.IsTrue(messages.Length == 2);
             }
         }
@@ -58,7 +58,7 @@ namespace _15pl04.Ucc.Commons.Tests
                     ProblemType = "ss"
                 }
             };
-            var data = (new Marshaller()).Marshall(tstClass);
+            var data = (new MessageMarshaller()).Marshall(tstClass);
             Assert.IsTrue(data.Count(i => i == 23) == 2);
             var str = Encoding.UTF8.GetString(data);
             Assert.IsTrue(str.Contains("SolutionRequest"));
@@ -147,8 +147,8 @@ namespace _15pl04.Ucc.Commons.Tests
                     }
                 }
             };
-            var data = (new Marshaller()).Marshall(tstClass);
-            (new Marshaller()).Unmarshall(data);
+            var data = (new MessageMarshaller()).Marshall(tstClass);
+            (new MessageMarshaller()).Unmarshall(data);
         }
     }
 }

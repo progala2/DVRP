@@ -16,11 +16,11 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         public event MessageReceptionEventHandler MessageReception;
 
         private InputMessageQueue _inputQueue;
-        private Marshaller _marshaller;
+        private MessageMarshaller _marshaller;
         private Task _processingThread;
         private uint _communicationTimeout;
 
-        public MessageProcessor(Marshaller marshaller, uint communicationTimeout)
+        public MessageProcessor(MessageMarshaller marshaller, uint communicationTimeout)
         {
             _inputQueue = new InputMessageQueue();
             _marshaller = marshaller;

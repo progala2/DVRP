@@ -43,6 +43,7 @@
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Messaging\Base\IMarshaller.cs" />
     <Compile Include="Messaging\Base\ISerializer.cs" />
+    <Compile Include="Messaging\Base\IValidator.cs" />
     <Compile Include="Messaging\MessageExceptionEventArgs.cs" />
     <Compile Include="Exceptions\NoResponseException.cs" />
     <Compile Include="IpEndPointParser.cs" />

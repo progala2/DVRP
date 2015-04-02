@@ -12,7 +12,6 @@ namespace _15pl04.Ucc.Commons.Messaging
     interface IMessageValidator
     {
         void Validate(string xmlDocumentContent);
-
         void Validate(XDocument xDocument);
     }
     /// <summary>
@@ -37,6 +36,7 @@ namespace _15pl04.Ucc.Commons.Messaging
         /// <param name="xmlDocumentContent">Content of XML document to validate.</param>
         /// <returns>True if content of document is valid; false otherwise.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
+        /// 
         public void Validate(string xmlDocumentContent)
         {
             if (xmlDocumentContent == null)

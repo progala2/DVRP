@@ -9,8 +9,10 @@ using System.Xml;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
-    public class Marshaller : IMarshaller<Message>
+    public class MessageMarshaller : IMarshaller<Message>
     {
+        
+
         public Message[] Unmarshall(byte[] data)
         {
             var listOfMessages = new List<Message>();

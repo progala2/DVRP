@@ -6,17 +6,11 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using _15pl04.Ucc.Commons.Messaging.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
-    interface IMessageSerializer
-    {
-        Message Deserialize(byte[] buffer);
-        Message Deserialize(byte[] buffer, int index, int count);
-
-        void Serialize(Message obj, out byte[] buffer);
-    }
-    class MessageSerializerHelper<T> : IMessageSerializer
+    class MessageSerializerHelper<T> : ISerializer<Message>
          where T : Message
     {
         private readonly Type _type = typeof(T);
@@ -40,7 +34,7 @@ namespace _15pl04.Ucc.Commons.Messaging
             }
         }
 
-        public void Serialize(Message obj, out byte[] buffer)
+        public byte[] Serialize(Message obj)
         {
             using (var writer = new MemoryStream())
             {
@@ -48,18 +42,19 @@ namespace _15pl04.Ucc.Commons.Messaging
                 XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
                 ns.Add("xsi", "http://www.w3.org/2001/XMLSchema-instance");
                 xml.Serialize(writer, obj, ns);
-                buffer = writer.ToArray();
+
+                return writer.ToArray();
             }
         }
     }
 
     public static class MessageSerializer
     {
-        static readonly Dictionary<MessageClass, IMessageSerializer> _messageSerializerForMessageTypeDictionary;
+        static readonly Dictionary<MessageClass, ISerializer<Message>> _messageSerializerForMessageTypeDictionary;
 
         static MessageSerializer()
         {
-            _messageSerializerForMessageTypeDictionary = new Dictionary<MessageClass, IMessageSerializer>
+            _messageSerializerForMessageTypeDictionary = new Dictionary<MessageClass, ISerializer<Message>>
                 {
                     {MessageClass.NoOperation, new MessageSerializerHelper<NoOperationMessage>()},
                     {MessageClass.DivideProblem, new MessageSerializerHelper<DivideProblemMessage>()},
@@ -74,7 +69,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                     {MessageClass.Status, new MessageSerializerHelper<StatusMessage>()}
                 };
         }
-        static IMessageSerializer GetSerializerForMessageClassType(MessageClass type)
+        static ISerializer<Message> GetSerializerForMessageClassType(MessageClass type)
         {
             return _messageSerializerForMessageTypeDictionary[type];
         }
@@ -91,7 +86,7 @@ namespace _15pl04.Ucc.Commons.Messaging
 
         public static void Serialize(Message obj, MessageClass type, out byte[] buffer)
         {
-            GetSerializerForMessageClassType(type).Serialize(obj, out buffer);
+            buffer = GetSerializerForMessageClassType(type).Serialize(obj);
         }
     }
 }

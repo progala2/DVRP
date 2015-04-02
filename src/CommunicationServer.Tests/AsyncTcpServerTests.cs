@@ -22,7 +22,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         private const int Port = 9123;
         private const int BufferSize = 2048;
         private AsyncTcpServer _tcpServer;
-        private readonly Marshaller _marshaller = new Marshaller();
+        private readonly MessageMarshaller _marshaller = new MessageMarshaller();
         private Socket _socket;
         private ServerConfig _config;
 
@@ -134,7 +134,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                 CommunicationTimeout = 10
             } ;
 
-            _tcpServer = new AsyncTcpServer(_config, new MessageProcessor(new Marshaller(), _config.CommunicationTimeout));
+            _tcpServer = new AsyncTcpServer(_config, new MessageProcessor(new MessageMarshaller(), _config.CommunicationTimeout));
             
             new Thread(_tcpServer.StartListening).Start();
         }

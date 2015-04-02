@@ -11,13 +11,13 @@ namespace _15pl04.Ucc.Commons
     {
         private readonly TcpClient _tcpClient;
         private List<ServerInfo> _servers;
-        private readonly Marshaller _marshaller;
+        private readonly MessageMarshaller _marshaller;
 
         public MessageSender(IPEndPoint serverAddress)
         {
             _servers = new List<ServerInfo>();
             _tcpClient = new TcpClient(serverAddress);
-            _marshaller = new Marshaller();
+            _marshaller = new MessageMarshaller();
         }
 
         /// <summary>
