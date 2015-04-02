@@ -106,7 +106,7 @@ namespace _15pl04.Ucc.Commons.Tests
                 },
                 new RegisterMessage()
                 {
-                    Type = ComponentType.CommunicationServer,
+                    ComponentType = ComponentType.CommunicationServer,
                     SolvableProblems = new List<string>()
                     {
                         "s"

@@ -74,15 +74,15 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
             Message messageRegister = new RegisterMessage()
             {
-                Deregister = null,
-                Id = null,
+                Deregistration = null,
+                IdToDeregister = null,
                 noNamespaceSchemaLocation = "?",
                 ParallelThreads = 1,
                 SolvableProblems = new List<string>()
                 {
                     "s"
                 },
-                Type = ComponentType.ComputationalNode
+                ComponentType = ComponentType.ComputationalNode
             };
             Message expectedMessage1 = new RegisterResponseMessage()
             {

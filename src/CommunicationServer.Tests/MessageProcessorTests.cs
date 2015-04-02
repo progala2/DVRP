@@ -31,7 +31,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 ParallelThreads = 5,
                 SolvableProblems = new System.Collections.Generic.List<string> { "dvrp" },
-                Type = Commons.ComponentType.ComputationalNode,
+                ComponentType = Commons.ComponentType.ComputationalNode,
             };
 
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
@@ -53,7 +53,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 ParallelThreads = 5,
                 SolvableProblems = new System.Collections.Generic.List<string> { "dvrp" },
-                Type = Commons.ComponentType.ComputationalNode,
+                ComponentType = Commons.ComponentType.ComputationalNode,
             };
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
 

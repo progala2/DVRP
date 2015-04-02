@@ -84,11 +84,11 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                         ulong id;
 
-                        switch (registerMsg.Type)
+                        switch (registerMsg.ComponentType)
                         {
                             case ComponentType.ComputationalNode:
                             case ComponentType.TaskManager:
-                                id = ComponentMonitor.Instance.RegisterNode(registerMsg.Type, registerMsg.ParallelThreads, registerMsg.SolvableProblems);
+                                id = ComponentMonitor.Instance.RegisterNode(registerMsg.ComponentType, registerMsg.ParallelThreads, registerMsg.SolvableProblems);
                                 break;
 
                             //TODO - case ComponentType.CommunicationServer:

@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.TaskManager
         {
             var registerMessage = new RegisterMessage()
             {
-                Type = ComponentType.TaskManager,
+                ComponentType = ComponentType.TaskManager,
                 ParallelThreads = ParallelThreads,
                 SolvableProblems = new List<string>(TaskSolvers.Keys)
             };

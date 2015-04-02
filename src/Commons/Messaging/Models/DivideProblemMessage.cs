@@ -40,7 +40,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public override string ToString()
         {
             return base.ToString() +
-                "|ProblemId=" + ProblemInstanceId +
+                " ProblemId=" + ProblemInstanceId +
                 "|NodeId=" + NodeId +
                 "|ComputationalNodes=" + ComputationalNodes;
         }

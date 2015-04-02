@@ -16,96 +16,21 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "Register.xsd";
 
-        private ComponentType _typeField;
-
-        private List<string> _solvableProblemsField;
-
-        private byte _parallelThreadsField;
-
-        private bool? _deregisterField;
-
-        private ulong? _idField;
-
-        public RegisterMessage()
-        {
-            _solvableProblemsField = new List<string>();
-        }
-
-        [XmlElement(Order = 0)]
-        public ComponentType Type
-        {
-            get
-            {
-                return _typeField;
-            }
-            set
-            {
-                _typeField = value;
-            }
-        }
+        [XmlElement(ElementName = "Type", Order = 0)]
+        public ComponentType ComponentType { get; set; }
 
         [XmlArray(Order = 1)]
         [XmlArrayItem("ProblemName", IsNullable = false)]
-        public List<string> SolvableProblems
-        {
-            get
-            {
-                return _solvableProblemsField;
-            }
-            set
-            {
-                _solvableProblemsField = value;
-            }
-        }
+        public List<string> SolvableProblems { get; set; }
 
         [XmlElement(Order = 2)]
-        public byte ParallelThreads
-        {
-            get
-            {
-                return _parallelThreadsField;
-            }
-            set
-            {
-                _parallelThreadsField = value;
-            }
-        }
+        public byte ParallelThreads { get; set; }
 
-        [XmlElement(Order = 3)]
-        public bool? Deregister
-        {
-            get
-            {
-                return _deregisterField;
-            }
-            set
-            {
-                _deregisterField = value;
-            }
-        }
+        [XmlElement(ElementName = "Deregister", Order = 3)]
+        public bool? Deregistration { get; set; }
 
-        public bool ShouldSerializeDeregister()
-        {
-            return _deregisterField.HasValue;
-        }
-
-        [XmlElement(Order = 4)]
-        public ulong? Id
-        {
-            get
-            {
-                return _idField;
-            }
-            set
-            {
-                _idField = value;
-            }
-        }
-
-        public bool ShouldSerializeId()
-        {
-            return _idField.HasValue;
-        }
+        [XmlElement(ElementName = "Id", Order = 4)]
+        public ulong? IdToDeregister { get; set; }
 
         [XmlIgnore]
         public override MessageClass MessageType
@@ -113,19 +38,44 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.Register; }
         }
 
+
+
+        public RegisterMessage()
+        {
+            SolvableProblems = new List<string>();
+        }
+
+
+
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("Type=" + Type.ToString() + ";");
-            sb.Append("SolvableProblems={");
-            foreach (var solvableProblem in SolvableProblems)
-                sb.Append("[" + solvableProblem + "]");
-            sb.Append("}ParallelThreads=" + ParallelThreads + ";");
-            sb.Append("Deregister=" + (Deregister.HasValue ? Deregister.ToString() : "null") + ";");
-            sb.Append("Id=" + (Id.HasValue ? Id.ToString() : "null"));
-            sb.Append("]");
-            return sb.ToString();
+            var builder = new StringBuilder();
+
+            if (Deregistration.HasValue && Deregistration.Value)
+            {
+                if (!IdToDeregister.HasValue)
+                    throw new Exception("Deregister message doesn't have the id to deregister");
+
+                builder.Append("[Deregister]");
+                builder.Append(" Id=" + IdToDeregister);
+                builder.Append("|Component=" + ComponentType.ToString());
+            }
+            else
+            {
+                builder.Append(base.ToString());
+
+                builder.Append(" Component=" + ComponentType.ToString());
+                builder.Append("|ParallelThreads=" + ParallelThreads);
+
+                builder.Append("|SolvableProblems={");
+                foreach (var problem in SolvableProblems)
+                {
+                    builder.Append(problem);
+                    builder.Append(",");
+                }
+                builder.Append("}");
+            }
+            return builder.ToString();
         }
     }
 }

@@ -31,7 +31,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public override string ToString()
         {
             return base.ToString() +
-                "|ErrorType=" + ErrorType +
+                " ErrorType=" + ErrorType +
                 "|ErrorMessage=" + ErrorText;
         }
     }

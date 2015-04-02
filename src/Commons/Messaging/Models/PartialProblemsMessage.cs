@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -41,6 +42,29 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public PartialProblemsMessage()
         {
             PartialProblems = new List<PartialProblem>();
+        }
+
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder(base.ToString());
+
+            builder.Append(" ProblemType=" + ProblemType);
+            builder.Append("|ProblemInstanceId=" + ProblemInstanceId);
+
+            if (SolvingTimeout.HasValue)
+                builder.Append("|SolvingTimeout=" + SolvingTimeout.Value);
+
+            builder.Append("|PartialProblems={");
+            foreach (var pp in PartialProblems)
+            {
+                builder.Append("Id=" + pp.PartialProblemId);
+                builder.Append(",NodeId=" + pp.NodeId);
+                builder.Append("|");
+            }
+            builder.Append("}");
+
+            return builder.ToString();
         }
     }
 }
