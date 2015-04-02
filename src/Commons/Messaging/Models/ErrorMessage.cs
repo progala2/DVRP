@@ -1,6 +1,7 @@
 ﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using System;
 using System.ComponentModel;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -31,9 +32,12 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         public override string ToString()
         {
-            return base.ToString() +
-                " ErrorType=" + ErrorType +
-                "|ErrorMessage=" + ErrorText;
+            var builder = new StringBuilder(base.ToString());
+
+            builder.Append(" ErrorType(" + ErrorType + ")");
+            builder.Append(" ErrorMessage(" + ErrorText + ")");
+
+            return builder.ToString();
         }
     }
 

@@ -55,7 +55,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             return IdToDeregister.HasValue;
         }
-        
+
         public override string ToString()
         {
             var builder = new StringBuilder();
@@ -66,22 +66,19 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
                     throw new Exception("Deregister message doesn't have the id to deregister");
 
                 builder.Append("[Deregister]");
-                builder.Append(" Id=" + IdToDeregister);
-                builder.Append("|Component=" + ComponentType.ToString());
+                builder.Append(" ComponentId(" + IdToDeregister + ")");
+                builder.Append(" ComponentType(" + ComponentType.ToString() + ")");
             }
             else
             {
                 builder.Append(base.ToString());
 
-                builder.Append(" Component=" + ComponentType.ToString());
-                builder.Append("|ParallelThreads=" + ParallelThreads);
+                builder.Append(" ComponentType(" + ComponentType.ToString() + ")");
+                builder.Append(" ParallelThreads(" + ParallelThreads + ")");
 
-                builder.Append("|SolvableProblems={");
+                builder.Append(" SolvableProblems{");
                 foreach (var problem in SolvableProblems)
-                {
-                    builder.Append(problem);
-                    builder.Append(",");
-                }
+                    builder.Append(problem + ",");
                 builder.Append("}");
             }
             return builder.ToString();

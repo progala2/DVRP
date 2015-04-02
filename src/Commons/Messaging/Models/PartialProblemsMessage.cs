@@ -55,19 +55,15 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             var builder = new StringBuilder(base.ToString());
 
-            builder.Append(" ProblemType=" + ProblemType);
-            builder.Append("|ProblemInstanceId=" + ProblemInstanceId);
+            builder.Append(" ProblemInstanceId(" + ProblemInstanceId + ")");
+            builder.Append(" ProblemType(" + ProblemType + ")");
 
             if (SolvingTimeout.HasValue)
-                builder.Append("|SolvingTimeout=" + SolvingTimeout.Value);
+                builder.Append(" SolvingTimeout(" + SolvingTimeout.Value + ")");
 
-            builder.Append("|PartialProblems={");
-            foreach (var pp in PartialProblems)
-            {
-                builder.Append("Id=" + pp.PartialProblemId);
-                builder.Append(",NodeId=" + pp.NodeId);
-                builder.Append("|");
-            }
+            builder.Append(" PartialProblems{");
+            foreach (var partialProblem in PartialProblems)
+                builder.Append(partialProblem.ToString() + ",");
             builder.Append("}");
 
             return builder.ToString();

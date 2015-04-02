@@ -15,20 +15,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")] 
         public string noNamespaceSchemaLocation = "SolutionRequest.xsd";
 
-        private ulong _idField;
 
-        [XmlElement(Order = 0)]
-        public ulong Id
-        {
-            get
-            {
-                return _idField;
-            }
-            set
-            {
-                _idField = value;
-            }
-        }
+        [XmlElement(Order = 0, ElementName = "Id")]
+        public ulong ProblemInstanceId { get; set; }
 
         [XmlIgnore]
         public override MessageClass MessageType
@@ -36,13 +25,15 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.SolutionRequest; }
         }
 
+
+
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("Id=" + Id.ToString());
-            sb.Append("}]");
-            return sb.ToString();
+            var builder = new StringBuilder(base.ToString());
+
+            builder.Append(" ProblemInstanceId(" + ProblemInstanceId + ")");
+
+            return builder.ToString();
         }
     }
 }

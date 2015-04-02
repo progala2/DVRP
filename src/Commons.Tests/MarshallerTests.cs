@@ -38,12 +38,12 @@ namespace _15pl04.Ucc.Commons.Tests
         {
             Message[] tstClass =
             {
-                new SolutionRequestMessage { Id = 2 }, 
+                new SolutionRequestMessage { ProblemInstanceId = 2 }, 
                 new NoOperationMessage
                 {
-                    BackupServers = new List<BackupServerInfo>
+                    BackupServers = new List<ServerInfo>
                     {
-                        new BackupServerInfo
+                        new ServerInfo
                         {
                             IpAddress = "ff", Port = 999
                         }
@@ -71,12 +71,12 @@ namespace _15pl04.Ucc.Commons.Tests
         {
             Message[] tstClass =
             {
-                new SolutionRequestMessage { Id = 2 }, 
+                new SolutionRequestMessage { ProblemInstanceId = 2 }, 
                 new NoOperationMessage
                 {
-                    BackupServers = new List<BackupServerInfo>
+                    BackupServers = new List<ServerInfo>
                     {
-                        new BackupServerInfo
+                        new ServerInfo
                         {
                             IpAddress = "ff"
                         }
@@ -115,16 +115,16 @@ namespace _15pl04.Ucc.Commons.Tests
                 new RegisterResponseMessage(),
                 new SolutionRequestMessage()
                 {
-                    Id = 5
+                    ProblemInstanceId = 5
                 },
                 new SolutionsMessage()
                 {
                     ProblemType = "s",
-                    Solutions = new List<SolutionsSolution>()
+                    Solutions = new List<Solution>()
                     {
-                        new SolutionsSolution()
+                        new Solution()
                         {
-                            Type = SolutionType.Final,
+                            Type = Solution.SolutionType.Final,
                             Data = new byte[] {3},
                         }
                     }

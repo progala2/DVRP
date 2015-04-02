@@ -19,7 +19,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         [XmlArray(Order = 0, ElementName = "BackupCommunicationServers")]
         [XmlArrayItem("BackupCommunicationServer", IsNullable = true)]
-        public List<BackupServerInfo> BackupServers { get; set; }
+        public List<ServerInfo> BackupServers { get; set; }
 
         [XmlIgnore]
         public override MessageClass MessageType
@@ -31,21 +31,16 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         public NoOperationMessage()
         {
-            BackupServers = new List<BackupServerInfo>();
+            BackupServers = new List<ServerInfo>();
         }
 
         public override string ToString()
         {
             var builder = new StringBuilder(base.ToString());
 
-            builder.Append(" BackupServers={");
+            builder.Append(" BackupServers{");
             foreach (var backup in BackupServers)
-            {
-                builder.Append(backup.IpAddress);
-                builder.Append(":");
-                builder.Append(backup.Port.ToString("0000"));
-                builder.Append("|");
-            }
+                builder.Append(backup.ToString() + ",");
             builder.Append("}");
 
             return builder.ToString();

@@ -40,14 +40,14 @@ namespace _15pl04.Ucc.Commons.Tests
         public void SolutionsMessageDeserialization()
         {
             var msg = XmlFileParser<SolutionsMessage>.Deserialize("XmlMessages/Solutions.xml");
-            Assert.IsTrue(msg.Id == 12);
+            Assert.IsTrue(msg.ProblemInstanceId == 12);
         }
 
         [TestMethod]
         public void SolutionRequestMessageDeserialization()
         {
             var msg = XmlFileParser<SolutionRequestMessage>.Deserialize("XmlMessages/SolutionRequest.xml");
-            Assert.IsTrue(msg.Id == 12);
+            Assert.IsTrue(msg.ProblemInstanceId == 12);
         }
 
         [TestMethod]

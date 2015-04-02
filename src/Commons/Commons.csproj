@@ -31,9 +31,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ColorfulConsole.cs" />
-    <Compile Include="Components\BackupServerInfo.cs" />
+    <Compile Include="Components\ServerInfo.cs" />
     <Compile Include="Components\ComponentType.cs" />
     <Compile Include="Components\PartialProblem.cs" />
+    <Compile Include="Components\Solution.cs" />
     <Compile Include="Computations\ComputationalComponent.cs" />
     <Compile Include="Computations\ComputationalTask.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
@@ -62,7 +63,6 @@
     <Compile Include="Messaging\MessageSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.cs" />
-    <Compile Include="SolutionType.cs" />
     <Compile Include="Computations\TaskSolversLoader.cs" />
     <Compile Include="TcpClient.cs" />
     <Compile Include="ThreadState.cs" />

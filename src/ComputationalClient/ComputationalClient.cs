@@ -67,7 +67,7 @@ namespace _15pl04.Ucc.ComputationalClient
         {
             var solutionRequestMessage = new SolutionRequestMessage()
             {
-                Id = id
+                ProblemInstanceId = id
             };
             var receivedMessages = SendMessage(solutionRequestMessage);
             if (receivedMessages == null)

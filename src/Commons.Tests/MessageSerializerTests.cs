@@ -22,7 +22,7 @@ namespace _15pl04.Ucc.Commons.Tests
             var tstClass = MessageSerializer.Deserialize(Encoding.UTF8.GetBytes(str), MessageClass.SolutionRequest);
             var solutionRequestMessage = tstClass as SolutionRequestMessage;
             Assert.IsTrue(solutionRequestMessage != null); 
-            Assert.IsTrue(2 == solutionRequestMessage.Id);
+            Assert.IsTrue(2 == solutionRequestMessage.ProblemInstanceId);
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace _15pl04.Ucc.Commons.Tests
              );
              var tmp = doc1.ToString();
              byte[] buffer;
-             var tstClass = new SolutionRequestMessage { Id = 2 };
+             var tstClass = new SolutionRequestMessage { ProblemInstanceId = 2 };
              MessageSerializer.Serialize(tstClass, MessageClass.SolutionRequest, out buffer);
              var str = Encoding.UTF8.GetString(buffer);
              Assert.AreEqual(tmp.Contains("<Id>"), str.Contains("<Id>"));

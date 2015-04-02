@@ -100,7 +100,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         var registerResponseMsg = new RegisterResponseMessage()
                         {
                             AssignedId = id,
-                            BackupServers = new List<BackupServerInfo>(),
+                            BackupServers = new List<ServerInfo>(),
                             CommunicationTimeout = _communicationTimeout,
                         };
                         return registerResponseMsg;
@@ -117,7 +117,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                             var noOperationMsg = new NoOperationMessage()
                             {
-                                BackupServers = new List<BackupServerInfo>(),
+                                BackupServers = new List<ServerInfo>(),
                             };
                             return noOperationMsg;
                         }
@@ -153,46 +153,46 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     {
                         var solutionRequestMsg = msg as SolutionRequestMessage;
 
-                        ulong id = solutionRequestMsg.Id;
+                        ulong id = solutionRequestMsg.ProblemInstanceId;
                         FinalSolution fs;
                         SolutionsMessage solutionMsg;
 
                         if (Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.TryGetFinalSolution(id, out fs))
                         {
-                            var ss = new SolutionsSolution()
+                            var ss = new Solution()
                             {
                                 ComputationsTime = fs.ComputationsTime,
                                 Data = fs.SolutionData,
-                                TaskId = fs.ProblemInstanceId,
+                                PartialProblemId = fs.ProblemInstanceId,
                                 TimeoutOccured = fs.TimeoutOccured,
-                                Type = SolutionType.Final
+                                Type = Solution.SolutionType.Final
                             };
 
                             solutionMsg = new SolutionsMessage()
                             {
-                                Id = id,
+                                ProblemInstanceId = id,
                                 CommonData = null,
                                 ProblemType = fs.ProblemType,
-                                Solutions = new List<SolutionsSolution>() { ss },
+                                Solutions = new List<Solution>() { ss },
                             };
                         }
                         else
                         {
                             // TODO - stuff below is merely a temporary solution
-                            var ss = new SolutionsSolution()
+                            var ss = new Solution()
                             {
                                 ComputationsTime = 0,
                                 Data = new byte[0],
-                                TaskId = id,
+                                PartialProblemId = id,
                                 TimeoutOccured = true,
-                                Type = SolutionType.Ongoing
+                                Type = Solution.SolutionType.Ongoing
                             };
                             solutionMsg = new SolutionsMessage()
                             {
-                                Id = id,
+                                ProblemInstanceId = id,
                                 CommonData = null,
                                 ProblemType = "dummy",
-                                Solutions = new List<SolutionsSolution>() { ss },
+                                Solutions = new List<Solution>() { ss },
                             };
                         }
                         return solutionMsg;

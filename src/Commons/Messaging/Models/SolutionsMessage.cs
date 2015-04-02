@@ -16,76 +16,19 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "Solutions.xsd";
 
-        private string _problemTypeField;
-
-        private ulong _idField;
-
-        private byte[] _commonDataField;
-
-        private List<SolutionsSolution> _solutionsField;
-
-        public SolutionsMessage()
-        {
-            _solutionsField = new List<SolutionsSolution>();
-        }
 
         [XmlElement(Order = 0)]
-        public string ProblemType
-        {
-            get
-            {
-                return _problemTypeField;
-            }
-            set
-            {
-                _problemTypeField = value;
-            }
-        }
+        public string ProblemType { get; set; }
 
-        [XmlElement(Order = 1)]
-        public ulong Id
-        {
-            get
-            {
-                return _idField;
-            }
-            set
-            {
-                _idField = value;
-            }
-        }
+        [XmlElement(Order = 1, ElementName="Id")]
+        public ulong ProblemInstanceId { get; set; }
 
         [XmlElement(DataType = "base64Binary", Order = 2)]
-        public byte[] CommonData
-        {
-            get
-            {
-                return _commonDataField;
-            }
-            set
-            {
-                _commonDataField = value;
-            }
-        }
-
-        public bool ShouldSerializeCommonData()
-        {
-            return _commonDataField != null;
-        }
+        public byte[] CommonData { get; set; }
 
         [XmlArray(Order = 3)]
         [XmlArrayItem("Solution", IsNullable = false)]
-        public List<SolutionsSolution> Solutions
-        {
-            get
-            {
-                return _solutionsField;
-            }
-            set
-            {
-                _solutionsField = value;
-            }
-        }
+        public List<Solution> Solutions { get; set; }
 
         [XmlIgnore]
         public override MessageClass MessageType
@@ -93,124 +36,31 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.Solutions; }
         }
 
+
+
+        public SolutionsMessage()
+        {
+            Solutions = new List<Solution>();
+        }
+
+        public bool ShouldSerializeCommonData()
+        {
+            return CommonData != null;
+        }
+
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("ProblemType=" + ProblemType.ToString() + ";");
-            sb.Append("Id=" + Id.ToString() + ";");
-            sb.Append("CommonData.Length=" + (CommonData == null ? "null" : CommonData.Length.ToString()) + ";");
-            sb.Append("Solutions={");
+            var builder = new StringBuilder(base.ToString());
+
+            builder.Append(" ProblemInstanceId(" + ProblemInstanceId + ")");
+            builder.Append(" ProblemType(" + ProblemType + ")");
+
+            builder.Append(" Solutions{");
             foreach (var solution in Solutions)
-            {
-                sb.Append("[" + solution.ToString() + "]");
-            }
-            sb.Append("}]");
-            return sb.ToString();
-        }
-    }
+                builder.Append(solution.ToString() + ",");
+            builder.Append("}");
 
-    [Serializable]
-    [DesignerCategory("code")]
-    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public class SolutionsSolution
-    {
-        private ulong? _taskIdField;
-
-        private bool _timeoutOccuredField;
-
-        private SolutionType _typeField;
-
-        private ulong _computationsTimeField;
-
-        private byte[] _dataField;
-
-        [XmlElement(Order = 0)]
-        public ulong? TaskId
-        {
-            get
-            {
-                return _taskIdField;
-            }
-            set
-            {
-                _taskIdField = value;
-            }
-        }
-
-        public bool ShouldSerializeTaskId()
-        {
-            return _taskIdField.HasValue;
-        }
-
-        [XmlElement(Order = 1)]
-        public bool TimeoutOccured
-        {
-            get
-            {
-                return _timeoutOccuredField;
-            }
-            set
-            {
-                _timeoutOccuredField = value;
-            }
-        }
-
-        [XmlElement(Order = 2)]
-        public SolutionType Type
-        {
-            get
-            {
-                return _typeField;
-            }
-            set
-            {
-                _typeField = value;
-            }
-        }
-
-        [XmlElement(Order = 3)]
-        public ulong ComputationsTime
-        {
-            get
-            {
-                return _computationsTimeField;
-            }
-            set
-            {
-                _computationsTimeField = value;
-            }
-        }
-
-        [XmlElement(DataType = "base64Binary", Order = 4)]
-        public byte[] Data
-        {
-            get
-            {
-                return _dataField;
-            }
-            set
-            {
-                _dataField = value;
-            }
-        }
-
-        public bool ShouldSerializeData()
-        {
-            return _dataField != null;
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("TaskId=" + (TaskId.HasValue ? TaskId.ToString() : "null") + ";");
-            sb.Append("TimeoutOccured=" + TimeoutOccured.ToString() + ";");
-            sb.Append("Type=" + Type.ToString() + ";");
-            sb.Append("ComputationsTime=" + ComputationsTime.ToString() + ";");
-            sb.Append("Data.Length=" + (Data == null ? "null" : Data.Length.ToString()));
-            sb.Append("]");
-            return sb.ToString();
+            return builder.ToString();
         }
     }
 }

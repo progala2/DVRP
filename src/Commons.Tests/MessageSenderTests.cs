@@ -47,9 +47,9 @@ namespace _15pl04.Ucc.Commons.Tests
         public void MessageSenderUpdatingBackupServerList()
         {
             MessageSender sender = new MessageSender(new IPEndPoint(TestIp, Port));
-            var backupServers = new List<BackupServerInfo>
+            var backupServers = new List<ServerInfo>
             {
-                new BackupServerInfo()
+                new ServerInfo()
                 {
                     IpAddress = "123.123.123.123",
                     Port = 9876

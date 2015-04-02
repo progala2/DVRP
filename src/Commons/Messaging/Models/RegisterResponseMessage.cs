@@ -25,7 +25,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         [XmlArray(Order = 2, ElementName = "BackupCommunicationServers")]
         [XmlArrayItem("BackupCommunicationServer")]
-        public List<BackupServerInfo> BackupServers { get; set; }
+        public List<ServerInfo> BackupServers { get; set; }
 
         [XmlIgnore]
         public override MessageClass MessageType
@@ -37,26 +37,20 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         public RegisterResponseMessage()
         {
-            BackupServers = new List<BackupServerInfo>();
+            BackupServers = new List<ServerInfo>();
         }
 
         public override string ToString()
         {
             var builder = new StringBuilder(base.ToString());
 
-            builder.Append(" Id=" + AssignedId);
-            builder.Append("|Timeout" + CommunicationTimeout);
+            builder.Append(" AssignedId(" + AssignedId + ")");
+            builder.Append(" Timeout(" + CommunicationTimeout + ")");
 
-            builder.Append("|BackupServers={");
+            builder.Append(" BackupServers{");
             foreach (var backup in BackupServers)
-            {
-                builder.Append(backup.IpAddress);
-                builder.Append(":");
-                builder.Append(backup.Port.ToString("0000"));
-                builder.Append("|");
-            }
+                builder.Append(backup + ",");
             builder.Append("}");
-
 
             return builder.ToString();
         }

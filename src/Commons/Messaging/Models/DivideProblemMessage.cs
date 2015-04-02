@@ -1,6 +1,7 @@
 ﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using System;
 using System.ComponentModel;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -31,6 +32,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public ulong NodeId { get; set; }
 
 
+
         [XmlIgnore]
         public override MessageClass MessageType
         {
@@ -39,10 +41,14 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         public override string ToString()
         {
-            return base.ToString() +
-                " ProblemId=" + ProblemInstanceId +
-                "|NodeId=" + NodeId +
-                "|ComputationalNodes=" + ComputationalNodes;
+            var builder = new StringBuilder(base.ToString());
+
+            builder.Append(" ProblemId(" + ProblemInstanceId + ")");
+            builder.Append(" ProblemType(" + ProblemType + ")");
+            builder.Append(" NodeId(" + NodeId + ")");
+            builder.Append(" CompNodes(" + ComputationalNodes + ")");
+
+            return builder.ToString();
         }
     }
 }
