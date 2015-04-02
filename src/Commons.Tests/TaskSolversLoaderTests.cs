@@ -9,12 +9,12 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void GetTaskSolversFromRelativePathLoadsTaskSolversCorrectly()
         {
-            var taskSolversDictionary = TaskSolversLoader.GetTaskSolversFromRelativePath(@"/TaskSolvers");
+            var taskSolversDictionary = TaskSolverLoader.GetTaskSolversFromRelativePath(@"/TaskSolvers");
             var taskSolversCount = taskSolversDictionary.Keys.Count;
             Assert.IsTrue(taskSolversCount > 0);
             Assert.IsTrue(taskSolversDictionary.ContainsKey("UCC.MinMax"));
 
-            taskSolversDictionary = TaskSolversLoader.GetTaskSolversFromRelativePath(null);
+            taskSolversDictionary = TaskSolverLoader.GetTaskSolversFromRelativePath(null);
             taskSolversCount = taskSolversDictionary.Keys.Count;
             Assert.IsTrue(taskSolversCount == 0);
         }

@@ -8,7 +8,7 @@ using UCCTaskSolver;
 
 namespace _15pl04.Ucc.Commons
 {
-    public static class TaskSolversLoader
+    public static class TaskSolverLoader
     {
         /// <summary>
         /// Gets dictionary with names of solvable problems as keys and proper TaskSolvers as values.

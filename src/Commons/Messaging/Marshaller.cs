@@ -1,15 +1,15 @@
-﻿using System;
-using System.Linq;
+﻿using _15pl04.Ucc.Commons.Messaging.Base;
+using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
-    public class Marshaller
+    public class Marshaller : IMarshaller<Message>
     {
         public Message[] Unmarshall(byte[] data)
         {

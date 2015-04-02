@@ -86,7 +86,7 @@ namespace _15pl04.Ucc.Commons.Computations
         public ComputationalComponent(IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
         {
             _messageSender = new MessageSender(serverAddress);
-            TaskSolvers = TaskSolversLoader.GetTaskSolversFromRelativePath(taskSolversDirectoryRelativePath);
+            TaskSolvers = TaskSolverLoader.GetTaskSolversFromRelativePath(taskSolversDirectoryRelativePath);
 
             ParallelThreads = (byte)Environment.ProcessorCount;
             IsRunning = false;
