@@ -180,8 +180,8 @@ namespace _15pl04.Ucc.Commons.Computations
             {
                 if ((registerResponseMessage = receivedMessage as RegisterResponseMessage) != null)
                 {
-                    ID = registerResponseMessage.Id;
-                    Timeout = registerResponseMessage.Timeout;
+                    ID = registerResponseMessage.AssignedId;
+                    Timeout = registerResponseMessage.CommunicationTimeout;
                     registered = true;
                 }
                 else

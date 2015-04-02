@@ -134,11 +134,11 @@ namespace _15pl04.Ucc.ComputationalNode
         {
             switch (message.ErrorType)
             {
-                case ErrorMessageErrorType.UnknownSender:
+                case ErrorType.UnknownSender:
                     Register();
                     return;
-                case ErrorMessageErrorType.InvalidOperation:
-                case ErrorMessageErrorType.ExceptionOccured:
+                case ErrorType.InvalidOperation:
+                case ErrorType.ExceptionOccured:
                     throw new NotImplementedException();
             }
         }

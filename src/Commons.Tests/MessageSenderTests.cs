@@ -25,7 +25,7 @@ namespace _15pl04.Ucc.Commons.Tests
             Message message = new ErrorMessage()
             {
                 ErrorText = "TestErrorMessage",
-                ErrorType = ErrorMessageErrorType.UnknownSender
+                ErrorType = ErrorType.UnknownSender
             };
 
             Task t = new Task(new Action(ListenAndResend));

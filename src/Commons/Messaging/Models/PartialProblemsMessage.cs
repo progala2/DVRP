@@ -16,13 +16,14 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "PartialProblems.xsd";
 
+
         [XmlElement(Order = 0)]
         public string ProblemType { get; set; }
 
-        [XmlElement(ElementName = "Id", Order = 1)]
+        [XmlElement(Order = 1, ElementName = "Id")]
         public ulong ProblemInstanceId { get; set; }
 
-        [XmlElement(DataType = "base64Binary", Order = 2)]
+        [XmlElement(Order = 2, DataType = "base64Binary")]
         public byte[] CommonData { get; set; }
 
         [XmlElement(Order = 3)]
@@ -39,11 +40,16 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
 
+
         public PartialProblemsMessage()
         {
             PartialProblems = new List<PartialProblem>();
         }
 
+        public bool ShouldSerializeSolvingTimeout()
+        {
+            return SolvingTimeout.HasValue;
+        }
 
         public override string ToString()
         {

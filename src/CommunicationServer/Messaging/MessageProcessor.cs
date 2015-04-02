@@ -99,9 +99,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                         var registerResponseMsg = new RegisterResponseMessage()
                         {
-                            Id = id,
-                            BackupCommunicationServers = new List<BackupServerInfo>(),
-                            Timeout = _communicationTimeout,
+                            AssignedId = id,
+                            BackupServers = new List<BackupServerInfo>(),
+                            CommunicationTimeout = _communicationTimeout,
                         };
                         return registerResponseMsg;
                     }
@@ -126,7 +126,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                             var errorMsg = new ErrorMessage()
                             {
                                 ErrorText = "Unregistered component error.",
-                                ErrorType = ErrorMessageErrorType.UnknownSender,
+                                ErrorType = ErrorType.UnknownSender,
                             };
                             return errorMsg;
                         }

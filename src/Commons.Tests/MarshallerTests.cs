@@ -102,7 +102,7 @@ namespace _15pl04.Ucc.Commons.Tests
                 new ErrorMessage()
                 {
                     ErrorText = "",
-                    ErrorType = ErrorMessageErrorType.ExceptionOccured
+                    ErrorType = ErrorType.ExceptionOccured
                 },
                 new RegisterMessage()
                 {

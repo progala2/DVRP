@@ -16,7 +16,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "Register.xsd";
 
-        [XmlElement(ElementName = "Type", Order = 0)]
+
+        [XmlElement(Order = 0, ElementName = "Type")]
         public ComponentType ComponentType { get; set; }
 
         [XmlArray(Order = 1)]
@@ -26,10 +27,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlElement(Order = 2)]
         public byte ParallelThreads { get; set; }
 
-        [XmlElement(ElementName = "Deregister", Order = 3)]
+        [XmlElement(Order = 3, ElementName = "Deregister")]
         public bool? Deregistration { get; set; }
 
-        [XmlElement(ElementName = "Id", Order = 4)]
+        [XmlElement(Order = 4, ElementName = "Id")]
         public ulong? IdToDeregister { get; set; }
 
         [XmlIgnore]
@@ -45,8 +46,16 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             SolvableProblems = new List<string>();
         }
 
+        public bool ShouldSerializeDeregistration()
+        {
+            return Deregistration.HasValue;
+        }
 
-
+        public bool ShouldSerializeIdToDeregister()
+        {
+            return IdToDeregister.HasValue;
+        }
+        
         public override string ToString()
         {
             var builder = new StringBuilder();

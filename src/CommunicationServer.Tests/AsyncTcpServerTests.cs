@@ -49,7 +49,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             Message expectedMessage = new ErrorMessage()
             {
                 ErrorText = "Unregistered component error.",
-                ErrorType = ErrorMessageErrorType.UnknownSender,
+                ErrorType = ErrorType.UnknownSender,
             };
 
             var messagesReturned = Send(new Message[] {message});
@@ -86,23 +86,23 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             };
             Message expectedMessage1 = new RegisterResponseMessage()
             {
-                Id = 1,
-                BackupCommunicationServers = new List<BackupServerInfo>(),
-                Timeout = _config.CommunicationTimeout
+                AssignedId = 1,
+                BackupServers = new List<BackupServerInfo>(),
+                CommunicationTimeout = _config.CommunicationTimeout
             };
             var messagesReturned = Send(new Message[] { messageRegister });
 
             Assert.AreEqual(1, messagesReturned.Length);
             Assert.AreEqual(expectedMessage1.MessageType, messagesReturned[0].MessageType);
-            Assert.AreEqual((expectedMessage1 as RegisterResponseMessage).Timeout,
-                (messagesReturned[0] as RegisterResponseMessage).Timeout);
+            Assert.AreEqual((expectedMessage1 as RegisterResponseMessage).CommunicationTimeout,
+                (messagesReturned[0] as RegisterResponseMessage).CommunicationTimeout);
 
 
             Message messageExpected2 = new NoOperationMessage();
 
             Message messageStatus = new StatusMessage()
             {
-                Id = (messagesReturned[0] as RegisterResponseMessage).Id,
+                Id = (messagesReturned[0] as RegisterResponseMessage).AssignedId,
                 noNamespaceSchemaLocation = "?",
                 Threads = new List<ThreadStatus>()
                     {

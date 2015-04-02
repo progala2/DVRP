@@ -16,7 +16,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "NoOperation.xsd";
 
-        [XmlArray(Order = 0)]
+
+        [XmlArray(Order = 0, ElementName = "BackupCommunicationServers")]
         [XmlArrayItem("BackupCommunicationServer", IsNullable = true)]
         public List<BackupServerInfo> BackupServers { get; set; }
 
@@ -25,6 +26,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClass.NoOperation; }
         }
+
+
 
         public NoOperationMessage()
         {

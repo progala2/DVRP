@@ -18,16 +18,16 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlElement(Order = 0)]
         public string ProblemType { get; set; }
 
-        [XmlElement(ElementName = "Id", Order = 1)]
+        [XmlElement(Order = 1, ElementName = "Id")]
         public ulong ProblemInstanceId { get; set; }
 
-        [XmlElement(ElementName = "Data", DataType = "base64Binary", Order = 2)]
+        [XmlElement(Order = 2, ElementName = "Data", DataType = "base64Binary")]
         public byte[] ProblemData { get; set; }
 
-        [XmlElement(ElementName = "ComputationalNodes", Order = 3)]
+        [XmlElement(Order = 3, ElementName = "ComputationalNodes")]
         public ulong ComputationalNodes { get; set; }
 
-        [XmlElement(ElementName = "NodeID", Order = 4)]
+        [XmlElement(Order = 4, ElementName = "NodeID")]
         public ulong NodeId { get; set; }
 
 

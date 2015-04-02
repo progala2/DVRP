@@ -33,7 +33,7 @@ namespace _15pl04.Ucc.Commons.Tests
         public void RegisterResponseMessageDeserialization()
         {
             var msg = XmlFileParser<RegisterResponseMessage>.Deserialize("XmlMessages/RegisterResponse.xml");
-            Assert.IsTrue(msg.Id == 12);
+            Assert.IsTrue(msg.AssignedId == 12);
         }
 
         [TestMethod]

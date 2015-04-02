@@ -16,74 +16,49 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "RegisterResponse.xsd";
 
-        private ulong _idField;
 
-        private uint _timeoutField;
+        [XmlElement(Order = 0, ElementName = "Id")]
+        public ulong AssignedId { get; set; }
 
-        private List<BackupServerInfo> _backupCommunicationServersField;
+        [XmlElement(Order = 1, ElementName = "Timeout")]
+        public uint CommunicationTimeout { get; set; }
 
-        public RegisterResponseMessage()
-        {
-            _backupCommunicationServersField = new List<BackupServerInfo>();
-        }
-
-        [XmlElement(Order = 0)]
-        public ulong Id
-        {
-            get
-            {
-                return _idField;
-            }
-            set
-            {
-                _idField = value;
-            }
-        }
-
-        [XmlElement(Order = 1)]
-        public uint Timeout
-        {
-            get
-            {
-                return _timeoutField;
-            }
-            set
-            {
-                _timeoutField = value;
-            }
-        }
-
-        [XmlArray(Order = 2)]
+        [XmlArray(Order = 2, ElementName = "BackupCommunicationServers")]
         [XmlArrayItem("BackupCommunicationServer")]
-        public List<BackupServerInfo> BackupCommunicationServers
-        {
-            get
-            {
-                return _backupCommunicationServersField;
-            }
-            set
-            {
-                _backupCommunicationServersField = value;
-            }
-        }
+        public List<BackupServerInfo> BackupServers { get; set; }
 
         [XmlIgnore]
         public override MessageClass MessageType
         {
-            get { return MessageClass.RegisterResponse;}
+            get { return MessageClass.RegisterResponse; }
+        }
+
+
+
+        public RegisterResponseMessage()
+        {
+            BackupServers = new List<BackupServerInfo>();
         }
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("Id=" + Id.ToString()+";");
-            sb.Append("Timeout=" + Timeout.ToString() + ";");
-            sb.Append("BackupCommunicationServers={");
-            foreach (var backup in BackupCommunicationServers)
-                sb.Append(backup.ToString());
-            sb.Append("}]");
-            return sb.ToString();
+            var builder = new StringBuilder(base.ToString());
+
+            builder.Append(" Id=" + AssignedId);
+            builder.Append("|Timeout" + CommunicationTimeout);
+
+            builder.Append("|BackupServers={");
+            foreach (var backup in BackupServers)
+            {
+                builder.Append(backup.IpAddress);
+                builder.Append(":");
+                builder.Append(backup.Port.ToString("0000"));
+                builder.Append("|");
+            }
+            builder.Append("}");
+
+
+            return builder.ToString();
         }
     }
 }

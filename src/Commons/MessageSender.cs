@@ -96,7 +96,7 @@ namespace _15pl04.Ucc.Commons
                         _servers = ((NoOperationMessage)message).BackupServers;
                         return;
                     case MessageClass.RegisterResponse:
-                        _servers = ((RegisterResponseMessage)message).BackupCommunicationServers;
+                        _servers = ((RegisterResponseMessage)message).BackupServers;
                         return;
                 }
             }

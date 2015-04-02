@@ -16,17 +16,18 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
 
         [XmlElement(Order = 0, ElementName = "ErrorMessageType")]
-        public ErrorMessageErrorType ErrorType { get; set; }
+        public ErrorType ErrorType { get; set; }
 
         [XmlElement(Order = 1, ElementName = "ErrorMessage")]
         public string ErrorText { get; set; }
-
 
         [XmlIgnore]
         public override MessageClass MessageType
         {
             get { return MessageClass.Error; }
         }
+
+
 
         public override string ToString()
         {
@@ -38,7 +39,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
     [Serializable]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public enum ErrorMessageErrorType
+    public enum ErrorType
     {
         UnknownSender,
         InvalidOperation,
