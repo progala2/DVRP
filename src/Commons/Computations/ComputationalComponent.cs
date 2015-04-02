@@ -278,15 +278,15 @@ namespace _15pl04.Ucc.Commons.Computations
                 {
                     ProblemType = computationalTask.ProblemType,
                     ProblemInstanceId = computationalTask.ProblemInstanceId,
-                    TaskId = computationalTask.PartialProblemId,
+                    PartialProblemId = computationalTask.PartialProblemId,
                     State = computationalTask.State,
-                    HowLong = (ulong)computationalTask.TimeSinceLastStateChange.TotalMilliseconds
+                    TimeInThisState = (ulong)computationalTask.TimeSinceLastStateChange.TotalMilliseconds
                 };
                 threadsStatuses.Add(threadStatus);
             }
             var statusMessage = new StatusMessage()
             {
-                Id = ID,
+                ComponentId = ID,
                 Threads = threadsStatuses
             };
             return statusMessage;

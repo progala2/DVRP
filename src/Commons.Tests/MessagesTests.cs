@@ -54,21 +54,21 @@ namespace _15pl04.Ucc.Commons.Tests
         public void SolveRequestMessageDeserialization()
         {
             var msg = XmlFileParser<SolveRequestMessage>.Deserialize("XmlMessages/SolveRequest.xml");
-            Assert.IsTrue(msg.Id == 12);
+            Assert.IsTrue(msg.ProblemInstanceId == 12);
         }
 
         [TestMethod]
         public void SolveRequestResponseMessageDeserialization()
         {
             var msg = XmlFileParser<SolveRequestResponseMessage>.Deserialize("XmlMessages/SolveRequestResponse.xml");
-            Assert.IsTrue(msg.Id == 12);
+            Assert.IsTrue(msg.AssignedId == 12);
         }
 
         [TestMethod]
         public void StatusMessageDeserialization()
         {
             var msg = XmlFileParser<StatusMessage>.Deserialize("XmlMessages/Status.xml");
-            Assert.IsTrue(msg.Id == 12);
+            Assert.IsTrue(msg.ComponentId == 12);
         }
     }
 }

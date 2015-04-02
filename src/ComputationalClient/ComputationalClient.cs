@@ -35,7 +35,7 @@ namespace _15pl04.Ucc.ComputationalClient
             var solveRequestMessage = new SolveRequestMessage()
             {
                 ProblemType = problemType,
-                Data = data,
+                ProblemData = data,
                 SolvingTimeout = solvingTimeout
             };
             var receivedMessages = SendMessage(solveRequestMessage);
@@ -48,7 +48,7 @@ namespace _15pl04.Ucc.ComputationalClient
             {
                 if ((solveRequestResponseMessage = receivedMessage as SolveRequestResponseMessage) != null)
                 {
-                    problemId = (uint?)solveRequestResponseMessage.Id;
+                    problemId = (uint?)solveRequestResponseMessage.AssignedId;
                 }
                 else
                 {

@@ -35,7 +35,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
             Message message = new StatusMessage()
             {
-                Id = 1,
+                ComponentId = 1,
                 noNamespaceSchemaLocation = "?",
                 Threads = new List<ThreadStatus>()
                     {
@@ -102,7 +102,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
             Message messageStatus = new StatusMessage()
             {
-                Id = (messagesReturned[0] as RegisterResponseMessage).AssignedId,
+                ComponentId = (messagesReturned[0] as RegisterResponseMessage).AssignedId,
                 noNamespaceSchemaLocation = "?",
                 Threads = new List<ThreadStatus>()
                     {

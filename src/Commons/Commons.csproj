@@ -35,6 +35,7 @@
     <Compile Include="Components\ComponentType.cs" />
     <Compile Include="Components\PartialProblem.cs" />
     <Compile Include="Components\Solution.cs" />
+    <Compile Include="Components\ThreadStatus.cs" />
     <Compile Include="Computations\ComputationalComponent.cs" />
     <Compile Include="Computations\ComputationalTask.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />

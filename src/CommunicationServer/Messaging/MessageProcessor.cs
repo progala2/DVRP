@@ -111,9 +111,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     {
                         var statusMsg = msg as StatusMessage;
                         // TODO - implement
-                        if (ComponentMonitor.Instance.IsRegistered(statusMsg.Id))
+                        if (ComponentMonitor.Instance.IsRegistered(statusMsg.ComponentId))
                         {
-                            ComponentMonitor.Instance.UpdateTimestamp(statusMsg.Id);
+                            ComponentMonitor.Instance.UpdateTimestamp(statusMsg.ComponentId);
 
                             var noOperationMsg = new NoOperationMessage()
                             {
@@ -139,12 +139,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         ulong id = Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.GenerateProblemInstanceId();
                         ulong solvingTimeout = solveRequestMsg.SolvingTimeout.GetValueOrDefault(0);
 
-                        var problemInstance = new ProblemInstance(id, solveRequestMsg.ProblemType, solveRequestMsg.Data, solvingTimeout);
+                        var problemInstance = new ProblemInstance(id, solveRequestMsg.ProblemType, solveRequestMsg.ProblemData, solvingTimeout);
                         Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.AddNewProblemInstance(problemInstance);
 
                         var solveRequestResponseMsg = new SolveRequestResponseMessage()
                         {
-                            Id = problemInstance.Id
+                            AssignedId = problemInstance.Id
                         };
                         return solveRequestResponseMsg;
                     }

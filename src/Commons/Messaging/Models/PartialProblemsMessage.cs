@@ -46,6 +46,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             PartialProblems = new List<PartialProblem>();
         }
 
+
+
         public bool ShouldSerializeSolvingTimeout()
         {
             return SolvingTimeout.HasValue;

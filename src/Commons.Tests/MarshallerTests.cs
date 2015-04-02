@@ -132,7 +132,7 @@ namespace _15pl04.Ucc.Commons.Tests
                 new SolveRequestMessage()
                 {
                     ProblemType = "ss",
-                    Data = new byte[] {1}
+                    ProblemData = new byte[] {1}
                 },
                 new SolveRequestResponseMessage(),
                 new StatusMessage()
