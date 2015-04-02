@@ -36,7 +36,7 @@
     <Compile Include="Components\PartialProblem.cs" />
     <Compile Include="Components\Solution.cs" />
     <Compile Include="Components\ThreadStatus.cs" />
-    <Compile Include="Computations\ComputationalComponent.cs" />
+    <Compile Include="Components\ComputationalComponent.cs" />
     <Compile Include="Computations\ComputationalTask.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />
@@ -44,7 +44,7 @@
     <Compile Include="Exceptions\NoResponseException.cs" />
     <Compile Include="IPEndPointParser.cs" />
     <Compile Include="Messaging\MessageEventArgs.cs" />
-    <Compile Include="MessageSender.cs" />
+    <Compile Include="Messaging\MessageSender.cs" />
     <Compile Include="Messaging\MessageValidator.cs" />
     <Compile Include="Messaging\Models\Base\MessageClass.cs" />
     <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
@@ -66,7 +66,6 @@
     <Compile Include="Resources.cs" />
     <Compile Include="Computations\TaskSolversLoader.cs" />
     <Compile Include="TcpClient.cs" />
-    <Compile Include="ThreadState.cs" />
     <Compile Include="Exceptions\TimeoutException.cs">
       <SubType>Code</SubType>
     </Compile>

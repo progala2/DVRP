@@ -10,6 +10,15 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class ThreadStatus
     {
+        [Serializable]
+        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+        public enum ThreadState
+        {
+            Idle,
+            Busy,
+        }
+
+
         [XmlElement(Order = 0)]
         public ThreadState State { get; set; }
 

@@ -42,7 +42,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                         new ThreadStatus()
                         {
                             ProblemType = "ss",
-                            State = Commons.ThreadState.Busy
+                            State = ThreadStatus.ThreadState.Busy
                         }
                     }
             };
@@ -109,7 +109,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                         new ThreadStatus()
                         {
                             ProblemType = "s",
-                            State = Commons.ThreadState.Idle
+                            State = ThreadStatus.ThreadState.Idle
                         }
                     }
             };

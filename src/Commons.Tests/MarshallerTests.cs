@@ -142,7 +142,7 @@ namespace _15pl04.Ucc.Commons.Tests
                         new ThreadStatus()
                         {
                             ProblemType = "ss",
-                            State = ThreadState.Busy
+                            State = ThreadStatus.ThreadState.Busy
                         }
                     }
                 }

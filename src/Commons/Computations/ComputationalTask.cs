@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _15pl04.Ucc.Commons.Messaging.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.Commons.Computations
@@ -12,7 +13,7 @@ namespace _15pl04.Ucc.Commons.Computations
         /// <summary>
         /// Gets state of this task.
         /// </summary>
-        public ThreadState State { get; private set; }
+        public ThreadStatus.ThreadState State { get; private set; }
 
         /// <summary>
         /// Gets date of the last state change.
@@ -49,7 +50,7 @@ namespace _15pl04.Ucc.Commons.Computations
         public ComputationalTask()
         {
             _task = null;
-            State = ThreadState.Idle;
+            State = ThreadStatus.ThreadState.Idle;
             LastStateChange = DateTime.UtcNow;
         }
 
@@ -76,7 +77,7 @@ namespace _15pl04.Ucc.Commons.Computations
                 throw new ArgumentNullException("task");
 
             _task = task;
-            State = ThreadState.Busy;
+            State = ThreadStatus.ThreadState.Busy;
             LastStateChange = DateTime.UtcNow;
 
             ProblemType = problemType;
