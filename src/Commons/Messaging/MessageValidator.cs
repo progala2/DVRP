@@ -23,9 +23,9 @@ namespace _15pl04.Ucc.Commons.Messaging
     {
         private readonly XmlSchemaSet _xmlSchemaSet;
 
-        public MessageValidatorHelper()
+        public MessageValidatorHelper(MessageClass msgClass)
         {
-            var xsdFileContent = Message.GetXsdFileContent(typeof(T));
+            var xsdFileContent = msgClass.GetXmlSchema();
             _xmlSchemaSet = new XmlSchemaSet();
             _xmlSchemaSet.Add("http://www.mini.pw.edu.pl/ucc/", XmlReader.Create(new StringReader(xsdFileContent)));
         }
@@ -72,17 +72,17 @@ namespace _15pl04.Ucc.Commons.Messaging
         {
             _messageValidatorForMessageTypeDictionary = new Dictionary<MessageClass, IMessageValidator>
                 {
-                    {MessageClass.NoOperation, new MessageValidatorHelper<NoOperationMessage>()},
-                    {MessageClass.DivideProblem, new MessageValidatorHelper<DivideProblemMessage>()},
-                    {MessageClass.Error, new MessageValidatorHelper<ErrorMessage>()},
-                    {MessageClass.SolvePartialProblems, new MessageValidatorHelper<PartialProblemsMessage>()},
-                    {MessageClass.Register, new MessageValidatorHelper<RegisterMessage>()},
-                    {MessageClass.RegisterResponse, new MessageValidatorHelper<RegisterResponseMessage>()},
-                    {MessageClass.SolutionRequest, new MessageValidatorHelper<SolutionRequestMessage>()},
-                    {MessageClass.Solutions, new MessageValidatorHelper<SolutionsMessage>()},
-                    {MessageClass.SolveRequest, new MessageValidatorHelper<SolveRequestMessage>()},
-                    {MessageClass.SolveRequestResponse, new MessageValidatorHelper<SolveRequestResponseMessage>()},
-                    {MessageClass.Status, new MessageValidatorHelper<StatusMessage>()}
+                    {MessageClass.NoOperation, new MessageValidatorHelper<NoOperationMessage>(MessageClass.NoOperation)},
+                    {MessageClass.DivideProblem, new MessageValidatorHelper<DivideProblemMessage>(MessageClass.DivideProblem)},
+                    {MessageClass.Error, new MessageValidatorHelper<ErrorMessage>(MessageClass.Error)},
+                    {MessageClass.SolvePartialProblems, new MessageValidatorHelper<PartialProblemsMessage>(MessageClass.SolvePartialProblems)},
+                    {MessageClass.Register, new MessageValidatorHelper<RegisterMessage>(MessageClass.Register)},
+                    {MessageClass.RegisterResponse, new MessageValidatorHelper<RegisterResponseMessage>(MessageClass.RegisterResponse)},
+                    {MessageClass.SolutionRequest, new MessageValidatorHelper<SolutionRequestMessage>(MessageClass.SolutionRequest)},
+                    {MessageClass.Solutions, new MessageValidatorHelper<SolutionsMessage>(MessageClass.Solutions)},
+                    {MessageClass.SolveRequest, new MessageValidatorHelper<SolveRequestMessage>(MessageClass.SolveRequest)},
+                    {MessageClass.SolveRequestResponse, new MessageValidatorHelper<SolveRequestResponseMessage>(MessageClass.SolveRequestResponse)},
+                    {MessageClass.Status, new MessageValidatorHelper<StatusMessage>(MessageClass.Status)}
                 };
         }
         static IMessageValidator GetValidatorForMessageClassType(MessageClass type)

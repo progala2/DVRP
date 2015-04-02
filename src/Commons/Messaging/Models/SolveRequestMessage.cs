@@ -35,7 +35,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
 
-
         public bool ShouldSerializeProblemInstanceId()
         {
             return ProblemInstanceId.HasValue;

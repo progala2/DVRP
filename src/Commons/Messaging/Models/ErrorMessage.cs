@@ -29,7 +29,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
 
-
         public override string ToString()
         {
             var builder = new StringBuilder(base.ToString());

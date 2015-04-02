@@ -16,7 +16,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public string noNamespaceSchemaLocation = "SolveRequestResponse.xsd";
 
 
-        [XmlElement(Order = 0, ElementName="Id")]
+        [XmlElement(Order = 0, ElementName = "Id")]
         public ulong AssignedId { get; set; }
 
         [XmlIgnore]
@@ -24,7 +24,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClass.SolveRequestResponse; }
         }
-
 
 
         public override string ToString()

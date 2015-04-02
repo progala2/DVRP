@@ -40,11 +40,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
 
-
         public RegisterMessage()
         {
             SolvableProblems = new List<string>();
         }
+
 
         public bool ShouldSerializeDeregistration()
         {

@@ -28,12 +28,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
 
-
         public NoOperationMessage()
         {
             BackupServers = new List<ServerInfo>();
         }
-
 
 
         public override string ToString()

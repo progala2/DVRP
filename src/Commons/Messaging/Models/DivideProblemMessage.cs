@@ -31,13 +31,12 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlElement(Order = 4, ElementName = "NodeID")]
         public ulong NodeId { get; set; }
 
-
-
         [XmlIgnore]
         public override MessageClass MessageType
         {
             get { return MessageClass.DivideProblem; }
         }
+
 
         public override string ToString()
         {

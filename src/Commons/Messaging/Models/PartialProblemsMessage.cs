@@ -40,12 +40,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
 
-
         public PartialProblemsMessage()
         {
             PartialProblems = new List<PartialProblem>();
         }
-
 
 
         public bool ShouldSerializeSolvingTimeout()

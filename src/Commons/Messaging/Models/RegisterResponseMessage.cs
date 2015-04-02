@@ -34,7 +34,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
 
-
         public RegisterResponseMessage()
         {
             BackupServers = new List<ServerInfo>();

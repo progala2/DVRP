@@ -47,13 +47,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="MessageTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="MessageValidatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MessagesTests.cs" />
-    <Compile Include="ResourcesTests.cs" />
     <Compile Include="MessageSenderTests.cs" />
     <Compile Include="TcpClientTests.cs" />
     <Compile Include="Tools\XmlFileParser.cs" />

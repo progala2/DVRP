@@ -66,8 +66,12 @@
     <Compile Include="Messaging\Marshaller.cs" />
     <Compile Include="Computations\ComputationalTaskPool.cs" />
     <Compile Include="Messaging\MessageSerializer.cs" />
+    <Compile Include="Messaging\MessageSchemas.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MessageSchemas.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources.cs" />
     <Compile Include="TcpClient.cs" />
     <Compile Include="Exceptions\TimeoutException.cs">
       <SubType>Code</SubType>
@@ -83,41 +87,45 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\DivideProblem.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\NoOperation.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\PartialProblems.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Register.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\RegisterResponse.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Solutions.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SolutionRequest.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SolveRequest.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SolveRequestResponse.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Status.xsd">
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="Messaging\MessageSchemas.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MessageSchemas.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Error.xsd">
+    <None Include="Resources\MessageSchemas\DivideProblem.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
+    </None>
+    <None Include="Resources\MessageSchemas\Error.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\MessageSchemas\NoOperation.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\MessageSchemas\PartialProblems.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\MessageSchemas\Register.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\MessageSchemas\RegisterResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\MessageSchemas\SolutionRequest.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\MessageSchemas\Solutions.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\MessageSchemas\SolveRequest.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\MessageSchemas\SolveRequestResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\MessageSchemas\Status.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

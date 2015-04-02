@@ -37,7 +37,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
 
-
         public SolutionsMessage()
         {
             Solutions = new List<Solution>();

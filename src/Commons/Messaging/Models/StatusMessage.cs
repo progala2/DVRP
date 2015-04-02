@@ -17,7 +17,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public string noNamespaceSchemaLocation = "Status.xsd";
 
 
-        [XmlElement(Order = 0, ElementName="Id")]
+        [XmlElement(Order = 0, ElementName = "Id")]
         public ulong ComponentId { get; set; }
 
         [XmlArray(Order = 1)]
@@ -29,7 +29,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClass.Status; }
         }
-
 
 
         public StatusMessage()
@@ -52,6 +51,4 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             return builder.ToString();
         }
     }
-
-
 }
