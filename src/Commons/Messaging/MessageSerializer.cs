@@ -35,22 +35,22 @@ namespace _15pl04.Ucc.Commons.Messaging
 
             using (var stream = new MemoryStream(buffer, index, count))
             {
-                var serializer = _serializers[type];
+                XmlSerializer serializer = _serializers[type];
                 return (Message)serializer.Deserialize(stream);
             }
         }
 
         public byte[] Serialize(Message obj)
         {
-            using (var writer = new MemoryStream())
+            using (var memStream = new MemoryStream())
             {
-                var xml = new XmlSerializer(typeof(Message));
+                XmlSerializer serializer = _serializers[obj.MessageType];
 
                 XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
                 namespaces.Add("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
-                xml.Serialize(writer, obj, namespaces);
-                return writer.ToArray();
+                serializer.Serialize(memStream, obj, namespaces);
+                return memStream.ToArray();
             }
         }
 

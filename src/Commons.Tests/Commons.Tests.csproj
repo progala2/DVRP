@@ -52,11 +52,11 @@
     <Compile Include="MessageSenderTests.cs" />
     <Compile Include="TcpClientTests.cs" />
     <Compile Include="Tools\XmlFileParser.cs" />
-    <Compile Include="MessageSerializerTests.cs" />
     <Compile Include="MarshallerTests.cs" />
     <Compile Include="ComputationalComponentTests.cs" />
     <Compile Include="TaskSolversLoaderTests.cs" />
     <Compile Include="DeserializationTests.cs" />
+    <Compile Include="SerializationTests.cs" />
     <Compile Include="XmlMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
