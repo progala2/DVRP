@@ -43,13 +43,13 @@
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Messaging\Base\IMarshaller.cs" />
     <Compile Include="Messaging\Base\ISerializer.cs" />
-    <Compile Include="Messaging\Base\IValidator.cs" />
+    <Compile Include="Messaging\Base\IXmlValidator.cs" />
     <Compile Include="Messaging\MessageExceptionEventArgs.cs" />
     <Compile Include="Exceptions\NoResponseException.cs" />
     <Compile Include="IpEndPointParser.cs" />
     <Compile Include="Messaging\MessageEventArgs.cs" />
     <Compile Include="Messaging\MessageSender.cs" />
-    <Compile Include="Messaging\MessageValidator.cs" />
+    <Compile Include="Messaging\Validator.cs" />
     <Compile Include="Messaging\MessageClass.cs" />
     <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
     <Compile Include="Messaging\Models\Base\Message.cs" />

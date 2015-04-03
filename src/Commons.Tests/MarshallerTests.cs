@@ -15,6 +15,10 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void TestUnmarshall()
         {
+            var validator = new Validator();
+            var serializer = new MessageSerializer();
+            var marshaller = new Marshaller(serializer, validator);
+
             using (var noOperationStreamReader = new StreamReader("XmlMessages/NoOperation.xml", Encoding.UTF8))
             using (var statusStreamReader = new StreamReader("XmlMessages/Status.xml", Encoding.UTF8))
             {
@@ -28,7 +32,7 @@ namespace _15pl04.Ucc.Commons.Tests
                 buffer[noOperationMessageBytes.Length] = 23;
                 Buffer.BlockCopy(statusMessageBytes, 0, buffer, noOperationMessageBytes.Length + 1, statusMessageBytes.Length);
 
-                var messages = (new MessageMarshaller()).Unmarshall(buffer);
+                var messages = marshaller.Unmarshall(buffer);
                 Assert.IsTrue(messages.Length == 2);
             }
         }
@@ -36,6 +40,10 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void TestMarshall()
         {
+            var validator = new Validator();
+            var serializer = new MessageSerializer();
+            var marshaller = new Marshaller(serializer, validator);
+
             Message[] tstClass =
             {
                 new SolutionRequestMessage { ProblemInstanceId = 2 }, 
@@ -58,7 +66,7 @@ namespace _15pl04.Ucc.Commons.Tests
                     ProblemType = "ss"
                 }
             };
-            var data = (new MessageMarshaller()).Marshall(tstClass);
+            var data = marshaller.Marshall(tstClass);
             Assert.IsTrue(data.Count(i => i == 23) == 2);
             var str = Encoding.UTF8.GetString(data);
             Assert.IsTrue(str.Contains("SolutionRequest"));
@@ -69,6 +77,11 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void TestMarshallAndUnMarshall()
         {
+            var validator = new Validator();
+            var serializer = new MessageSerializer();
+            var marshaller = new Marshaller(serializer, validator);
+
+
             Message[] tstClass =
             {
                 new SolutionRequestMessage { ProblemInstanceId = 2 }, 
@@ -147,8 +160,8 @@ namespace _15pl04.Ucc.Commons.Tests
                     }
                 }
             };
-            var data = (new MessageMarshaller()).Marshall(tstClass);
-            (new MessageMarshaller()).Unmarshall(data);
+            var data = marshaller.Marshall(tstClass);
+            marshaller.Unmarshall(data);
         }
     }
 }

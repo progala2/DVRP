@@ -5,46 +5,51 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Xml;
+using System.Xml.Linq;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
-    public class MessageMarshaller : IMarshaller<Message>
+    public class Marshaller : IMarshaller<Message>
     {
+        private ISerializer<Message> _serializer;
+        private IXmlValidator<MessageClass> _validator;
         
 
-        public Message[] Unmarshall(byte[] data)
+        public Marshaller(ISerializer<Message> serializer, IXmlValidator<MessageClass> validator)
         {
-            var listOfMessages = new List<Message>();
+            _serializer = serializer;
+            _validator = validator;
+        }
 
-            var separatorsPositions = new List<int>();
-            for (int i = 0; i < data.Length; i++)
+        public Message[] Unmarshall(byte[] rawData)
+        {
+            if (rawData == null)
+                throw new ArgumentNullException();
+
+            var outputMessages = new List<Message>();
+
+            var separatorIndices = new List<int>();
+            for (int i = 0; i < rawData.Length; i++)
+                if (rawData[i] == 23)
+                    separatorIndices.Add(i);
+            separatorIndices.Add(rawData.Length);
+
+            for (int i = 0, begin = 0; i < separatorIndices.Count; i++)
             {
-                if (data[i] == 23)
-                {
-                    separatorsPositions.Add(i);
-                }
-            }
-            separatorsPositions.Add(data.Length);
+                // Validation - might not be necessary. 
+                string xmlString = Encoding.UTF8.GetString(rawData, begin, separatorIndices[i] - begin);
+                XDocument xmlDoc = XDocument.Parse(xmlString);
+                MessageClass msgClass = Message.GetMessageClassFromString(xmlDoc.Root.ToString());
+                _validator.Validate(msgClass, xmlDoc);
 
-            for (int i = 0, begin = 0; i < separatorsPositions.Count; i++)
-            {
-                var str = Encoding.UTF8.GetString(data, begin, separatorsPositions[i] - begin);
+                // Deserialization
+                Message message = _serializer.Deserialize(rawData, begin, separatorIndices[i] - begin);
+                outputMessages.Add(message);
 
-                var doc = new XmlDocument();
-                doc.LoadXml(str);
-                if (doc.DocumentElement == null)
-                    throw new Exception("Invalid Message Data");
-                var type = Message.GetMessageClassFromString(doc.DocumentElement.Name);
-
-                MessageValidator.Validate(str, type);
-                var message = MessageSerializer.Deserialize(data, begin, separatorsPositions[i] - begin, type);
-                listOfMessages.Add(message);
-
-                begin = separatorsPositions[i] + 1;
+                begin = separatorIndices[i] + 1;
             }
 
-            return listOfMessages.ToArray();
+            return outputMessages.ToArray();
         }
 
         public byte[] Marshall(Message[] messages)
@@ -61,7 +66,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                     for (int i = 0; i < messages.Length; ++i)
                     {
                         type = messages[i].MessageType;
-                        MessageSerializer.Serialize(messages[i], type, out data);
+                        data = _serializer.Serialize(messages[i]);
                         memStream.Write(data, 0, data.Length);
 
                         if (i != messages.Length - 1)

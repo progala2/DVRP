@@ -1,8 +1,8 @@
 ﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
@@ -28,6 +28,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             return _messageTypes[str];
         }
+
+        
 
         public override string ToString()
         {

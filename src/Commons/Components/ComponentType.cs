@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons

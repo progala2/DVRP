@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Text;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
@@ -49,5 +50,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
             return builder.ToString();
         }
+
+        
     }
 }

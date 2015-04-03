@@ -16,7 +16,9 @@ namespace _15pl04.Ucc.CommunicationServer
         {
             Config = config;
 
-            var marshaller = new MessageMarshaller();
+            var validator = new Validator();
+            var serializer = new MessageSerializer();
+            var marshaller = new Marshaller(serializer, validator);
 
             _messageProcessor = new MessageProcessor(marshaller, config.CommunicationTimeout);
             _tcpServer = new AsyncTcpServer(config, _messageProcessor);

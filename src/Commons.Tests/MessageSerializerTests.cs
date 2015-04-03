@@ -13,13 +13,15 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void TestDeserialise()
         {
+            var serializer = new MessageSerializer();
+
             var ns = XNamespace.Get("http://www.mini.pw.edu.pl/ucc/");
             var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
             var root = new XElement(ns + "SolutionRequest", new XElement(ns + "Id", "2"));
             doc.Add(root);
 
             var str = doc.ToString();
-            var tstClass = MessageSerializer.Deserialize(Encoding.UTF8.GetBytes(str), MessageClass.SolutionRequest);
+            var tstClass = serializer.Deserialize(Encoding.UTF8.GetBytes(str));
             var solutionRequestMessage = tstClass as SolutionRequestMessage;
             Assert.IsTrue(solutionRequestMessage != null); 
             Assert.IsTrue(2 == solutionRequestMessage.ProblemInstanceId);
@@ -28,6 +30,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void TestSerialise()
         {
+            var serializer = new MessageSerializer();
+
              var doc1 = new XDocument(
                  new XElement("SolutionRequest",
                      new XElement("Id", "2")
@@ -36,7 +40,7 @@ namespace _15pl04.Ucc.Commons.Tests
              var tmp = doc1.ToString();
              byte[] buffer;
              var tstClass = new SolutionRequestMessage { ProblemInstanceId = 2 };
-             MessageSerializer.Serialize(tstClass, MessageClass.SolutionRequest, out buffer);
+             buffer = serializer.Serialize(tstClass);
              var str = Encoding.UTF8.GetString(buffer);
              Assert.AreEqual(tmp.Contains("<Id>"), str.Contains("<Id>"));
         }

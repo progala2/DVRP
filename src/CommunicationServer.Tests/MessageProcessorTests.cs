@@ -12,11 +12,15 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
     public class MessageProcessorTests
     {
         private MessageProcessor _processor;
-        private MessageMarshaller _marshaller;
+        private Marshaller _marshaller;
 
         public MessageProcessorTests()
         {
-            _marshaller = new MessageMarshaller();
+
+            var validator = new Validator();
+            var serializer = new MessageSerializer();
+            _marshaller = new Marshaller(serializer, validator);
+
             _processor = new MessageProcessor(_marshaller, 10000);
         }
 

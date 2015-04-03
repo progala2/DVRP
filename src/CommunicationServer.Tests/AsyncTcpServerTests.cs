@@ -22,9 +22,19 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         private const int Port = 9123;
         private const int BufferSize = 2048;
         private AsyncTcpServer _tcpServer;
-        private readonly MessageMarshaller _marshaller = new MessageMarshaller();
+        private readonly Marshaller _marshaller;
         private Socket _socket;
         private ServerConfig _config;
+
+
+        public AsyncTcpServerTests()
+        {
+
+            var validator = new Validator();
+            var serializer = new MessageSerializer();
+            _marshaller = new Marshaller(serializer, validator);
+        }
+
 
         [TestMethod]
         public void AsyncTcpServerForwardsStatusMessageAndReceivesErrorMessage()
@@ -127,6 +137,11 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
         private void Init()
         {
+
+            var validator = new Validator();
+            var serializer = new MessageSerializer();
+            var marshaller = new Marshaller(serializer, validator);
+
             _config = new ServerConfig(null)
             {
                 Address = new IPEndPoint(TestIp, Port),
@@ -134,7 +149,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                 CommunicationTimeout = 10
             } ;
 
-            _tcpServer = new AsyncTcpServer(_config, new MessageProcessor(new MessageMarshaller(), _config.CommunicationTimeout));
+            _tcpServer = new AsyncTcpServer(_config, new MessageProcessor(marshaller, _config.CommunicationTimeout));
             
             new Thread(_tcpServer.StartListening).Start();
         }

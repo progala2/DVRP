@@ -90,19 +90,26 @@ namespace _15pl04.Ucc.Commons.Tests
 
         private bool Validate(string xmlFilePath, MessageClass typeOfMessageToValidateWith)
         {
-            using (var reader = new StreamReader(xmlFilePath, Encoding.UTF8))
-            {
-                var fileContent = reader.ReadToEnd();
-                try
-                {
-                    MessageValidator.Validate(fileContent, typeOfMessageToValidateWith);
-                    return true;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            }
+            var validator = new Validator();
+
+            return false;
+
+            //using (var reader = new StreamReader(xmlFilePath, Encoding.UTF8))
+            //{
+            //    var fileContent = reader.ReadToEnd();
+            //    try
+            //    {
+
+            //        validator.Validate(fileContent, typeOfMessageToValidateWith);
+            //        return true;
+            //    }
+            //    catch (Exception)
+            //    {
+            //        return false;
+            //    }
+            //}
+
+            
         }
     }
 }
