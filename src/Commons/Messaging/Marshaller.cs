@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                 // Validation - might not be necessary. 
                 string xmlString = Encoding.UTF8.GetString(rawData, begin, separatorIndices[i] - begin);
                 XDocument xmlDoc = XDocument.Parse(xmlString);
-                MessageClass msgClass = Message.GetMessageClassFromString(xmlDoc.Root.ToString());
+                MessageClass msgClass = Message.GetMessageClassFromString(xmlDoc.Root.Name.LocalName);
                 _validator.Validate(msgClass, xmlDoc);
 
                 // Deserialization

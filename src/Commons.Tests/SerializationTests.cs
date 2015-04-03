@@ -2,6 +2,7 @@
 using _15pl04.Ucc.Commons.Messaging.Base;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.Text;
 
 namespace _15pl04.Ucc.Commons.Tests
@@ -49,6 +50,179 @@ namespace _15pl04.Ucc.Commons.Tests
             Assert.IsInstanceOfType(deserializedMessage, typeof(ErrorMessage));
         }
 
-        // TODO rest of messages
+        [TestMethod]
+        public void NoOperationMessageXmlIsProperlySerializedAndDeserialized()
+        {
+            var message = new NoOperationMessage()
+            {
+                BackupServers = new List<ServerInfo>(),
+            };
+
+            byte[] serializedMessage = _serializer.Serialize(message);
+            Message deserializedMessage = _serializer.Deserialize(serializedMessage);
+
+            Assert.IsInstanceOfType(deserializedMessage, typeof(NoOperationMessage));
+        }
+
+        [TestMethod]
+        public void PartialProblemsMessageXmlIsProperlySerializedAndDeserialized()
+        {
+            PartialProblem pp = new PartialProblem()
+            {
+                Data = new byte[] { 1, 2, 3 },
+                NodeId = 5,
+                PartialProblemId = 10,
+            };
+
+            var message = new PartialProblemsMessage()
+            {
+                CommonData = new byte[] { 1, 2, 3, 4, 5 },
+                PartialProblems = new List<PartialProblem>() { pp },
+                ProblemInstanceId = 15,
+                ProblemType = "Dvrp",
+                SolvingTimeout = 20,
+            };
+
+            byte[] serializedMessage = _serializer.Serialize(message);
+            Message deserializedMessage = _serializer.Deserialize(serializedMessage);
+
+            Assert.IsInstanceOfType(deserializedMessage, typeof(PartialProblemsMessage));
+        }
+
+        [TestMethod]
+        public void RegisterMessageXmlIsProperlySerializedAndDeserialized()
+        {
+            var message = new RegisterMessage()
+            {
+                ComponentType = ComponentType.ComputationalNode,
+                Deregistration = true,
+                IdToDeregister = 5,
+                ParallelThreads = 10,
+                SolvableProblems = new List<string>() { "Dvrp" },
+            };
+
+            byte[] serializedMessage = _serializer.Serialize(message);
+            Message deserializedMessage = _serializer.Deserialize(serializedMessage);
+
+            Assert.IsInstanceOfType(deserializedMessage, typeof(RegisterMessage));
+        }
+
+        [TestMethod]
+        public void RegisterResponseMessageXmlIsProperlySerializedAndDeserialized()
+        {
+            var si = new ServerInfo()
+            {
+                IpAddress = "192.168.1.0",
+                Port = 9001,
+            };
+
+            var message = new RegisterResponseMessage()
+            {
+                AssignedId = 5,
+                BackupServers = new List<ServerInfo>() { si },
+                CommunicationTimeout = 50,
+            };
+
+            byte[] serializedMessage = _serializer.Serialize(message);
+            Message deserializedMessage = _serializer.Deserialize(serializedMessage);
+
+            Assert.IsInstanceOfType(deserializedMessage, typeof(RegisterResponseMessage));
+        }
+
+        [TestMethod]
+        public void SolutionRequestMessageXmlIsProperlySerializedAndDeserialized()
+        {
+            var message = new SolutionRequestMessage()
+            {
+                ProblemInstanceId = 5,
+            };
+
+            byte[] serializedMessage = _serializer.Serialize(message);
+            Message deserializedMessage = _serializer.Deserialize(serializedMessage);
+
+            Assert.IsInstanceOfType(deserializedMessage, typeof(SolutionRequestMessage));
+        }
+
+        [TestMethod]
+        public void SolutionsMessageXmlIsProperlySerializedAndDeserialized()
+        {
+            var s = new Solution()
+            {
+                ComputationsTime = 5,
+                Data = new byte[] { 1, 2, 3 },
+                PartialProblemId = 10,
+                TimeoutOccured = true,
+                Type = Solution.SolutionType.Final
+            };
+
+            var message = new SolutionsMessage()
+            {
+                CommonData = new byte[] { 1, 2, 3 },
+                ProblemInstanceId = 5,
+                ProblemType = "Dvrp",
+                Solutions = new List<Solution>() { s },
+            };
+
+            byte[] serializedMessage = _serializer.Serialize(message);
+            Message deserializedMessage = _serializer.Deserialize(serializedMessage);
+
+            Assert.IsInstanceOfType(deserializedMessage, typeof(SolutionsMessage));
+        }
+
+        [TestMethod]
+        public void SolveRequestMessageXmlIsProperlySerializedAndDeserialized()
+        {
+            var message = new SolveRequestMessage()
+            {
+                ProblemData = new byte[] { 1,2,3},
+                ProblemInstanceId = 5,
+                ProblemType = "Dvrp",
+                SolvingTimeout = 50,
+            };
+
+            byte[] serializedMessage = _serializer.Serialize(message);
+            Message deserializedMessage = _serializer.Deserialize(serializedMessage);
+
+            Assert.IsInstanceOfType(deserializedMessage, typeof(SolveRequestMessage));
+        }
+
+        [TestMethod]
+        public void SolveRequestResponseMessageXmlIsProperlySerializedAndDeserialized()
+        {
+            var message = new SolveRequestResponseMessage()
+            {
+                AssignedId = 5,
+            };
+
+            byte[] serializedMessage = _serializer.Serialize(message);
+            Message deserializedMessage = _serializer.Deserialize(serializedMessage);
+
+            Assert.IsInstanceOfType(deserializedMessage, typeof(SolveRequestResponseMessage));
+        }
+
+        [TestMethod]
+        public void StatusMessageXmlIsProperlySerializedAndDeserialized()
+        {
+            var ts = new ThreadStatus()
+            {
+                PartialProblemId = 5,
+                ProblemInstanceId = 10,
+                ProblemType = "Dvrp",
+                State = ThreadStatus.ThreadState.Busy,
+                TimeInThisState = 50,
+            };
+
+            var message = new StatusMessage()
+            {
+                ComponentId = 5,
+                Threads = new List<ThreadStatus>() { ts},
+            };
+
+            byte[] serializedMessage = _serializer.Serialize(message);
+            Message deserializedMessage = _serializer.Deserialize(serializedMessage);
+
+            Assert.IsInstanceOfType(deserializedMessage, typeof(StatusMessage));
+        }
+
     }
 }

@@ -51,7 +51,6 @@
     <Compile Include="MessageSenderTests.cs" />
     <Compile Include="TcpClientTests.cs" />
     <Compile Include="Tools\XmlFileParser.cs" />
-    <Compile Include="MarshallerTests.cs" />
     <Compile Include="ComputationalComponentTests.cs" />
     <Compile Include="TaskSolversLoaderTests.cs" />
     <Compile Include="DeserializationTests.cs" />
