@@ -22,6 +22,8 @@ namespace _15pl04.Ucc.Commons.Messaging
             foreach (MessageClass type in Enum.GetValues(typeof(MessageClass)).Cast<MessageClass>())
             {
                 XmlReader reader = XmlReader.Create(new StringReader(type.GetXmlSchema()));
+
+                _schemaSets.Add(type, new XmlSchemaSet());
                 _schemaSets[type].Add("http://www.mini.pw.edu.pl/ucc/", reader);
             }
         }

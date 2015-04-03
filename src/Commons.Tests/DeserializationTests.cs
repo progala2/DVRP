@@ -1,4 +1,5 @@
 ﻿using _15pl04.Ucc.Commons.Messaging;
+using _15pl04.Ucc.Commons.Messaging.Base;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text;
@@ -8,7 +9,7 @@ namespace _15pl04.Ucc.Commons.Tests
     [TestClass]
     public class DeserializationTests
     {
-        private MessageSerializer _serializer;
+        private ISerializer<Message> _serializer;
 
         public DeserializationTests()
         {
