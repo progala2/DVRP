@@ -1,7 +1,10 @@
-﻿using _15pl04.Ucc.CommunicationServer.Components.Base;
-using System;
+﻿using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Utilities;
+using _15pl04.Ucc.CommunicationServer.Components.Base;
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,7 +20,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             get { return _isMonitoring; }
         }
 
-        private ConcurrentDictionary<ulong, Component> _registeredComponents;
+        private ConcurrentDictionary<ulong, ComponentInfo> _registeredComponents;
         private Random _random;
 
         private ulong _communicationTimeout;
@@ -29,7 +32,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
 
         public ComponentOverseer(ulong communicationTimeout, int checkInterval)
         {
-            _registeredComponents = new ConcurrentDictionary<ulong, Component>();
+            _registeredComponents = new ConcurrentDictionary<ulong, ComponentInfo>();
             _random = new Random();
 
             _communicationTimeout = communicationTimeout;
@@ -37,20 +40,25 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         }
 
 
-        public bool TryRegister(Component component)
+        public bool TryRegister(ComponentInfo component)
         {
+            if (component.ComponentId != null)
+                throw new Exception("Registering component with id already assigned.");
+
             ulong id;
             do
             {
                 id = _random.NextUInt64();
             } while (!_registeredComponents.TryAdd(id, component));
 
+            component.AssignId(id);
+
             return true;
         }
 
         public bool TryDeregister(ulong componentId)
         {
-            Component deregisteredComponent;
+            ComponentInfo deregisteredComponent;
             if (_registeredComponents.TryRemove(componentId, out deregisteredComponent))
             {
                 if (Deregistration != null)
@@ -123,6 +131,23 @@ namespace _15pl04.Ucc.CommunicationServer.Components
                 return;
 
             _cancellationTokenSource.Cancel();
+        }
+
+        public ICollection<ComponentInfo> GetComponents(ComponentType type)
+        {
+            var backups = from ComponentInfo c in _registeredComponents.Values
+                          where c.ComponentType == type
+                          select c;
+
+            return (ICollection<ComponentInfo>)backups;
+        }
+
+        public ComponentInfo GetComponent(ulong componentId)
+        {
+            if (!_registeredComponents.ContainsKey(componentId))
+                throw new ArgumentException("No component info for specified id exists.");
+
+            return _registeredComponents[componentId];
         }
     }
 }

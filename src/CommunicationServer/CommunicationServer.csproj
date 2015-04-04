@@ -34,9 +34,11 @@
   <ItemGroup>
     <Compile Include="Collections\RawDataQueue.cs" />
     <Compile Include="CommunicationServer.cs" />
-    <Compile Include="Components\Base\Component.cs" />
+    <Compile Include="Components\BackupServerInfo.cs" />
+    <Compile Include="Components\Base\ComponentInfo.cs" />
     <Compile Include="Components\Base\IComponentOverseer.cs" />
     <Compile Include="Components\ComponentOverseer.cs" />
+    <Compile Include="Components\SolvingNodeInfo.cs" />
     <Compile Include="Messaging\Base\IDataProcessor.cs" />
     <Compile Include="Messaging\MessageProcessor.cs" />
     <Compile Include="Program.cs" />
