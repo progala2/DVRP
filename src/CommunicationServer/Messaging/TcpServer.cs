@@ -10,16 +10,16 @@ using _15pl04.Ucc.CommunicationServer.Messaging.Base;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
-    internal class AsyncTcpServer
+    internal class TcpServer
     {
-        private IDataProcessor<IPEndPoint> _dataProcessor;
-        private EndPoint _address;
+        
 
+
+        private IDataProcessor _dataProcessor;
+        private EndPoint _address;
 
         private const int MaxPendingConnections = 100;
         private const int ReadBufferSize = 1024;
-
-        
 
         private readonly ManualResetEvent _allDoneEvent;
         private Socket _listenerSocket;
@@ -28,7 +28,7 @@ namespace _15pl04.Ucc.CommunicationServer
 
         public delegate void ResponseCallback(byte[] response);
 
-        public AsyncTcpServer(IPEndPoint address, IDataProcessor<IPEndPoint> processor)
+        public TcpServer(IPEndPoint address, IDataProcessor processor)
         {
             _dataProcessor = processor;
             _address = address;
@@ -115,8 +115,19 @@ namespace _15pl04.Ucc.CommunicationServer
                     memStream.Write(buffer, 0, bytesRead);
 
                 } while (bytesRead > 0);
-                _dataProcessor.EnqueueDataToProcess(memStream.ToArray(), (IPEndPoint)handlerSocket.RemoteEndPoint, GenerateResponseCallback(handlerSocket));
+
+
+
+                var metadata = new TcpProviderMetadata()
+                {
+                    ReceptionTime = DateTime.UtcNow,
+                    SenderAddress = (IPEndPoint)handlerSocket.RemoteEndPoint,
+                };
+
+                _dataProcessor.EnqueueDataToProcess(memStream.ToArray(), metadata, GenerateResponseCallback(handlerSocket));
             }
         }
+
+
     }
 }

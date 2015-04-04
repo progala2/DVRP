@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace _15pl04.Ucc.CommunicationServer.Components
 {
-    public class SolvingNodeInfo : ComponentInfo
+    public class SolverNodeInfo : ComponentInfo
     {
         public ICollection<string> SolvableProblems { get; private set; }
 
-        public SolvingNodeInfo(ComponentType type, ICollection<string> solvableProblems, byte numberOfThreads)
+        public SolverNodeInfo(ComponentType type, ICollection<string> solvableProblems, byte numberOfThreads)
             : base(type, numberOfThreads)
         {
             if (type != ComponentType.ComputationalNode && type != ComponentType.TaskManager)

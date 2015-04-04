@@ -3,20 +3,18 @@ using System.Collections.Concurrent;
 
 namespace _15pl04.Ucc.CommunicationServer.Collections
 {
-    public class RawDataQueueItem<T>
-        where T : class
+    public class RawDataQueueItem
     {
         public byte[] Data { get; set; }
-        public T Metadata { get; set; }
+        public Metadata Metadata { get; set; }
         public ProcessedDataCallback Callback { get; set; }
     }
 
-    public class RawDataQueue<T> : ConcurrentQueue<RawDataQueueItem<T>>
-        where T : class
+    public class RawDataQueue : ConcurrentQueue<RawDataQueueItem>
     {
-        public bool TryDequeue(out byte[] data, out T metadata, out ProcessedDataCallback callback)
+        public bool TryDequeue(out byte[] data, out Metadata metadata, out ProcessedDataCallback callback)
         {
-            RawDataQueueItem<T> item;
+            RawDataQueueItem item;
 
             if (TryDequeue(out item))
             {
@@ -36,9 +34,9 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
             }
         }
 
-        public void Enqueue(byte[] data, T metadata, ProcessedDataCallback callback)
+        public void Enqueue(byte[] data, Metadata metadata, ProcessedDataCallback callback)
         {
-            var item = new RawDataQueueItem<T>
+            var item = new RawDataQueueItem()
             {
                 Data = data,
                 Metadata = metadata,

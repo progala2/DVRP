@@ -135,11 +135,11 @@ namespace _15pl04.Ucc.CommunicationServer.Components
 
         public ICollection<ComponentInfo> GetComponents(ComponentType type)
         {
-            var backups = from ComponentInfo c in _registeredComponents.Values
+            var components = from ComponentInfo c in _registeredComponents.Values
                           where c.ComponentType == type
                           select c;
 
-            return (ICollection<ComponentInfo>)backups;
+            return (ICollection<ComponentInfo>)components;
         }
 
         public ComponentInfo GetComponent(ulong componentId)

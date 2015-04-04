@@ -38,13 +38,14 @@
     <Compile Include="Components\Base\ComponentInfo.cs" />
     <Compile Include="Components\Base\IComponentOverseer.cs" />
     <Compile Include="Components\ComponentOverseer.cs" />
-    <Compile Include="Components\SolvingNodeInfo.cs" />
+    <Compile Include="Components\SolverNodeInfo.cs" />
     <Compile Include="Messaging\Base\IDataProcessor.cs" />
+    <Compile Include="Messaging\TcpProviderMetadata.cs" />
     <Compile Include="Messaging\MessageProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerConfig.cs" />
-    <Compile Include="Messaging\AsyncTcpServer.cs" />
+    <Compile Include="Messaging\TcpServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

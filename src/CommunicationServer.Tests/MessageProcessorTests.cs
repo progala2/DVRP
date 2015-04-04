@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             };
 
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
-            AsyncTcpServer.ResponseCallback c = (byte[] r) => { callbackCalled = true; waitHandle.Set(); };
+            TcpServer.ResponseCallback c = (byte[] r) => { callbackCalled = true; waitHandle.Set(); };
             //_processor.EnqueueDataToProcess(rawMsg, null,c);
 
             waitHandle.WaitOne(5000);
@@ -62,7 +62,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
 
             Message outputMessage = null;
-            AsyncTcpServer.ResponseCallback c = (byte[] r) => {
+            TcpServer.ResponseCallback c = (byte[] r) => {
                 outputMessage = _marshaller.Unmarshall(r)[0];
                 waitHandle.Set(); 
             };
@@ -86,7 +86,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
 
             Message outputMessage = null;
-            AsyncTcpServer.ResponseCallback c = (byte[] r) =>
+            TcpServer.ResponseCallback c = (byte[] r) =>
             {
                 outputMessage = _marshaller.Unmarshall(r)[0];
                 waitHandle.Set();
@@ -111,7 +111,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
 
             Message outputMessage = null;
-            AsyncTcpServer.ResponseCallback c = (byte[] r) =>
+            TcpServer.ResponseCallback c = (byte[] r) =>
             {
                 outputMessage = _marshaller.Unmarshall(r)[0];
                 waitHandle.Set();
@@ -138,7 +138,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
 
             Message outputMessage = null;
-            AsyncTcpServer.ResponseCallback c = (byte[] r) =>
+            TcpServer.ResponseCallback c = (byte[] r) =>
             {
                 outputMessage = _marshaller.Unmarshall(r)[0];
                 waitHandle.Set();

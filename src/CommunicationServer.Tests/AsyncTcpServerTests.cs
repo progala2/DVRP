@@ -7,25 +7,40 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
     [TestClass]
     public class AsyncTcpServerTests
     {
-        private AsyncTcpServer _server;
+        private TcpServer _server;
         
 
         public AsyncTcpServerTests()
         {
             var address = new IPEndPoint(new IPAddress(new byte[]{127,0,0,1}), 9123);
 
-            _server = new AsyncTcpServer(address, new MockProcessor());
+            _server = new TcpServer(address, new MockProcessor());
 
             _server.StartListening();
 
 
         }
 
-        public class MockProcessor : IDataProcessor<IPEndPoint>
+        public class MockProcessor : IDataProcessor
         {
-            public void EnqueueDataToProcess(byte[] data, IPEndPoint metadata, ProcessedDataCallback callback)
+            public void EnqueueDataToProcess(byte[] data, Metadata metadata, ProcessedDataCallback callback)
             {
-                callback.Invoke(new byte[] { 1, 2, 3 });
+                throw new System.NotImplementedException();
+            }
+
+            public void StartProcessing()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public void StopProcessing()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public bool IsProcessing
+            {
+                get { throw new System.NotImplementedException(); }
             }
         }
 
