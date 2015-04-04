@@ -18,7 +18,7 @@ namespace _15pl04.Ucc.Commons
             _servers = new List<ServerInfo>();
             _tcpClient = new TcpClient(serverAddress);
 
-            var validator = new Validator();
+            var validator = new MessageValidator();
             var serializer = new MessageSerializer();
             _marshaller = new Marshaller(serializer, validator);
         }

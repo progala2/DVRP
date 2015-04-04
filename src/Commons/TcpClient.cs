@@ -9,13 +9,8 @@ namespace _15pl04.Ucc.Commons
 {
     public class TcpClient
     {
-        public IPEndPoint ServerAddress
-        {
-            get { return _serverAddress; }
-            set { _serverAddress = value; }
-        }
+        public IPEndPoint ServerAddress {get;set;}
 
-        private IPEndPoint _serverAddress;
 #if DEBUG
         private const int BufferSize = 8;
 #else
@@ -24,7 +19,7 @@ namespace _15pl04.Ucc.Commons
 
         public TcpClient(IPEndPoint serverAddress)
         {
-            _serverAddress = serverAddress;
+            ServerAddress = serverAddress;
         }
 
         /// <summary>
@@ -40,15 +35,15 @@ namespace _15pl04.Ucc.Commons
 
             try
             {
-                Socket socket = new Socket(_serverAddress.AddressFamily,
+                Socket socket = new Socket(ServerAddress.AddressFamily,
                     SocketType.Stream,
                     ProtocolType.Tcp);
 
                 try
                 {
-                    socket.Connect(_serverAddress);
+                    socket.Connect(ServerAddress);
 
-                    Debug.WriteLine("Socket connected to " + _serverAddress.ToString());
+                    Debug.WriteLine("Socket connected to " + ServerAddress.ToString());
 
                     socket.Send(data);
                     socket.Shutdown(SocketShutdown.Send);
@@ -72,7 +67,7 @@ namespace _15pl04.Ucc.Commons
                     switch (e.ErrorCode)
                     {
                         case 10060: //timeout
-                            throw new Commons.Exceptions.TimeoutException(_serverAddress.ToString(), e);
+                            throw new Commons.Exceptions.TimeoutException(ServerAddress.ToString(), e);
                         default:
                             throw;
                     }

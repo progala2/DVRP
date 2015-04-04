@@ -50,7 +50,5 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
             return builder.ToString();
         }
-
-        
     }
 }

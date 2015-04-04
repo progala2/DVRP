@@ -23,14 +23,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
                 _messageTypes.Add(type.ToString(), type);
         }
 
-
         public static MessageClass GetMessageClassFromString(string str)
         {
             return _messageTypes[str];
         }
-
         
-
         public override string ToString()
         {
             return "[" + MessageType.ToString() + "]";

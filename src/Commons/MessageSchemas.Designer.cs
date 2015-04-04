@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace _15pl04.Ucc.Commons.Messaging {
+namespace _15pl04.Ucc.Commons {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.Commons.Messaging {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("_15pl04.Ucc.Commons.Messaging.MessageSchemas", typeof(MessageSchemas).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("_15pl04.Ucc.Commons.MessageSchemas", typeof(MessageSchemas).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

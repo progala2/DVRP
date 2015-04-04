@@ -50,7 +50,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MessageSenderTests.cs" />
     <Compile Include="TcpClientTests.cs" />
-    <Compile Include="Tools\XmlFileParser.cs" />
     <Compile Include="ComputationalComponentTests.cs" />
     <Compile Include="TaskSolversLoaderTests.cs" />
     <Compile Include="DeserializationTests.cs" />
@@ -74,17 +73,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\DivideProblem.xml" />
-    <None Include="Resources\Error.xml" />
-    <None Include="Resources\NoOperation.xml" />
-    <None Include="Resources\PartialProblems.xml" />
-    <None Include="Resources\Register.xml" />
-    <None Include="Resources\RegisterResponse.xml" />
-    <None Include="Resources\SolutionRequest.xml" />
-    <None Include="Resources\Solutions.xml" />
-    <None Include="Resources\SolveRequest.xml" />
-    <None Include="Resources\SolveRequestResponse.xml" />
-    <None Include="Resources\Status.xml" />
     <None Include="Resources\XmlMessages\DivideProblem.xml" />
     <None Include="Resources\XmlMessages\Error.xml" />
     <None Include="Resources\XmlMessages\NoOperation.xml" />

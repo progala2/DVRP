@@ -21,48 +21,33 @@ namespace _15pl04.Ucc.Commons.Messaging.Models.Base
     {
         internal static string GetXmlSchema(this MessageClass msgClass)
         {
-            string schema;
-
             switch (msgClass)
             {
                 case MessageClass.DivideProblem:
-                    schema = MessageSchemas.DivideProblem;
-                    break;
+                    return MessageSchemas.DivideProblem;
                 case MessageClass.Error:
-                    schema = MessageSchemas.Error;
-                    break;
+                    return MessageSchemas.Error;
                 case MessageClass.NoOperation:
-                    schema = MessageSchemas.NoOperation;
-                    break;
+                    return MessageSchemas.NoOperation;
                 case MessageClass.SolvePartialProblems:
-                    schema = MessageSchemas.PartialProblems;
-                    break;
+                    return MessageSchemas.PartialProblems;
                 case MessageClass.Register:
-                    schema = MessageSchemas.Register;
-                    break;
+                    return MessageSchemas.Register;
                 case MessageClass.RegisterResponse:
-                    schema = MessageSchemas.RegisterResponse;
-                    break;
+                    return MessageSchemas.RegisterResponse;
                 case MessageClass.SolutionRequest:
-                    schema = MessageSchemas.SolutionRequest;
-                    break;
+                    return MessageSchemas.SolutionRequest;
                 case MessageClass.Solutions:
-                    schema = MessageSchemas.Solutions;
-                    break;
+                    return MessageSchemas.Solutions;
                 case MessageClass.SolveRequest:
-                    schema = MessageSchemas.SolveRequest;
-                    break;
+                    return MessageSchemas.SolveRequest;
                 case MessageClass.SolveRequestResponse:
-                    schema = MessageSchemas.SolveRequestResponse;
-                    break;
+                    return MessageSchemas.SolveRequestResponse;
                 case MessageClass.Status:
-                    schema = MessageSchemas.Status;
-                    break;
+                    return MessageSchemas.Status;
                 default:
                     throw new Exception("Message XML schema not found.");
             }
-
-            return schema;
         }
 
         public static Type GetMessageType(this MessageClass msgClass)

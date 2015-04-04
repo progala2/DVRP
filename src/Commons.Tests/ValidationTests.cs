@@ -13,7 +13,7 @@ namespace _15pl04.Ucc.Commons.Tests
 
         public ValidationTests()
         {
-            _validator = new Validator();
+            _validator = new MessageValidator();
         }
 
         [TestMethod]

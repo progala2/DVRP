@@ -17,11 +17,11 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         public MessageProcessorTests()
         {
 
-            var validator = new Validator();
+            var validator = new MessageValidator();
             var serializer = new MessageSerializer();
             _marshaller = new Marshaller(serializer, validator);
 
-            _processor = new MessageProcessor(_marshaller, 10000);
+            //_processor = new MessageProcessor(_marshaller, 10000);
         }
 
 
@@ -40,7 +40,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
             AsyncTcpServer.ResponseCallback c = (byte[] r) => { callbackCalled = true; waitHandle.Set(); };
-            _processor.EnqeueInputMessage(rawMsg, c);
+            //_processor.EnqueueDataToProcess(rawMsg, null,c);
 
             waitHandle.WaitOne(5000);
 
@@ -66,7 +66,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                 outputMessage = _marshaller.Unmarshall(r)[0];
                 waitHandle.Set(); 
             };
-            _processor.EnqeueInputMessage(rawMsg, c);
+            //_processor.EnqeueInputMessage(rawMsg, c);
 
             waitHandle.WaitOne(10000);
 
@@ -91,7 +91,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                 outputMessage = _marshaller.Unmarshall(r)[0];
                 waitHandle.Set();
             };
-            _processor.EnqeueInputMessage(rawMsg, c);
+            //_processor.EnqeueInputMessage(rawMsg, c);
 
             waitHandle.WaitOne(5000);
 
@@ -116,7 +116,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                 outputMessage = _marshaller.Unmarshall(r)[0];
                 waitHandle.Set();
             };
-            _processor.EnqeueInputMessage(rawMsg, c);
+            //_processor.EnqeueInputMessage(rawMsg, c);
 
             waitHandle.WaitOne(5000);
 
@@ -126,7 +126,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         [TestMethod]
         public void StatusMessageFromARegisteredComponentReturnsNoOperationIfThereAreNoTasksPending()
         {
-            ComponentMonitor.Instance.RegisterNode(Commons.ComponentType.TaskManager, 1, new string[]{"dvrp"});
+            //ComponentMonitor.Instance.RegisterNode(Commons.ComponentType.TaskManager, 1, new string[]{"dvrp"});
 
             var waitHandle = new AutoResetEvent(false);
 
@@ -143,7 +143,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                 outputMessage = _marshaller.Unmarshall(r)[0];
                 waitHandle.Set();
             };
-            _processor.EnqeueInputMessage(rawMsg, c);
+            //_processor.EnqeueInputMessage(rawMsg, c);
 
             waitHandle.WaitOne(5000);
 

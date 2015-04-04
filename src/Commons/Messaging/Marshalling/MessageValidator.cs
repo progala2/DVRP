@@ -10,11 +10,11 @@ using System.Xml.Schema;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
-    public class Validator : IXmlValidator<MessageClass>
+    public class MessageValidator : IXmlValidator<MessageClass>
     {
         private Dictionary<MessageClass, XmlSchemaSet> _schemaSets;
 
-        public Validator()
+        public MessageValidator()
         {
             int capacity = Enum.GetValues(typeof(MessageClass)).Length;
             _schemaSets = new Dictionary<MessageClass, XmlSchemaSet>(capacity);
