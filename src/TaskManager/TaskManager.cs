@@ -107,10 +107,10 @@ namespace _15pl04.Ucc.TaskManager
                 var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
                 var stop = DateTime.UtcNow;
 
-                var partialProblems = new List<PartialProblem>();
+                var partialProblems = new List<PartialProblemsMessage.PartialProblem>();
                 for (int i = 0; i < partialProblemsData.GetLength(0); i++)
                 {
-                    partialProblems.Add(new PartialProblem()
+                    partialProblems.Add(new PartialProblemsMessage.PartialProblem()
                     {
                         PartialProblemId = (ulong)i,
                         Data = partialProblemsData[i],

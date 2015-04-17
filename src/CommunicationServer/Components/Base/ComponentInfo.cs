@@ -14,7 +14,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
         /// <summary>
         /// Information provided by status messages. Do not rely on this data as different cluster implementations may implement these messages slightly differently.
         /// </summary>
-        public ICollection<ThreadStatus> ThreadInfo { get; set; }
+        public ICollection<StatusMessage.ThreadStatus> ThreadInfo { get; set; }
 
         public DateTime Timestamp { get; private set; }
         public ulong TimestampAge

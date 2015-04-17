@@ -67,7 +67,7 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void PartialProblemsMessageXmlIsProperlySerializedAndDeserialized()
         {
-            PartialProblem pp = new PartialProblem()
+            var pp = new PartialProblemsMessage.PartialProblem()
             {
                 Data = new byte[] { 1, 2, 3 },
                 TaskManagerId = 5,
@@ -77,7 +77,7 @@ namespace _15pl04.Ucc.Commons.Tests
             var message = new PartialProblemsMessage()
             {
                 CommonData = new byte[] { 1, 2, 3, 4, 5 },
-                PartialProblems = new List<PartialProblem>() { pp },
+                PartialProblems = new List<PartialProblemsMessage.PartialProblem>() { pp },
                 ProblemInstanceId = 15,
                 ProblemType = "Dvrp",
                 SolvingTimeout = 20,
@@ -146,13 +146,13 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void SolutionsMessageXmlIsProperlySerializedAndDeserialized()
         {
-            var s = new Solution()
+            var s = new SolutionsMessage.Solution()
             {
                 ComputationsTime = 5,
                 Data = new byte[] { 1, 2, 3 },
                 PartialProblemId = 10,
                 TimeoutOccured = true,
-                Type = Solution.SolutionType.Final
+                Type = SolutionsMessage.SolutionType.Final
             };
 
             var message = new SolutionsMessage()
@@ -160,7 +160,7 @@ namespace _15pl04.Ucc.Commons.Tests
                 CommonData = new byte[] { 1, 2, 3 },
                 ProblemInstanceId = 5,
                 ProblemType = "Dvrp",
-                Solutions = new List<Solution>() { s },
+                Solutions = new List<SolutionsMessage.Solution>() { s },
             };
 
             byte[] serializedMessage = _serializer.Serialize(message);
@@ -203,19 +203,19 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void StatusMessageXmlIsProperlySerializedAndDeserialized()
         {
-            var ts = new ThreadStatus()
+            var ts = new StatusMessage.ThreadStatus()
             {
                 PartialProblemId = 5,
                 ProblemInstanceId = 10,
                 ProblemType = "Dvrp",
-                State = ThreadStatus.ThreadState.Busy,
+                State = StatusMessage.ThreadStatus.ThreadState.Busy,
                 TimeInThisState = 50,
             };
 
             var message = new StatusMessage()
             {
                 ComponentId = 5,
-                Threads = new List<ThreadStatus>() { ts},
+                Threads = new List<StatusMessage.ThreadStatus>() { ts},
             };
 
             byte[] serializedMessage = _serializer.Serialize(message);

@@ -33,7 +33,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             Problem = problem;
         }
 
-        public override DivideProblemMessage CreateMessage()
+        public override Message CreateMessage()
         {
             if (!Problem.NumberOfParts.HasValue)
                 throw new InvalidOperationException("Target number of parts to divide into must be set.");

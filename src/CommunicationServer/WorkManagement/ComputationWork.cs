@@ -40,7 +40,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             PartialProblems = new List<PartialProblem>(partialProblems);
         }
 
-        public override PartialProblemsMessage CreateMessage()
+        public override Message CreateMessage()
         {
             var msgPartialProblems = new List<PartialProblemsMessage.PartialProblem>(PartialProblems.Count);
 

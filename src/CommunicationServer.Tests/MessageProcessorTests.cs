@@ -106,7 +106,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var msg = new StatusMessage()
             {
                 ComponentId = 5,
-                Threads = new List<ThreadStatus>(){new ThreadStatus() { ProblemType = "dvrp"}},                
+                Threads = new List<StatusMessage.ThreadStatus>() { new StatusMessage.ThreadStatus() { ProblemType = "dvrp" } },                
             };
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
 
@@ -133,7 +133,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var msg = new StatusMessage()
             {
                 ComponentId = 5,
-                Threads = new List<ThreadStatus>() { new ThreadStatus() { ProblemType = "dvrp" } },
+                Threads = new List<StatusMessage.ThreadStatus>() { new StatusMessage.ThreadStatus() { ProblemType = "dvrp" } },
             };
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
 

@@ -32,6 +32,7 @@
   <ItemGroup>
     <Compile Include="ColorfulConsole.cs" />
     <Compile Include="Components\ComponentType.cs" />
+    <Compile Include="Components\ServerInfo.cs" />
     <Compile Include="ComputationalComponent.cs" />
     <Compile Include="Computations\ComputationalTask.cs" />
     <Compile Include="MessageSchemas.Designer.cs">

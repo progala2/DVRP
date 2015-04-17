@@ -102,12 +102,12 @@ namespace _15pl04.Ucc.ComputationalNode
                     var partialProblemSolutionData = taskSolver.Solve(partialProblem.Data, timeout);
                     var stop = DateTime.UtcNow;
 
-                    var solutions = new List<Solution>();
-                    solutions.Add(new Solution()
+                    var solutions = new List<SolutionsMessage.Solution>();
+                    solutions.Add(new SolutionsMessage.Solution()
                     {
                         PartialProblemId = partialProblem.PartialProblemId,
                         TimeoutOccured = taskSolver.State == TaskSolver.TaskSolverState.Timeout,
-                        Type = Solution.SolutionType.Partial,
+                        Type = SolutionsMessage.SolutionType.Partial,
                         ComputationsTime = (ulong)(stop - start).TotalMilliseconds,
                         Data = partialProblemSolutionData,
                     });
