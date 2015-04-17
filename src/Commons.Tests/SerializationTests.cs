@@ -23,7 +23,7 @@ namespace _15pl04.Ucc.Commons.Tests
             var message = new DivideProblemMessage()
             {
                 ComputationalNodes = 5,
-                NodeId = 10,
+                TaskManagerId = 10,
                 ProblemData = new byte[] { 1, 2, 3, 4, 5 },
                 ProblemInstanceId = 15,
                 ProblemType = "Dvrp",
@@ -70,7 +70,7 @@ namespace _15pl04.Ucc.Commons.Tests
             PartialProblem pp = new PartialProblem()
             {
                 Data = new byte[] { 1, 2, 3 },
-                NodeId = 5,
+                TaskManagerId = 5,
                 PartialProblemId = 10,
             };
 

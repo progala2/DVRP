@@ -13,8 +13,66 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Solutions")]
     public class SolutionsMessage : Message
     {
+        [Serializable]
+        [DesignerCategory("code")]
+        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+        public class Solution
+        {
+            [XmlElement(Order = 0, ElementName = "TaskId")]
+            public ulong? PartialProblemId { get; set; }
+
+            [XmlElement(Order = 1)]
+            public bool TimeoutOccured { get; set; }
+
+            [XmlElement(Order = 2)]
+            public SolutionType Type { get; set; }
+
+            [XmlElement(Order = 3)]
+            public ulong ComputationsTime { get; set; }
+
+            [XmlElement(Order = 4, DataType = "base64Binary")]
+            public byte[] Data { get; set; }
+
+            public bool ShouldSerializePartialProblemId()
+            {
+                return PartialProblemId.HasValue;
+            }
+
+            public bool ShouldSerializeData()
+            {
+                return Data != null;
+            }
+
+            public override string ToString()
+            {
+                var builder = new StringBuilder();
+
+                builder.Append("Type(" + Type.ToString() + ")");
+
+                if (PartialProblemId.HasValue)
+                    builder.Append(" Id(" + PartialProblemId + ")");
+
+                builder.Append(" TimeoutOccured(" + TimeoutOccured + ")");
+                builder.Append(" ComputationsTime(" + ComputationsTime + ")");
+
+                return builder.ToString();
+            }
+        }
+
+        [Serializable]
+        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+        public enum SolutionType
+        {
+            Ongoing,
+            Partial,
+            Final
+        }
+
+
+
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "Solutions.xsd";
+
 
 
         [XmlElement(Order = 0)]
@@ -35,6 +93,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClass.Solutions; }
         }
+
 
 
         public SolutionsMessage()

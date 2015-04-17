@@ -16,6 +16,30 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string noNamespaceSchemaLocation = "PartialProblems.xsd";
 
+        [Serializable]
+        [DesignerCategory("code")]
+        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+        public class PartialProblem
+        {
+            [XmlElement(ElementName = "TaskId", Order = 0)]
+            public ulong PartialProblemId { get; set; }
+
+            [XmlElement(DataType = "base64Binary", Order = 1)]
+            public byte[] Data { get; set; }
+
+            [XmlElement(ElementName = "NodeID", Order = 2)]
+            public ulong TaskManagerId { get; set; }
+
+            public override string ToString()
+            {
+                var builder = new StringBuilder();
+
+                builder.Append("Id(" + PartialProblemId + ")");
+                builder.Append(" TaskManagerId(" + TaskManagerId + ")");
+
+                return builder.ToString();
+            }
+        }
 
         [XmlElement(Order = 0)]
         public string ProblemType { get; set; }

@@ -31,22 +31,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ColorfulConsole.cs" />
-    <Compile Include="Components\ServerInfo.cs" />
     <Compile Include="Components\ComponentType.cs" />
-    <Compile Include="Components\PartialProblem.cs" />
-    <Compile Include="Components\Solution.cs" />
-    <Compile Include="Components\ThreadStatus.cs" />
     <Compile Include="ComputationalComponent.cs" />
     <Compile Include="Computations\ComputationalTask.cs" />
-    <Compile Include="TaskSolverLoader.cs" />
-    <Compile Include="Utilities\IPEndPointParser.cs" />
-    <Compile Include="Logging\ConsoleLogger.cs" />
-    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="MessageSchemas.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MessageSchemas.resx</DependentUpon>
     </Compile>
+    <Compile Include="TaskSolverLoader.cs" />
+    <Compile Include="Utilities\IPEndPointParser.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Messaging\Marshalling\Base\IMarshaller.cs" />
     <Compile Include="Messaging\Marshalling\Base\ISerializer.cs" />
     <Compile Include="Messaging\Marshalling\Base\IXmlValidator.cs" />

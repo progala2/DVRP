@@ -14,7 +14,6 @@ namespace _15pl04.Ucc.CommunicationServer.Components
     {
         public event DeregisterationEventHandler Deregistration;
 
-
         public bool IsMonitoring
         {
             get { return _isMonitoring; }
@@ -38,7 +37,6 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             _communicationTimeout = communicationTimeout;
             _checkInterval = checkInterval;
         }
-
 
         public bool TryRegister(ComponentInfo component)
         {

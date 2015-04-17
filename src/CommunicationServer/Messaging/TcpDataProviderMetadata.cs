@@ -3,7 +3,7 @@ using System.Net;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
-    public class TcpProviderMetadata : Metadata
+    public class TcpDataProviderMetadata : Metadata
     {
         public IPEndPoint SenderAddress { get; set; }
     }

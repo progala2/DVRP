@@ -30,7 +30,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public ulong ComputationalNodes { get; set; }
 
         [XmlElement(Order = 4, ElementName = "NodeID")]
-        public ulong NodeId { get; set; }
+        public ulong TaskManagerId { get; set; }
 
         [XmlIgnore]
         public override MessageClass MessageType
@@ -45,7 +45,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
             builder.Append(" ProblemId(" + ProblemInstanceId + ")");
             builder.Append(" ProblemType(" + ProblemType + ")");
-            builder.Append(" NodeId(" + NodeId + ")");
+            builder.Append(" NodeId(" + TaskManagerId + ")");
             builder.Append(" CompNodes(" + ComputationalNodes + ")");
 
             return builder.ToString();

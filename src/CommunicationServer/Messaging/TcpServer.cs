@@ -12,9 +12,6 @@ namespace _15pl04.Ucc.CommunicationServer
 {
     internal class TcpServer
     {
-        
-
-
         private IDataProcessor _dataProcessor;
         private EndPoint _address;
 
@@ -118,7 +115,7 @@ namespace _15pl04.Ucc.CommunicationServer
 
 
 
-                var metadata = new TcpProviderMetadata()
+                var metadata = new TcpDataProviderMetadata()
                 {
                     ReceptionTime = DateTime.UtcNow,
                     SenderAddress = (IPEndPoint)handlerSocket.RemoteEndPoint,
@@ -127,6 +124,9 @@ namespace _15pl04.Ucc.CommunicationServer
                 _dataProcessor.EnqueueDataToProcess(memStream.ToArray(), metadata, GenerateResponseCallback(handlerSocket));
             }
         }
+
+
+
 
 
     }

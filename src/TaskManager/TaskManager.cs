@@ -85,10 +85,10 @@ namespace _15pl04.Ucc.TaskManager
         /// - dividing problem cannot be started bacause no tasks are available in task pool.</exception>
         private void DivideProblemMessageHandler(DivideProblemMessage message)
         {
-            if (ID != message.NodeId)
+            if (ID != message.TaskManagerId)
             {
                 // shouldn't ever get here - received message for other TaskManager
-                throw new InvalidOperationException(string.Format("TaskManager manager with ID={0} received message for TaskManager with ID={1}.", ID, message.NodeId));
+                throw new InvalidOperationException(string.Format("TaskManager manager with ID={0} received message for TaskManager with ID={1}.", ID, message.TaskManagerId));
             }
             if (!TaskSolvers.ContainsKey(message.ProblemType))
             {
@@ -114,7 +114,7 @@ namespace _15pl04.Ucc.TaskManager
                     {
                         PartialProblemId = (ulong)i,
                         Data = partialProblemsData[i],
-                        NodeId = ID,
+                        TaskManagerId = ID,
                     });
                 }
 
