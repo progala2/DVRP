@@ -13,19 +13,14 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
         bool IsMonitoring { get; }
 
         bool TryRegister(ComponentInfo component);
-
         bool TryDeregister(ulong componentId);
-
         bool IsRegistered(ulong componentId);
-
         void UpdateTimestamp(ulong componentId);
 
         ComponentInfo GetComponent(ulong componentId);
-
         ICollection<ComponentInfo> GetComponents(ComponentType type);
 
         void StartMonitoring();
-
         void StopMonitoring();
     }
 

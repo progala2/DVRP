@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Collections\LexicographicQueue.cs" />
     <Compile Include="Collections\RawDataQueue.cs" />
     <Compile Include="CommunicationServer.cs" />
     <Compile Include="Components\BackupServerInfo.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="WorkManagement\Models\PartialSolution.cs" />
     <Compile Include="WorkManagement\Models\Problem.cs" />
     <Compile Include="WorkManagement\Models\Solution.cs" />
+    <Compile Include="WorkManagement\WorkManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
