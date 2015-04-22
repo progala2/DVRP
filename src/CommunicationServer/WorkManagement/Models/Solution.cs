@@ -1,5 +1,5 @@
-﻿
-using _15pl04.Ucc.Commons.Messaging.Models;
+﻿using _15pl04.Ucc.Commons.Messaging.Models;
+
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
 {
     public class Solution
@@ -24,15 +24,21 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
             get;
             private set;
         }
+        public ulong MergingTaskManagerId
+        {
+            get;
+            private set;
+        }
 
 
-        public Solution(Problem problem, byte[] data,
-            ulong computationsTime, bool timeoutOccured = false)
+        public Solution(Problem problem, byte[] data, ulong computationsTime, 
+            bool timeoutOccured, ulong mergingTaskManagerId)
         {
             Problem = problem;
             Data = data;
             ComputationsTime = computationsTime;
             TimeoutOccured = timeoutOccured;
+            MergingTaskManagerId = mergingTaskManagerId;
         }
 
         public static explicit operator SolutionsMessage.Solution(Solution s)

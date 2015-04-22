@@ -271,10 +271,10 @@ namespace _15pl04.Ucc.Commons.Computations
         /// <returns>Proper StatusMessage.</returns>
         private StatusMessage GetStatusMessage()
         {
-            var threadsStatuses = new List<StatusMessage.ThreadStatus>();
+            var threadsStatuses = new List<ThreadStatus>();
             foreach (var computationalTask in ComputationalTaskPool.ComputationalTasks)
             {
-                var threadStatus = new StatusMessage.ThreadStatus()
+                var threadStatus = new ThreadStatus()
                 {
                     ProblemType = computationalTask.ProblemType,
                     ProblemInstanceId = computationalTask.ProblemInstanceId,

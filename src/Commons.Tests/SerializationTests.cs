@@ -203,19 +203,19 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void StatusMessageXmlIsProperlySerializedAndDeserialized()
         {
-            var ts = new StatusMessage.ThreadStatus()
+            var ts = new ThreadStatus()
             {
                 PartialProblemId = 5,
                 ProblemInstanceId = 10,
                 ProblemType = "Dvrp",
-                State = StatusMessage.ThreadStatus.ThreadState.Busy,
+                State = ThreadStatus.ThreadState.Busy,
                 TimeInThisState = 50,
             };
 
             var message = new StatusMessage()
             {
                 ComponentId = 5,
-                Threads = new List<StatusMessage.ThreadStatus>() { ts},
+                Threads = new List<ThreadStatus>() { ts},
             };
 
             byte[] serializedMessage = _serializer.Serialize(message);

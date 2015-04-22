@@ -134,8 +134,8 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         public ICollection<ComponentInfo> GetComponents(ComponentType type)
         {
             var components = from ComponentInfo c in _registeredComponents.Values
-                          where c.ComponentType == type
-                          select c;
+                             where c.ComponentType == type
+                             select c;
 
             return (ICollection<ComponentInfo>)components;
         }
@@ -147,5 +147,8 @@ namespace _15pl04.Ucc.CommunicationServer.Components
 
             return _registeredComponents[componentId];
         }
+
+
+
     }
 }

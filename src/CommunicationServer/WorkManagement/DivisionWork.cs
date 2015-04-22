@@ -27,18 +27,16 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         public DivisionWork(ulong assigneeId, Problem problem, ulong availableThreads)
         {
             if (problem == null)
-                throw new ArgumentException();
+                throw new ArgumentNullException();
 
             AssigneeId = assigneeId;
             Problem = problem;
+
+            Problem.NumberOfParts = availableThreads;
         }
 
         public override Message CreateMessage()
         {
-            if (!Problem.NumberOfParts.HasValue)
-                throw new InvalidOperationException("Target number of parts to divide into must be set.");
-
-
             var message = new DivideProblemMessage()
             {
                 ComputationalNodes = Problem.NumberOfParts.Value,

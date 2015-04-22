@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Collections\LexicographicQueue.cs" />
+    <Compile Include="Collections\LexicographicList.cs" />
     <Compile Include="Collections\RawDataQueue.cs" />
     <Compile Include="CommunicationServer.cs" />
     <Compile Include="Components\BackupServerInfo.cs" />

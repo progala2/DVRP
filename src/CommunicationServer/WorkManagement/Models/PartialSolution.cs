@@ -24,15 +24,20 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
             get;
             private set;
         }
-
+        public ulong SolvingComputationalNodeId
+        {
+            get;
+            private set;
+        }
 
         public PartialSolution(PartialProblem problem, byte[] data,
-            ulong computationsTime, bool timeoutOccured = false)
+            ulong computationsTime, bool timeoutOccured, ulong solverNodeId)
         {
             PartialProblem = problem;
             Data = data;
             ComputationsTime = computationsTime;
             TimeoutOccured = timeoutOccured;
+            SolvingComputationalNodeId = solverNodeId;
         }
 
         public static explicit operator SolutionsMessage.Solution(PartialSolution ps)
