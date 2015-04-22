@@ -96,7 +96,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 case ComponentType.ComputationalNode:
                     foreach (string problemType in node.SolvableProblems)
                     {
-                        // TODO: partial problem assignement can be optimized.
+                        // TODO partial problem assignement can be optimized.
 
                         if (_partialProblemsAwaitingComputation.GetCountByKey(problemType) == 0)
                             continue;
@@ -307,7 +307,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             int allThreads = _componentOverseer.GetComponents(ComponentType.ComputationalNode).Sum(c => c.NumberOfThreads);
             
             // TODO perhaps substract busy computational threads?
-            // Not necessarily as it may equal zero.
+            // It may equal zero though.
 
             return allThreads;
         }

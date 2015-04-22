@@ -1,72 +1,77 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using _15pl04.Ucc.CommunicationServer.Messaging;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Net;
+﻿using _15pl04.Ucc.CommunicationServer.Messaging;
 using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
     internal class TcpServer
     {
-        private IDataProcessor _dataProcessor;
-        private EndPoint _address;
+        public delegate void ResponseCallback(byte[] response);
+
 
         private const int MaxPendingConnections = 100;
-        private const int ReadBufferSize = 1024;
+        private const int ReadBufferSize = 4096; // TODO make sure it's enough
 
-        private readonly ManualResetEvent _allDoneEvent;
+        private IDataProcessor _dataProcessor;
         private Socket _listenerSocket;
-        private bool _isListening;
+        private EndPoint _address;
 
+        private ManualResetEvent _clientAcceptanceEvent = new ManualResetEvent(false);
+        private volatile bool _isListening = false;
 
-        public delegate void ResponseCallback(byte[] response);
 
         public TcpServer(IPEndPoint address, IDataProcessor processor)
         {
             _dataProcessor = processor;
             _address = address;
 
-            _allDoneEvent = new ManualResetEvent(false);
-            _isListening = false;
+            _listenerSocket = new Socket(_address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         }
 
         public void StartListening()
         {
-            Console.WriteLine("Listening for incoming connections...");
+            if (_isListening)
+                return;
 
             _isListening = true;
-            _listenerSocket = new Socket(_address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             try
             {
-                
                 _listenerSocket.Bind(_address);
                 _listenerSocket.Listen(MaxPendingConnections);
 
                 while (_isListening)
                 {
-                    _allDoneEvent.Reset();
-
+                    _clientAcceptanceEvent.Reset();
                     _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket);
-
-                    _allDoneEvent.WaitOne();
+                    _clientAcceptanceEvent.WaitOne();
                 }
+            }
+            catch (ObjectDisposedException e)
+            {
+                // Most likely ManualResetEvent got disposed due to StopListening() method invocation.
+
+                // *crickets*
             }
             catch (Exception)
             {
-                //TODO
+                // TODO log an error
                 throw;
             }
         }
 
         public void StopListening()
         {
+            if (!_isListening)
+                return;
+
             _isListening = false;
-            _allDoneEvent.Set();
+
+            _clientAcceptanceEvent.Close();
             _listenerSocket.Close();
         }
 
@@ -74,60 +79,55 @@ namespace _15pl04.Ucc.CommunicationServer
         {
             return new ProcessedDataCallback((byte[] response) =>
             {
-                //There can happen a situation where clientSocked is closed before message would be sent. 
-                //In such situation function does nothing
+                // A situation can occur where client socket has been closed before message was sent. 
+                // In that case the method does nothing.
                 try
                 {
                     clientSocket.Send(response);
                     clientSocket.Shutdown(SocketShutdown.Send);
                     clientSocket.Close();
                 }
-                catch (Exception)
+                catch (SocketException)
                 {
-                    //Nothing to do, function doesnt inform that it could not send response
+                    // *crickets*
+
+                    // TODO log a warning
                 }
             });
         }
 
         private void AcceptCallback(IAsyncResult ar)
         {
-            _allDoneEvent.Set();
+            _clientAcceptanceEvent.Set();
 
             if (!_isListening)
                 return;
 
             Socket listenerSocket = (Socket)ar.AsyncState;
-            Socket handlerSocket = listenerSocket.EndAccept(ar);
-
+            Socket clientSocket = listenerSocket.EndAccept(ar);
 
             byte[] buffer = new byte[ReadBufferSize];
-
 
             using (var memStream = new MemoryStream())
             {
                 int bytesRead;
                 do
                 {
-                    bytesRead = handlerSocket.Receive(buffer);
+                    bytesRead = clientSocket.Receive(buffer);
                     memStream.Write(buffer, 0, bytesRead);
-
                 } while (bytesRead > 0);
-
-
 
                 var metadata = new TcpDataProviderMetadata()
                 {
                     ReceptionTime = DateTime.UtcNow,
-                    SenderAddress = (IPEndPoint)handlerSocket.RemoteEndPoint,
+                    SenderAddress = (IPEndPoint)clientSocket.RemoteEndPoint,
                 };
 
-                _dataProcessor.EnqueueDataToProcess(memStream.ToArray(), metadata, GenerateResponseCallback(handlerSocket));
+                _dataProcessor.EnqueueDataToProcess(
+                    memStream.ToArray(),
+                    metadata,
+                    GenerateResponseCallback(clientSocket));
             }
         }
-
-
-
-
-
     }
 }

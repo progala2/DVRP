@@ -118,7 +118,7 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
 
 
 
-        // TODO: implement collection-like interfaces
+        // TODO implement collection-like interfaces
 
 
 

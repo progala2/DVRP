@@ -14,7 +14,7 @@ namespace _15pl04.Ucc.CommunicationServer
 
         public ServerConfig(string[] consoleArgs)
         {
-            // TODO - proper constructor
+            // TODO ! proper constructor
 
             NameValueCollection appSettings = ConfigurationManager.AppSettings;
 

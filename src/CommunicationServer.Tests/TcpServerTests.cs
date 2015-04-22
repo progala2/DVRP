@@ -5,21 +5,20 @@ using System.Net;
 namespace _15pl04.Ucc.CommunicationServer.Tests
 {
     [TestClass]
-    public class AsyncTcpServerTests
+    public class TcpServerTests
     {
         private TcpServer _server;
-        
 
-        public AsyncTcpServerTests()
+
+        public TcpServerTests()
         {
-            var address = new IPEndPoint(new IPAddress(new byte[]{127,0,0,1}), 9123);
+            var address = new IPEndPoint(new IPAddress(new byte[] { 127, 0, 0, 1 }), 9123);
 
             _server = new TcpServer(address, new MockProcessor());
-
             _server.StartListening();
-
-
         }
+
+        
 
         public class MockProcessor : IDataProcessor
         {
