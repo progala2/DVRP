@@ -3,14 +3,14 @@ using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.CommunicationServer.Components;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests
 {
     [TestClass]
-    public class ComponentMonitorTests
+    public class ComponentOverseerTests
     {
         private IComponentOverseer _overseer;
 
@@ -48,20 +48,31 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         {
             ulong communicationTimeout = 500;
             int checkInterval = 100;
+            Stopwatch stopwatch = new Stopwatch();
+            AutoResetEvent deregistrationEventLock = new AutoResetEvent(false);
 
             _overseer = new ComponentOverseer(communicationTimeout, checkInterval);
+            _overseer.Deregistration += (o, e) => {
+                deregistrationEventLock.Set();
+            };
             _overseer.StartMonitoring();
 
             var solvableProblems = new List<string>();
             solvableProblems.Add("dvrp");
 
             ComponentInfo computationalNode = new SolverNodeInfo(ComponentType.ComputationalNode, solvableProblems, 5);
-
             _overseer.TryRegister(computationalNode);
+
+            stopwatch.Start();
+
             Assert.IsTrue(_overseer.IsRegistered(computationalNode.ComponentId.Value));
 
-            Thread.Sleep(TimeSpan.FromMilliseconds(communicationTimeout + 100));
+            deregistrationEventLock.WaitOne((int)communicationTimeout * 2);
+
+            stopwatch.Stop();
+
             Assert.IsFalse(_overseer.IsRegistered(computationalNode.ComponentId.Value));
+            Assert.IsTrue((ulong)stopwatch.ElapsedMilliseconds >= communicationTimeout);
 
             _overseer.StopMonitoring();
         }

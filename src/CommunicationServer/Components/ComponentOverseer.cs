@@ -50,6 +50,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             } while (!_registeredComponents.TryAdd(id, component));
 
             component.AssignId(id);
+            component.UpdateTimestamp();
 
             return true;
         }

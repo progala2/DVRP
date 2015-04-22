@@ -16,7 +16,11 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
         /// </summary>
         public ICollection<ThreadStatus> ThreadInfo { get; set; }
 
-        public DateTime Timestamp { get; private set; }
+        public DateTime Timestamp 
+        { 
+            get; 
+            private set; 
+        }
         public ulong TimestampAge
         {
             get
