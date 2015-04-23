@@ -90,7 +90,7 @@ namespace _15pl04.Ucc.ComputationalClient
         }
 
 
-        private Message[] SendMessage(Message message)
+        private List<Message> SendMessage(Message message)
         {
             var receivedMessages = _messageSender.Send(message);
             RaiseEvent(MessageSent, message);

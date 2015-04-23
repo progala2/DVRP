@@ -28,9 +28,9 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="message">message to send</param>
         /// <returns>messages returned or null</returns>
-        public Message[] Send(Message message)
+        public List<Message> Send(Message message)
         {
-            return Send(new Message[] { message });
+            return Send(new List<Message>{ message });
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="messages">messages to send</param>
         /// <returns>messages returned or null</returns>
-        public Message[] Send(Message[] messages)
+        public List<Message> Send(IList<Message> messages)
         {
             var data = _marshaller.Marshall(messages);
             byte[] retBytes = null;
@@ -85,12 +85,12 @@ namespace _15pl04.Ucc.Commons
             return retBytes != null ? messagesReceived : null;
         }
 
-        private void UpdateServerList(Message[] messages)
+        private void UpdateServerList(IList<Message> messages)
         {
             if (messages == null)
                 return;
 
-            for (int i = messages.Length - 1; i >= 0; --i)
+            for (int i = messages.Count - 1; i >= 0; --i)
             {
                 var message = messages[i];
                 switch (message.MessageType)

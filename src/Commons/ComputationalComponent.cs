@@ -229,7 +229,7 @@ namespace _15pl04.Ucc.Commons.Computations
                 var reliability = 0.75;
                 var rand = new Random();
                 Message message;
-                Message[] receivedMessages;
+                List<Message> receivedMessages;
                 while (true)
                 {
                     while (_messagesToSend.TryDequeue(out message))
@@ -292,7 +292,7 @@ namespace _15pl04.Ucc.Commons.Computations
             return statusMessage;
         }
 
-        private void HandleReceivedMessages(Message[] messages)
+        private void HandleReceivedMessages(List<Message> messages)
         {
             foreach (var message in messages)
             {
@@ -312,7 +312,7 @@ namespace _15pl04.Ucc.Commons.Computations
             }
         }
 
-        private Message[] SendMessageAndStopIfNoResponse(Message message)
+        private List<Message> SendMessageAndStopIfNoResponse(Message message)
         {
             var receivedMessages = _messageSender.Send(message);
             RaiseEvent(MessageSent, message);

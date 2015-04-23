@@ -21,7 +21,7 @@ namespace _15pl04.Ucc.Commons.Messaging
             _validator = validator;
         }
 
-        public Message[] Unmarshall(byte[] rawData)
+        public List<Message> Unmarshall(byte[] rawData)
         {
             if (rawData == null)
                 throw new ArgumentNullException();
@@ -38,6 +38,10 @@ namespace _15pl04.Ucc.Commons.Messaging
             {
                 // Validation - might not be necessary. 
                 string xmlString = Encoding.UTF8.GetString(rawData, begin, separatorIndices[i] - begin);
+
+                if (xmlString == string.Empty)
+                    break;
+
                 XDocument xmlDoc = XDocument.Parse(xmlString);
                 MessageClass msgClass = Message.GetMessageClassFromString(xmlDoc.Root.Name.LocalName);
                 _validator.Validate(msgClass, xmlDoc);
@@ -49,27 +53,27 @@ namespace _15pl04.Ucc.Commons.Messaging
                 begin = separatorIndices[i] + 1;
             }
 
-            return outputMessages.ToArray();
+            return outputMessages;
         }
 
-        public byte[] Marshall(Message[] messages)
+        public byte[] Marshall(IList<Message> messages)
         {
             if (messages == null)
                 throw new ArgumentNullException();
 
             using (var memStream = new MemoryStream())
             {
-                if (messages.Length > 0)
+                if (messages.Count > 0)
                 {
                     byte[] data;
                     MessageClass type;
-                    for (int i = 0; i < messages.Length; ++i)
+                    for (int i = 0; i < messages.Count; ++i)
                     {
                         type = messages[i].MessageType;
                         data = _serializer.Serialize(messages[i]);
                         memStream.Write(data, 0, data.Length);
 
-                        if (i != messages.Length - 1)
+                        if (i != messages.Count - 1)
                             memStream.WriteByte(23);
                     }
                 }

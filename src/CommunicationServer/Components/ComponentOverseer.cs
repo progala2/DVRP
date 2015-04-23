@@ -1,4 +1,5 @@
 ﻿using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Utilities;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
 using System;
@@ -19,6 +20,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             get { return _isMonitoring; }
         }
 
+        private static ILogger _logger = new ConsoleLogger();
         private ConcurrentDictionary<ulong, ComponentInfo> _registeredComponents;
         private Random _random;
 
@@ -62,6 +64,9 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             {
                 if (Deregistration != null)
                 {
+                    _logger.Info("Deregistering " + deregisteredComponent.ComponentType + 
+                        " (id: " + deregisteredComponent.ComponentId + ").");
+
                     var args = new DeregisterationEventArgs()
                     {
                         Component = deregisteredComponent,

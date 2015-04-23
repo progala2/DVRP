@@ -1,4 +1,5 @@
 ﻿using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Utilities;
 using _15pl04.Ucc.CommunicationServer.Collections;
@@ -16,6 +17,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
     {
         public event WorkAssignmentEventHandler WorkAssignment;
 
+        private static ILogger _logger = new ConsoleLogger();
         private IComponentOverseer _componentOverseer;
 
         private Random _random = new Random();
@@ -168,6 +170,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Mark as "awaiting division".
             _problemsAwaitingDivision.AddLast(problem.ProblemType, problem);
 
+            _logger.Info("Added new problem instance.");
+
             return id;
         }
 
@@ -223,13 +227,19 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
             // Check if there is a problem marked as "awaiting solution". If so, proceed. 
             if (!_problemsAwaitingSolution.ContainsKey(problem.Id.Value))
-                return; // TODO perhaps throw an exception?
+            {
+                _logger.Warn("Received partial solutions there's no corresponding problem instance being solved.");
+                return;
+            }
 
             // Check if there are partial solutions related to the same problem instance that are already all gathered and awaiting merge.
             foreach (PartialSolution[] psArray in _partialSolutionsAwaitingMerge[problem.ProblemType])
             {
                 if (psArray[0].PartialProblem.Problem.Id == problem.Id)
-                    return; // TODO perhaps throw an exception?
+                {
+                    _logger.Warn("Received partial solutions but this problem instance's solutions are already awaiting merge.");
+                    return;
+                }
             }
 
             // For each partial solution mark it as "being gathered" and  remove corresponding partial problem marked as "being computed".
@@ -238,7 +248,10 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 if (_partialProblemsBeingComputed.TryRemove(ps.SolvingComputationalNodeId, ps.PartialProblem))
                     _partialSolutionsBeingGathered.AddLast(problem.Id.Value, ps);
                 else
-                    continue; // TODO perhaps throw an exception?
+                {
+                    _logger.Warn("Received a partial solution but there is no corresponding computed partial problem I know of.");
+                    continue;
+                }
             }
 
             // Check if all partial solutions are in and we can merge them.

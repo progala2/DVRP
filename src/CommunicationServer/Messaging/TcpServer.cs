@@ -1,35 +1,40 @@
-﻿using _15pl04.Ucc.CommunicationServer.Messaging;
+﻿using _15pl04.Ucc.Commons.Logging;
+using _15pl04.Ucc.CommunicationServer.Messaging;
 using _15pl04.Ucc.CommunicationServer.Messaging.Base;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
     internal class TcpServer
     {
-        public delegate void ResponseCallback(byte[] response);
+        // TODO interface/abstract class
 
+        public delegate void ResponseCallback(byte[] response);
 
         private const int MaxPendingConnections = 100;
         private const int ReadBufferSize = 4096; // TODO make sure it's enough
 
+
+        private static ILogger _logger = new ConsoleLogger(); 
         private IDataProcessor _dataProcessor;
         private Socket _listenerSocket;
-        private EndPoint _address;
 
-        private ManualResetEvent _clientAcceptanceEvent = new ManualResetEvent(false);
+        private ManualResetEvent _clientAcceptanceEvent;
+        private CancellationTokenSource _cancellationTokenSource;
         private volatile bool _isListening = false;
 
 
         public TcpServer(IPEndPoint address, IDataProcessor processor)
         {
             _dataProcessor = processor;
-            _address = address;
 
-            _listenerSocket = new Socket(_address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            _listenerSocket = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            _listenerSocket.Bind(address);
         }
 
         public void StartListening()
@@ -37,31 +42,40 @@ namespace _15pl04.Ucc.CommunicationServer
             if (_isListening)
                 return;
 
-            _isListening = true;
+            _logger.Info("TcpServer is starting...");
 
-            try
+            _clientAcceptanceEvent = new ManualResetEvent(false);
+            _cancellationTokenSource = new CancellationTokenSource();
+
+            var token = _cancellationTokenSource.Token;
+            token.Register(() =>
             {
-                _listenerSocket.Bind(_address);
-                _listenerSocket.Listen(MaxPendingConnections);
+                _isListening = false;
+                _listenerSocket.Close();
+                _clientAcceptanceEvent.Close();
+            });
 
-                while (_isListening)
+            _listenerSocket.Listen(MaxPendingConnections);
+
+            new Task(() =>
+            {
+                while (true)
                 {
-                    _clientAcceptanceEvent.Reset();
-                    _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket);
-                    _clientAcceptanceEvent.WaitOne();
+                    
+                    try
+                    {
+                        _clientAcceptanceEvent.Reset();
+                        _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket);
+                        _clientAcceptanceEvent.WaitOne();
+                    }
+                    catch (Exception)
+                    {
+                        // *crickets*
+                    }
                 }
-            }
-            catch (ObjectDisposedException e)
-            {
-                // Most likely ManualResetEvent got disposed due to StopListening() method invocation.
+            }, token).Start();
 
-                // *crickets*
-            }
-            catch (Exception)
-            {
-                // TODO log an error
-                throw;
-            }
+            _isListening = true;
         }
 
         public void StopListening()
@@ -69,10 +83,7 @@ namespace _15pl04.Ucc.CommunicationServer
             if (!_isListening)
                 return;
 
-            _isListening = false;
-
-            _clientAcceptanceEvent.Close();
-            _listenerSocket.Close();
+            _cancellationTokenSource.Cancel();
         }
 
         private static ProcessedDataCallback GenerateResponseCallback(Socket clientSocket)
@@ -91,7 +102,7 @@ namespace _15pl04.Ucc.CommunicationServer
                 {
                     // *crickets*
 
-                    // TODO log a warning
+                    _logger.Warn("Client socket was closed before response message could be sent.");
                 }
             });
         }
@@ -105,6 +116,8 @@ namespace _15pl04.Ucc.CommunicationServer
 
             Socket listenerSocket = (Socket)ar.AsyncState;
             Socket clientSocket = listenerSocket.EndAccept(ar);
+
+            _logger.Trace("Client accepted.");
 
             byte[] buffer = new byte[ReadBufferSize];
 
@@ -127,6 +140,8 @@ namespace _15pl04.Ucc.CommunicationServer
                     memStream.ToArray(),
                     metadata,
                     GenerateResponseCallback(clientSocket));
+
+                _logger.Trace("Client sent " + memStream.Length + " bytes of data.");
             }
         }
     }

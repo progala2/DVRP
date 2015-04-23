@@ -16,7 +16,7 @@ namespace _15pl04.Ucc.Commons.Tests
         private const int Port = 9123;
         private Socket _socket;
         private const int BufferSize = 2048;
-        
+
 
         [TestMethod]
         public void MessageSenderSendingMessage()
@@ -31,9 +31,9 @@ namespace _15pl04.Ucc.Commons.Tests
             Task t = new Task(new Action(ListenAndResend));
             t.Start();
 
-            Message[] receivedMessage = sender.Send(new Message[]{message});
+            List<Message> receivedMessage = sender.Send(new List<Message> { message });
 
-            Assert.AreEqual(1, receivedMessage.Length);
+            Assert.AreEqual(1, receivedMessage.Count);
             Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
             Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
             Assert.AreEqual(((ErrorMessage)message).ErrorText, ((ErrorMessage)receivedMessage[0]).ErrorText);
@@ -63,23 +63,23 @@ namespace _15pl04.Ucc.Commons.Tests
             Task t = new Task(new Action(ListenAndResend));
             t.Start();
 
-            Message[] receivedMessage = sender.Send(new Message[] { message });
+            List<Message> receivedMessage = sender.Send(new List<Message> { message });
 
-            Assert.AreEqual(1, receivedMessage.Length);
+            Assert.AreEqual(1, receivedMessage.Count);
             Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
             Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
-            Assert.AreEqual(((NoOperationMessage)message).BackupServers.Count, 
+            Assert.AreEqual(((NoOperationMessage)message).BackupServers.Count,
                 ((NoOperationMessage)receivedMessage[0]).BackupServers.Count);
             Assert.AreEqual(((NoOperationMessage)message).BackupServers[0].IpAddress,
                 ((NoOperationMessage)receivedMessage[0]).BackupServers[0].IpAddress);
             Assert.AreEqual(((NoOperationMessage)message).BackupServers[0].Port,
                 ((NoOperationMessage)receivedMessage[0]).BackupServers[0].Port);
-            
-            
+
+
             EndConnection();
             t.Wait();
         }
-        
+
 
         private void ListenAndResend()
         {
