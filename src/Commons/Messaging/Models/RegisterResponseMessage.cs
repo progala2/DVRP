@@ -47,8 +47,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             builder.Append(" Timeout(" + CommunicationTimeout + ")");
 
             builder.Append(" BackupServers{");
-            foreach (var backup in BackupServers)
-                builder.Append(backup + ",");
+            builder.Append(string.Join(",", BackupServers)); ;
             builder.Append("}");
 
             return builder.ToString();

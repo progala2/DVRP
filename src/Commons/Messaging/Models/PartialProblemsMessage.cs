@@ -60,7 +60,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlIgnore]
         public override MessageClass MessageType
         {
-            get { return MessageClass.SolvePartialProblems;}
+            get { return MessageClass.SolvePartialProblems; }
         }
 
 
@@ -86,8 +86,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
                 builder.Append(" SolvingTimeout(" + SolvingTimeout.Value + ")");
 
             builder.Append(" PartialProblems{");
-            foreach (var partialProblem in PartialProblems)
-                builder.Append(partialProblem.ToString() + ",");
+            builder.Append(string.Join(",", PartialProblems));
             builder.Append("}");
 
             return builder.ToString();

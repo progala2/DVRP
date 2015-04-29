@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace MinMaxTaskSolverTests
 {
     [TestClass]
-    public class MinMaxTaskSolverTests
+    public class MMTaskSolverTests
     {
         [TestMethod]
         public void AllComputationsOfMinMaxTaskSolverAreCorrect()

@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace MinMaxTaskSolver
+namespace _15pl04.Ucc.MinMaxTaskSolver
 {
     [Serializable]
-    public class MinMaxSolution
+    public class MMSolution
     {
         public int Min { get; private set; }
         public int Max { get; private set; }
 
-        public MinMaxSolution(int min, int max)
+        public MMSolution(int min, int max)
         {
             Min = min;
             Max = max;

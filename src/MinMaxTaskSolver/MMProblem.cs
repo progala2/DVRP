@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MinMaxTaskSolver
+namespace _15pl04.Ucc.MinMaxTaskSolver
 {
     [Serializable]
-    public class MinMaxProblem
+    public class MMProblem
     {
         public int[] Numbers { get; private set; }
 
-        public MinMaxProblem(IEnumerable<int> numbers)
+        public MMProblem(IEnumerable<int> numbers)
         {
             Numbers = numbers.ToArray<int>();
         }

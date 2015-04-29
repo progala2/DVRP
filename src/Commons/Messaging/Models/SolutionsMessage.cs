@@ -114,8 +114,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             builder.Append(" ProblemType(" + ProblemType + ")");
 
             builder.Append(" Solutions{");
-            foreach (var solution in Solutions)
-                builder.Append(solution.ToString() + ",");
+            builder.Append(string.Join(",", Solutions));
             builder.Append("}");
 
             return builder.ToString();

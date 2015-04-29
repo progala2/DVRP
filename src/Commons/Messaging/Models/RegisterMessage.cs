@@ -77,8 +77,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
                 builder.Append(" ParallelThreads(" + ParallelThreads + ")");
 
                 builder.Append(" SolvableProblems{");
-                foreach (var problem in SolvableProblems)
-                    builder.Append(problem + ",");
+                builder.Append(string.Join(",", SolvableProblems));
                 builder.Append("}");
             }
             return builder.ToString();

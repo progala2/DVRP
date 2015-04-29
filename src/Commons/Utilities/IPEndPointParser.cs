@@ -27,18 +27,11 @@ namespace _15pl04.Ucc.Commons
         /// <exception cref="System.ArgumentException"></exception>
         public static IPEndPoint Parse(string endPointString, int defaultPort)
         {
-            if (string.IsNullOrEmpty(endPointString)
-                || endPointString.Trim().Length == 0)
-            {
+            if (string.IsNullOrWhiteSpace(endPointString))
                 throw new ArgumentException("Endpoint descriptor may not be empty.");
-            }
 
-            if (defaultPort != -1 &&
-                (defaultPort < IPEndPoint.MinPort
-                || defaultPort > IPEndPoint.MaxPort))
-            {
+            if (defaultPort != -1 && (defaultPort < IPEndPoint.MinPort || defaultPort > IPEndPoint.MaxPort))
                 throw new ArgumentException(string.Format("Invalid default port '{0}'", defaultPort));
-            }
 
             string[] values = endPointString.Split(new char[] { ':' });
             IPAddress ipAddress;
@@ -87,12 +80,8 @@ namespace _15pl04.Ucc.Commons
         {
             int port;
 
-            if (!int.TryParse(p, out port)
-             || port < IPEndPoint.MinPort
-             || port > IPEndPoint.MaxPort)
-            {
+            if (!int.TryParse(p, out port) || port < IPEndPoint.MinPort || port > IPEndPoint.MaxPort)
                 throw new FormatException(string.Format("Invalid end point port '{0}'", p));
-            }
 
             return port;
         }

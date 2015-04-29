@@ -7,7 +7,7 @@ using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Computations;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
-using MinMaxTaskSolver;
+using _15pl04.Ucc.MinMaxTaskSolver;
 
 namespace _15pl04.Ucc.ComputationalClient
 {
@@ -36,7 +36,7 @@ namespace _15pl04.Ucc.ComputationalClient
                 if (line == "solve")
                 {
                     var numbers = GenerateNumbers(10, 0, 50);
-                    var minMaxProblem = new MinMaxProblem(numbers);
+                    var minMaxProblem = new MMProblem(numbers);
                     var problemData = GenerateProblemData(minMaxProblem);
                     computationalClient.SendSolveRequest(problemType, problemData, null);
 
@@ -66,7 +66,7 @@ namespace _15pl04.Ucc.ComputationalClient
             ColorfulConsole.WriteMessageExceptionInfo("Message sending exception", e.Message, e.Exception);
         }
 
-        private static byte[] GenerateProblemData(MinMaxProblem minMaxProblem)
+        private static byte[] GenerateProblemData(MMProblem minMaxProblem)
         {
             using (var memoryStream = new MemoryStream())
             {

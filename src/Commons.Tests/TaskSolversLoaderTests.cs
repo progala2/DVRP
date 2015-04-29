@@ -12,7 +12,7 @@ namespace _15pl04.Ucc.Commons.Tests
             var taskSolversDictionary = TaskSolverLoader.GetTaskSolversFromRelativePath(@"/TaskSolvers");
             var taskSolversCount = taskSolversDictionary.Keys.Count;
             Assert.IsTrue(taskSolversCount > 0);
-            Assert.IsTrue(taskSolversDictionary.ContainsKey("UCC.MinMax"));
+            Assert.IsTrue(taskSolversDictionary.ContainsKey("_15pl04.UCC.MinMax"));
 
             taskSolversDictionary = TaskSolverLoader.GetTaskSolversFromRelativePath(null);
             taskSolversCount = taskSolversDictionary.Keys.Count;

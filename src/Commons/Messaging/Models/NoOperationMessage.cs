@@ -39,8 +39,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             var builder = new StringBuilder(base.ToString());
 
             builder.Append(" BackupServers{");
-            foreach (var backup in BackupServers)
-                builder.Append(backup.ToString() + ",");
+            builder.Append(string.Join(",", BackupServers));
             builder.Append("}");
 
             return builder.ToString();

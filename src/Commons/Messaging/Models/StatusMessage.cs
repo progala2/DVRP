@@ -45,8 +45,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             builder.Append(" ComponentId(" + ComponentId + ")");
 
             builder.Append(" Threads{");
-            foreach (var thread in Threads)
-                builder.Append(thread.ToString() + ",");
+            builder.Append(string.Join(",", Threads));
             builder.Append("}");
 
             return builder.ToString();
