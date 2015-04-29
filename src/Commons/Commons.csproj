@@ -35,7 +35,11 @@
     <Compile Include="Components\ServerInfo.cs" />
     <Compile Include="Components\ThreadStatus.cs" />
     <Compile Include="ComputationalComponent.cs" />
-    <Compile Include="Computations\ComputationalTask.cs" />
+    <Compile Include="Computations\Base\IThreadManagerFactory.cs" />
+    <Compile Include="Computations\Base\ThreadManager.cs" />
+    <Compile Include="Computations\ComputationalThreadStatus.cs" />
+    <Compile Include="Computations\ThreadPoolThreadManager.cs" />
+    <Compile Include="Computations\ThreadPoolThreadManagerFactory.cs" />
     <Compile Include="MessageSchemas.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -68,7 +72,6 @@
     <Compile Include="Messaging\Models\ErrorMessage.cs" />
     <Compile Include="Messaging\Models\StatusMessage.cs" />
     <Compile Include="Messaging\Marshalling\Marshaller.cs" />
-    <Compile Include="Computations\ComputationalTaskPool.cs" />
     <Compile Include="Messaging\Marshalling\MessageSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcpClient.cs" />

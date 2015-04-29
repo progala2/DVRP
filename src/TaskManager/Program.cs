@@ -11,10 +11,6 @@ namespace _15pl04.Ucc.TaskManager
 {
     public class Program
     {
-        private static Stopwatch _stopwatch = new Stopwatch();
-        private static int messagesSent;
-        private static int messagesReceived;
-
         static void Main(string[] args)
         {
             var appSettings = ConfigurationManager.AppSettings;
@@ -25,7 +21,8 @@ namespace _15pl04.Ucc.TaskManager
 
             var taskSolversDirectoryRelativePath = @""; // current directory
 
-            var taskManager = new TaskManager(serverAddress, taskSolversDirectoryRelativePath);
+            var threadManager = new ThreadPoolThreadManager();
+            var taskManager = new TaskManager(threadManager, serverAddress, taskSolversDirectoryRelativePath);
 
             taskManager.MessageEnqueuedToSend += taskManager_MessageEnqueuedToSend;
             taskManager.MessageSent += taskManager_MessageSent;
@@ -35,8 +32,6 @@ namespace _15pl04.Ucc.TaskManager
 
             taskManager.OnStarting += taskManager_OnStarting;
             taskManager.OnStarted += taskManager_OnStarted;
-            taskManager.OnStopping += taskManager_OnStopping;
-            taskManager.OnStopped += taskManager_OnStopped;
 
 
 
@@ -49,35 +44,12 @@ namespace _15pl04.Ucc.TaskManager
                 {
                     taskManager.Start();
                 }
-                if (line == "stop")
-                {
-                    taskManager.Stop();
-                }
             }
-            taskManager.Stop();
-        }
-
-        static void taskManager_OnStopping(object sender, EventArgs e)
-        {
-            Console.WriteLine("TaskManager is stopping...");
-        }
-
-        static void taskManager_OnStopped(object sender, EventArgs e)
-        {
-            Console.WriteLine("TaskManager stopped.");
-            _stopwatch.Stop();
-            var elapsedTime = _stopwatch.ElapsedMilliseconds / 1000.0;
-            Console.WriteLine("Statistics:");
-            Console.WriteLine(" Elapsed time: {0}", elapsedTime);
-            Console.WriteLine(" Messages sended:   {0}\t{1}/sec", messagesSent, messagesSent / elapsedTime);
-            Console.WriteLine(" Messages received: {0}\t{1}/sec", messagesReceived, messagesReceived / elapsedTime);
         }
 
         static void taskManager_OnStarted(object sender, EventArgs e)
         {
             Console.WriteLine("TaskManager started.");
-            messagesSent = messagesReceived = 0;
-            _stopwatch.Start();
         }
 
         static void taskManager_OnStarting(object sender, EventArgs e)
@@ -103,13 +75,11 @@ namespace _15pl04.Ucc.TaskManager
         static void taskManager_MessageReceived(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Received", e.Message);
-            Interlocked.Increment(ref messagesReceived);
         }
 
         static void taskManager_MessageSent(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Sent", e.Message);
-            Interlocked.Increment(ref messagesSent);
         }
     }
 }

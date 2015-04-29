@@ -24,8 +24,12 @@ namespace _15pl04.Ucc.Commons.Computations
 
         public event EventHandler OnStarting;
         public event EventHandler OnStarted;
-        public event EventHandler OnStopping;
-        public event EventHandler OnStopped;
+
+
+        /// <summary>
+        /// The type of component.
+        /// </summary>
+        public abstract ComponentType ComponentType { get; }
 
         /// <summary>
         /// The ID assigned by the Communication Server.
@@ -43,11 +47,6 @@ namespace _15pl04.Ucc.Commons.Computations
         public bool IsRunning { get; private set; }
 
         /// <summary>
-        /// The number of threads that could be efficiently run in parallel.
-        /// </summary>
-        public byte ParallelThreads { get; private set; }
-
-        /// <summary>
         /// The dictionary of TaskSolvers types; the keys are names of problems.
         /// </summary>
         public ReadOnlyDictionary<string, Type> TaskSolvers { get; private set; }
@@ -55,41 +54,48 @@ namespace _15pl04.Ucc.Commons.Computations
         /// <summary>
         /// The task pool that provides starting computations in tasks.
         /// </summary>
-        protected ComputationalTaskPool ComputationalTaskPool { get; private set; }
+        protected ThreadManager ThreadManager { get; private set; }
+
 
         private MessageSender _messageSender;
 
         private Task _messagesProcessingTask;
-        private CancellationTokenSource _cancellationTokenSource;
 
         private ConcurrentQueue<Message> _messagesToSend;
         private ManualResetEvent _messagesToSendManualResetEvent;
 
-        private readonly object _startStopLock = new object();
+        private readonly object _startLock = new object();
 
 
         /// <summary>
         /// Creates component that can register to the server.
         /// </summary>
-        /// <param name="serverAddress">Communication server address.</param>
-        public ComputationalComponent(IPEndPoint serverAddress)
-            : this(serverAddress, null)
+        /// <param name="threadManager">The thread manager. Cannot be null.</param>
+        /// <param name="serverAddress">The communication server address. Cannot be null.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        protected ComputationalComponent(ThreadManager threadManager, IPEndPoint serverAddress)
+            : this(threadManager, serverAddress, null)
         {
         }
 
         /// <summary>
         /// Creates component that can register to the server.
         /// </summary>
-        /// <param name="serverAddress">Communication server address.</param>
-        /// <param name="taskSolversDirectoryRelativePath">Relative path to directory containging task solvers libraries.</param>
+        /// <param name="threadManager">The thread manager. Cannot be null.</param>
+        /// <param name="serverAddress">The communication server address. Cannot be null.</param>
+        /// <param name="taskSolversDirectoryRelativePath">The relative path to directory containging task solvers libraries.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
-        public ComputationalComponent(IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
+        protected ComputationalComponent(ThreadManager threadManager, IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
         {
-            _messageSender = new MessageSender(serverAddress);
+            if (threadManager == null) throw new ArgumentNullException("threadManager");
+            if (serverAddress == null) throw new ArgumentNullException("serverAddress");
+
             TaskSolvers = TaskSolverLoader.GetTaskSolversFromRelativePath(taskSolversDirectoryRelativePath);
 
-            ParallelThreads = (byte)Environment.ProcessorCount;
-            IsRunning = false;
+            ThreadManager = threadManager;
+
+            _messageSender = new MessageSender(serverAddress);
         }
 
 
@@ -98,17 +104,21 @@ namespace _15pl04.Ucc.Commons.Computations
         /// </summary>
         public void Start()
         {
-            lock (_startStopLock)
+            lock (_startLock)
             {
                 if (IsRunning)
+                {
                     return;
+                }
 
                 RaiseEvent(OnStarting);
 
                 ResetComponent();
 
                 if (!Register())
+                {
                     return;
+                }
 
                 // start informing about statuses of threads            
                 _messagesProcessingTask.Start();
@@ -118,29 +128,6 @@ namespace _15pl04.Ucc.Commons.Computations
             }
         }
 
-        /// <summary>
-        /// Stops component work.
-        /// </summary>
-        public void Stop()
-        {
-            lock (_startStopLock)
-            {
-                if (IsRunning)
-                {
-                    RaiseEvent(OnStopping);
-                    _cancellationTokenSource.Cancel();
-                    IsRunning = false;
-                    RaiseEvent(OnStopped);
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Gets RegisterMessage specified for this component.
-        /// </summary>
-        /// <returns>A proper RegisterMessage.</returns>
-        protected abstract RegisterMessage GetRegisterMessage();
 
         /// <summary>
         /// Handles each message received from server after registration is completed.
@@ -168,7 +155,7 @@ namespace _15pl04.Ucc.Commons.Computations
         {
             // send RegisterMessage and get response
             var registerMessage = GetRegisterMessage();
-            var receivedMessages = SendMessageAndStopIfNoResponse(registerMessage);
+            var receivedMessages = SendMessage(registerMessage);
 
             if (receivedMessages == null)
                 return false;
@@ -193,7 +180,7 @@ namespace _15pl04.Ucc.Commons.Computations
                     else
                     {
                         // shouldn't ever happen
-                        RaiseEvent(MessageSendingException, receivedMessage, new InvalidOperationException("RegisterResponseMessage expected."));
+                        RaiseEvent(MessageHandlingException, receivedMessage, new InvalidOperationException("RegisterResponseMessage expected."));
                     }
                 }
             }
@@ -205,64 +192,93 @@ namespace _15pl04.Ucc.Commons.Computations
             _messagesToSend = new ConcurrentQueue<Message>();
             _messagesToSendManualResetEvent = new ManualResetEvent(false);
 
-            _cancellationTokenSource = new CancellationTokenSource();
-            _cancellationTokenSource.Token.Register(() =>
-            {
-                _messagesProcessingTask = null;
-                ComputationalTaskPool = null;
-            });
-
-            ComputationalTaskPool = new ComputationalTaskPool(ParallelThreads, _cancellationTokenSource.Token);
-            _messagesProcessingTask = new Task(() => MessagesProcessing(), _cancellationTokenSource.Token);
-
+            _messagesProcessingTask = new Task(() => ProcessMessages());
             IsRunning = false;
         }
 
         /// <summary>
         /// Message processing loop.
         /// </summary>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.NoResponseException"></exception>
-        private void MessagesProcessing()
+        private void ProcessMessages()
         {
-            try
+            Message messageToSend;
+            int timeToWait = (int)(Timeout / 2);
+            while (true)
             {
-                var reliability = 0.75;
-                var rand = new Random();
-                Message message;
-                List<Message> receivedMessages;
-                while (true)
+                messageToSend = GetStatusMessage();
+                if (!ProcessMessage(messageToSend))
+                    break;
+
+                _messagesToSendManualResetEvent.Reset();
+
+                if (!_messagesToSend.IsEmpty || _messagesToSendManualResetEvent.WaitOne(timeToWait))
                 {
-                    while (_messagesToSend.TryDequeue(out message))
+                    // should always be true...
+                    if (_messagesToSend.TryDequeue(out messageToSend))
                     {
-                        // send message
-                        receivedMessages = SendMessageAndStopIfNoResponse(message);
-                        // and handle response
-                        HandleReceivedMessages(receivedMessages);
-                    }
-                    // no more messages to send so reset state to nonsignaled
-                    _messagesToSendManualResetEvent.Reset();
-
-                    var multiplier = 1 - reliability + rand.NextDouble();
-                    Console.WriteLine("Sleeping {0} sec", Timeout * multiplier / 1000.0);
-
-                    // wait some time for new messages to be enqueued to send (_timeout / 2 is just a proposition)
-                    var anyNewMessageEnqueuedToSend = _messagesToSendManualResetEvent.WaitOne((int)(Timeout * multiplier));
-
-                    // if there are no new messages enqueued to send 
-                    if (!anyNewMessageEnqueuedToSend)
-                    {
-                        // send status message
-                        var statusMessage = GetStatusMessage();
-                        receivedMessages = SendMessageAndStopIfNoResponse(statusMessage);
-                        // and handle response
-                        HandleReceivedMessages(receivedMessages);
+                        if (!ProcessMessage(messageToSend))
+                            break;
                     }
                 }
             }
-            catch (TaskCanceledException)
+        }
+
+        private bool ProcessMessage(Message messageToSend)
+        {
+            var receivedMessages = SendMessage(messageToSend);
+            if (receivedMessages == null)
+                return false;
+            foreach (var receivedMessage in receivedMessages)
             {
-                // component stops... nothing to do
+                InternalHandleReceivedMessage(receivedMessage);
             }
+            return true;
+        }
+
+        private List<Message> SendMessage(Message message)
+        {
+            var receivedMessages = _messageSender.Send(message);
+            if (receivedMessages == null)
+            {
+                var noResponseException = new Commons.Exceptions.NoResponseException("Server is not responding.");
+                RaiseEvent(MessageSendingException, message, noResponseException);
+            }
+            else
+            {
+                RaiseEvent(MessageSent, message);
+                foreach (var receivedMessage in receivedMessages)
+                {
+                    RaiseEvent(MessageReceived, receivedMessage);
+                }
+            }
+            return receivedMessages;
+        }
+
+        private void InternalHandleReceivedMessage(Message message)
+        {
+            try
+            {
+                HandleReceivedMessage(message);
+            }
+            catch (Exception ex)
+            {
+                RaiseEvent(MessageHandlingException, message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets RegisterMessage specified for this component.
+        /// </summary>
+        /// <returns>A proper RegisterMessage.</returns>
+        private RegisterMessage GetRegisterMessage()
+        {
+            var registerMessage = new RegisterMessage()
+            {
+                ComponentType = ComponentType,
+                ParallelThreads = ThreadManager.ParallelThreads,
+                SolvableProblems = new List<string>(TaskSolvers.Keys)
+            };
+            return registerMessage;
         }
 
         /// <summary>
@@ -271,8 +287,8 @@ namespace _15pl04.Ucc.Commons.Computations
         /// <returns>Proper StatusMessage.</returns>
         private StatusMessage GetStatusMessage()
         {
-            var threadsStatuses = new List<ThreadStatus>();
-            foreach (var computationalTask in ComputationalTaskPool.ComputationalTasks)
+            var threadsStatuses = new List<ThreadStatus>(ThreadManager.ThreadStatuses.Count);
+            foreach (var computationalTask in ThreadManager.ThreadStatuses)
             {
                 var threadStatus = new ThreadStatus()
                 {
@@ -292,45 +308,7 @@ namespace _15pl04.Ucc.Commons.Computations
             return statusMessage;
         }
 
-        private void HandleReceivedMessages(List<Message> messages)
-        {
-            foreach (var message in messages)
-            {
-                InternalHandleReceivedMessage(message);
-            }
-        }
-
-        private void InternalHandleReceivedMessage(Message message)
-        {
-            try
-            {
-                HandleReceivedMessage(message);
-            }
-            catch (Exception ex)
-            {
-                RaiseEvent(MessageHandlingException, message, ex);
-            }
-        }
-
-        private List<Message> SendMessageAndStopIfNoResponse(Message message)
-        {
-            var receivedMessages = _messageSender.Send(message);
-            RaiseEvent(MessageSent, message);
-            if (receivedMessages == null)
-            {
-                var exception = new Commons.Exceptions.NoResponseException("Server is not responding.");
-                RaiseEvent(MessageSendingException, message, exception);
-                Stop();
-            }
-            else
-            {
-                foreach (var receivedMessage in receivedMessages)
-                {
-                    RaiseEvent(MessageReceived, receivedMessage);
-                }
-            }
-            return receivedMessages;
-        }
+        #region RaiseEvent
 
         private void RaiseEvent(EventHandler eventHandler)
         {
@@ -355,5 +333,7 @@ namespace _15pl04.Ucc.Commons.Computations
                 eventHandler(this, new MessageExceptionEventArgs(message, exception));
             }
         }
+
+        #endregion
     }
 }

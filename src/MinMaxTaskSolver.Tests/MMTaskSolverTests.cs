@@ -24,7 +24,7 @@ namespace MinMaxTaskSolverTests
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            var numbers = new List<int>();
+            var numbers = new List<int>(numbersCount);
             for (int i = 0; i < numbersCount; i++)
             {
                 numbers.Add(rand.Next(int.MinValue, int.MaxValue));
@@ -50,7 +50,7 @@ namespace MinMaxTaskSolverTests
             var partialProblemsData = taskSolver.DivideProblem(threadsCount);
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem divided; threadsCount=" + threadsCount);
 
-            var partialSolutionsData = new List<byte[]>();
+            var partialSolutionsData = new List<byte[]>(partialProblemsData.Length);
             foreach (var partialProblemData in partialProblemsData)
             {
                 var partialSolutionData = taskSolver.Solve(partialProblemData, new TimeSpan());

@@ -13,6 +13,8 @@ namespace _15pl04.Ucc.ComputationalClient
         public event EventHandler<MessageEventArgs> MessageReceived;
 
         public event EventHandler<MessageExceptionEventArgs> MessageSendingException;
+        public event EventHandler<MessageExceptionEventArgs> MessageHandlingException;
+
 
         private MessageSender _messageSender;
 
@@ -52,7 +54,7 @@ namespace _15pl04.Ucc.ComputationalClient
                 }
                 else
                 {
-                    RaiseEvent(MessageSendingException, receivedMessage, new InvalidOperationException("SolveRequestResponseMessage expected."));
+                    RaiseEvent(MessageHandlingException, receivedMessage, new InvalidOperationException("SolveRequestResponseMessage expected."));
                 }
             }
             return problemId;
@@ -83,7 +85,7 @@ namespace _15pl04.Ucc.ComputationalClient
                 }
                 else
                 {
-                    RaiseEvent(MessageSendingException, receivedMessage, new InvalidOperationException("SolutionsMessage expected."));
+                    RaiseEvent(MessageHandlingException, receivedMessage, new InvalidOperationException("SolutionsMessage expected."));
                 }
             }
             return solutionsMessages.ToArray();
@@ -93,7 +95,6 @@ namespace _15pl04.Ucc.ComputationalClient
         private List<Message> SendMessage(Message message)
         {
             var receivedMessages = _messageSender.Send(message);
-            RaiseEvent(MessageSent, message);
             if (receivedMessages == null)
             {
                 var exception = new Commons.Exceptions.NoResponseException("Server is not responding.");
@@ -101,6 +102,7 @@ namespace _15pl04.Ucc.ComputationalClient
             }
             else
             {
+                RaiseEvent(MessageSent, message);
                 foreach (var receivedMessage in receivedMessages)
                 {
                     RaiseEvent(MessageReceived, receivedMessage);
@@ -108,6 +110,8 @@ namespace _15pl04.Ucc.ComputationalClient
             }
             return receivedMessages;
         }
+
+        #region RaiseEvent
 
         private void RaiseEvent(EventHandler<MessageEventArgs> eventHandler, Message message)
         {
@@ -123,6 +127,8 @@ namespace _15pl04.Ucc.ComputationalClient
             {
                 eventHandler(this, new MessageExceptionEventArgs(message, exception));
             }
-        }
+        } 
+
+        #endregion
     }
 }

@@ -11,10 +11,6 @@ namespace _15pl04.Ucc.ComputationalNode
 {
     public class Program
     {
-        private static Stopwatch _stopwatch = new Stopwatch();
-        private static int messagesSent;
-        private static int messagesReceived;
-
         static void Main(string[] args)
         {
             var appSettings = ConfigurationManager.AppSettings;
@@ -25,7 +21,8 @@ namespace _15pl04.Ucc.ComputationalNode
 
             var taskSolversDirectoryRelativePath = @""; // current directory
 
-            var computationalNode = new ComputationalNode(serverAddress, taskSolversDirectoryRelativePath);
+            var threadManager = new ThreadPoolThreadManager();
+            var computationalNode = new ComputationalNode(threadManager, serverAddress, taskSolversDirectoryRelativePath);
 
             computationalNode.MessageEnqueuedToSend += computationalNode_MessageEnqueuedToSend;
             computationalNode.MessageSent += computationalNode_MessageSent;
@@ -35,8 +32,6 @@ namespace _15pl04.Ucc.ComputationalNode
 
             computationalNode.OnStarting += computationalNode_OnStarting;
             computationalNode.OnStarted += computationalNode_OnStarted;
-            computationalNode.OnStopping += computationalNode_OnStopping;
-            computationalNode.OnStopped += computationalNode_OnStopped;
 
             computationalNode.Start();
             string line;
@@ -45,33 +40,13 @@ namespace _15pl04.Ucc.ComputationalNode
                 // input handling
                 if (line == "start")
                     computationalNode.Start();
-                if (line == "stop")
-                    computationalNode.Stop();
             }
-            computationalNode.Stop();
         }
 
-        static void computationalNode_OnStopping(object sender, EventArgs e)
-        {
-            Console.WriteLine("ComputationalNode is stopping...");
-        }
-
-        static void computationalNode_OnStopped(object sender, EventArgs e)
-        {
-            Console.WriteLine("ComputationalNode stopped.");
-            _stopwatch.Stop();
-            var elapsedTime = _stopwatch.ElapsedMilliseconds / 1000.0;
-            Console.WriteLine("Statistics:");
-            Console.WriteLine(" Elapsed time: {0}", elapsedTime);
-            Console.WriteLine(" Messages sended:   {0}\t{1}/sec", messagesSent, messagesSent / elapsedTime);
-            Console.WriteLine(" Messages received: {0}\t{1}/sec", messagesReceived, messagesReceived / elapsedTime);
-        }
 
         static void computationalNode_OnStarted(object sender, EventArgs e)
         {
             Console.WriteLine("ComputationalNode started.");
-            messagesSent = messagesReceived = 0;
-            _stopwatch.Start();
         }
 
         static void computationalNode_OnStarting(object sender, EventArgs e)
@@ -97,13 +72,11 @@ namespace _15pl04.Ucc.ComputationalNode
         static void computationalNode_MessageReceived(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Received", e.Message);
-            Interlocked.Increment(ref messagesReceived);
         }
 
         static void computationalNode_MessageSent(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Sent", e.Message);
-            Interlocked.Increment(ref messagesSent);
         }
     }
 }

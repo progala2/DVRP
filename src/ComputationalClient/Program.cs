@@ -81,7 +81,7 @@ namespace _15pl04.Ucc.ComputationalClient
         private static List<int> GenerateNumbers(int numbersCount, int min, int max)
         {
             var rand = new Random();
-            var result = new List<int>();
+            var result = new List<int>(numbersCount);
             for (int i = 0; i < numbersCount; i++)
             {
                 result.Add(rand.Next(min, max));

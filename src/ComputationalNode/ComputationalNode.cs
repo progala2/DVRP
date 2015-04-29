@@ -11,40 +11,36 @@ namespace _15pl04.Ucc.ComputationalNode
 {
     public sealed class ComputationalNode : ComputationalComponent
     {
+        public override ComponentType ComponentType
+        {
+            get { return ComponentType.ComputationalNode; }
+        }
+
+
         /// <summary>
         /// Creates ComputationalNode which looks for task solvers in current directory.
         /// </summary>
-        /// <param name="serverAddress">The primary server address.</param>
-        public ComputationalNode(IPEndPoint serverAddress)
-            : base(serverAddress)
+        /// <param name="threadManager">The thread manager. Cannot be null.</param>
+        /// <param name="serverAddress">The primary server address. Cannot be null.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        public ComputationalNode(ThreadManager threadManager, IPEndPoint serverAddress)
+            : base(threadManager, serverAddress)
         {
         }
 
         /// <summary>
         /// Creates ComputationalNode.
         /// </summary>
-        /// <param name="serverAddress">The primary server address.</param>
+        /// <param name="threadManager">The thread manager. Cannot be null.</param>
+        /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
-        public ComputationalNode(IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
-            : base(serverAddress, taskSolversDirectoryRelativePath)
+        public ComputationalNode(ThreadManager threadManager, IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
+            : base(threadManager, serverAddress, taskSolversDirectoryRelativePath)
         {
         }
 
-        /// <summary>
-        /// Gets proper register message for this ComputationalComponent.
-        /// </summary>
-        /// <returns>A proper RegisterMessage.</returns>
-        protected override RegisterMessage GetRegisterMessage()
-        {
-            var registerMessage = new RegisterMessage()
-            {
-                ComponentType = ComponentType.ComputationalNode,
-                ParallelThreads = ParallelThreads,
-                SolvableProblems = new List<string>(TaskSolvers.Keys)
-            };
-            return registerMessage;
-        }
 
         /// <summary>
         /// Handles any message received from server after registration process completes successfully.
@@ -92,7 +88,7 @@ namespace _15pl04.Ucc.ComputationalNode
             {
                 /* each partial problem should be started properly cause server sends at most 
                  * as many partial problems as count of component's tasks in idle state */
-                bool started = ComputationalTaskPool.StartComputationalTask(() =>
+                bool started = ThreadManager.StartInNewThread(() =>
                 {
                     // not sure if TaskSolver can change CommonData during computations so recreate it for each partial problem
                     var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);

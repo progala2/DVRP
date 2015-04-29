@@ -11,40 +11,36 @@ namespace _15pl04.Ucc.TaskManager
 {
     public sealed class TaskManager : ComputationalComponent
     {
+        public override ComponentType ComponentType
+        {
+            get { return ComponentType.TaskManager; }
+        }
+
+
         /// <summary>
         /// Creates TaskManager which looks for task solvers in current directory.
         /// </summary>
-        /// <param name="serverAddress">The primary server address.</param>
-        public TaskManager(IPEndPoint serverAddress)
-            : base(serverAddress)
+        /// <param name="threadManager">The thread manager. Cannot be null.</param>
+        /// <param name="serverAddress">The primary server address. Cannot be null.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        public TaskManager(ThreadManager threadManager, IPEndPoint serverAddress)
+            : base(threadManager, serverAddress)
         {
         }
 
         /// <summary>
         /// Creates TaskManager.
         /// </summary>
-        /// <param name="serverAddress">The primary server address.</param>
+        /// <param name="threadManager">The thread manager. Cannot be null.</param>
+        /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
-        public TaskManager(IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
-            : base(serverAddress, taskSolversDirectoryRelativePath)
+        public TaskManager(ThreadManager threadManager, IPEndPoint serverAddress, string taskSolversDirectoryRelativePath)
+            : base(threadManager, serverAddress, taskSolversDirectoryRelativePath)
         {
         }
 
-        /// <summary>
-        /// Gets proper register message for this TaskManager.
-        /// </summary>
-        /// <returns>A proper RegisterMessage.</returns>
-        protected override RegisterMessage GetRegisterMessage()
-        {
-            var registerMessage = new RegisterMessage()
-            {
-                ComponentType = ComponentType.TaskManager,
-                ParallelThreads = ParallelThreads,
-                SolvableProblems = new List<string>(TaskSolvers.Keys)
-            };
-            return registerMessage;
-        }
 
         /// <summary>
         /// Handles any message received from server after registration process completes successfully.
@@ -98,7 +94,7 @@ namespace _15pl04.Ucc.TaskManager
             var taskSolverType = TaskSolvers[message.ProblemType];
 
             // should be started properly cause server sends at most as many tasks to do as count of component's tasks in idle state
-            bool started = ComputationalTaskPool.StartComputationalTask(() =>
+            bool started = ThreadManager.StartInNewThread(() =>
             {
                 var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.ProblemData);
 
@@ -107,7 +103,7 @@ namespace _15pl04.Ucc.TaskManager
                 var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
                 var stop = DateTime.UtcNow;
 
-                var partialProblems = new List<PartialProblemsMessage.PartialProblem>();
+                var partialProblems = new List<PartialProblemsMessage.PartialProblem>(partialProblemsData.GetLength(0));
                 for (int i = 0; i < partialProblemsData.GetLength(0); i++)
                 {
                     partialProblems.Add(new PartialProblemsMessage.PartialProblem()
