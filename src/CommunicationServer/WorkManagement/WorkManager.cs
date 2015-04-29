@@ -386,6 +386,15 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                     }
 
                     work = new MergeWork(nodeId, solutionsToAssign);
+
+                    WorkAssignmentEventArgs e = new WorkAssignmentEventArgs()
+                    {
+                        AssigneeId = nodeId,
+                        Work = work,
+                    };
+                    if (WorkAssignment != null)
+                        WorkAssignment(this, e);
+
                     return true;
                 }
 
@@ -401,6 +410,16 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                     int availableThreads = CountAvailableSolvingThreads(problemToDivide.Type);
 
                     work = new DivisionWork(nodeId, problemToDivide, (ulong)availableThreads);
+
+                    WorkAssignmentEventArgs e = new WorkAssignmentEventArgs()
+                    {
+                        AssigneeId = nodeId,
+                        Work = work,
+                    };
+                    if (WorkAssignment != null)
+                        WorkAssignment(this, e);
+
+                    return true;
                 }
 
                 work = null;
@@ -431,6 +450,15 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 if (problemsToAssign.Count != 0)
                 {
                     work = new ComputationWork(nodeId, problemsToAssign);
+
+                    WorkAssignmentEventArgs e = new WorkAssignmentEventArgs()
+                    {
+                        AssigneeId = nodeId,
+                        Work = work,
+                    };
+                    if (WorkAssignment != null)
+                        WorkAssignment(this, e);
+
                     return true;
                 }
 
