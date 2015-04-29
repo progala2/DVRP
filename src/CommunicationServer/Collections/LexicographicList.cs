@@ -82,6 +82,28 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
             return true;
         }
 
+        public bool TryRemoveFirst(TKey key, Predicate<TVal> predicate, out TVal value)
+        {
+            value = default(TVal);
+
+            if (!_dictionary.ContainsKey(key) || _dictionary[key].Count == 0)
+                return false;
+
+            LinkedListNode<TVal> node = _dictionary[key].First;
+            while (node != null)
+            {
+                if (predicate(node.Value))
+                {
+                    value = node.Value;
+                    _dictionary[key].Remove(node);
+                    break;
+                }
+                node = node.Next;
+            }
+
+            return !(node == null);
+        }
+
         public bool TryRemove(TKey key, TVal value)
         {
             if (!_dictionary.ContainsKey(key) || _dictionary[key].Count == 0)
@@ -100,6 +122,34 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
             }
             else
                 return null;
+        }
+
+
+        #endregion
+
+
+        #region Getting elements
+
+
+        public bool TryGetFirst(TKey key, Predicate<TVal> predicate, out TVal value)
+        {
+            value = default(TVal);
+
+            if (!_dictionary.ContainsKey(key) || _dictionary[key].Count == 0)
+                return false;
+
+            LinkedListNode<TVal> node = _dictionary[key].First;
+            while (node != null)
+            {
+                if (predicate(node.Value))
+                {
+                    value = node.Value;
+                    break;
+                }
+                node = node.Next;
+            }
+
+            return !(node == null);
         }
 
 

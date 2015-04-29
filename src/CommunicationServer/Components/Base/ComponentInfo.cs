@@ -21,12 +21,12 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
             get; 
             private set; 
         }
-        public ulong TimestampAge
+        public uint TimestampAge
         {
             get
             {
                 TimeSpan diff = DateTime.UtcNow - Timestamp;
-                return (ulong)diff.TotalMilliseconds;
+                return (uint)diff.TotalMilliseconds;
             }
         }
 

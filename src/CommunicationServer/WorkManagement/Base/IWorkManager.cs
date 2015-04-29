@@ -1,23 +1,26 @@
 ﻿using _15pl04.Ucc.CommunicationServer.Components;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
 using System;
-using System.Collections.Generic;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
 {
     public delegate void WorkAssignmentEventHandler(object sender, WorkAssignmentEventArgs e);
 
-    public interface IWorkManager
+    internal interface IWorkManager
     {
         event WorkAssignmentEventHandler WorkAssignment;
 
-        bool TryGetWork(SolverNodeInfo node, out Work work);
-        bool TryGetSolution(ulong problemId, out Solution solution);
+        bool TryAssignWork(SolverNodeInfo node, out Work work);
 
-        ulong AddProblem(Problem problem);
-        void AddPartialProblems(IList<PartialProblem> partialProblems);
-        void AddSolution(Solution solution);
-        void AddPartialSolutions(IList<PartialSolution> partialSolutions);
+        void AddProblem(string type, byte[] data, ulong solvingTimeout);
+        void AddPartialProblem(ulong problemId, ulong partialProblemId, byte[] privateData);
+        void AddSolution(ulong problemId, byte[] data, ulong computationsTime, bool timeoutOccured);
+        void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime, bool timeoutOccured);
+
+        Problem GetProblem(ulong problemId);
+        Solution GetSolution(ulong problemId);
+
+        void RemoveSolution(ulong problemId);
     }
 
     public class WorkAssignmentEventArgs : EventArgs

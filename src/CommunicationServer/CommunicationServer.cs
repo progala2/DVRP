@@ -10,7 +10,7 @@ namespace _15pl04.Ucc.CommunicationServer
 {
     internal class CommunicationServer
     {
-        private const int ComponentOverseerCheckInterval = 1000;
+        private const uint ComponentOverseerCheckInterval = 1000;
 
         public ServerConfig Config { get; private set; }
 
@@ -26,13 +26,9 @@ namespace _15pl04.Ucc.CommunicationServer
 
             Config = config;
 
-            MessageSerializer serializer = new MessageSerializer();
-            MessageValidator validator = new MessageValidator();
-            Marshaller marshaller = new Marshaller(serializer, validator);
-
             _componentOverseer = new ComponentOverseer(Config.CommunicationTimeout, ComponentOverseerCheckInterval);
             _workManager = new WorkManager(_componentOverseer);
-            _msgProcessor = new MessageProcessor(marshaller, _componentOverseer, _workManager);
+            _msgProcessor = new MessageProcessor(_componentOverseer, _workManager);
             _tcpServer = new TcpServer(Config.Address, _msgProcessor);
         }
 

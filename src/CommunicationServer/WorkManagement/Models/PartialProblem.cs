@@ -3,8 +3,24 @@ using System;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
 {
-    public class PartialProblem
+    internal class PartialProblem
     {
+        public enum PartialProblemState
+        {
+            AwaitingComputation = 0,
+            BeingComputed,
+        }
+
+        public PartialProblemState State
+        {
+            get;
+            set;
+        }
+        public ulong? ComputingNodeId
+        {
+            get;
+            set;
+        }
         public Problem Problem
         {
             get;
@@ -22,39 +38,20 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
         }
         public byte[] CommonData
         {
-            get;
-            private set;
-        }
-        public ulong DividingTaskManagerId
-        {
-            get;
-            private set;
-        }
-
-
-        public PartialProblem(Problem problem, ulong id, 
-            byte[] privateData, byte[] commonData, ulong dividingTaskManagerId)
-        {
-            if (!problem.Id.HasValue)
-                throw new Exception("Problem has no id set.");
-
-            Problem = problem;
-            Id = id;
-            PrivateData = privateData;
-            CommonData = commonData;
-            DividingTaskManagerId = dividingTaskManagerId;
-        }
-
-        public static explicit operator PartialProblemsMessage.PartialProblem(PartialProblem pp)
-        {
-            var output = new PartialProblemsMessage.PartialProblem()
+            get
             {
-                Data = pp.PrivateData,
-                PartialProblemId = pp.Id,
-                TaskManagerId = pp.DividingTaskManagerId,
-            };
+                return Problem.CommonData;
+            }
+        }
 
-            return output;
+        public PartialProblem(ulong id, Problem problem, byte[] privateData)
+        {
+            Id = id;
+            Problem = problem;
+            PrivateData = privateData;
+
+            if (problem.CommonData == null)
+                throw new Exception("Common data in the corresponding problem instance must be set.");
         }
     }
 }

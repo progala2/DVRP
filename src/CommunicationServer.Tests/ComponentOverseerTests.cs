@@ -46,8 +46,8 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         [TestMethod]
         public void NodeIsDeregisteredAfterTimeout()
         {
-            ulong communicationTimeout = 500;
-            int checkInterval = 100;
+            uint communicationTimeout = 500;
+            uint checkInterval = 100;
             Stopwatch stopwatch = new Stopwatch();
             AutoResetEvent deregistrationEventLock = new AutoResetEvent(false);
 

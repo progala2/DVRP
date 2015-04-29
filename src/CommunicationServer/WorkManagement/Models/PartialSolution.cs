@@ -1,9 +1,27 @@
 ﻿using _15pl04.Ucc.Commons.Messaging.Models;
+using System.Collections.Generic;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
 {
-    public class PartialSolution
+    internal class PartialSolution
     {
+        public enum PartialSolutionState
+        {
+            BeingGathered = 0,
+            AwaitingMerge,
+            BeingMerged,
+        }
+
+        public PartialSolutionState State
+        {
+            get;
+            set;
+        }
+        public ulong? MergingNodeId
+        {
+            get;
+            set;
+        }
         public PartialProblem PartialProblem
         {
             get;
@@ -24,34 +42,14 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
             get;
             private set;
         }
-        public ulong SolvingComputationalNodeId
-        {
-            get;
-            private set;
-        }
 
-        public PartialSolution(PartialProblem problem, byte[] data,
-            ulong computationsTime, bool timeoutOccured, ulong solverNodeId)
+        public PartialSolution(PartialProblem partialProblem, byte[] data, ulong computationsTime, bool timeoutOccured)
         {
-            PartialProblem = problem;
+            PartialProblem = partialProblem;
             Data = data;
             ComputationsTime = computationsTime;
             TimeoutOccured = timeoutOccured;
-            SolvingComputationalNodeId = solverNodeId;
         }
 
-        public static explicit operator SolutionsMessage.Solution(PartialSolution ps)
-        {
-            var output = new SolutionsMessage.Solution()
-            {
-                ComputationsTime = ps.ComputationsTime,
-                Data = ps.Data,
-                PartialProblemId = ps.PartialProblem.Id,
-                TimeoutOccured = ps.TimeoutOccured,
-                Type = SolutionsMessage.SolutionType.Partial,
-            };
-
-            return output;
-        }
     }
 }

@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                 // Validation - might not be necessary. 
                 string xmlString = Encoding.UTF8.GetString(rawData, begin, separatorIndices[i] - begin);
 
-                if (xmlString == string.Empty)
+                if (xmlString == string.Empty) // TODO fix & remove
                     break;
 
                 XDocument xmlDoc = XDocument.Parse(xmlString);

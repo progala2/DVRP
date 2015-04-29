@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 {
-    public class ComputationWork : Work
+    internal class ComputationWork : Work
     {
         public List<PartialProblem> PartialProblems
         {
@@ -26,18 +26,21 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
         public ComputationWork(ulong assigneeId, IList<PartialProblem> partialProblems)
         {
-            if (partialProblems == null || partialProblems.Count == 0)
+            if (partialProblems == null)
+                throw new ArgumentNullException();
+
+            if (partialProblems.Count == 0)
                 throw new ArgumentException();
 
-            ulong problemId = partialProblems[0].Problem.Id.Value;
+            ulong problemId = partialProblems[0].Problem.Id;
             foreach (PartialProblem pp in partialProblems)
             {
                 if (problemId != pp.Problem.Id)
                     throw new ArgumentException("All partial problems must belong to the same problem instance.");
             }
             
-            AssigneeId = assigneeId;
             PartialProblems = new List<PartialProblem>(partialProblems);
+            AssigneeId = assigneeId;
         }
 
         public override Message CreateMessage()
@@ -45,16 +48,25 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             var msgPartialProblems = new List<PartialProblemsMessage.PartialProblem>(PartialProblems.Count);
 
             foreach (PartialProblem pp in PartialProblems)
-                msgPartialProblems.Add((PartialProblemsMessage.PartialProblem)pp);
+            {
+                var msgPP = new PartialProblemsMessage.PartialProblem()
+                {
+                    Data = pp.PrivateData,
+                    PartialProblemId = pp.Id,
+                    TaskManagerId = pp.Problem.DividingNodeId.Value,
+                };
+                msgPartialProblems.Add(msgPP);
+            }
 
+            Problem problem = PartialProblems[0].Problem;
 
             var message = new PartialProblemsMessage()
             {
-                CommonData = PartialProblems[0].CommonData,
+                CommonData = problem.CommonData,
                 PartialProblems = msgPartialProblems,
-                ProblemInstanceId = PartialProblems[0].Problem.Id.Value,
-                ProblemType = PartialProblems[0].Problem.ProblemType,
-                SolvingTimeout = PartialProblems[0].Problem.SolvingTimeout,                
+                ProblemInstanceId = problem.Id,
+                ProblemType = problem.Type,
+                SolvingTimeout = problem.SolvingTimeout,
             };
 
             return message;

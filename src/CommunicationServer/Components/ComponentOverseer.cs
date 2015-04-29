@@ -11,33 +11,44 @@ using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.CommunicationServer.Components
 {
-    public class ComponentOverseer : IComponentOverseer
+    internal class ComponentOverseer : IComponentOverseer
     {
         public event DeregisterationEventHandler Deregistration;
 
+        public uint CommunicationTimeout
+        {
+            get;
+            private set;
+        }
+        public uint CheckInterval
+        {
+            get;
+            private set;
+        }
         public bool IsMonitoring
         {
-            get { return _isMonitoring; }
+            get 
+            { 
+                return _isMonitoring; 
+            }
         }
+
 
         private static ILogger _logger = new ConsoleLogger();
         private ConcurrentDictionary<ulong, ComponentInfo> _registeredComponents;
         private Random _random;
 
-        private ulong _communicationTimeout;
-        private int _checkInterval;
-
         private CancellationTokenSource _cancellationTokenSource;
         private volatile bool _isMonitoring;
 
 
-        public ComponentOverseer(ulong communicationTimeout, int checkInterval)
+        public ComponentOverseer(uint communicationTimeout, uint checkInterval)
         {
             _registeredComponents = new ConcurrentDictionary<ulong, ComponentInfo>();
             _random = new Random();
 
-            _communicationTimeout = communicationTimeout;
-            _checkInterval = checkInterval;
+            CommunicationTimeout = communicationTimeout;
+            CheckInterval = checkInterval;
         }
 
         public bool TryRegister(ComponentInfo component)
@@ -116,13 +127,13 @@ namespace _15pl04.Ucc.CommunicationServer.Components
                     var now = DateTime.UtcNow;
 
                     foreach (var i in _registeredComponents)
-                        if (i.Value.TimestampAge >= _communicationTimeout)
+                        if (i.Value.TimestampAge >= CommunicationTimeout)
                             TryDeregister(i.Key);
 
                     if (token.IsCancellationRequested)
                         return;
 
-                    Thread.Sleep(_checkInterval);
+                    Thread.Sleep((int)CheckInterval);
                 }
             }, token).Start();
 

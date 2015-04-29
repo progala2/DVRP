@@ -10,6 +10,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
     {
         event DeregisterationEventHandler Deregistration;
 
+        uint CommunicationTimeout { get; }
         bool IsMonitoring { get; }
 
         bool TryRegister(ComponentInfo component);

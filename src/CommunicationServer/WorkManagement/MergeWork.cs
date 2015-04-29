@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 {
-    public class MergeWork : Work
+    internal class MergeWork : Work
     {
         public List<PartialSolution> PartialSolutions 
         { 
@@ -29,10 +29,12 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             if (partialSolutions == null || partialSolutions.Count == 0)
                 throw new ArgumentException();
 
-            ulong problemId = partialSolutions[0].PartialProblem.Problem.Id.Value;
+            ulong expectedProblemId = partialSolutions[0].PartialProblem.Problem.Id;
             foreach (PartialSolution ps in partialSolutions)
             {
-                if (problemId != ps.PartialProblem.Problem.Id)
+                ulong problemId = partialSolutions[0].PartialProblem.Problem.Id;
+
+                if (expectedProblemId != problemId)
                     throw new ArgumentException("All partial solutions must belong to the same problem instance.");
             }
 
@@ -45,16 +47,25 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             var msgPartialSolutions = new List<SolutionsMessage.Solution>(PartialSolutions.Count);
 
             foreach (PartialSolution ps in PartialSolutions)
-                msgPartialSolutions.Add((SolutionsMessage.Solution)ps);
+            {
+                var msgPS = new SolutionsMessage.Solution()
+                {
+                    ComputationsTime = ps.ComputationsTime,
+                    Data = ps.Data,
+                    PartialProblemId = ps.PartialProblem.Id,
+                    TimeoutOccured = ps.TimeoutOccured,
+                    Type = SolutionsMessage.SolutionType.Partial,
+                };
+                msgPartialSolutions.Add(msgPS);
+            }
 
-
-            Problem problemInstance = PartialSolutions[0].PartialProblem.Problem;
+            Problem problem = PartialSolutions[0].PartialProblem.Problem;
 
             var message = new SolutionsMessage()
             {
-                CommonData = PartialSolutions[0].PartialProblem.CommonData,
-                ProblemInstanceId = problemInstance.Id.Value,
-                ProblemType = problemInstance.ProblemType,
+                CommonData =  problem.CommonData,
+                ProblemInstanceId = problem.Id,
+                ProblemType = problem.Type,
                 Solutions = msgPartialSolutions,
             };
 

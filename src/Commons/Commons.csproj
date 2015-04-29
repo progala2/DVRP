@@ -42,6 +42,7 @@
       <DependentUpon>MessageSchemas.resx</DependentUpon>
     </Compile>
     <Compile Include="TaskSolverLoader.cs" />
+    <Compile Include="Utilities\DictionaryExtensions.cs" />
     <Compile Include="Utilities\IPEndPointParser.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />

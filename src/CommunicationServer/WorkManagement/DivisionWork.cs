@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 {
-    public class DivisionWork : Work
+    internal class DivisionWork : Work
     {
         public Problem Problem 
         { 
@@ -41,8 +41,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             {
                 ComputationalNodes = Problem.NumberOfParts.Value,
                 ProblemData = Problem.Data,
-                ProblemInstanceId = Problem.Id.Value,
-                ProblemType = Problem.ProblemType,
+                ProblemInstanceId = Problem.Id,
+                ProblemType = Problem.Type,
                 TaskManagerId = AssigneeId,
             };
 

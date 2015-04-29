@@ -2,7 +2,7 @@
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
 {
-    public class Solution
+    internal class Solution
     {
         public Problem Problem
         {
@@ -24,35 +24,13 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
             get;
             private set;
         }
-        public ulong MergingTaskManagerId
-        {
-            get;
-            private set;
-        }
 
-
-        public Solution(Problem problem, byte[] data, ulong computationsTime, 
-            bool timeoutOccured, ulong mergingTaskManagerId)
+        public Solution(Problem problem, byte[] data, ulong computationsTime, bool timeoutOccured)
         {
             Problem = problem;
             Data = data;
             ComputationsTime = computationsTime;
             TimeoutOccured = timeoutOccured;
-            MergingTaskManagerId = mergingTaskManagerId;
-        }
-
-        public static explicit operator SolutionsMessage.Solution(Solution s)
-        {
-            var output = new SolutionsMessage.Solution()
-            {
-                ComputationsTime = s.ComputationsTime,
-                Data = s.Data,
-                PartialProblemId = null,
-                TimeoutOccured = s.TimeoutOccured,
-                Type = SolutionsMessage.SolutionType.Final,
-            };
-
-            return output;
         }
     }
 }
