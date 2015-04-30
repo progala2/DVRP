@@ -31,7 +31,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         #region Private fields
 
 
-        private static ILogger _logger = new ConsoleLogger();
+        private static ILogger _logger = new TraceSourceLogger(typeof(WorkManager).Name);
+
         private Random _random = new Random();
 
         private IComponentOverseer _componentOverseer;

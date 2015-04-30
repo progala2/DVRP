@@ -161,7 +161,7 @@ namespace _15pl04.Ucc.Commons.Logging
             string className = method.DeclaringType.Name;
             string methodName = method.Name;
 
-            return "[" + className + "/" + methodName + "]::";
+            return "[" + className + "/" + methodName + "]";
         }
     }
 }

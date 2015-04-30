@@ -20,7 +20,8 @@ namespace _15pl04.Ucc.CommunicationServer
         private const int ReadBufferSize = 4096; // TODO make sure it's enough
 
 
-        private static ILogger _logger = new ConsoleLogger(); 
+        private static ILogger _logger = new TraceSourceLogger(typeof(TcpServer).Name);
+
         private IDataProcessor _dataProcessor;
         private Socket _listenerSocket;
 

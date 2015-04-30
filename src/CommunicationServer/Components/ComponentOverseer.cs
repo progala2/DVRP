@@ -34,7 +34,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         }
 
 
-        private static ILogger _logger = new ConsoleLogger();
+        private static ILogger _logger = new TraceSourceLogger(typeof(ComponentOverseer).Name);
         private ConcurrentDictionary<ulong, ComponentInfo> _registeredComponents;
         private Random _random;
 

@@ -33,7 +33,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         #region Private fields
 
 
-        private static ILogger _logger = new ConsoleLogger();
+        private static ILogger _logger = new TraceSourceLogger(typeof(MessageProcessor).Name);
 
         private RawDataQueue _inputDataQueue;
 
@@ -197,7 +197,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         {
                             var solutionsMsg = msg as SolutionsMessage;
 
-                            
+
                             // TODO
                             break;
                         }
