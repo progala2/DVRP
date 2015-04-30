@@ -40,6 +40,8 @@
     <Compile Include="Computations\ComputationalThreadStatus.cs" />
     <Compile Include="Computations\ThreadPoolThreadManager.cs" />
     <Compile Include="Computations\ThreadPoolThreadManagerFactory.cs" />
+    <Compile Include="Logging\CustomConsoleTraceListener.cs" />
+    <Compile Include="Logging\TraceSourceLogger.cs" />
     <Compile Include="MessageSchemas.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
