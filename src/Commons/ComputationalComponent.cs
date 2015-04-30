@@ -122,7 +122,6 @@ namespace _15pl04.Ucc.Commons.Computations
 
                 // start informing about statuses of threads            
                 _messagesProcessingTask.Start();
-                IsRunning = true;
 
                 RaiseEvent(OnStarted);
             }
@@ -193,7 +192,6 @@ namespace _15pl04.Ucc.Commons.Computations
             _messagesToSendManualResetEvent = new ManualResetEvent(false);
 
             _messagesProcessingTask = new Task(() => ProcessMessages());
-            IsRunning = false;
         }
 
         /// <summary>
@@ -201,9 +199,10 @@ namespace _15pl04.Ucc.Commons.Computations
         /// </summary>
         private void ProcessMessages()
         {
+            IsRunning = true;
             Message messageToSend;
             int timeToWait = (int)(Timeout / 2);
-            while (true)
+            while (IsRunning)
             {
                 messageToSend = GetStatusMessage();
                 if (!ProcessMessage(messageToSend))
@@ -221,6 +220,7 @@ namespace _15pl04.Ucc.Commons.Computations
                     }
                 }
             }
+            IsRunning = false;
         }
 
         private bool ProcessMessage(Message messageToSend)

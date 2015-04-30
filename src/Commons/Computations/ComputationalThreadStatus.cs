@@ -22,7 +22,7 @@ namespace _15pl04.Ucc.Commons.Computations
         /// <summary>
         /// Gets time since last state change.
         /// </summary>
-        public TimeSpan TimeSinceLastStateChange { get { return DateTime.UtcNow - LastStateChange; } }
+        public TimeSpan TimeSinceLastStateChange { get { return DateTime.UtcNow - _lastStateChange; } }
 
         /// <summary>
         /// Gets the ID of the problem assigned when client connected which current computations refer to.

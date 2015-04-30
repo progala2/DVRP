@@ -30,7 +30,6 @@ namespace _15pl04.Ucc.Commons
         /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TimeoutException">connection to host timed out</exception>
         public byte[] SendData(byte[] data)
         {
-            List<byte> ret = new List<byte>();
             byte[] buf = new byte[BufferSize];
 
             try

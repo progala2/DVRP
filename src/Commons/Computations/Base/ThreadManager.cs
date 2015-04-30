@@ -28,7 +28,7 @@ namespace _15pl04.Ucc.Commons.Computations
 
 
         /// <summary>
-        /// Creates a thread manager which provides starting and cancelling threads.
+        /// Creates a thread manager which provides starting threads.
         /// </summary>
         /// <param name="parallelThreads">The maximum number of threads that could be efficiently run in parallel.</param>
         protected ThreadManager(byte parallelThreads)
