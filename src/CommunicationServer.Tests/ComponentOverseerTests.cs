@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using _15pl04.Ucc.Commons.Components;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests
 {

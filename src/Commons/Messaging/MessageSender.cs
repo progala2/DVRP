@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using _15pl04.Ucc.Commons.Messaging;
+using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.Commons.Messaging.Marshalling;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using _15pl04.Ucc.Commons.Utilities;
 
-namespace _15pl04.Ucc.Commons
+namespace _15pl04.Ucc.Commons.Messaging
 {
     public class MessageSender
     {

@@ -6,6 +6,8 @@ using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
 using System;
 using System.Collections.Generic;
+using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net;
 
-namespace _15pl04.Ucc.Commons
+namespace _15pl04.Ucc.Commons.Utilities
 {
     public static class IPEndPointParser
     {

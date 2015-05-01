@@ -1,6 +1,7 @@
 ﻿using System;
+using _15pl04.Ucc.Commons.Messaging.Models;
 
-namespace _15pl04.Ucc.Commons.Messaging.Models.Base
+namespace _15pl04.Ucc.Commons.Messaging
 {
     public enum MessageClass
     {

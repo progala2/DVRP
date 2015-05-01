@@ -1,4 +1,5 @@
 ﻿using System;
+using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 

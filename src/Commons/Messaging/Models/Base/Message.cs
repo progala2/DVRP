@@ -1,10 +1,9 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace _15pl04.Ucc.Commons.Messaging.Models
+namespace _15pl04.Ucc.Commons.Messaging.Models.Base
 {
     public abstract class Message
     {

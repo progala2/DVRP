@@ -5,6 +5,9 @@ using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using System.Threading;
 using System.Collections.Generic;
+using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.Commons.Messaging.Marshalling;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests
 {
@@ -35,7 +38,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 ParallelThreads = 5,
                 SolvableProblems = new System.Collections.Generic.List<string> { "dvrp" },
-                ComponentType = Commons.ComponentType.ComputationalNode,
+                ComponentType = ComponentType.ComputationalNode,
             };
 
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
@@ -57,7 +60,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 ParallelThreads = 5,
                 SolvableProblems = new System.Collections.Generic.List<string> { "dvrp" },
-                ComponentType = Commons.ComponentType.ComputationalNode,
+                ComponentType = ComponentType.ComputationalNode,
             };
             byte[] rawMsg = _marshaller.Marshall(new Message[] { msg });
 

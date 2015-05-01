@@ -1,9 +1,10 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {

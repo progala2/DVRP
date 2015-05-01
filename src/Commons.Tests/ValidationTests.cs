@@ -1,8 +1,8 @@
 ﻿using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Base;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Xml.Linq;
+using _15pl04.Ucc.Commons.Messaging.Marshalling;
+using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
 
 namespace _15pl04.Ucc.Commons.Tests
 {

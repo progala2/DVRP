@@ -1,14 +1,13 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Base;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
 
-namespace _15pl04.Ucc.Commons.Messaging
+namespace _15pl04.Ucc.Commons.Messaging.Marshalling
 {
     public class MessageValidator : IXmlValidator<MessageClass>
     {

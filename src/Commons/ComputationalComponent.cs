@@ -1,14 +1,17 @@
-﻿using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.Commons.Computations.Base;
+using _15pl04.Ucc.Commons.Messaging;
+using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
-namespace _15pl04.Ucc.Commons.Computations
+namespace _15pl04.Ucc.Commons
 {
     /// <summary>
     /// Base class for ComputationalNode and TaskManager.

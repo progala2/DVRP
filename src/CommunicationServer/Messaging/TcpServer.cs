@@ -1,14 +1,13 @@
-﻿using _15pl04.Ucc.Commons.Logging;
-using _15pl04.Ucc.CommunicationServer.Messaging;
-using _15pl04.Ucc.CommunicationServer.Messaging.Base;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using _15pl04.Ucc.Commons.Logging;
+using _15pl04.Ucc.CommunicationServer.Messaging.Base;
 
-namespace _15pl04.Ucc.CommunicationServer
+namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
     internal class TcpServer
     {

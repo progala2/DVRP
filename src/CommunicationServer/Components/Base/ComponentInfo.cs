@@ -2,6 +2,7 @@
 using _15pl04.Ucc.Commons.Messaging.Models;
 using System;
 using System.Collections.Generic;
+using _15pl04.Ucc.Commons.Components;
 
 namespace _15pl04.Ucc.CommunicationServer.Components.Base
 {

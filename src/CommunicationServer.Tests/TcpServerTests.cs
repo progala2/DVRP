@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using _15pl04.Ucc.CommunicationServer.Messaging;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests
 {

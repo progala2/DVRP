@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Net;
 using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.Commons.Utilities;
 
 namespace _15pl04.Ucc.CommunicationServer
 {

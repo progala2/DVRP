@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
 
-namespace _15pl04.Ucc.Commons.Computations
+namespace _15pl04.Ucc.Commons.Computations.Base
 {
     /// <summary>
     /// Represents a thread manager which provides starting and cancelling threads.

@@ -1,9 +1,7 @@
 ﻿using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Base;
 using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.CommunicationServer.Collections;
 using _15pl04.Ucc.CommunicationServer.Components;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
@@ -14,6 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using _15pl04.Ucc.Commons.Messaging.Marshalling;
+using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
