@@ -425,7 +425,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                     && node.SolvableProblems.Contains(ps.PartialProblem.Problem.Type))
                     as List<PartialSolution>;
 
-                if (partialSolutionsToMerge.Count != 0)
+                if (partialSolutionsToMerge != null && partialSolutionsToMerge.Count != 0)
                 {
                     ulong problemId = partialSolutionsToMerge[0].PartialProblem.Problem.Id;
 

@@ -153,7 +153,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
                              where c.ComponentType == type
                              select c;
 
-            return (ICollection<ComponentInfo>)components;
+            return new List<ComponentInfo>(components);
         }
 
         public ComponentInfo GetComponent(ulong componentId)
@@ -163,8 +163,5 @@ namespace _15pl04.Ucc.CommunicationServer.Components
 
             return _registeredComponents[componentId];
         }
-
-
-
     }
 }

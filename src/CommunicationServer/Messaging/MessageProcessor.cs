@@ -133,7 +133,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     var response = HandleMessage(msg, metadata);
                     responseMessages.AddRange(response);
                 }
-                catch (SystemException)
+                catch (InvalidCastException)
                 {
                     _logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
                     var errorMsg = new ErrorMessage()
