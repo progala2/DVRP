@@ -12,5 +12,7 @@ namespace _15pl04.Ucc.Commons.Logging
         void Warn(string s);
 
         void Error(string s);
+
+        
     }
 }

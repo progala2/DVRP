@@ -356,7 +356,22 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
         private int CountAvailableSolvingThreads(string problemType)
         {
-            throw new NotImplementedException();
+            int availableThreads = 0;
+            
+            foreach (SolverNodeInfo sn in _componentOverseer.GetComponents(ComponentType.ComputationalNode))
+            {
+                if (!sn.SolvableProblems.Contains(problemType))
+                    continue;
+
+                //availableThreads += sn.NumberOfThreads; // Count all threads.
+                availableThreads += sn.ThreadInfo.Count(ts => ts.State == ThreadStatus.ThreadState.Idle); // OR count only the idle ones.
+            }
+
+            // No available threads found be we still need to divide the problem into some parts.
+            if (availableThreads == 0)
+                availableThreads = 3;
+
+            return availableThreads;
         }
 
 
