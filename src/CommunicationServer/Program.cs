@@ -12,7 +12,7 @@ namespace _15pl04.Ucc.CommunicationServer
 
             var appSettings = ConfigurationManager.AppSettings;
             var address = "127.0.0.1"; //Dns.GetHostName();
-            config.Address = IPEndPointParser.Parse(address, appSettings["listeningPort"]);
+            config.Address = IpEndPointParser.Parse(address, appSettings["listeningPort"]);
             config.CommunicationTimeout = uint.Parse(appSettings["timeout"]);
             config.Mode = ServerConfig.ServerMode.Primary;
 

@@ -17,7 +17,7 @@ namespace _15pl04.Ucc.ComputationalClient
             var appSettings = ConfigurationManager.AppSettings;
             var primaryCSaddress = appSettings["primaryCSaddress"];
             var primaryCSport = appSettings["primaryCSport"];
-            var serverAddress = IPEndPointParser.Parse(primaryCSaddress, primaryCSport);
+            var serverAddress = IpEndPointParser.Parse(primaryCSaddress, primaryCSport);
             Console.WriteLine("server address from App.config: " + serverAddress);
 
             var computationalClient = new ComputationalClient(serverAddress);
@@ -35,7 +35,7 @@ namespace _15pl04.Ucc.ComputationalClient
                 if (line == "solve")
                 {
                     var numbers = GenerateNumbers(10, 0, 50);
-                    var minMaxProblem = new MMProblem(numbers);
+                    var minMaxProblem = new MmProblem(numbers);
                     var problemData = GenerateProblemData(minMaxProblem);
                     computationalClient.SendSolveRequest(problemType, problemData, null);
                 }
@@ -64,7 +64,7 @@ namespace _15pl04.Ucc.ComputationalClient
             ColorfulConsole.WriteMessageExceptionInfo("Message sending exception", e.Message, e.Exception);
         }
 
-        private static byte[] GenerateProblemData(MMProblem minMaxProblem)
+        private static byte[] GenerateProblemData(MmProblem minMaxProblem)
         {
             using (var memoryStream = new MemoryStream())
             {

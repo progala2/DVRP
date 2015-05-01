@@ -7,15 +7,15 @@ namespace _15pl04.Ucc.Commons.Messaging.Models.Base
 {
     public abstract class Message
     {
-        private static readonly Dictionary<string, MessageClass> _messageTypes;
+        private static readonly Dictionary<string, MessageClass> MessageTypes;
 
         static Message()
         {
             var capacity = Enum.GetValues(typeof (MessageClass)).Length;
-            _messageTypes = new Dictionary<string, MessageClass>(capacity);
+            MessageTypes = new Dictionary<string, MessageClass>(capacity);
 
             foreach (var type in Enum.GetValues(typeof (MessageClass)).Cast<MessageClass>())
-                _messageTypes.Add(type.ToString(), type);
+                MessageTypes.Add(type.ToString(), type);
         }
 
         [XmlIgnore]
@@ -23,7 +23,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models.Base
 
         public static MessageClass GetMessageClassFromString(string str)
         {
-            return _messageTypes[str];
+            return MessageTypes[str];
         }
 
         public override string ToString()

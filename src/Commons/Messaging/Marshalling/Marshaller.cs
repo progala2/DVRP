@@ -63,12 +63,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
             {
                 if (messages.Count > 0)
                 {
-                    byte[] data;
                     MessageClass type;
                     for (var i = 0; i < messages.Count; ++i)
                     {
                         type = messages[i].MessageType;
-                        data = _serializer.Serialize(messages[i]);
+                        var data = _serializer.Serialize(messages[i]);
                         memStream.Write(data, 0, data.Length);
 
                         if (i != messages.Count - 1)

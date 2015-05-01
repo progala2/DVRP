@@ -42,13 +42,13 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
             foreach (var pp in PartialProblems)
             {
-                var msgPP = new PartialProblemsMessage.PartialProblem
+                var msgPp = new PartialProblemsMessage.PartialProblem
                 {
                     Data = pp.PrivateData,
                     PartialProblemId = pp.Id,
                     TaskManagerId = pp.Problem.DividingNodeId.Value
                 };
-                msgPartialProblems.Add(msgPP);
+                msgPartialProblems.Add(msgPp);
             }
 
             var problem = PartialProblems[0].Problem;

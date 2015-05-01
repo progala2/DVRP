@@ -14,7 +14,7 @@ namespace _15pl04.Ucc.TaskManager
             var appSettings = ConfigurationManager.AppSettings;
             var primaryCSaddress = appSettings["primaryCSaddress"];
             var primaryCSport = appSettings["primaryCSport"];
-            var serverAddress = IPEndPointParser.Parse(primaryCSaddress, primaryCSport);
+            var serverAddress = IpEndPointParser.Parse(primaryCSaddress, primaryCSport);
             Console.WriteLine("server address from App.config: " + serverAddress);
 
             var taskSolversDirectoryRelativePath = @""; // current directory

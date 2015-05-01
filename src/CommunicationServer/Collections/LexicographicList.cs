@@ -42,7 +42,7 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
                 node = node.Next;
             }
 
-            return !(node == null);
+            return node != null;
         }
 
         public int GetCountByKey(TKey key)
@@ -102,7 +102,7 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
                 node = node.Next;
             }
 
-            return !(node == null);
+            return node != null;
         }
 
         public bool TryRemove(TKey key, TVal value)

@@ -7,12 +7,12 @@ using UCCTaskSolver;
 
 namespace _15pl04.Ucc.MinMaxTaskSolver
 {
-    public class MMTaskSolver : TaskSolver
+    public class MmTaskSolver : TaskSolver
     {
         private readonly IFormatter _formatter;
-        private readonly MMProblem _minMaxProblem;
+        private readonly MmProblem _minMaxProblem;
 
-        public MMTaskSolver(byte[] problemData)
+        public MmTaskSolver(byte[] problemData)
             : base(problemData)
         {
             _formatter = new BinaryFormatter();
@@ -20,7 +20,7 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
             {
                 using (var memoryStream = new MemoryStream(problemData))
                 {
-                    _minMaxProblem = (MMProblem) _formatter.Deserialize(memoryStream);
+                    _minMaxProblem = (MmProblem) _formatter.Deserialize(memoryStream);
                 }
                 State = TaskSolverState.OK;
             }
@@ -54,7 +54,7 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
             {
                 using (var memoryStream = new MemoryStream())
                 {
-                    var partialProblem = new MMPartialProblem(partialProblemsNumbers[i]);
+                    var partialProblem = new MmPartialProblem(partialProblemsNumbers[i]);
                     _formatter.Serialize(memoryStream, partialProblem);
                     partialProblemsData[i] = memoryStream.ToArray();
                 }
@@ -66,16 +66,16 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
         {
             var min = int.MaxValue;
             var max = int.MinValue;
-            for (var i = 0; i < solutions.Length; i++)
+            foreach (var t in solutions)
             {
-                using (var memoryStream = new MemoryStream(solutions[i]))
+                using (var memoryStream = new MemoryStream(t))
                 {
-                    var solution = (MMSolution) _formatter.Deserialize(memoryStream);
+                    var solution = (MmSolution) _formatter.Deserialize(memoryStream);
                     if (solution.Min < min) min = solution.Min;
                     if (solution.Max > max) max = solution.Max;
                 }
             }
-            var finalSolution = new MMSolution(min, max);
+            var finalSolution = new MmSolution(min, max);
             using (var memoryStream = new MemoryStream())
             {
                 _formatter.Serialize(memoryStream, finalSolution);
@@ -85,10 +85,10 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
 
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
-            MMPartialProblem partialProblem;
+            MmPartialProblem partialProblem;
             using (var memoryStream = new MemoryStream(partialData))
             {
-                partialProblem = (MMPartialProblem) _formatter.Deserialize(memoryStream);
+                partialProblem = (MmPartialProblem) _formatter.Deserialize(memoryStream);
             }
             var min = int.MaxValue;
             var max = int.MinValue;
@@ -101,7 +101,7 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
                     if (partialProblem.Numbers[i] > max) max = partialProblem.Numbers[i];
                 }
             }
-            var solution = new MMSolution(min, max);
+            var solution = new MmSolution(min, max);
             using (var memoryStream = new MemoryStream())
             {
                 _formatter.Serialize(memoryStream, solution);

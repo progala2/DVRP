@@ -84,11 +84,11 @@ namespace _15pl04.Ucc.TaskManager
         /// </exception>
         private void DivideProblemMessageHandler(DivideProblemMessage message)
         {
-            if (ID != message.TaskManagerId)
+            if (Id != message.TaskManagerId)
             {
                 // shouldn't ever get here - received message for other TaskManager
                 throw new InvalidOperationException(
-                    string.Format("TaskManager manager with ID={0} received message for TaskManager with ID={1}.", ID,
+                    string.Format("TaskManager manager with ID={0} received message for TaskManager with ID={1}.", Id,
                         message.TaskManagerId));
             }
             if (!TaskSolvers.ContainsKey(message.ProblemType))
@@ -116,7 +116,7 @@ namespace _15pl04.Ucc.TaskManager
                     {
                         PartialProblemId = (ulong) i,
                         Data = partialProblemsData[i],
-                        TaskManagerId = ID
+                        TaskManagerId = Id
                     });
                 }
 

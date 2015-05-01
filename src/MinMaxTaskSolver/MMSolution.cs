@@ -3,9 +3,9 @@
 namespace _15pl04.Ucc.MinMaxTaskSolver
 {
     [Serializable]
-    public class MMSolution
+    public class MmSolution
     {
-        public MMSolution(int min, int max)
+        public MmSolution(int min, int max)
         {
             Min = min;
             Max = max;

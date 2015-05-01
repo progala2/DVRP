@@ -18,12 +18,13 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         {
             _overseer = new ComponentOverseer(10000, 5000);
 
-            var solvableProblems = new List<string>();
-            solvableProblems.Add("dvrp");
+            var solvableProblems = new List<string> {"dvrp"};
 
-            var serverInfo = new ServerInfo();
-            serverInfo.IpAddress = "127.0.0.1";
-            serverInfo.Port = 9135;
+            var serverInfo = new ServerInfo
+            {
+                IpAddress = "127.0.0.1",
+                Port = 9135
+            };
 
             ComponentInfo taskManager = new SolverNodeInfo(ComponentType.TaskManager, solvableProblems, 5);
             ComponentInfo computationalNode = new SolverNodeInfo(ComponentType.ComputationalNode, solvableProblems, 5);
@@ -54,8 +55,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             _overseer.Deregistration += (o, e) => { deregistrationEventLock.Set(); };
             _overseer.StartMonitoring();
 
-            var solvableProblems = new List<string>();
-            solvableProblems.Add("dvrp");
+            var solvableProblems = new List<string> {"dvrp"};
 
             ComponentInfo computationalNode = new SolverNodeInfo(ComponentType.ComputationalNode, solvableProblems, 5);
             _overseer.TryRegister(computationalNode);

@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace _15pl04.Ucc.Commons.Components
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class ServerInfo
     {

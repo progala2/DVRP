@@ -5,9 +5,9 @@ using System.Linq;
 namespace _15pl04.Ucc.MinMaxTaskSolver
 {
     [Serializable]
-    public class MMPartialProblem
+    public class MmPartialProblem
     {
-        public MMPartialProblem(IEnumerable<int> numbers)
+        public MmPartialProblem(IEnumerable<int> numbers)
         {
             Numbers = numbers.ToArray();
         }

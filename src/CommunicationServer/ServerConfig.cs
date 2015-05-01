@@ -25,10 +25,7 @@ namespace _15pl04.Ucc.CommunicationServer
 
 
             Address = new IPEndPoint(new IPAddress(new byte[] {127, 0, 0, 1}), 0);
-            if (backupMode == 0)
-                Mode = ServerMode.Primary;
-            else
-                Mode = ServerMode.Backup;
+            Mode = backupMode == 0 ? ServerMode.Primary : ServerMode.Backup;
             CommunicationTimeout = timeout;
         }
 

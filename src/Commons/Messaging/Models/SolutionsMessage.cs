@@ -8,7 +8,7 @@ using _15pl04.Ucc.Commons.Messaging.Models.Base;
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Solutions")]
     public class SolutionsMessage : Message
@@ -23,7 +23,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         }
 
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
-            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string noNamespaceSchemaLocation =
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
                 "Solutions.xsd";
 
         public SolutionsMessage()

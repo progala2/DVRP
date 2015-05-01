@@ -41,7 +41,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
             foreach (var ps in PartialSolutions)
             {
-                var msgPS = new SolutionsMessage.Solution
+                var msgPs = new SolutionsMessage.Solution
                 {
                     ComputationsTime = ps.ComputationsTime,
                     Data = ps.Data,
@@ -49,7 +49,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                     TimeoutOccured = ps.TimeoutOccured,
                     Type = SolutionsMessage.SolutionType.Partial
                 };
-                msgPartialSolutions.Add(msgPS);
+                msgPartialSolutions.Add(msgPs);
             }
 
             var problem = PartialSolutions[0].PartialProblem.Problem;

@@ -42,9 +42,9 @@ namespace _15pl04.Ucc.ComputationalClient
                 return null;
 
             uint? problemId = null;
-            SolveRequestResponseMessage solveRequestResponseMessage;
             foreach (var receivedMessage in receivedMessages)
             {
+                SolveRequestResponseMessage solveRequestResponseMessage;
                 if ((solveRequestResponseMessage = receivedMessage as SolveRequestResponseMessage) != null)
                 {
                     problemId = (uint?) solveRequestResponseMessage.AssignedId;
@@ -74,9 +74,9 @@ namespace _15pl04.Ucc.ComputationalClient
                 return null;
 
             var solutionsMessages = new List<SolutionsMessage>();
-            SolutionsMessage solutionsMessage;
             foreach (var receivedMessage in receivedMessages)
             {
+                SolutionsMessage solutionsMessage;
                 if ((solutionsMessage = receivedMessage as SolutionsMessage) != null)
                 {
                     solutionsMessages.Add(solutionsMessage);

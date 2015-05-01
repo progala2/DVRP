@@ -65,7 +65,7 @@ namespace _15pl04.Ucc.Commons
         /// <summary>
         ///     The ID assigned by the Communication Server.
         /// </summary>
-        public ulong ID { get; private set; }
+        public ulong Id { get; private set; }
 
         /// <summary>
         ///     The communication timeout configured on Communication Server.
@@ -155,12 +155,12 @@ namespace _15pl04.Ucc.Commons
 
             // and try to save received information
             var registered = false;
-            RegisterResponseMessage registerResponseMessage;
             foreach (var receivedMessage in receivedMessages)
             {
+                RegisterResponseMessage registerResponseMessage;
                 if ((registerResponseMessage = receivedMessage as RegisterResponseMessage) != null)
                 {
-                    ID = registerResponseMessage.AssignedId;
+                    Id = registerResponseMessage.AssignedId;
                     Timeout = registerResponseMessage.CommunicationTimeout;
                     registered = true;
                 }
@@ -186,7 +186,7 @@ namespace _15pl04.Ucc.Commons
             _messagesToSend = new ConcurrentQueue<Message>();
             _messagesToSendManualResetEvent = new ManualResetEvent(false);
 
-            _messagesProcessingTask = new Task(() => ProcessMessages());
+            _messagesProcessingTask = new Task(ProcessMessages);
         }
 
         /// <summary>
@@ -195,11 +195,10 @@ namespace _15pl04.Ucc.Commons
         private void ProcessMessages()
         {
             IsRunning = true;
-            Message messageToSend;
             var timeToWait = (int) (Timeout/2);
             while (IsRunning)
             {
-                messageToSend = GetStatusMessage();
+                Message messageToSend = GetStatusMessage();
                 if (!ProcessMessage(messageToSend))
                     break;
 
@@ -297,7 +296,7 @@ namespace _15pl04.Ucc.Commons
             }
             var statusMessage = new StatusMessage
             {
-                ComponentId = ID,
+                ComponentId = Id,
                 Threads = threadsStatuses
             };
             return statusMessage;

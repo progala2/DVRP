@@ -32,49 +32,42 @@ namespace _15pl04.Ucc.Commons
         {
             var buf = new byte[BufferSize];
 
+            var socket = new Socket(ServerAddress.AddressFamily,
+                SocketType.Stream,
+                ProtocolType.Tcp);
+
             try
             {
-                var socket = new Socket(ServerAddress.AddressFamily,
-                    SocketType.Stream,
-                    ProtocolType.Tcp);
+                socket.Connect(ServerAddress);
 
-                try
+                Debug.WriteLine("Socket connected to " + ServerAddress);
+
+                socket.Send(data);
+                socket.Shutdown(SocketShutdown.Send);
+
+                using (var memory = new MemoryStream(BufferSize))
                 {
-                    socket.Connect(ServerAddress);
-
-                    Debug.WriteLine("Socket connected to " + ServerAddress);
-
-                    socket.Send(data);
-                    socket.Shutdown(SocketShutdown.Send);
-
-                    using (var memory = new MemoryStream(BufferSize))
+                    int bytesRec;
+                    while ((bytesRec = socket.Receive(buf)) > 0)
                     {
-                        int bytesRec;
-                        while ((bytesRec = socket.Receive(buf)) > 0)
-                        {
-                            memory.Write(buf, 0, bytesRec);
-                            Debug.WriteLine("Capacity: " + memory.Capacity + " Length: " + memory.Length);
-                        }
+                        memory.Write(buf, 0, bytesRec);
+                        Debug.WriteLine("Capacity: " + memory.Capacity + " Length: " + memory.Length);
+                    }
 
-                        socket.Shutdown(SocketShutdown.Receive);
-                        socket.Close();
-                        buf = memory.ToArray();
-                    }
-                }
-                catch (SocketException e)
-                {
-                    switch (e.ErrorCode)
-                    {
-                        case 10060: //timeout
-                            throw new TimeoutException(ServerAddress.ToString(), e);
-                        default:
-                            throw;
-                    }
+                    socket.Shutdown(SocketShutdown.Receive);
+                    socket.Close();
+                    buf = memory.ToArray();
                 }
             }
-            catch (Exception)
+            catch (SocketException e)
             {
-                throw;
+                switch (e.ErrorCode)
+                {
+                    case 10060: //timeout
+                        throw new TimeoutException(ServerAddress.ToString(), e);
+                    default:
+                        throw;
+                }
             }
             return buf;
         }

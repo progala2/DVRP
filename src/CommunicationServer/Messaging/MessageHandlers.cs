@@ -59,7 +59,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
             if (!_componentOverseer.IsRegistered(msg.ComponentId))
             {
-                _logger.Warn("The component is not registered (id: " + msg.ComponentId + ").");
+                Logger.Warn("The component is not registered (id: " + msg.ComponentId + ").");
                 var errorMsg = new ErrorMessage
                 {
                     ErrorType = ErrorType.UnknownSender,
@@ -102,7 +102,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private List<Message> HandleMessage(SolveRequestMessage msg, TcpDataProviderMetadata metadata)
         {
-            var solvingTimeout = msg.SolvingTimeout.HasValue ? msg.SolvingTimeout.Value : 0;
+            var solvingTimeout = msg.SolvingTimeout ?? 0;
             var id = _workManager.AddProblem(msg.ProblemType, msg.ProblemData, solvingTimeout);
 
             var response = new SolveRequestResponseMessage
@@ -176,7 +176,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
             if (!_componentOverseer.IsRegistered(senderId.Value))
             {
-                _logger.Warn("The component is not registered (id: " + senderId + ").");
+                Logger.Warn("The component is not registered (id: " + senderId + ").");
                 var errorMsg = new ErrorMessage
                 {
                     ErrorType = ErrorType.UnknownSender,
@@ -190,7 +190,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 var problem = _workManager.GetProblem(msg.ProblemInstanceId);
 
                 if (problem.CommonData != null)
-                    _logger.Warn("Common data shouldn't be set.");
+                    Logger.Warn("Common data shouldn't be set.");
 
                 problem.CommonData = msg.CommonData;
                 foreach (var pp in msg.PartialProblems)
@@ -219,7 +219,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
             if (!_componentOverseer.IsRegistered(senderId.Value))
             {
-                _logger.Warn("The component is not registered (id: " + senderId.Value + ").");
+                Logger.Warn("The component is not registered (id: " + senderId.Value + ").");
                 var errorMsg = new ErrorMessage
                 {
                     ErrorType = ErrorType.UnknownSender,
@@ -267,7 +267,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private List<Message> HandleMessage(ErrorMessage msg, TcpDataProviderMetadata metadata)
         {
-            _logger.Error(msg.ErrorType + " error message received: \n" + msg.ErrorText);
+            Logger.Error(msg.ErrorType + " error message received: \n" + msg.ErrorText);
 
             return new List<Message> {CreateNoOperationMessage()};
         }
@@ -289,8 +289,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 new List<ComponentInfo>(_componentOverseer.GetComponents(ComponentType.CommunicationServer));
             backupServers.Sort(ComponentInfo.RegistrationTimeComparer);
 
-            foreach (BackupServerInfo bs in backupServers)
+            foreach (var componentInfo in backupServers)
             {
+                var bs = (BackupServerInfo) componentInfo;
                 var backupInfo = new ServerInfo
                 {
                     IpAddress = bs.Address.Address.ToString(),

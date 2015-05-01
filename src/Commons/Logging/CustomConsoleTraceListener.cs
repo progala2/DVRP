@@ -8,7 +8,7 @@ namespace _15pl04.Ucc.Commons.Logging
     public class CustomConsoleTraceListener : ConsoleTraceListener
     {
         // contains pairs <attributeName, initAction(attributeValue)>
-        private static readonly Dictionary<string, Action<string>> _customAttributes = new Dictionary
+        private static readonly Dictionary<string, Action<string>> CustomAttributes = new Dictionary
             <string, Action<string>>
         {
             {"printDate", val => bool.TryParse(val, out _printDate)},
@@ -59,7 +59,7 @@ namespace _15pl04.Ucc.Commons.Logging
 
         protected override string[] GetSupportedAttributes()
         {
-            return _customAttributes.Keys.ToArray();
+            return CustomAttributes.Keys.ToArray();
         }
 
         // TODO: override methods to customize output...
@@ -140,7 +140,7 @@ namespace _15pl04.Ucc.Commons.Logging
         {
             if (_customAttributesInitialized)
                 return;
-            foreach (var keyValuePair in _customAttributes)
+            foreach (var keyValuePair in CustomAttributes)
             {
                 if (Attributes.ContainsKey(keyValuePair.Key))
                 {

@@ -62,7 +62,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                     {
                         try
                         {
-                            _tcpClient.ServerAddress = IPEndPointParser.Parse(_servers[0].IpAddress, _servers[0].Port);
+                            _tcpClient.ServerAddress = IpEndPointParser.Parse(_servers[0].IpAddress, _servers[0].Port);
                         }
                         catch (Exception)
                         {

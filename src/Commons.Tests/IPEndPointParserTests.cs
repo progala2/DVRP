@@ -8,29 +8,29 @@ namespace _15pl04.Ucc.Commons.Tests
     [TestClass]
     public class IpEndPointParserTests
     {
-        private readonly int port = 12345;
+        private readonly int _port = 12345;
 
         [TestMethod]
-        public void IPv4StringReturnIPEndPointWithInternetworkAddressFamily()
+        public void Pv4StringReturnIpEndPointWithInternetworkAddressFamily()
         {
             var address = "127.0.0.1";
-            var ipEndPoint = IPEndPointParser.Parse(address, port);
+            var ipEndPoint = IpEndPointParser.Parse(address, _port);
             Assert.IsTrue(ipEndPoint.AddressFamily == AddressFamily.InterNetwork);
         }
 
         [TestMethod]
-        public void IPv6StringReturnIPEndPointWithInternetworkV6AddressFamily()
+        public void Pv6StringReturnIpEndPointWithInternetworkV6AddressFamily()
         {
             var address = "::1";
-            var ipEndPoint = IPEndPointParser.Parse(address, port);
+            var ipEndPoint = IpEndPointParser.Parse(address, _port);
             Assert.IsTrue(ipEndPoint.AddressFamily == AddressFamily.InterNetworkV6);
         }
 
         [TestMethod]
-        public void HostNameReturnIPEndPointWithInternetworkV6AddressFamily()
+        public void HostNameReturnIpEndPointWithInternetworkV6AddressFamily()
         {
             var address = Dns.GetHostName();
-            var ipEndPoint = IPEndPointParser.Parse(address, port);
+            var ipEndPoint = IpEndPointParser.Parse(address, _port);
             Assert.IsTrue(ipEndPoint.AddressFamily == AddressFamily.InterNetworkV6);
         }
     }

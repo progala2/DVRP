@@ -105,15 +105,17 @@ namespace _15pl04.Ucc.ComputationalNode
                     var partialProblemSolutionData = taskSolver.Solve(partialProblem.Data, timeout);
                     var stop = DateTime.UtcNow;
 
-                    var solutions = new List<SolutionsMessage.Solution>();
-                    solutions.Add(new SolutionsMessage.Solution
+                    var solutions = new List<SolutionsMessage.Solution>
                     {
-                        PartialProblemId = partialProblem.PartialProblemId,
-                        TimeoutOccured = taskSolver.State == TaskSolver.TaskSolverState.Timeout,
-                        Type = SolutionsMessage.SolutionType.Partial,
-                        ComputationsTime = (ulong) (stop - start).TotalMilliseconds,
-                        Data = partialProblemSolutionData
-                    });
+                        new SolutionsMessage.Solution
+                        {
+                            PartialProblemId = partialProblem.PartialProblemId,
+                            TimeoutOccured = taskSolver.State == TaskSolver.TaskSolverState.Timeout,
+                            Type = SolutionsMessage.SolutionType.Partial,
+                            ComputationsTime = (ulong) (stop - start).TotalMilliseconds,
+                            Data = partialProblemSolutionData
+                        }
+                    };
                     var solutionsMessage = new SolutionsMessage
                     {
                         ProblemType = message.ProblemType,

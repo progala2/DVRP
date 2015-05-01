@@ -16,7 +16,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
     internal partial class MessageProcessor : IDataProcessor
     {
-        private static readonly ILogger _logger = new ConsoleLogger();
+        private static readonly ILogger Logger = new ConsoleLogger();
         private readonly IComponentOverseer _componentOverseer;
         private readonly RawDataQueue _inputDataQueue;
         private readonly IMarshaller<Message> _marshaller;
@@ -98,7 +98,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
             foreach (var msg in messages)
             {
-                _logger.Trace("Processing " + msg.MessageType + " message.");
+                Logger.Trace("Processing " + msg.MessageType + " message.");
 
                 try
                 {
@@ -108,7 +108,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 }
                 catch (InvalidCastException)
                 {
-                    _logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
+                    Logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
                     var errorMsg = new ErrorMessage
                     {
                         ErrorType = ErrorType.InvalidOperation,

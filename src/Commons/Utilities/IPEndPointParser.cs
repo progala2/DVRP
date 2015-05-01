@@ -4,7 +4,7 @@ using System.Net;
 
 namespace _15pl04.Ucc.Commons.Utilities
 {
-    public static class IPEndPointParser
+    public static class IpEndPointParser
     {
         /// <exception cref="System.FormatException"></exception>
         /// <exception cref="System.ArgumentException"></exception>
@@ -40,15 +40,11 @@ namespace _15pl04.Ucc.Commons.Utilities
             // check if we have an IPv6 or ports
             if (values.Length <= 2) // ipv4 or hostname
             {
-                if (values.Length == 1)
-                    // no port is specified, default
-                    port = defaultPort;
-                else
-                    port = GetPort(values[1]);
+                port = values.Length == 1 ? defaultPort : GetPort(values[1]);
 
                 // try to use the address as IPv4, otherwise get hostname
                 if (!IPAddress.TryParse(values[0], out ipAddress))
-                    ipAddress = GetIPFromHost(values[0]);
+                    ipAddress = GetIpFromHost(values[0]);
             }
             else if (values.Length > 2) // ipv6
             {
@@ -86,7 +82,7 @@ namespace _15pl04.Ucc.Commons.Utilities
             return port;
         }
 
-        private static IPAddress GetIPFromHost(string p)
+        private static IPAddress GetIpFromHost(string p)
         {
             var hosts = Dns.GetHostAddresses(p);
 

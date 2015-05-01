@@ -17,7 +17,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private const int MaxPendingConnections = 100;
         private const int ReadBufferSize = 4096; // TODO make sure it's enough
-        private static readonly ILogger _logger = new TraceSourceLogger(typeof (TcpServer).Name);
+        private static readonly ILogger Logger = new TraceSourceLogger(typeof (TcpServer).Name);
         private readonly IDataProcessor _dataProcessor;
         private readonly Socket _listenerSocket;
         private CancellationTokenSource _cancellationTokenSource;
@@ -37,7 +37,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             if (_isListening)
                 return;
 
-            _logger.Info("TcpServer is starting...");
+            Logger.Info("TcpServer is starting...");
 
             _clientAcceptanceEvent = new ManualResetEvent(false);
             _cancellationTokenSource = new CancellationTokenSource();
@@ -82,7 +82,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private static ProcessedDataCallback GenerateResponseCallback(Socket clientSocket)
         {
-            return (byte[] response) =>
+            return response =>
             {
                 // A situation can occur where client socket has been closed before message was sent. 
                 // In that case the method does nothing.
@@ -96,7 +96,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 {
                     // *crickets*
 
-                    _logger.Warn("Client socket was closed before response message could be sent.");
+                    Logger.Warn("Client socket was closed before response message could be sent.");
                 }
             };
         }
@@ -111,7 +111,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             var listenerSocket = (Socket) ar.AsyncState;
             var clientSocket = listenerSocket.EndAccept(ar);
 
-            _logger.Trace("Client accepted.");
+            Logger.Trace("Client accepted.");
 
             var buffer = new byte[ReadBufferSize];
 
@@ -135,7 +135,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     metadata,
                     GenerateResponseCallback(clientSocket));
 
-                _logger.Trace("Client sent " + memStream.Length + " bytes of data.");
+                Logger.Trace("Client sent " + memStream.Length + " bytes of data.");
             }
         }
     }

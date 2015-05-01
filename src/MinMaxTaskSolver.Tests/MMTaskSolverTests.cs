@@ -10,7 +10,7 @@ using _15pl04.Ucc.MinMaxTaskSolver;
 namespace MinMaxTaskSolver.Tests
 {
     [TestClass]
-    public class MMTaskSolverTests
+    public class MmTaskSolverTests
     {
         [TestMethod]
         public void AllComputationsOfMinMaxTaskSolverAreCorrect()
@@ -35,7 +35,7 @@ namespace MinMaxTaskSolver.Tests
             var expectedMaximum = numbers.Max();
             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + " expected results found");
 
-            var problem = new MMProblem(numbers);
+            var problem = new MmProblem(numbers);
             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
 
             byte[] problemData;
@@ -46,7 +46,7 @@ namespace MinMaxTaskSolver.Tests
             }
             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem serialized");
 
-            var taskSolver = new MMTaskSolver(problemData);
+            var taskSolver = new MmTaskSolver(problemData);
             var partialProblemsData = taskSolver.DivideProblem(threadsCount);
             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem divided; threadsCount=" +
                             threadsCount);
@@ -64,7 +64,7 @@ namespace MinMaxTaskSolver.Tests
 
             using (var memoryStream = new MemoryStream(finalSolutionData))
             {
-                var finalSolution = (MMSolution) formatter.Deserialize(memoryStream);
+                var finalSolution = (MmSolution) formatter.Deserialize(memoryStream);
                 Assert.AreEqual(finalSolution.Min, expectedMinimum);
                 Assert.AreEqual(finalSolution.Max, expectedMaximum);
             }

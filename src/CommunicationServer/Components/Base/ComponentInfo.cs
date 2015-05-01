@@ -6,7 +6,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
 {
     public abstract class ComponentInfo
     {
-        public ComponentInfo(ComponentType type, int numberOfThreads)
+        protected ComponentInfo(ComponentType type, int numberOfThreads)
         {
             ComponentType = type;
             NumberOfThreads = numberOfThreads;

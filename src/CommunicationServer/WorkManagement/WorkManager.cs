@@ -13,7 +13,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 {
     internal class WorkManager : IWorkManager
     {
-        private static readonly ILogger _logger = new ConsoleLogger();
+        private static readonly ILogger Logger = new ConsoleLogger();
         private readonly IComponentOverseer _componentOverseer;
         private readonly Dictionary<Tuple<ulong, ulong>, PartialProblem> _partialProblems;
         private readonly Dictionary<Tuple<ulong, ulong>, PartialSolution> _partialSolutions;
@@ -37,7 +37,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         public void RemoveSolution(ulong problemId)
         {
             _solutions.Remove(problemId);
-            _logger.Info("Removed solution from the server (id: " + problemId + ").");
+            Logger.Info("Removed solution from the server (id: " + problemId + ").");
         }
 
         public bool TryAssignWork(SolverNodeInfo node, out Work work)
@@ -159,14 +159,16 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             } while (_problems.ContainsKey(id));
 
             // Create problem instance.
-            var problem = new Problem(id, type, data, solvingTimeout);
-            problem.State = Problem.ProblemState.AwaitingDivision;
-            problem.DividingNodeId = null;
+            var problem = new Problem(id, type, data, solvingTimeout)
+            {
+                State = Problem.ProblemState.AwaitingDivision,
+                DividingNodeId = null
+            };
 
             // Add problem to the set.
             _problems.Add(id, problem);
 
-            _logger.Info("Added new problem (id: " + id + ", type: " + type + ").");
+            Logger.Info("Added new problem (id: " + id + ", type: " + type + ").");
             return id;
         }
 
@@ -175,7 +177,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Make sure the corresponding problem instance exists.
             if (!_problems.ContainsKey(problemId))
             {
-                _logger.Error("Corresponding problem instance doesn't exist.");
+                Logger.Error("Corresponding problem instance doesn't exist.");
                 return;
             }
 
@@ -184,14 +186,14 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Make sure that state of the corresponding problem instance is set to "being divided".
             if (problem.State != Problem.ProblemState.BeingDivided)
             {
-                _logger.Error("Corresponding problem's state is invalid.");
+                Logger.Error("Corresponding problem's state is invalid.");
                 return;
             }
 
             // Make sure the corresponding problem's property 'NumberOfParts' is set to a positive integer.
             if (!problem.NumberOfParts.HasValue || problem.NumberOfParts < 1)
             {
-                _logger.Error("Corresponding problem's 'NumberOfParts' property is not a positive integer.");
+                Logger.Error("Corresponding problem's 'NumberOfParts' property is not a positive integer.");
                 return;
             }
 
@@ -200,21 +202,23 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             var psNum = _partialSolutions.Count(pair => pair.Key.Item1 == problemId);
             if (ppNum + psNum >= (int) problem.NumberOfParts)
             {
-                _logger.Error("Received too many partial problems than expected.");
+                Logger.Error("Received too many partial problems than expected.");
                 return;
             }
 
             // Create partial problem instance.
-            var partialProblem = new PartialProblem(partialProblemId, problem, privateData);
-            partialProblem.State = PartialProblem.PartialProblemState.AwaitingComputation;
-            partialProblem.ComputingNodeId = null;
+            var partialProblem = new PartialProblem(partialProblemId, problem, privateData)
+            {
+                State = PartialProblem.PartialProblemState.AwaitingComputation,
+                ComputingNodeId = null
+            };
 
             // Add partial problem to the set.
             var pairId = new Tuple<ulong, ulong>(problemId, partialProblemId);
             _partialProblems.Add(pairId, partialProblem);
 
-            _logger.Info("Added new partial problem (id: " + problemId + "/" + partialProblemId + ", type: " +
-                         problem.Type + ").");
+            Logger.Info("Added new partial problem (id: " + problemId + "/" + partialProblemId + ", type: " +
+                        problem.Type + ").");
         }
 
         public void AddSolution(ulong problemId, byte[] data, ulong computationsTime, bool timeoutOccured)
@@ -222,7 +226,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Make sure the corresponding problem instance exists.
             if (!_problems.ContainsKey(problemId))
             {
-                _logger.Error("Corresponding problem instance doesn't exist.");
+                Logger.Error("Corresponding problem instance doesn't exist.");
                 return;
             }
 
@@ -231,7 +235,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Make sure that state of the corresponding problem instance is set to "awaiting solution".
             if (problem.State != Problem.ProblemState.AwaitingSolution)
             {
-                _logger.Error("Corresponding problem's state is invalid.");
+                Logger.Error("Corresponding problem's state is invalid.");
                 return;
             }
 
@@ -243,7 +247,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 _partialSolutions.Remove(pairId);
             }
             if (mergedPartialSolutions.Count == 0)
-                _logger.Warn("There are no corresponding partial solutions in 'being merged' state.");
+                Logger.Warn("There are no corresponding partial solutions in 'being merged' state.");
 
             // Create solution instance.
             var solution = new Solution(problem, data, computationsTime, timeoutOccured);
@@ -260,7 +264,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 if (tuple.Item1 != problemId)
                     return false;
 
-                _logger.Warn("Found a partial problem left out during the clean-up.");
+                Logger.Warn("Found a partial problem left out during the clean-up.");
                 return true;
             });
             _partialSolutions.RemoveAll((tuple, ps) =>
@@ -268,11 +272,11 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 if (tuple.Item1 != problemId)
                     return false;
 
-                _logger.Warn("Found a partial solution left out during the clean-up.");
+                Logger.Warn("Found a partial solution left out during the clean-up.");
                 return true;
             });
 
-            _logger.Info("Added new problem (id: " + problemId + ", type: " + problem.Type + ").");
+            Logger.Info("Added new problem (id: " + problemId + ", type: " + problem.Type + ").");
         }
 
         public void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime,
@@ -283,7 +287,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Make sure the corresponding problem instance exists.
             if (!_problems.ContainsKey(problemId))
             {
-                _logger.Error("Corresponding problem instance doesn't exist.");
+                Logger.Error("Corresponding problem instance doesn't exist.");
                 return;
             }
 
@@ -292,7 +296,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Make sure the corresponding partial problem instance exists.
             if (!_partialProblems.ContainsKey(pairId))
             {
-                _logger.Error("Corresponding partial problem doesn't exist.");
+                Logger.Error("Corresponding partial problem doesn't exist.");
                 return;
             }
 
@@ -301,14 +305,16 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Make sure that state of the corresponding partial problem is set to "being computed".
             if (partialProblem.State != PartialProblem.PartialProblemState.BeingComputed)
             {
-                _logger.Error("Corresponding partial problem's state is invalid.");
+                Logger.Error("Corresponding partial problem's state is invalid.");
                 return;
             }
 
             // Create partial solution instance.
-            var partialSolution = new PartialSolution(partialProblem, data, computationsTime, timeoutOccured);
-            partialSolution.State = PartialSolution.PartialSolutionState.BeingGathered;
-            partialSolution.MergingNodeId = null;
+            var partialSolution = new PartialSolution(partialProblem, data, computationsTime, timeoutOccured)
+            {
+                State = PartialSolution.PartialSolutionState.BeingGathered,
+                MergingNodeId = null
+            };
 
             // Add partial solution to the set.
             _partialSolutions.Add(pairId, partialSolution);
@@ -316,8 +322,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Delete corresponding partial problem.
             _partialProblems.Remove(pairId);
 
-            _logger.Info("Added new partial solution (id: " + problemId + "/" + partialProblemId + ", type: " +
-                         problem.Type + ").");
+            Logger.Info("Added new partial solution (id: " + problemId + "/" + partialProblemId + ", type: " +
+                        problem.Type + ").");
 
             // Check if all partial solutions are in and set appropriate state.
             var gatheredPartialSolutions = GetPartialSolutions(problemId,
@@ -327,7 +333,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 foreach (var ps in gatheredPartialSolutions)
                     ps.State = PartialSolution.PartialSolutionState.AwaitingMerge;
 
-                _logger.Info("Partial solutions are ready to merge (id: " + problemId + ").");
+                Logger.Info("Partial solutions are ready to merge (id: " + problemId + ").");
             }
         }
 
@@ -392,10 +398,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 var component = e.Component as SolverNodeInfo;
 
                 var problemsBeingDivided = _problems.Values.Where(p =>
-                {
-                    return p.DividingNodeId == component.ComponentId
-                           && p.State == Problem.ProblemState.BeingDivided;
-                });
+                    p.DividingNodeId == component.ComponentId
+                    && p.State == Problem.ProblemState.BeingDivided);
 
                 foreach (var p in problemsBeingDivided)
                 {
@@ -404,10 +408,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 }
 
                 var partialSolutionsBeingMerged = _partialSolutions.Values.Where(ps =>
-                {
-                    return ps.MergingNodeId == component.ComponentId
-                           && ps.State == PartialSolution.PartialSolutionState.BeingMerged;
-                });
+                    ps.MergingNodeId == component.ComponentId
+                    && ps.State == PartialSolution.PartialSolutionState.BeingMerged);
 
                 foreach (var ps in partialSolutionsBeingMerged)
                 {
@@ -420,10 +422,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 var component = e.Component as SolverNodeInfo;
 
                 var partialProblemsBeingComputed = _partialProblems.Values.Where(pp =>
-                {
-                    return pp.ComputingNodeId == component.ComponentId
-                           && pp.State == PartialProblem.PartialProblemState.BeingComputed;
-                });
+                    pp.ComputingNodeId == component.ComponentId
+                    && pp.State == PartialProblem.PartialProblemState.BeingComputed);
 
                 foreach (var pp in partialProblemsBeingComputed)
                 {
@@ -437,8 +437,9 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         {
             var availableThreads = 0;
 
-            foreach (SolverNodeInfo sn in _componentOverseer.GetComponents(ComponentType.ComputationalNode))
+            foreach (var componentInfo in _componentOverseer.GetComponents(ComponentType.ComputationalNode))
             {
+                var sn = (SolverNodeInfo) componentInfo;
                 if (!sn.SolvableProblems.Contains(problemType))
                     continue;
 
