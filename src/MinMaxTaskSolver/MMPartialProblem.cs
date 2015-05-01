@@ -7,11 +7,11 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
     [Serializable]
     public class MMPartialProblem
     {
-        public int[] Numbers { get; private set; }
-
         public MMPartialProblem(IEnumerable<int> numbers)
         {
-            Numbers = numbers.ToArray<int>();
+            Numbers = numbers.ToArray();
         }
+
+        public int[] Numbers { get; private set; }
     }
 }

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.Commons.Logging
 {
@@ -48,11 +44,11 @@ namespace _15pl04.Ucc.Commons.Logging
 
         private string GetCallerInfoPrefix()
         {
-            StackFrame frame = new StackFrame(2);
+            var frame = new StackFrame(2);
             var method = frame.GetMethod();
 
-            string className = method.DeclaringType.Name;
-            string methodName = method.Name;
+            var className = method.DeclaringType.Name;
+            var methodName = method.Name;
 
             return "[" + className + "/" + methodName + "]::";
         }

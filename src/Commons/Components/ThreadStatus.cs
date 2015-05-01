@@ -15,9 +15,8 @@ namespace _15pl04.Ucc.Commons.Components
         public enum ThreadState
         {
             Idle,
-            Busy,
+            Busy
         }
-
 
         [XmlElement(Order = 0)]
         public ThreadState State { get; set; }
@@ -33,8 +32,6 @@ namespace _15pl04.Ucc.Commons.Components
 
         [XmlElement(Order = 4)]
         public string ProblemType { get; set; }
-
-
 
         public bool ShouldSerializeTimeInThisState()
         {

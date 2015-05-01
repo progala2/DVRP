@@ -1,9 +1,8 @@
-﻿using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
+﻿using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Text;
 using _15pl04.Ucc.Commons.Messaging.Marshalling;
 using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
+using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Tests
@@ -11,7 +10,7 @@ namespace _15pl04.Ucc.Commons.Tests
     [TestClass]
     public class DeserializationTests
     {
-        private ISerializer<Message> _serializer;
+        private readonly ISerializer<Message> _serializer;
 
         public DeserializationTests()
         {
@@ -21,122 +20,122 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void DivideProblemMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.DivideProblem);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.DivideProblem);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(DivideProblemMessage));
-            Assert.IsNotInstanceOfType(output, typeof(StatusMessage));
+            Assert.IsInstanceOfType(output, typeof (DivideProblemMessage));
+            Assert.IsNotInstanceOfType(output, typeof (StatusMessage));
         }
 
         [TestMethod]
         public void ErrorMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.Error);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.Error);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(ErrorMessage));
-            Assert.IsNotInstanceOfType(output, typeof(StatusMessage));
+            Assert.IsInstanceOfType(output, typeof (ErrorMessage));
+            Assert.IsNotInstanceOfType(output, typeof (StatusMessage));
         }
 
         [TestMethod]
         public void NoOperationMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.NoOperation);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.NoOperation);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(NoOperationMessage));
-            Assert.IsNotInstanceOfType(output, typeof(StatusMessage));
+            Assert.IsInstanceOfType(output, typeof (NoOperationMessage));
+            Assert.IsNotInstanceOfType(output, typeof (StatusMessage));
         }
 
         [TestMethod]
         public void PartialProblemsMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.PartialProblems);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.PartialProblems);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(PartialProblemsMessage));
-            Assert.IsNotInstanceOfType(output, typeof(StatusMessage));
+            Assert.IsInstanceOfType(output, typeof (PartialProblemsMessage));
+            Assert.IsNotInstanceOfType(output, typeof (StatusMessage));
         }
 
         [TestMethod]
         public void RegisterMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.Register);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.Register);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(RegisterMessage));
-            Assert.IsNotInstanceOfType(output, typeof(StatusMessage));
+            Assert.IsInstanceOfType(output, typeof (RegisterMessage));
+            Assert.IsNotInstanceOfType(output, typeof (StatusMessage));
         }
 
         [TestMethod]
         public void RegisterResponseMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.RegisterResponse);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.RegisterResponse);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(RegisterResponseMessage));
-            Assert.IsNotInstanceOfType(output, typeof(StatusMessage));
+            Assert.IsInstanceOfType(output, typeof (RegisterResponseMessage));
+            Assert.IsNotInstanceOfType(output, typeof (StatusMessage));
         }
 
         [TestMethod]
         public void SolutionRequestMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.SolutionRequest);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.SolutionRequest);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(SolutionRequestMessage));
-            Assert.IsNotInstanceOfType(output, typeof(StatusMessage));
+            Assert.IsInstanceOfType(output, typeof (SolutionRequestMessage));
+            Assert.IsNotInstanceOfType(output, typeof (StatusMessage));
         }
 
         [TestMethod]
         public void SolutionsMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.Solutions);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.Solutions);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(SolutionsMessage));
-            Assert.IsNotInstanceOfType(output, typeof(StatusMessage));
+            Assert.IsInstanceOfType(output, typeof (SolutionsMessage));
+            Assert.IsNotInstanceOfType(output, typeof (StatusMessage));
         }
 
         [TestMethod]
         public void SolveRequestMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.SolveRequest);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.SolveRequest);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(SolveRequestMessage));
-            Assert.IsNotInstanceOfType(output, typeof(StatusMessage));
+            Assert.IsInstanceOfType(output, typeof (SolveRequestMessage));
+            Assert.IsNotInstanceOfType(output, typeof (StatusMessage));
         }
 
         [TestMethod]
         public void SolveRequestResponseMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.SolveRequestResponse);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.SolveRequestResponse);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(SolveRequestResponseMessage));
-            Assert.IsNotInstanceOfType(output, typeof(StatusMessage));
+            Assert.IsInstanceOfType(output, typeof (SolveRequestResponseMessage));
+            Assert.IsNotInstanceOfType(output, typeof (StatusMessage));
         }
 
         [TestMethod]
         public void StatusMessageXmlIsProperlyDeserialized()
         {
-            byte[] input = Encoding.UTF8.GetBytes(XmlMessages.Status);
+            var input = Encoding.UTF8.GetBytes(XmlMessages.Status);
 
-            Message output = _serializer.Deserialize(input);
+            var output = _serializer.Deserialize(input);
 
-            Assert.IsInstanceOfType(output, typeof(StatusMessage));
-            Assert.IsNotInstanceOfType(output, typeof(RegisterMessage));
+            Assert.IsInstanceOfType(output, typeof (StatusMessage));
+            Assert.IsNotInstanceOfType(output, typeof (RegisterMessage));
         }
     }
 }

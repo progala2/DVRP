@@ -15,7 +15,7 @@ namespace MinMaxTaskSolver.Tests
         [TestMethod]
         public void AllComputationsOfMinMaxTaskSolverAreCorrect()
         {
-            var numbersCount = 1000 * 1000;
+            var numbersCount = 1000*1000;
             var threadsCount = 10;
 
             var formatter = new BinaryFormatter();
@@ -25,18 +25,18 @@ namespace MinMaxTaskSolver.Tests
             stopwatch.Start();
 
             var numbers = new List<int>(numbersCount);
-            for (int i = 0; i < numbersCount; i++)
+            for (var i = 0; i < numbersCount; i++)
             {
                 numbers.Add(rand.Next(int.MinValue, int.MaxValue));
             }
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + numbersCount + " numbers generated ");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + numbersCount + " numbers generated ");
 
             var expectedMinimum = numbers.Min();
             var expectedMaximum = numbers.Max();
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + " expected results found");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + " expected results found");
 
             var problem = new MMProblem(numbers);
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
 
             byte[] problemData;
             using (var memoryStream = new MemoryStream())
@@ -44,11 +44,12 @@ namespace MinMaxTaskSolver.Tests
                 formatter.Serialize(memoryStream, problem);
                 problemData = memoryStream.ToArray();
             }
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem serialized");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem serialized");
 
             var taskSolver = new MMTaskSolver(problemData);
             var partialProblemsData = taskSolver.DivideProblem(threadsCount);
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem divided; threadsCount=" + threadsCount);
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem divided; threadsCount=" +
+                            threadsCount);
 
             var partialSolutionsData = new List<byte[]>(partialProblemsData.Length);
             foreach (var partialProblemData in partialProblemsData)
@@ -56,18 +57,18 @@ namespace MinMaxTaskSolver.Tests
                 var partialSolutionData = taskSolver.Solve(partialProblemData, new TimeSpan());
                 partialSolutionsData.Add(partialSolutionData);
             }
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "partial solutions solved");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "partial solutions solved");
 
             var finalSolutionData = taskSolver.MergeSolution(partialSolutionsData.ToArray());
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problems merged");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problems merged");
 
             using (var memoryStream = new MemoryStream(finalSolutionData))
             {
-                var finalSolution = (MMSolution)formatter.Deserialize(memoryStream);
+                var finalSolution = (MMSolution) formatter.Deserialize(memoryStream);
                 Assert.AreEqual(finalSolution.Min, expectedMinimum);
                 Assert.AreEqual(finalSolution.Max, expectedMaximum);
             }
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final solution deserialized");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "final solution deserialized");
 
             stopwatch.Stop();
         }

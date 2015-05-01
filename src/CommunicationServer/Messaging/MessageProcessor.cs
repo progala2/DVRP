@@ -1,64 +1,36 @@
-﻿using _15pl04.Ucc.Commons;
-using _15pl04.Ucc.Commons.Logging;
-using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.CommunicationServer.Collections;
-using _15pl04.Ucc.CommunicationServer.Components;
-using _15pl04.Ucc.CommunicationServer.Components.Base;
-using _15pl04.Ucc.CommunicationServer.Messaging.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging.Marshalling;
 using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
+using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using _15pl04.Ucc.CommunicationServer.Collections;
+using _15pl04.Ucc.CommunicationServer.Components.Base;
+using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
     internal partial class MessageProcessor : IDataProcessor
     {
-        #region Public fields
-
-
-        public bool IsProcessing
-        {
-            get { return _isProcessing; }
-        }
-
-
-        #endregion
-
-        #region Private fields
-
-
-        private static ILogger _logger = new ConsoleLogger();
-
-        private RawDataQueue _inputDataQueue;
-
-        private IMarshaller<Message> _marshaller;
-        private IComponentOverseer _componentOverseer;
-        private IWorkManager _workManager;
-
+        private static readonly ILogger _logger = new ConsoleLogger();
+        private readonly IComponentOverseer _componentOverseer;
+        private readonly RawDataQueue _inputDataQueue;
+        private readonly IMarshaller<Message> _marshaller;
+        private readonly AutoResetEvent _processingLock;
+        private readonly IWorkManager _workManager;
         private CancellationTokenSource _cancellationTokenSource;
-        private AutoResetEvent _processingLock;
-
         private volatile bool _isProcessing;
-
-
-        #endregion
-
-        #region Constructors & control
-
 
         public MessageProcessor(IComponentOverseer overseer, IWorkManager workManager)
         {
             _inputDataQueue = new RawDataQueue();
 
-            MessageSerializer serializer = new MessageSerializer();
-            MessageValidator validator = new MessageValidator();
+            var serializer = new MessageSerializer();
+            var validator = new MessageValidator();
             _marshaller = new Marshaller(serializer, validator);
 
             _componentOverseer = overseer;
@@ -66,6 +38,19 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
             _processingLock = new AutoResetEvent(false);
         }
+
+        public bool IsProcessing
+        {
+            get { return _isProcessing; }
+        }
+
+        public void EnqueueDataToProcess(byte[] data, Metadata metadata, ProcessedDataCallback callback)
+        {
+            _inputDataQueue.Enqueue(data, metadata, callback);
+
+            _processingLock.Set();
+        }
+
         public void StartProcessing()
         {
             if (_isProcessing)
@@ -74,10 +59,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             _cancellationTokenSource = new CancellationTokenSource();
 
             var token = _cancellationTokenSource.Token;
-            token.Register(() =>
-            {
-                _isProcessing = false;
-            });
+            token.Register(() => { _isProcessing = false; });
 
             new Task(() =>
             {
@@ -109,25 +91,15 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             _processingLock.Set();
         }
 
-
-        #endregion
-
-        public void EnqueueDataToProcess(byte[] data, Metadata metadata, ProcessedDataCallback callback)
-        {
-            _inputDataQueue.Enqueue(data, metadata, callback);
-
-            _processingLock.Set();
-        }
-
         private void ProcessData(RawDataQueueItem data)
         {
-            List<Message> messages = _marshaller.Unmarshall(data.Data);
-            List<Message> responseMessages = new List<Message>();
-            
-            foreach (Message msg in messages)
+            var messages = _marshaller.Unmarshall(data.Data);
+            var responseMessages = new List<Message>();
+
+            foreach (var msg in messages)
             {
                 _logger.Trace("Processing " + msg.MessageType + " message.");
-                
+
                 try
                 {
                     var metadata = data.Metadata as TcpDataProviderMetadata;
@@ -137,17 +109,17 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 catch (InvalidCastException)
                 {
                     _logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
-                    var errorMsg = new ErrorMessage()
+                    var errorMsg = new ErrorMessage
                     {
                         ErrorType = ErrorType.InvalidOperation,
-                        ErrorText = "Computational Server doesn't handle " + msg.MessageType + " message.",
+                        ErrorText = "Computational Server doesn't handle " + msg.MessageType + " message."
                     };
-                    responseMessages = new List<Message> { errorMsg };
+                    responseMessages = new List<Message> {errorMsg};
                     break;
                 }
             }
 
-            byte[] marshalledResponse = _marshaller.Marshall(responseMessages);
+            var marshalledResponse = _marshaller.Marshall(responseMessages);
             data.Callback(marshalledResponse);
         }
     }

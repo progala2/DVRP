@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace _15pl04.Ucc.Commons.Logging
 {
     public class TraceSourceLogger : ILogger
     {
-        public TraceSource TraceSource { get; private set; }
-
-
         public TraceSourceLogger(string name)
         {
             TraceSource = new TraceSource(name);
@@ -22,8 +14,7 @@ namespace _15pl04.Ucc.Commons.Logging
             TraceSource = new TraceSource(name, defaultLevel);
         }
 
-
-        #region ILogger Members
+        public TraceSource TraceSource { get; private set; }
 
         public void Trace(string s)
         {
@@ -49,7 +40,5 @@ namespace _15pl04.Ucc.Commons.Logging
         {
             TraceSource.TraceEvent(TraceEventType.Error, 0, s);
         }
-
-        #endregion
     }
 }

@@ -1,5 +1,4 @@
-﻿using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.CommunicationServer.Components;
+﻿using _15pl04.Ucc.CommunicationServer.Components;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
 using _15pl04.Ucc.CommunicationServer.Messaging;
 using _15pl04.Ucc.CommunicationServer.Messaging.Base;
@@ -11,14 +10,10 @@ namespace _15pl04.Ucc.CommunicationServer
     internal class CommunicationServer
     {
         private const uint ComponentOverseerCheckInterval = 1000;
-
-        public ServerConfig Config { get; private set; }
-
-        private TcpServer _tcpServer;
-        private IDataProcessor _msgProcessor;
-        private IComponentOverseer _componentOverseer;
-        private IWorkManager _workManager;
-
+        private readonly IComponentOverseer _componentOverseer;
+        private readonly IDataProcessor _msgProcessor;
+        private readonly TcpServer _tcpServer;
+        private readonly IWorkManager _workManager;
 
         public CommunicationServer(ServerConfig config)
         {
@@ -31,6 +26,8 @@ namespace _15pl04.Ucc.CommunicationServer
             _msgProcessor = new MessageProcessor(_componentOverseer, _workManager);
             _tcpServer = new TcpServer(Config.Address, _msgProcessor);
         }
+
+        public ServerConfig Config { get; private set; }
 
         public void Start()
         {
@@ -48,7 +45,6 @@ namespace _15pl04.Ucc.CommunicationServer
 
         public void SwitchToPrimaryMode()
         {
-
         }
     }
 }

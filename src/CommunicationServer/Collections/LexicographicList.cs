@@ -1,32 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _15pl04.Ucc.CommunicationServer.Collections
 {
     public class LexicographicList<TKey, TVal>
     {
-        public ICollection<TVal> this[TKey key]
-        {
-            get
-            {
-                return _dictionary[key];
-            }
-            set
-            {
-                _dictionary[key] = new LinkedList<TVal>(value);
-            }
-        }
-
-
-        private Dictionary<TKey, LinkedList<TVal>> _dictionary;
-
-
-        #region Constructors
-
+        private readonly Dictionary<TKey, LinkedList<TVal>> _dictionary;
 
         public LexicographicList()
         {
@@ -38,12 +18,40 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
             _dictionary = new Dictionary<TKey, LinkedList<TVal>>(capacity);
         }
 
+        public ICollection<TVal> this[TKey key]
+        {
+            get { return _dictionary[key]; }
+            set { _dictionary[key] = new LinkedList<TVal>(value); }
+        }
 
-        #endregion
+        public bool TryGetFirst(TKey key, Predicate<TVal> predicate, out TVal value)
+        {
+            value = default(TVal);
 
+            if (!_dictionary.ContainsKey(key) || _dictionary[key].Count == 0)
+                return false;
 
-        #region Adding elements
+            var node = _dictionary[key].First;
+            while (node != null)
+            {
+                if (predicate(node.Value))
+                {
+                    value = node.Value;
+                    break;
+                }
+                node = node.Next;
+            }
 
+            return !(node == null);
+        }
+
+        public int GetCountByKey(TKey key)
+        {
+            if (!_dictionary.ContainsKey(key))
+                return 0;
+
+            return _dictionary[key].Count;
+        }
 
         public void AddLast(TKey key, TVal value)
         {
@@ -58,15 +66,8 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
             if (!_dictionary.ContainsKey(key))
                 _dictionary[key] = new LinkedList<TVal>(values);
             else
-                _dictionary[key] = (LinkedList<TVal>)_dictionary[key].Concat<TVal>(values);
+                _dictionary[key] = (LinkedList<TVal>) _dictionary[key].Concat(values);
         }
-
-
-        #endregion
-
-
-        #region Removing elements
-
 
         public bool TryRemoveFirst(TKey key, out TVal value)
         {
@@ -89,7 +90,7 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
             if (!_dictionary.ContainsKey(key) || _dictionary[key].Count == 0)
                 return false;
 
-            LinkedListNode<TVal> node = _dictionary[key].First;
+            var node = _dictionary[key].First;
             while (node != null)
             {
                 if (predicate(node.Value))
@@ -120,57 +121,7 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
                 _dictionary.Remove(key);
                 return temp;
             }
-            else
-                return null;
+            return null;
         }
-
-
-        #endregion
-
-
-        #region Getting elements
-
-
-        public bool TryGetFirst(TKey key, Predicate<TVal> predicate, out TVal value)
-        {
-            value = default(TVal);
-
-            if (!_dictionary.ContainsKey(key) || _dictionary[key].Count == 0)
-                return false;
-
-            LinkedListNode<TVal> node = _dictionary[key].First;
-            while (node != null)
-            {
-                if (predicate(node.Value))
-                {
-                    value = node.Value;
-                    break;
-                }
-                node = node.Next;
-            }
-
-            return !(node == null);
-        }
-
-
-        #endregion
-
-
-        public int GetCountByKey(TKey key)
-        {
-            if (!_dictionary.ContainsKey(key))
-                return 0;
-
-            return _dictionary[key].Count;
-        }
-
-        
-
-
-
-        // TODO implement collection-like interfaces
-
-
-
     }
 }

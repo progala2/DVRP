@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
+﻿namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
 {
     internal class Problem
     {
@@ -11,47 +9,6 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
             AwaitingSolution
         }
 
-        public ProblemState State 
-        { 
-            get; 
-            set; 
-        }   
-        public ulong? DividingNodeId
-        {
-            get;
-            set;
-        }
-        public string Type 
-        { 
-            get; 
-            private set; 
-        }
-        public ulong SolvingTimeout 
-        { 
-            get; 
-            private set; 
-        }
-        public byte[] Data 
-        { 
-            get; 
-            private set; 
-        }
-        public byte[] CommonData
-        {
-            get;
-            set;
-        }
-        public ulong Id
-        {
-            get;
-            private set;
-        }
-        public ulong? NumberOfParts 
-        { 
-            get; 
-            set; 
-        }
-
         public Problem(ulong id, string type, byte[] data, ulong solvingTimeout)
         {
             Id = id;
@@ -59,5 +16,14 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
             Data = data;
             SolvingTimeout = solvingTimeout;
         }
+
+        public ProblemState State { get; set; }
+        public ulong? DividingNodeId { get; set; }
+        public string Type { get; private set; }
+        public ulong SolvingTimeout { get; private set; }
+        public byte[] Data { get; private set; }
+        public byte[] CommonData { get; set; }
+        public ulong Id { get; private set; }
+        public ulong? NumberOfParts { get; set; }
     }
 }

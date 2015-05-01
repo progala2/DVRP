@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Configuration;
-using System.Diagnostics;
-using System.Threading;
 using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Computations;
 using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Utilities;
 
 namespace _15pl04.Ucc.ComputationalNode
 {
     public class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var appSettings = ConfigurationManager.AppSettings;
             var primaryCSaddress = appSettings["primaryCSaddress"];
@@ -44,38 +41,37 @@ namespace _15pl04.Ucc.ComputationalNode
             }
         }
 
-
-        static void computationalNode_OnStarted(object sender, EventArgs e)
+        private static void computationalNode_OnStarted(object sender, EventArgs e)
         {
             Console.WriteLine("ComputationalNode started.");
         }
 
-        static void computationalNode_OnStarting(object sender, EventArgs e)
+        private static void computationalNode_OnStarting(object sender, EventArgs e)
         {
             Console.WriteLine("ComputationalNode is starting...");
         }
 
-        static void computationalNode_MessageSendingException(object sender, MessageExceptionEventArgs e)
+        private static void computationalNode_MessageSendingException(object sender, MessageExceptionEventArgs e)
         {
             ColorfulConsole.WriteMessageExceptionInfo("Message sending exception", e.Message, e.Exception);
         }
 
-        static void computationalNode_MessageHandlingException(object sender, MessageExceptionEventArgs e)
+        private static void computationalNode_MessageHandlingException(object sender, MessageExceptionEventArgs e)
         {
             ColorfulConsole.WriteMessageExceptionInfo("Message handling exception", e.Message, e.Exception);
         }
 
-        static void computationalNode_MessageEnqueuedToSend(object sender, MessageEventArgs e)
+        private static void computationalNode_MessageEnqueuedToSend(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Enqueued to send", e.Message);
         }
 
-        static void computationalNode_MessageReceived(object sender, MessageEventArgs e)
+        private static void computationalNode_MessageReceived(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Received", e.Message);
         }
 
-        static void computationalNode_MessageSent(object sender, MessageEventArgs e)
+        private static void computationalNode_MessageSent(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Sent", e.Message);
         }

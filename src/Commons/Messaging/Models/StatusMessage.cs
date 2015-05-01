@@ -14,10 +14,14 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Status")]
     public class StatusMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "Status.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string noNamespaceSchemaLocation =
+                "Status.xsd";
 
-
+        public StatusMessage()
+        {
+            Threads = new List<ThreadStatus>();
+        }
 
         [XmlElement(Order = 0, ElementName = "Id")]
         public ulong ComponentId { get; set; }
@@ -30,13 +34,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         public override MessageClass MessageType
         {
             get { return MessageClass.Status; }
-        }
-
-
-
-        public StatusMessage()
-        {
-            Threads = new List<ThreadStatus>();
         }
 
         public override string ToString()

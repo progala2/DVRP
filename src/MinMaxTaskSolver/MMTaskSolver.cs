@@ -9,9 +9,8 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
 {
     public class MMTaskSolver : TaskSolver
     {
-        IFormatter _formatter;
-        MMProblem _minMaxProblem;
-
+        private readonly IFormatter _formatter;
+        private readonly MMProblem _minMaxProblem;
 
         public MMTaskSolver(byte[] problemData)
             : base(problemData)
@@ -21,7 +20,7 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
             {
                 using (var memoryStream = new MemoryStream(problemData))
                 {
-                    _minMaxProblem = (MMProblem)_formatter.Deserialize(memoryStream);
+                    _minMaxProblem = (MMProblem) _formatter.Deserialize(memoryStream);
                 }
                 State = TaskSolverState.OK;
             }
@@ -31,23 +30,27 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
             }
         }
 
+        public override string Name
+        {
+            get { return "_15pl04.UCC.MinMax"; }
+        }
 
         public override byte[][] DivideProblem(int threadCount)
         {
             if (threadCount < 1)
                 throw new ArgumentOutOfRangeException("threadCount");
             var partialProblemsNumbers = new List<int>[threadCount];
-            for (int i = 0; i < partialProblemsNumbers.Length; i++)
+            for (var i = 0; i < partialProblemsNumbers.Length; i++)
             {
-                partialProblemsNumbers[i] = new List<int>(_minMaxProblem.Numbers.Length / partialProblemsNumbers.Length);
+                partialProblemsNumbers[i] = new List<int>(_minMaxProblem.Numbers.Length/partialProblemsNumbers.Length);
             }
-            for (int i = 0; i < _minMaxProblem.Numbers.Length; i++)
+            for (var i = 0; i < _minMaxProblem.Numbers.Length; i++)
             {
-                partialProblemsNumbers[i % partialProblemsNumbers.Length].Add(_minMaxProblem.Numbers[i]);
+                partialProblemsNumbers[i%partialProblemsNumbers.Length].Add(_minMaxProblem.Numbers[i]);
             }
 
             var partialProblemsData = new byte[partialProblemsNumbers.Length][];
-            for (int i = 0; i < partialProblemsNumbers.Length; i++)
+            for (var i = 0; i < partialProblemsNumbers.Length; i++)
             {
                 using (var memoryStream = new MemoryStream())
                 {
@@ -61,13 +64,13 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
 
         public override byte[] MergeSolution(byte[][] solutions)
         {
-            int min = int.MaxValue;
-            int max = int.MinValue;
-            for (int i = 0; i < solutions.Length; i++)
+            var min = int.MaxValue;
+            var max = int.MinValue;
+            for (var i = 0; i < solutions.Length; i++)
             {
                 using (var memoryStream = new MemoryStream(solutions[i]))
                 {
-                    var solution = (MMSolution)_formatter.Deserialize(memoryStream);
+                    var solution = (MMSolution) _formatter.Deserialize(memoryStream);
                     if (solution.Min < min) min = solution.Min;
                     if (solution.Max > max) max = solution.Max;
                 }
@@ -80,24 +83,19 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
             }
         }
 
-        public override string Name
-        {
-            get { return "_15pl04.UCC.MinMax"; }
-        }
-
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
             MMPartialProblem partialProblem;
             using (var memoryStream = new MemoryStream(partialData))
             {
-                partialProblem = (MMPartialProblem)_formatter.Deserialize(memoryStream);
+                partialProblem = (MMPartialProblem) _formatter.Deserialize(memoryStream);
             }
-            int min = int.MaxValue;
-            int max = int.MinValue;
+            var min = int.MaxValue;
+            var max = int.MinValue;
             if (partialProblem.Numbers.Length > 0)
             {
                 min = max = partialProblem.Numbers[0];
-                for (int i = 1; i < partialProblem.Numbers.Length; i++)
+                for (var i = 1; i < partialProblem.Numbers.Length; i++)
                 {
                     if (partialProblem.Numbers[i] < min) min = partialProblem.Numbers[i];
                     if (partialProblem.Numbers[i] > max) max = partialProblem.Numbers[i];

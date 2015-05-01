@@ -13,32 +13,13 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolvePartialProblems")]
     public class PartialProblemsMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "PartialProblems.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string noNamespaceSchemaLocation =
+                "PartialProblems.xsd";
 
-        [Serializable]
-        [DesignerCategory("code")]
-        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-        public class PartialProblem
+        public PartialProblemsMessage()
         {
-            [XmlElement(ElementName = "TaskId", Order = 0)]
-            public ulong PartialProblemId { get; set; }
-
-            [XmlElement(DataType = "base64Binary", Order = 1)]
-            public byte[] Data { get; set; }
-
-            [XmlElement(ElementName = "NodeID", Order = 2)]
-            public ulong TaskManagerId { get; set; }
-
-            public override string ToString()
-            {
-                var builder = new StringBuilder();
-
-                builder.Append("Id(" + PartialProblemId + ")");
-                builder.Append(" TaskManagerId(" + TaskManagerId + ")");
-
-                return builder.ToString();
-            }
+            PartialProblems = new List<PartialProblem>();
         }
 
         [XmlElement(Order = 0)]
@@ -63,13 +44,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.SolvePartialProblems; }
         }
 
-
-        public PartialProblemsMessage()
-        {
-            PartialProblems = new List<PartialProblem>();
-        }
-
-
         public bool ShouldSerializeSolvingTimeout()
         {
             return SolvingTimeout.HasValue;
@@ -90,6 +64,31 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             builder.Append("}");
 
             return builder.ToString();
+        }
+
+        [Serializable]
+        [DesignerCategory("code")]
+        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+        public class PartialProblem
+        {
+            [XmlElement(ElementName = "TaskId", Order = 0)]
+            public ulong PartialProblemId { get; set; }
+
+            [XmlElement(DataType = "base64Binary", Order = 1)]
+            public byte[] Data { get; set; }
+
+            [XmlElement(ElementName = "NodeID", Order = 2)]
+            public ulong TaskManagerId { get; set; }
+
+            public override string ToString()
+            {
+                var builder = new StringBuilder();
+
+                builder.Append("Id(" + PartialProblemId + ")");
+                builder.Append(" TaskManagerId(" + TaskManagerId + ")");
+
+                return builder.ToString();
+            }
         }
     }
 }

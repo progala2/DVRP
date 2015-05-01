@@ -17,17 +17,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private const int MaxPendingConnections = 100;
         private const int ReadBufferSize = 4096; // TODO make sure it's enough
-
-
-        private static ILogger _logger = new TraceSourceLogger(typeof(TcpServer).Name);
-
-        private IDataProcessor _dataProcessor;
-        private Socket _listenerSocket;
-
-        private ManualResetEvent _clientAcceptanceEvent;
+        private static readonly ILogger _logger = new TraceSourceLogger(typeof (TcpServer).Name);
+        private readonly IDataProcessor _dataProcessor;
+        private readonly Socket _listenerSocket;
         private CancellationTokenSource _cancellationTokenSource;
-        private volatile bool _isListening = false;
-
+        private ManualResetEvent _clientAcceptanceEvent;
+        private volatile bool _isListening;
 
         public TcpServer(IPEndPoint address, IDataProcessor processor)
         {
@@ -61,11 +56,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             {
                 while (true)
                 {
-                    
                     try
                     {
                         _clientAcceptanceEvent.Reset();
-                        _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket);
+                        _listenerSocket.BeginAccept(AcceptCallback, _listenerSocket);
                         _clientAcceptanceEvent.WaitOne();
                     }
                     catch (Exception)
@@ -88,7 +82,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private static ProcessedDataCallback GenerateResponseCallback(Socket clientSocket)
         {
-            return new ProcessedDataCallback((byte[] response) =>
+            return (byte[] response) =>
             {
                 // A situation can occur where client socket has been closed before message was sent. 
                 // In that case the method does nothing.
@@ -104,7 +98,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                     _logger.Warn("Client socket was closed before response message could be sent.");
                 }
-            });
+            };
         }
 
         private void AcceptCallback(IAsyncResult ar)
@@ -114,12 +108,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             if (!_isListening)
                 return;
 
-            Socket listenerSocket = (Socket)ar.AsyncState;
-            Socket clientSocket = listenerSocket.EndAccept(ar);
+            var listenerSocket = (Socket) ar.AsyncState;
+            var clientSocket = listenerSocket.EndAccept(ar);
 
             _logger.Trace("Client accepted.");
 
-            byte[] buffer = new byte[ReadBufferSize];
+            var buffer = new byte[ReadBufferSize];
 
             using (var memStream = new MemoryStream())
             {
@@ -130,10 +124,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     memStream.Write(buffer, 0, bytesRead);
                 } while (bytesRead > 0);
 
-                var metadata = new TcpDataProviderMetadata()
+                var metadata = new TcpDataProviderMetadata
                 {
                     ReceptionTime = DateTime.UtcNow,
-                    SenderAddress = (IPEndPoint)clientSocket.RemoteEndPoint,
+                    SenderAddress = (IPEndPoint) clientSocket.RemoteEndPoint
                 };
 
                 _dataProcessor.EnqueueDataToProcess(

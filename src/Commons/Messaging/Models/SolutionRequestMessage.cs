@@ -12,9 +12,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolutionRequest")]
     public class SolutionRequestMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")] 
-        public string noNamespaceSchemaLocation = "SolutionRequest.xsd";
-
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string noNamespaceSchemaLocation =
+                "SolutionRequest.xsd";
 
         [XmlElement(Order = 0, ElementName = "Id")]
         public ulong ProblemInstanceId { get; set; }
@@ -24,7 +24,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClass.SolutionRequest; }
         }
-
 
         public override string ToString()
         {

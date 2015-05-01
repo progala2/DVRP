@@ -12,9 +12,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Error")]
     public class ErrorMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "Error.xsd";
-
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string noNamespaceSchemaLocation =
+                "Error.xsd";
 
         [XmlElement(Order = 0, ElementName = "ErrorMessageType")]
         public ErrorType ErrorType { get; set; }
@@ -27,7 +27,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClass.Error; }
         }
-
 
         public override string ToString()
         {
@@ -46,6 +45,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     {
         UnknownSender,
         InvalidOperation,
-        ExceptionOccured,
+        ExceptionOccured
     }
 }

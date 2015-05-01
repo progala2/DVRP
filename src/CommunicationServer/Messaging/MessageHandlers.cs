@@ -1,13 +1,11 @@
-﻿using _15pl04.Ucc.Commons;
+﻿using System;
+using System.Collections.Generic;
+using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.CommunicationServer.Components;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
-using System;
-using System.Collections.Generic;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
@@ -15,7 +13,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
     {
         private List<Message> HandleMessage<T>(T msg, TcpDataProviderMetadata metadata) where T : Message
         {
-            return HandleMessage((dynamic)msg, metadata);
+            return HandleMessage((dynamic) msg, metadata);
         }
 
         private List<Message> HandleMessage(RegisterMessage msg, TcpDataProviderMetadata metadata)
@@ -25,10 +23,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             switch (msg.ComponentType)
             {
                 case ComponentType.CommunicationServer:
-                    var serverInfo = new ServerInfo()
+                    var serverInfo = new ServerInfo
                     {
                         IpAddress = metadata.SenderAddress.Address.ToString(),
-                        Port = (ushort)metadata.SenderAddress.Port,
+                        Port = (ushort) metadata.SenderAddress.Port
                     };
                     componentInfo = new BackupServerInfo(serverInfo, msg.ParallelThreads);
                     break;
@@ -39,59 +37,60 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     break;
 
                 default:
-                    throw new InvalidOperationException("Invalid component type registration (" + msg.ComponentType + ").");
+                    throw new InvalidOperationException("Invalid component type registration (" + msg.ComponentType +
+                                                        ").");
             }
 
             _componentOverseer.TryRegister(componentInfo);
 
-            var responseMsg = new RegisterResponseMessage()
+            var responseMsg = new RegisterResponseMessage
             {
                 AssignedId = componentInfo.ComponentId.Value,
                 BackupServers = CreateBackupList(),
-                CommunicationTimeout = _componentOverseer.CommunicationTimeout,
+                CommunicationTimeout = _componentOverseer.CommunicationTimeout
             };
 
-            return new List<Message> { responseMsg };
+            return new List<Message> {responseMsg};
         }
 
         private List<Message> HandleMessage(StatusMessage msg, TcpDataProviderMetadata metadata)
         {
-            List<Message> responses = new List<Message>();
+            var responses = new List<Message>();
 
             if (!_componentOverseer.IsRegistered(msg.ComponentId))
             {
                 _logger.Warn("The component is not registered (id: " + msg.ComponentId + ").");
-                var errorMsg = new ErrorMessage()
+                var errorMsg = new ErrorMessage
                 {
                     ErrorType = ErrorType.UnknownSender,
-                    ErrorText = "Component unregistered.",
+                    ErrorText = "Component unregistered."
                 };
 
                 responses.Add(errorMsg);
             }
             else
             {
-                ComponentInfo component = _componentOverseer.GetComponent(msg.ComponentId);
+                var component = _componentOverseer.GetComponent(msg.ComponentId);
                 component.ThreadInfo = msg.Threads;
 
                 switch (component.ComponentType)
                 {
                     case ComponentType.ComputationalNode:
                     case ComponentType.TaskManager:
-                        {
-                            Work work;
-                            _workManager.TryAssignWork((SolverNodeInfo)component, out work);
+                    {
+                        Work work;
+                        _workManager.TryAssignWork((SolverNodeInfo) component, out work);
 
-                            if (work != null)
-                                responses.Add(work.CreateMessage());
-                            break;
-                        }
+                        if (work != null)
+                            responses.Add(work.CreateMessage());
+                        break;
+                    }
 
                     case ComponentType.CommunicationServer:
-                        {
-                            //TODO get stuff from the sync queue
-                            break;
-                        }
+                    {
+                        //TODO get stuff from the sync queue
+                        break;
+                    }
                 }
             }
 
@@ -103,91 +102,92 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private List<Message> HandleMessage(SolveRequestMessage msg, TcpDataProviderMetadata metadata)
         {
-            ulong solvingTimeout = msg.SolvingTimeout.HasValue ? msg.SolvingTimeout.Value : 0;
-            ulong id = _workManager.AddProblem(msg.ProblemType, msg.ProblemData, solvingTimeout);
+            var solvingTimeout = msg.SolvingTimeout.HasValue ? msg.SolvingTimeout.Value : 0;
+            var id = _workManager.AddProblem(msg.ProblemType, msg.ProblemData, solvingTimeout);
 
-            var response = new SolveRequestResponseMessage()
+            var response = new SolveRequestResponseMessage
             {
-                AssignedId = id,
+                AssignedId = id
             };
 
-            return new List<Message> { response };
+            return new List<Message> {response};
         }
 
         private List<Message> HandleMessage(SolutionRequestMessage msg, TcpDataProviderMetadata metadata)
         {
-            Solution solution = _workManager.GetSolution(msg.ProblemInstanceId);
-            Problem problem = _workManager.GetProblem(msg.ProblemInstanceId);
+            var solution = _workManager.GetSolution(msg.ProblemInstanceId);
+            var problem = _workManager.GetProblem(msg.ProblemInstanceId);
 
             Message response;
 
             if (solution != null)
             {
-                var msgSolution = new SolutionsMessage.Solution()
+                var msgSolution = new SolutionsMessage.Solution
                 {
                     ComputationsTime = solution.ComputationsTime,
                     Data = solution.Data,
                     TimeoutOccured = solution.TimeoutOccured,
-                    Type = SolutionsMessage.SolutionType.Final,
+                    Type = SolutionsMessage.SolutionType.Final
                 };
 
-                response = new SolutionsMessage()
+                response = new SolutionsMessage
                 {
                     CommonData = problem.CommonData,
                     ProblemInstanceId = problem.Id,
                     ProblemType = problem.Type,
-                    Solutions = new List<SolutionsMessage.Solution> { msgSolution },
+                    Solutions = new List<SolutionsMessage.Solution> {msgSolution}
                 };
             }
             else if (problem != null)
             {
-                var msgSolution = new SolutionsMessage.Solution()
+                var msgSolution = new SolutionsMessage.Solution
                 {
                     ComputationsTime = _workManager.GetComputationsTime(problem.Id),
                     TimeoutOccured = false,
-                    Type = SolutionsMessage.SolutionType.Ongoing,
+                    Type = SolutionsMessage.SolutionType.Ongoing
                 };
 
-                response = new SolutionsMessage()
+                response = new SolutionsMessage
                 {
                     CommonData = problem.CommonData,
                     ProblemInstanceId = problem.Id,
                     ProblemType = problem.Type,
-                    Solutions = new List<SolutionsMessage.Solution> { msgSolution },
+                    Solutions = new List<SolutionsMessage.Solution> {msgSolution}
                 };
             }
             else
             {
-                response = new ErrorMessage()
+                response = new ErrorMessage
                 {
                     ErrorType = ErrorType.ExceptionOccured,
-                    ErrorText = "The specified problem id is unknown to the system.",
+                    ErrorText = "The specified problem id is unknown to the system."
                 };
             }
 
-            return new List<Message> { response };
+            return new List<Message> {response};
         }
 
         private List<Message> HandleMessage(PartialProblemsMessage msg, TcpDataProviderMetadata metadata)
         {
-            List<Message> responses = new List<Message>();
+            var responses = new List<Message>();
 
-            ulong? senderId = _workManager.GetProcessingNodeId(msg.ProblemInstanceId, msg.PartialProblems[0].PartialProblemId);
+            var senderId = _workManager.GetProcessingNodeId(msg.ProblemInstanceId,
+                msg.PartialProblems[0].PartialProblemId);
 
             if (!_componentOverseer.IsRegistered(senderId.Value))
             {
                 _logger.Warn("The component is not registered (id: " + senderId + ").");
-                var errorMsg = new ErrorMessage()
+                var errorMsg = new ErrorMessage
                 {
                     ErrorType = ErrorType.UnknownSender,
-                    ErrorText = "Component unregistered.",
+                    ErrorText = "Component unregistered."
                 };
 
                 responses.Add(errorMsg);
             }
             else
             {
-                Problem problem = _workManager.GetProblem(msg.ProblemInstanceId);
+                var problem = _workManager.GetProblem(msg.ProblemInstanceId);
 
                 if (problem.CommonData != null)
                     _logger.Warn("Common data shouldn't be set.");
@@ -199,7 +199,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                 var component = _componentOverseer.GetComponent(senderId.Value) as SolverNodeInfo;
                 Work work;
-                _workManager.TryAssignWork((SolverNodeInfo)component, out work);
+                _workManager.TryAssignWork(component, out work);
 
                 if (work != null)
                     responses.Add(work.CreateMessage());
@@ -213,17 +213,17 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private List<Message> HandleMessage(SolutionsMessage msg, TcpDataProviderMetadata metadata)
         {
-            List<Message> responses = new List<Message>();
+            var responses = new List<Message>();
 
-            ulong? senderId = _workManager.GetProcessingNodeId(msg.ProblemInstanceId, msg.Solutions[0].PartialProblemId);
+            var senderId = _workManager.GetProcessingNodeId(msg.ProblemInstanceId, msg.Solutions[0].PartialProblemId);
 
             if (!_componentOverseer.IsRegistered(senderId.Value))
             {
                 _logger.Warn("The component is not registered (id: " + senderId.Value + ").");
-                var errorMsg = new ErrorMessage()
+                var errorMsg = new ErrorMessage
                 {
                     ErrorType = ErrorType.UnknownSender,
-                    ErrorText = "Component unregistered.",
+                    ErrorText = "Component unregistered."
                 };
 
                 responses.Add(errorMsg);
@@ -253,7 +253,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                 var component = _componentOverseer.GetComponent(senderId.Value) as SolverNodeInfo;
                 Work work;
-                _workManager.TryAssignWork((SolverNodeInfo)component, out work);
+                _workManager.TryAssignWork(component, out work);
 
                 if (work != null)
                     responses.Add(work.CreateMessage());
@@ -269,31 +269,32 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         {
             _logger.Error(msg.ErrorType + " error message received: \n" + msg.ErrorText);
 
-            return new List<Message> { CreateNoOperationMessage() };
+            return new List<Message> {CreateNoOperationMessage()};
         }
 
         private NoOperationMessage CreateNoOperationMessage()
         {
-            var noOperationMsg = new NoOperationMessage()
+            var noOperationMsg = new NoOperationMessage
             {
-                BackupServers = CreateBackupList(),
+                BackupServers = CreateBackupList()
             };
             return noOperationMsg;
         }
 
         private List<ServerInfo> CreateBackupList()
         {
-            List<ServerInfo> backupInfoToSend = new List<ServerInfo>();
+            var backupInfoToSend = new List<ServerInfo>();
 
-            var backupServers = new List<ComponentInfo>(_componentOverseer.GetComponents(ComponentType.CommunicationServer));
+            var backupServers =
+                new List<ComponentInfo>(_componentOverseer.GetComponents(ComponentType.CommunicationServer));
             backupServers.Sort(ComponentInfo.RegistrationTimeComparer);
 
             foreach (BackupServerInfo bs in backupServers)
             {
-                ServerInfo backupInfo = new ServerInfo()
+                var backupInfo = new ServerInfo
                 {
                     IpAddress = bs.Address.Address.ToString(),
-                    Port = (ushort)bs.Address.Port,
+                    Port = (ushort) bs.Address.Port
                 };
 
                 backupInfoToSend.Add(backupInfo);

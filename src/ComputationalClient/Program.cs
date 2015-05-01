@@ -4,9 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using _15pl04.Ucc.Commons;
-using _15pl04.Ucc.Commons.Computations;
 using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Utilities;
 using _15pl04.Ucc.MinMaxTaskSolver;
 
@@ -14,7 +12,7 @@ namespace _15pl04.Ucc.ComputationalClient
 {
     public class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var appSettings = ConfigurationManager.AppSettings;
             var primaryCSaddress = appSettings["primaryCSaddress"];
@@ -40,7 +38,6 @@ namespace _15pl04.Ucc.ComputationalClient
                     var minMaxProblem = new MMProblem(numbers);
                     var problemData = GenerateProblemData(minMaxProblem);
                     computationalClient.SendSolveRequest(problemType, problemData, null);
-
                 }
                 if (line == "solution")
                 {
@@ -52,17 +49,17 @@ namespace _15pl04.Ucc.ComputationalClient
             }
         }
 
-        static void computationalClient_MessageSent(object sender, MessageEventArgs e)
+        private static void computationalClient_MessageSent(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Sent", e.Message);
         }
 
-        static void computationalClient_MessageReceived(object sender, MessageEventArgs e)
+        private static void computationalClient_MessageReceived(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Received", e.Message);
         }
 
-        static void computationalClient_MessageSendingException(object sender, MessageExceptionEventArgs e)
+        private static void computationalClient_MessageSendingException(object sender, MessageExceptionEventArgs e)
         {
             ColorfulConsole.WriteMessageExceptionInfo("Message sending exception", e.Message, e.Exception);
         }
@@ -78,12 +75,11 @@ namespace _15pl04.Ucc.ComputationalClient
             }
         }
 
-
         private static List<int> GenerateNumbers(int numbersCount, int min, int max)
         {
             var rand = new Random();
             var result = new List<int>(numbersCount);
-            for (int i = 0; i < numbersCount; i++)
+            for (var i = 0; i < numbersCount; i++)
             {
                 result.Add(rand.Next(min, max));
             }

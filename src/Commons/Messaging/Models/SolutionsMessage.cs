@@ -14,6 +14,62 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     public class SolutionsMessage : Message
     {
         [Serializable]
+        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+        public enum SolutionType
+        {
+            Ongoing,
+            Partial,
+            Final
+        }
+
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string noNamespaceSchemaLocation =
+                "Solutions.xsd";
+
+        public SolutionsMessage()
+        {
+            Solutions = new List<Solution>();
+        }
+
+        [XmlElement(Order = 0)]
+        public string ProblemType { get; set; }
+
+        [XmlElement(Order = 1, ElementName = "Id")]
+        public ulong ProblemInstanceId { get; set; }
+
+        [XmlElement(DataType = "base64Binary", Order = 2)]
+        public byte[] CommonData { get; set; }
+
+        [XmlArray(Order = 3)]
+        [XmlArrayItem("Solution", IsNullable = false)]
+        public List<Solution> Solutions { get; set; }
+
+        [XmlIgnore]
+        public override MessageClass MessageType
+        {
+            get { return MessageClass.Solutions; }
+        }
+
+        public bool ShouldSerializeCommonData()
+        {
+            return CommonData != null;
+        }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder(base.ToString());
+
+            builder.Append(" ProblemInstanceId(" + ProblemInstanceId + ")");
+            builder.Append(" ProblemType(" + ProblemType + ")");
+
+            builder.Append(" Solutions{");
+            builder.Append(string.Join(",", Solutions));
+            builder.Append("}");
+
+            return builder.ToString();
+        }
+
+        [Serializable]
         [DesignerCategory("code")]
         [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
         public class Solution
@@ -47,7 +103,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             {
                 var builder = new StringBuilder();
 
-                builder.Append("Type(" + Type.ToString() + ")");
+                builder.Append("Type(" + Type + ")");
 
                 if (PartialProblemId.HasValue)
                     builder.Append(" Id(" + PartialProblemId + ")");
@@ -57,67 +113,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
                 return builder.ToString();
             }
-        }
-
-        [Serializable]
-        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-        public enum SolutionType
-        {
-            Ongoing,
-            Partial,
-            Final
-        }
-
-
-
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "Solutions.xsd";
-
-
-
-        [XmlElement(Order = 0)]
-        public string ProblemType { get; set; }
-
-        [XmlElement(Order = 1, ElementName="Id")]
-        public ulong ProblemInstanceId { get; set; }
-
-        [XmlElement(DataType = "base64Binary", Order = 2)]
-        public byte[] CommonData { get; set; }
-
-        [XmlArray(Order = 3)]
-        [XmlArrayItem("Solution", IsNullable = false)]
-        public List<Solution> Solutions { get; set; }
-
-        [XmlIgnore]
-        public override MessageClass MessageType
-        {
-            get { return MessageClass.Solutions; }
-        }
-
-
-
-        public SolutionsMessage()
-        {
-            Solutions = new List<Solution>();
-        }
-
-        public bool ShouldSerializeCommonData()
-        {
-            return CommonData != null;
-        }
-
-        public override string ToString()
-        {
-            var builder = new StringBuilder(base.ToString());
-
-            builder.Append(" ProblemInstanceId(" + ProblemInstanceId + ")");
-            builder.Append(" ProblemType(" + ProblemType + ")");
-
-            builder.Append(" Solutions{");
-            builder.Append(string.Join(",", Solutions));
-            builder.Append("}");
-
-            return builder.ToString();
         }
     }
 }

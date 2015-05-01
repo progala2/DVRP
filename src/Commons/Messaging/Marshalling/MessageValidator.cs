@@ -11,16 +11,16 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
 {
     public class MessageValidator : IXmlValidator<MessageClass>
     {
-        private Dictionary<MessageClass, XmlSchemaSet> _schemaSets;
+        private readonly Dictionary<MessageClass, XmlSchemaSet> _schemaSets;
 
         public MessageValidator()
         {
-            int capacity = Enum.GetValues(typeof(MessageClass)).Length;
+            var capacity = Enum.GetValues(typeof (MessageClass)).Length;
             _schemaSets = new Dictionary<MessageClass, XmlSchemaSet>(capacity);
 
-            foreach (MessageClass type in Enum.GetValues(typeof(MessageClass)).Cast<MessageClass>())
+            foreach (var type in Enum.GetValues(typeof (MessageClass)).Cast<MessageClass>())
             {
-                XmlReader reader = XmlReader.Create(new StringReader(type.GetXmlSchema()));
+                var reader = XmlReader.Create(new StringReader(type.GetXmlSchema()));
 
                 _schemaSets.Add(type, new XmlSchemaSet());
                 _schemaSets[type].Add("http://www.mini.pw.edu.pl/ucc/", reader);

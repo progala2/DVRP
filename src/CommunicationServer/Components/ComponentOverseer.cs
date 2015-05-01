@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Utilities;
@@ -62,7 +61,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
                 if (Deregistration != null)
                 {
                     Logger.Info("Deregistering " + deregisteredComponent.ComponentType +
-                                 " (id: " + deregisteredComponent.ComponentId + ").");
+                                " (id: " + deregisteredComponent.ComponentId + ").");
 
                     var args = new DeregisterationEventArgs
                     {

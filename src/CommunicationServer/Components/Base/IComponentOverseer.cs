@@ -1,5 +1,4 @@
-﻿using _15pl04.Ucc.Commons;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using _15pl04.Ucc.Commons.Components;
 
@@ -9,19 +8,15 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
 
     public interface IComponentOverseer
     {
-        event DeregisterationEventHandler Deregistration;
-
         uint CommunicationTimeout { get; }
         bool IsMonitoring { get; }
-
+        event DeregisterationEventHandler Deregistration;
         bool TryRegister(ComponentInfo component);
         bool TryDeregister(ulong componentId);
         bool IsRegistered(ulong componentId);
         void UpdateTimestamp(ulong componentId);
-
         ComponentInfo GetComponent(ulong componentId);
         ICollection<ComponentInfo> GetComponents(ComponentType type);
-
         void StartMonitoring();
         void StopMonitoring();
     }

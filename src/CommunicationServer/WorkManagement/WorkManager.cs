@@ -1,53 +1,25 @@
-﻿#region Usings
-
-using _15pl04.Ucc.Commons;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Logging;
-using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Utilities;
-using _15pl04.Ucc.CommunicationServer.Collections;
 using _15pl04.Ucc.CommunicationServer.Components;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using _15pl04.Ucc.Commons.Components;
-
-#endregion
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 {
     internal class WorkManager : IWorkManager
     {
-
-        #region Public fields
-
-
-        public event WorkAssignmentEventHandler WorkAssignment;
-
-
-        #endregion
-
-        #region Private fields
-
-
-        private static ILogger _logger = new ConsoleLogger();
-
-        private Random _random = new Random();
-
-        private IComponentOverseer _componentOverseer;
-
-
-        private Dictionary<ulong, Problem> _problems;
-        private Dictionary<ulong, Solution> _solutions;
-        private Dictionary<Tuple<ulong, ulong>, PartialProblem> _partialProblems;
-        private Dictionary<Tuple<ulong, ulong>, PartialSolution> _partialSolutions;
-
-
-        #endregion
-
-        #region Constructors
+        private static readonly ILogger _logger = new ConsoleLogger();
+        private readonly IComponentOverseer _componentOverseer;
+        private readonly Dictionary<Tuple<ulong, ulong>, PartialProblem> _partialProblems;
+        private readonly Dictionary<Tuple<ulong, ulong>, PartialSolution> _partialSolutions;
+        private readonly Dictionary<ulong, Problem> _problems;
+        private readonly Random _random = new Random();
+        private readonly Dictionary<ulong, Solution> _solutions;
 
         public WorkManager(IComponentOverseer co)
         {
@@ -60,10 +32,122 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             _partialSolutions = new Dictionary<Tuple<ulong, ulong>, PartialSolution>();
         }
 
-        #endregion
+        public event WorkAssignmentEventHandler WorkAssignment;
 
-        #region Adding stuff
+        public void RemoveSolution(ulong problemId)
+        {
+            _solutions.Remove(problemId);
+            _logger.Info("Removed solution from the server (id: " + problemId + ").");
+        }
 
+        public bool TryAssignWork(SolverNodeInfo node, out Work work)
+        {
+            var type = node.ComponentType;
+            var nodeId = node.ComponentId.Value;
+
+            if (type == ComponentType.TaskManager)
+            {
+                var partialSolutionsToMerge = _partialSolutions.Values.Where(ps =>
+                    ps.State == PartialSolution.PartialSolutionState.AwaitingMerge
+                    && node.SolvableProblems.Contains(ps.PartialProblem.Problem.Type))
+                    as List<PartialSolution>;
+
+                if (partialSolutionsToMerge != null && partialSolutionsToMerge.Count != 0)
+                {
+                    var problemId = partialSolutionsToMerge[0].PartialProblem.Problem.Id;
+
+                    var solutionsToAssign = partialSolutionsToMerge.Where(ps =>
+                        ps.PartialProblem.Problem.Id == problemId)
+                        as List<PartialSolution>;
+
+                    foreach (var ps in solutionsToAssign)
+                    {
+                        ps.State = PartialSolution.PartialSolutionState.BeingMerged;
+                        ps.MergingNodeId = nodeId;
+                    }
+
+                    work = new MergeWork(nodeId, solutionsToAssign);
+
+                    var e = new WorkAssignmentEventArgs
+                    {
+                        AssigneeId = nodeId,
+                        Work = work
+                    };
+                    if (WorkAssignment != null)
+                        WorkAssignment(this, e);
+
+                    return true;
+                }
+
+                var problemToDivide = _problems.Values.FirstOrDefault(p =>
+                    p.State == Problem.ProblemState.AwaitingDivision
+                    && node.SolvableProblems.Contains(p.Type));
+
+                if (problemToDivide != null)
+                {
+                    problemToDivide.State = Problem.ProblemState.BeingDivided;
+                    problemToDivide.DividingNodeId = nodeId;
+
+                    var availableThreads = CountAvailableSolvingThreads(problemToDivide.Type);
+
+                    work = new DivisionWork(nodeId, problemToDivide, (ulong) availableThreads);
+
+                    var e = new WorkAssignmentEventArgs
+                    {
+                        AssigneeId = nodeId,
+                        Work = work
+                    };
+                    if (WorkAssignment != null)
+                        WorkAssignment(this, e);
+
+                    return true;
+                }
+
+                work = null;
+                return false;
+            }
+            if (type == ComponentType.ComputationalNode)
+            {
+                var availableThreads = node.ThreadInfo.Count(ts =>
+                    ts.State == ThreadStatus.ThreadState.Idle);
+
+                var partialProblemsToCompute = _partialProblems.Values.Where(pp =>
+                    pp.State == PartialProblem.PartialProblemState.AwaitingComputation
+                    && node.SolvableProblems.Contains(pp.Problem.Type));
+
+                var problemsToAssign = new List<PartialProblem>(availableThreads);
+
+                foreach (var pp in partialProblemsToCompute)
+                {
+                    if (availableThreads-- == 0)
+                        break;
+
+                    pp.State = PartialProblem.PartialProblemState.BeingComputed;
+                    pp.ComputingNodeId = nodeId;
+
+                    problemsToAssign.Add(pp);
+                }
+
+                if (problemsToAssign.Count != 0)
+                {
+                    work = new ComputationWork(nodeId, problemsToAssign);
+
+                    var e = new WorkAssignmentEventArgs
+                    {
+                        AssigneeId = nodeId,
+                        Work = work
+                    };
+                    if (WorkAssignment != null)
+                        WorkAssignment(this, e);
+
+                    return true;
+                }
+
+                work = null;
+                return false;
+            }
+            throw new InvalidOperationException();
+        }
 
         public ulong AddProblem(string type, byte[] data, ulong solvingTimeout)
         {
@@ -75,7 +159,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             } while (_problems.ContainsKey(id));
 
             // Create problem instance.
-            Problem problem = new Problem(id, type, data, solvingTimeout);
+            var problem = new Problem(id, type, data, solvingTimeout);
             problem.State = Problem.ProblemState.AwaitingDivision;
             problem.DividingNodeId = null;
 
@@ -95,7 +179,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 return;
             }
 
-            Problem problem = _problems[problemId];
+            var problem = _problems[problemId];
 
             // Make sure that state of the corresponding problem instance is set to "being divided".
             if (problem.State != Problem.ProblemState.BeingDivided)
@@ -112,16 +196,16 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             }
 
             // Make sure the problem instance's number of partial problems & partial solutions is not greater than 'NumberOfParts'.
-            int ppNum = _partialProblems.Count(pair => pair.Key.Item1 == problemId);
-            int psNum = _partialSolutions.Count(pair => pair.Key.Item1 == problemId);
-            if (ppNum + psNum >= (int)problem.NumberOfParts)
+            var ppNum = _partialProblems.Count(pair => pair.Key.Item1 == problemId);
+            var psNum = _partialSolutions.Count(pair => pair.Key.Item1 == problemId);
+            if (ppNum + psNum >= (int) problem.NumberOfParts)
             {
                 _logger.Error("Received too many partial problems than expected.");
                 return;
             }
 
             // Create partial problem instance.
-            PartialProblem partialProblem = new PartialProblem(partialProblemId, problem, privateData);
+            var partialProblem = new PartialProblem(partialProblemId, problem, privateData);
             partialProblem.State = PartialProblem.PartialProblemState.AwaitingComputation;
             partialProblem.ComputingNodeId = null;
 
@@ -129,7 +213,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             var pairId = new Tuple<ulong, ulong>(problemId, partialProblemId);
             _partialProblems.Add(pairId, partialProblem);
 
-            _logger.Info("Added new partial problem (id: " + problemId + "/" + partialProblemId + ", type: " + problem.Type + ").");
+            _logger.Info("Added new partial problem (id: " + problemId + "/" + partialProblemId + ", type: " +
+                         problem.Type + ").");
         }
 
         public void AddSolution(ulong problemId, byte[] data, ulong computationsTime, bool timeoutOccured)
@@ -141,7 +226,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 return;
             }
 
-            Problem problem = _problems[problemId];
+            var problem = _problems[problemId];
 
             // Make sure that state of the corresponding problem instance is set to "awaiting solution".
             if (problem.State != Problem.ProblemState.AwaitingSolution)
@@ -152,7 +237,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
             // Make sure there are partial solutions in "being merged" state. Delete them.
             var mergedPartialSolutions = GetPartialSolutions(problemId, PartialSolution.PartialSolutionState.BeingMerged);
-            foreach (PartialSolution ps in mergedPartialSolutions)
+            foreach (var ps in mergedPartialSolutions)
             {
                 var pairId = new Tuple<ulong, ulong>(problemId, ps.PartialProblem.Id);
                 _partialSolutions.Remove(pairId);
@@ -161,7 +246,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 _logger.Warn("There are no corresponding partial solutions in 'being merged' state.");
 
             // Create solution instance.
-            Solution solution = new Solution(problem, data, computationsTime, timeoutOccured);
+            var solution = new Solution(problem, data, computationsTime, timeoutOccured);
 
             // Add solution to the set.
             _solutions.Add(problemId, solution);
@@ -190,7 +275,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             _logger.Info("Added new problem (id: " + problemId + ", type: " + problem.Type + ").");
         }
 
-        public void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime, bool timeoutOccured)
+        public void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime,
+            bool timeoutOccured)
         {
             var pairId = new Tuple<ulong, ulong>(problemId, partialProblemId);
 
@@ -201,7 +287,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 return;
             }
 
-            Problem problem = _problems[problemId];
+            var problem = _problems[problemId];
 
             // Make sure the corresponding partial problem instance exists.
             if (!_partialProblems.ContainsKey(pairId))
@@ -210,7 +296,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 return;
             }
 
-            PartialProblem partialProblem = _partialProblems[pairId];
+            var partialProblem = _partialProblems[pairId];
 
             // Make sure that state of the corresponding partial problem is set to "being computed".
             if (partialProblem.State != PartialProblem.PartialProblemState.BeingComputed)
@@ -220,7 +306,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             }
 
             // Create partial solution instance.
-            PartialSolution partialSolution = new PartialSolution(partialProblem, data, computationsTime, timeoutOccured);
+            var partialSolution = new PartialSolution(partialProblem, data, computationsTime, timeoutOccured);
             partialSolution.State = PartialSolution.PartialSolutionState.BeingGathered;
             partialSolution.MergingNodeId = null;
 
@@ -230,61 +316,33 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Delete corresponding partial problem.
             _partialProblems.Remove(pairId);
 
-            _logger.Info("Added new partial solution (id: " + problemId + "/" + partialProblemId + ", type: " + problem.Type + ").");
+            _logger.Info("Added new partial solution (id: " + problemId + "/" + partialProblemId + ", type: " +
+                         problem.Type + ").");
 
             // Check if all partial solutions are in and set appropriate state.
-            var gatheredPartialSolutions = GetPartialSolutions(problemId, PartialSolution.PartialSolutionState.BeingGathered);
-            if ((int)problem.NumberOfParts == gatheredPartialSolutions.Count)
+            var gatheredPartialSolutions = GetPartialSolutions(problemId,
+                PartialSolution.PartialSolutionState.BeingGathered);
+            if ((int) problem.NumberOfParts == gatheredPartialSolutions.Count)
             {
-                foreach (PartialSolution ps in gatheredPartialSolutions)
+                foreach (var ps in gatheredPartialSolutions)
                     ps.State = PartialSolution.PartialSolutionState.AwaitingMerge;
 
                 _logger.Info("Partial solutions are ready to merge (id: " + problemId + ").");
             }
         }
 
-
-        #endregion
-
-        #region Getting stuff
-
-
         public Solution GetSolution(ulong problemId)
         {
             if (_solutions.ContainsKey(problemId))
                 return _solutions[problemId];
-            else
-                return null;
+            return null;
         }
 
         public Problem GetProblem(ulong problemId)
         {
             if (_problems.ContainsKey(problemId))
                 return _problems[problemId];
-            else
-                return null;
-        }
-
-        private ICollection<PartialProblem> GetPartialProblems(ulong problemId, PartialProblem.PartialProblemState? state = null)
-        {
-            return (ICollection<PartialProblem>)_partialProblems.Where(pair =>
-                {
-                    if (state.HasValue)
-                        return problemId == pair.Key.Item1 && state == pair.Value.State;
-                    else
-                        return problemId == pair.Key.Item1;
-                });
-        }
-
-        private ICollection<PartialSolution> GetPartialSolutions(ulong problemId, PartialSolution.PartialSolutionState? state = null)
-        {
-            return (ICollection<PartialSolution>)_partialSolutions.Where(pair =>
-            {
-                if (state.HasValue)
-                    return problemId == pair.Key.Item1 && state == pair.Value.State;
-                else
-                    return problemId == pair.Key.Item1;
-            });
+            return null;
         }
 
         public ulong GetComputationsTime(ulong problemId)
@@ -306,7 +364,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             }
             else
             {
-                var pairId = new Tuple<ulong, ulong>(problemId,partialProblemId.Value);
+                var pairId = new Tuple<ulong, ulong>(problemId, partialProblemId.Value);
 
                 if (_partialProblems.ContainsKey(pairId))
                     nodeId = _partialProblems[pairId].ComputingNodeId;
@@ -318,58 +376,40 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             return nodeId;
         }
 
-
-        #endregion
-
-        #region Removing stuff
-
-
-        public void RemoveSolution(ulong problemId)
-        {
-            _solutions.Remove(problemId);
-            _logger.Info("Removed solution from the server (id: " + problemId + ").");
-        }
-
-
-        #endregion
-
-
-
         private void OnComponentDeregistration(object sender, DeregisterationEventArgs e)
         {
-            ComponentType componentType = e.Component.ComponentType;
+            var componentType = e.Component.ComponentType;
 
             if (componentType == ComponentType.CommunicationServer)
             {
-                BackupServerInfo backup = e.Component as BackupServerInfo;
+                var backup = e.Component as BackupServerInfo;
 
                 throw new NotImplementedException();
                 // TODO implement
-
             }
-            else if (componentType == ComponentType.TaskManager)
+            if (componentType == ComponentType.TaskManager)
             {
-                SolverNodeInfo component = e.Component as SolverNodeInfo;
+                var component = e.Component as SolverNodeInfo;
 
                 var problemsBeingDivided = _problems.Values.Where(p =>
-                    {
-                        return p.DividingNodeId == component.ComponentId
-                            && p.State == Problem.ProblemState.BeingDivided;
-                    });
+                {
+                    return p.DividingNodeId == component.ComponentId
+                           && p.State == Problem.ProblemState.BeingDivided;
+                });
 
-                foreach (Problem p in problemsBeingDivided)
+                foreach (var p in problemsBeingDivided)
                 {
                     p.DividingNodeId = null;
                     p.State = Problem.ProblemState.BeingDivided;
                 }
 
                 var partialSolutionsBeingMerged = _partialSolutions.Values.Where(ps =>
-                    {
-                        return ps.MergingNodeId == component.ComponentId
-                            && ps.State == PartialSolution.PartialSolutionState.BeingMerged;
-                    });
+                {
+                    return ps.MergingNodeId == component.ComponentId
+                           && ps.State == PartialSolution.PartialSolutionState.BeingMerged;
+                });
 
-                foreach (PartialSolution ps in partialSolutionsBeingMerged)
+                foreach (var ps in partialSolutionsBeingMerged)
                 {
                     ps.MergingNodeId = null;
                     ps.State = PartialSolution.PartialSolutionState.BeingMerged;
@@ -377,15 +417,15 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             }
             else if (componentType == ComponentType.ComputationalNode)
             {
-                SolverNodeInfo component = e.Component as SolverNodeInfo;
+                var component = e.Component as SolverNodeInfo;
 
                 var partialProblemsBeingComputed = _partialProblems.Values.Where(pp =>
-                    {
-                        return pp.ComputingNodeId == component.ComponentId
-                            && pp.State == PartialProblem.PartialProblemState.BeingComputed;
-                    });
+                {
+                    return pp.ComputingNodeId == component.ComponentId
+                           && pp.State == PartialProblem.PartialProblemState.BeingComputed;
+                });
 
-                foreach (PartialProblem pp in partialProblemsBeingComputed)
+                foreach (var pp in partialProblemsBeingComputed)
                 {
                     pp.ComputingNodeId = null;
                     pp.State = PartialProblem.PartialProblemState.AwaitingComputation;
@@ -395,15 +435,16 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
         private int CountAvailableSolvingThreads(string problemType)
         {
-            int availableThreads = 0;
-            
+            var availableThreads = 0;
+
             foreach (SolverNodeInfo sn in _componentOverseer.GetComponents(ComponentType.ComputationalNode))
             {
                 if (!sn.SolvableProblems.Contains(problemType))
                     continue;
 
                 //availableThreads += sn.NumberOfThreads; // Count all threads.
-                availableThreads += sn.ThreadInfo.Count(ts => ts.State == ThreadStatus.ThreadState.Idle); // OR count only the idle ones.
+                availableThreads += sn.ThreadInfo.Count(ts => ts.State == ThreadStatus.ThreadState.Idle);
+                // OR count only the idle ones.
             }
 
             // No available threads found be we still need to divide the problem into some parts.
@@ -413,116 +454,30 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             return availableThreads;
         }
 
-
-        public bool TryAssignWork(SolverNodeInfo node, out Work work)
+        private ICollection<PartialProblem> GetPartialProblems(ulong problemId,
+            PartialProblem.PartialProblemState? state = null)
         {
-            ComponentType type = node.ComponentType;
-            ulong nodeId = node.ComponentId.Value;
-
-            if (type == ComponentType.TaskManager)
+            return (ICollection<PartialProblem>) _partialProblems.Values.Where(pp =>
             {
-                var partialSolutionsToMerge = _partialSolutions.Values.Where(ps =>
-                    ps.State == PartialSolution.PartialSolutionState.AwaitingMerge
-                    && node.SolvableProblems.Contains(ps.PartialProblem.Problem.Type))
-                    as List<PartialSolution>;
+                var pId = pp.Problem.Id;
 
-                if (partialSolutionsToMerge != null && partialSolutionsToMerge.Count != 0)
-                {
-                    ulong problemId = partialSolutionsToMerge[0].PartialProblem.Problem.Id;
-
-                    var solutionsToAssign = partialSolutionsToMerge.Where(ps =>
-                        ps.PartialProblem.Problem.Id == problemId) 
-                        as List<PartialSolution>;
-
-                    foreach (PartialSolution ps in solutionsToAssign)
-                    {
-                        ps.State = PartialSolution.PartialSolutionState.BeingMerged;
-                        ps.MergingNodeId = nodeId;
-                    }
-
-                    work = new MergeWork(nodeId, solutionsToAssign);
-
-                    WorkAssignmentEventArgs e = new WorkAssignmentEventArgs()
-                    {
-                        AssigneeId = nodeId,
-                        Work = work,
-                    };
-                    if (WorkAssignment != null)
-                        WorkAssignment(this, e);
-
-                    return true;
-                }
-
-                Problem problemToDivide = _problems.Values.FirstOrDefault(p =>
-                    p.State == Problem.ProblemState.AwaitingDivision
-                    && node.SolvableProblems.Contains(p.Type));
-
-                if (problemToDivide != null)
-                {
-                    problemToDivide.State = Problem.ProblemState.BeingDivided;
-                    problemToDivide.DividingNodeId = nodeId;
-                    
-                    int availableThreads = CountAvailableSolvingThreads(problemToDivide.Type);
-
-                    work = new DivisionWork(nodeId, problemToDivide, (ulong)availableThreads);
-
-                    WorkAssignmentEventArgs e = new WorkAssignmentEventArgs()
-                    {
-                        AssigneeId = nodeId,
-                        Work = work,
-                    };
-                    if (WorkAssignment != null)
-                        WorkAssignment(this, e);
-
-                    return true;
-                }
-
-                work = null;
-                return false;
-            }
-            else if (type == ComponentType.ComputationalNode)
-            {
-                int availableThreads = node.ThreadInfo.Count(ts => 
-                    ts.State == ThreadStatus.ThreadState.Idle);
-
-                var partialProblemsToCompute = _partialProblems.Values.Where(pp =>
-                    pp.State == PartialProblem.PartialProblemState.AwaitingComputation
-                    && node.SolvableProblems.Contains(pp.Problem.Type));
-
-                var problemsToAssign = new List<PartialProblem>(availableThreads);
-
-                foreach (PartialProblem pp in partialProblemsToCompute)
-                {
-                    if (availableThreads-- == 0)
-                        break;
-
-                    pp.State = PartialProblem.PartialProblemState.BeingComputed;
-                    pp.ComputingNodeId = nodeId;
-
-                    problemsToAssign.Add(pp);
-                }
-
-                if (problemsToAssign.Count != 0)
-                {
-                    work = new ComputationWork(nodeId, problemsToAssign);
-
-                    WorkAssignmentEventArgs e = new WorkAssignmentEventArgs()
-                    {
-                        AssigneeId = nodeId,
-                        Work = work,
-                    };
-                    if (WorkAssignment != null)
-                        WorkAssignment(this, e);
-
-                    return true;
-                }
-
-                work = null;
-                return false;
-            }
-            else
-                throw new InvalidOperationException();
+                if (state.HasValue)
+                    return problemId == pId && state == pp.State;
+                return problemId == pId;
+            });
         }
 
+        private ICollection<PartialSolution> GetPartialSolutions(ulong problemId,
+            PartialSolution.PartialSolutionState? state = null)
+        {
+            return (ICollection<PartialSolution>) _partialSolutions.Values.Where(ps =>
+            {
+                var pId = ps.PartialProblem.Problem.Id;
+
+                if (state.HasValue)
+                    return problemId == pId && state == ps.State;
+                return problemId == pId;
+            });
+        }
     }
 }

@@ -14,9 +14,14 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "RegisterResponse")]
     public class RegisterResponseMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "RegisterResponse.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string noNamespaceSchemaLocation =
+                "RegisterResponse.xsd";
 
+        public RegisterResponseMessage()
+        {
+            BackupServers = new List<ServerInfo>();
+        }
 
         [XmlElement(Order = 0, ElementName = "Id")]
         public ulong AssignedId { get; set; }
@@ -34,12 +39,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.RegisterResponse; }
         }
 
-
-        public RegisterResponseMessage()
-        {
-            BackupServers = new List<ServerInfo>();
-        }
-
         public override string ToString()
         {
             var builder = new StringBuilder(base.ToString());
@@ -48,7 +47,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             builder.Append(" Timeout(" + CommunicationTimeout + ")");
 
             builder.Append(" BackupServers{");
-            builder.Append(string.Join(",", BackupServers)); ;
+            builder.Append(string.Join(",", BackupServers));
+            ;
             builder.Append("}");
 
             return builder.ToString();

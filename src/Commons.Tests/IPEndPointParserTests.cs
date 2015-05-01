@@ -6,9 +6,9 @@ using _15pl04.Ucc.Commons.Utilities;
 namespace _15pl04.Ucc.Commons.Tests
 {
     [TestClass]
-    public class IPEndPointParserTests
+    public class IpEndPointParserTests
     {
-        private int port = 12345;
+        private readonly int port = 12345;
 
         [TestMethod]
         public void IPv4StringReturnIPEndPointWithInternetworkAddressFamily()

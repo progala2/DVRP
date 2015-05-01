@@ -6,7 +6,6 @@ namespace _15pl04.Ucc.Commons.Utilities
 {
     public static class IPEndPointParser
     {
-
         /// <exception cref="System.FormatException"></exception>
         /// <exception cref="System.ArgumentException"></exception>
         public static IPEndPoint Parse(string endPointString)
@@ -23,6 +22,7 @@ namespace _15pl04.Ucc.Commons.Utilities
                 return Parse(endPointString, port);
             return Parse(endPointString);
         }
+
         /// <exception cref="System.FormatException"></exception>
         /// <exception cref="System.ArgumentException"></exception>
         public static IPEndPoint Parse(string endPointString, int defaultPort)
@@ -33,9 +33,9 @@ namespace _15pl04.Ucc.Commons.Utilities
             if (defaultPort != -1 && (defaultPort < IPEndPoint.MinPort || defaultPort > IPEndPoint.MaxPort))
                 throw new ArgumentException(string.Format("Invalid default port '{0}'", defaultPort));
 
-            string[] values = endPointString.Split(new char[] { ':' });
+            var values = endPointString.Split(':');
             IPAddress ipAddress;
-            int port = -1;
+            var port = -1;
 
             // check if we have an IPv6 or ports
             if (values.Length <= 2) // ipv4 or hostname
@@ -55,7 +55,7 @@ namespace _15pl04.Ucc.Commons.Utilities
                 // could [a:b:c]:d
                 if (values[0].StartsWith("[") && values[values.Length - 2].EndsWith("]"))
                 {
-                    string ipaddressstring = string.Join(":", values.Take(values.Length - 1).ToArray());
+                    var ipaddressstring = string.Join(":", values.Take(values.Length - 1).ToArray());
                     ipAddress = IPAddress.Parse(ipaddressstring);
                     port = GetPort(values[values.Length - 1]);
                 }

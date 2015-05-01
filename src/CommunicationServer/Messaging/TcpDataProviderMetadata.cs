@@ -1,5 +1,5 @@
-﻿using _15pl04.Ucc.CommunicationServer.Messaging.Base;
-using System.Net;
+﻿using System.Net;
+using _15pl04.Ucc.CommunicationServer.Messaging.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {

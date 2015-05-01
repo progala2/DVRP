@@ -16,7 +16,6 @@ namespace _15pl04.Ucc.Commons.Components
         [XmlAttribute("port")]
         public ushort Port { get; set; }
 
-
         public override string ToString()
         {
             var builder = new StringBuilder();

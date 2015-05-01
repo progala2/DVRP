@@ -12,9 +12,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolveRequest")]
     public class SolveRequestMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "SolveRequest.xsd";
-
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string noNamespaceSchemaLocation =
+                "SolveRequest.xsd";
 
         [XmlElement(Order = 0)]
         public string ProblemType { get; set; }
@@ -22,10 +22,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlElement(Order = 1)]
         public ulong? SolvingTimeout { get; set; }
 
-        [XmlElement(Order = 2, ElementName="Data", DataType = "base64Binary")]
+        [XmlElement(Order = 2, ElementName = "Data", DataType = "base64Binary")]
         public byte[] ProblemData { get; set; }
 
-        [XmlElement(Order = 3, ElementName="Id")]
+        [XmlElement(Order = 3, ElementName = "Id")]
         public ulong? ProblemInstanceId { get; set; }
 
         [XmlIgnore]
@@ -33,7 +33,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClass.SolveRequest; }
         }
-
 
         public bool ShouldSerializeProblemInstanceId()
         {

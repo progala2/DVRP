@@ -11,14 +11,14 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
 {
     public class MessageSerializer : ISerializer<Message>
     {
-        private Dictionary<MessageClass, XmlSerializer> _serializers;
+        private readonly Dictionary<MessageClass, XmlSerializer> _serializers;
 
         public MessageSerializer()
         {
-            int capacity = Enum.GetValues(typeof(MessageClass)).Length;
+            var capacity = Enum.GetValues(typeof (MessageClass)).Length;
             _serializers = new Dictionary<MessageClass, XmlSerializer>(capacity);
 
-            foreach (MessageClass type in Enum.GetValues(typeof(MessageClass)).Cast<MessageClass>())
+            foreach (var type in Enum.GetValues(typeof (MessageClass)).Cast<MessageClass>())
                 _serializers.Add(type, new XmlSerializer(type.GetMessageType()));
         }
 
@@ -33,8 +33,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
 
             using (var stream = new MemoryStream(buffer, index, count))
             {
-                XmlSerializer serializer = _serializers[type];
-                return (Message)serializer.Deserialize(stream);
+                var serializer = _serializers[type];
+                return (Message) serializer.Deserialize(stream);
             }
         }
 
@@ -42,9 +42,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
         {
             using (var memStream = new MemoryStream())
             {
-                XmlSerializer serializer = _serializers[obj.MessageType];
+                var serializer = _serializers[obj.MessageType];
 
-                XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+                var namespaces = new XmlSerializerNamespaces();
                 namespaces.Add("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
                 serializer.Serialize(memStream, obj, namespaces);

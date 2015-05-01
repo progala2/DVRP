@@ -1,12 +1,10 @@
-﻿using _15pl04.Ucc.Commons;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.CommunicationServer.Components;
-using _15pl04.Ucc.CommunicationServer.Components.Base;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.CommunicationServer.Components;
+using _15pl04.Ucc.CommunicationServer.Components.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests
 {
@@ -49,13 +47,11 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         {
             uint communicationTimeout = 500;
             uint checkInterval = 100;
-            Stopwatch stopwatch = new Stopwatch();
-            AutoResetEvent deregistrationEventLock = new AutoResetEvent(false);
+            var stopwatch = new Stopwatch();
+            var deregistrationEventLock = new AutoResetEvent(false);
 
             _overseer = new ComponentOverseer(communicationTimeout, checkInterval);
-            _overseer.Deregistration += (o, e) => {
-                deregistrationEventLock.Set();
-            };
+            _overseer.Deregistration += (o, e) => { deregistrationEventLock.Set(); };
             _overseer.StartMonitoring();
 
             var solvableProblems = new List<string>();
@@ -68,16 +64,14 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
             Assert.IsTrue(_overseer.IsRegistered(computationalNode.ComponentId.Value));
 
-            deregistrationEventLock.WaitOne((int)communicationTimeout * 2);
+            deregistrationEventLock.WaitOne((int) communicationTimeout*2);
 
             stopwatch.Stop();
 
             Assert.IsFalse(_overseer.IsRegistered(computationalNode.ComponentId.Value));
-            Assert.IsTrue((ulong)stopwatch.ElapsedMilliseconds >= communicationTimeout);
+            Assert.IsTrue((ulong) stopwatch.ElapsedMilliseconds >= communicationTimeout);
 
             _overseer.StopMonitoring();
         }
-
-        // TODO more tests
     }
 }

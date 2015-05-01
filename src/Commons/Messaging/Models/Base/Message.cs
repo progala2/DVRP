@@ -7,29 +7,28 @@ namespace _15pl04.Ucc.Commons.Messaging.Models.Base
 {
     public abstract class Message
     {
-        private static Dictionary<string, MessageClass> _messageTypes;
-
-        [XmlIgnore]
-        public abstract MessageClass MessageType { get; }
-
+        private static readonly Dictionary<string, MessageClass> _messageTypes;
 
         static Message()
         {
-            int capacity = Enum.GetValues(typeof(MessageClass)).Length;
+            var capacity = Enum.GetValues(typeof (MessageClass)).Length;
             _messageTypes = new Dictionary<string, MessageClass>(capacity);
 
-            foreach (MessageClass type in Enum.GetValues(typeof(MessageClass)).Cast<MessageClass>())
+            foreach (var type in Enum.GetValues(typeof (MessageClass)).Cast<MessageClass>())
                 _messageTypes.Add(type.ToString(), type);
         }
+
+        [XmlIgnore]
+        public abstract MessageClass MessageType { get; }
 
         public static MessageClass GetMessageClassFromString(string str)
         {
             return _messageTypes[str];
         }
-        
+
         public override string ToString()
         {
-            return "[" + MessageType.ToString() + "]";
+            return "[" + MessageType + "]";
         }
     }
 }

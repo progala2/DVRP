@@ -7,10 +7,9 @@ namespace _15pl04.Ucc.Commons.Computations
     public class ThreadPoolThreadManager : ThreadManager
     {
         public ThreadPoolThreadManager()
-            : base((byte)Environment.ProcessorCount)
+            : base((byte) Environment.ProcessorCount)
         {
         }
-
 
         protected override bool StartInNewThread(Action actionToExecute)
         {

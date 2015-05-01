@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Solutions xmlns="http://www.mini.pw.edu.pl/ucc/"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:noNamespaceSchemaLocation="Solution.xsd">
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="Solution.xsd">
   <ProblemType>TSP</ProblemType>
   <Id>12</Id>
   <CommonData>
@@ -20,5 +21,5 @@
       </Data>
     </Solution>
   </Solutions>
-  
+
 </Solutions>

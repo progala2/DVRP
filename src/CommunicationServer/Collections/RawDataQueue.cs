@@ -1,5 +1,5 @@
-﻿using _15pl04.Ucc.CommunicationServer.Messaging.Base;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using _15pl04.Ucc.CommunicationServer.Messaging.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Collections
 {
@@ -24,23 +24,20 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
 
                 return true;
             }
-            else
-            {
-                data = null;
-                metadata = null;
-                callback = null;
+            data = null;
+            metadata = null;
+            callback = null;
 
-                return false;
-            }
+            return false;
         }
 
         public void Enqueue(byte[] data, Metadata metadata, ProcessedDataCallback callback)
         {
-            var item = new RawDataQueueItem()
+            var item = new RawDataQueueItem
             {
                 Data = data,
                 Metadata = metadata,
-                Callback = callback,
+                Callback = callback
             };
 
             Enqueue(item);

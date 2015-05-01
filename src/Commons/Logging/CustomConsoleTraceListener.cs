@@ -8,13 +8,27 @@ namespace _15pl04.Ucc.Commons.Logging
     public class CustomConsoleTraceListener : ConsoleTraceListener
     {
         // contains pairs <attributeName, initAction(attributeValue)>
-        private static readonly Dictionary<string, Action<string>> _customAttributes = new Dictionary<string, Action<string>>()
+        private static readonly Dictionary<string, Action<string>> _customAttributes = new Dictionary
+            <string, Action<string>>
         {
-            { "printDate", val => bool.TryParse(val, out _printDate) },
-            { "printSource", val => bool.TryParse(val, out _printSource) },
-            { "printCallerInfo", val => bool.TryParse(val, out _printCallerInfo) },
+            {"printDate", val => bool.TryParse(val, out _printDate)},
+            {"printSource", val => bool.TryParse(val, out _printSource)},
+            {"printCallerInfo", val => bool.TryParse(val, out _printCallerInfo)}
         };
 
+        private static bool _customAttributesInitialized;
+        private static bool _printDate;
+        private static bool _printSource;
+        private static bool _printCallerInfo;
+
+        public CustomConsoleTraceListener()
+        {
+        }
+
+        public CustomConsoleTraceListener(bool useErrorStream)
+            : base(useErrorStream)
+        {
+        }
 
         protected bool PrintDate
         {
@@ -33,6 +47,7 @@ namespace _15pl04.Ucc.Commons.Logging
                 return _printSource;
             }
         }
+
         protected bool PrintCallerInfo
         {
             get
@@ -42,25 +57,6 @@ namespace _15pl04.Ucc.Commons.Logging
             }
         }
 
-        private static bool _customAttributesInitialized;
-        private static bool _printDate;
-        private static bool _printSource;
-        private static bool _printCallerInfo;
-
-
-
-        public CustomConsoleTraceListener()
-            : base()
-        {
-        }
-
-        public CustomConsoleTraceListener(bool useErrorStream)
-            : base(useErrorStream)
-        {
-        }
-
-
-
         protected override string[] GetSupportedAttributes()
         {
             return _customAttributes.Keys.ToArray();
@@ -69,15 +65,15 @@ namespace _15pl04.Ucc.Commons.Logging
         // TODO: override methods to customize output...
 
 
-
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id)
         {
             TraceEvent(eventCache, source, eventType, id, "");
         }
 
-        public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string format, params object[] args)
+        public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id,
+            string format, params object[] args)
         {
-            string message = "";
+            var message = "";
             try
             {
                 message = string.Format(format, args);
@@ -89,7 +85,8 @@ namespace _15pl04.Ucc.Commons.Logging
             TraceEvent(eventCache, source, eventType, id, message);
         }
 
-        public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
+        public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id,
+            string message)
         {
             Console.ForegroundColor = GetConsoleColor(eventType);
 
@@ -155,11 +152,11 @@ namespace _15pl04.Ucc.Commons.Logging
 
         private string GetCallerInfoPrefix()
         {
-            StackFrame frame = new StackFrame(4);
+            var frame = new StackFrame(4);
             var method = frame.GetMethod();
 
-            string className = method.DeclaringType.Name;
-            string methodName = method.Name;
+            var className = method.DeclaringType.Name;
+            var methodName = method.Name;
 
             return "[" + className + "/" + methodName + "]";
         }

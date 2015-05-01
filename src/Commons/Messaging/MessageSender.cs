@@ -6,14 +6,15 @@ using _15pl04.Ucc.Commons.Messaging.Marshalling;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.Commons.Utilities;
+using TimeoutException = _15pl04.Ucc.Commons.Exceptions.TimeoutException;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
     public class MessageSender
     {
+        private readonly Marshaller _marshaller;
         private readonly TcpClient _tcpClient;
         private List<ServerInfo> _servers;
-        private readonly Marshaller _marshaller;
 
         public MessageSender(IPEndPoint serverAddress)
         {
@@ -26,17 +27,19 @@ namespace _15pl04.Ucc.Commons.Messaging
         }
 
         /// <summary>
-        /// Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to other exception
+        ///     Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to
+        ///     other exception
         /// </summary>
         /// <param name="message">message to send</param>
         /// <returns>messages returned or null</returns>
         public List<Message> Send(Message message)
         {
-            return Send(new List<Message>{ message });
+            return Send(new List<Message> {message});
         }
 
         /// <summary>
-        /// Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to other exception
+        ///     Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to
+        ///     other exception
         /// </summary>
         /// <param name="messages">messages to send</param>
         /// <returns>messages returned or null</returns>
@@ -52,7 +55,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                     again = false;
                     retBytes = _tcpClient.SendData(data);
                 }
-                catch (Commons.Exceptions.TimeoutException)
+                catch (TimeoutException)
                 {
                     again = true;
                     if (_servers.Count > 0)
@@ -65,7 +68,7 @@ namespace _15pl04.Ucc.Commons.Messaging
                         {
                             // just skip incorrect address
                         }
-                        
+
                         _servers.RemoveAt(0);
                     }
                     else
@@ -92,16 +95,16 @@ namespace _15pl04.Ucc.Commons.Messaging
             if (messages == null)
                 return;
 
-            for (int i = messages.Count - 1; i >= 0; --i)
+            for (var i = messages.Count - 1; i >= 0; --i)
             {
                 var message = messages[i];
                 switch (message.MessageType)
                 {
                     case MessageClass.NoOperation:
-                        _servers = ((NoOperationMessage)message).BackupServers;
+                        _servers = ((NoOperationMessage) message).BackupServers;
                         return;
                     case MessageClass.RegisterResponse:
-                        _servers = ((RegisterResponseMessage)message).BackupServers;
+                        _servers = ((RegisterResponseMessage) message).BackupServers;
                         return;
                 }
             }

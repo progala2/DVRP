@@ -10,9 +10,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
 {
     public class Marshaller : IMarshaller<Message>
     {
-        private ISerializer<Message> _serializer;
-        private IXmlValidator<MessageClass> _validator;
-        
+        private readonly ISerializer<Message> _serializer;
+        private readonly IXmlValidator<MessageClass> _validator;
 
         public Marshaller(ISerializer<Message> serializer, IXmlValidator<MessageClass> validator)
         {
@@ -28,7 +27,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
             var outputMessages = new List<Message>();
 
             var separatorIndices = new List<int>();
-            for (int i = 0; i < rawData.Length; i++)
+            for (var i = 0; i < rawData.Length; i++)
                 if (rawData[i] == 23)
                     separatorIndices.Add(i);
             separatorIndices.Add(rawData.Length);
@@ -36,17 +35,17 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
             for (int i = 0, begin = 0; i < separatorIndices.Count; i++)
             {
                 // Validation - might not be necessary. 
-                string xmlString = Encoding.UTF8.GetString(rawData, begin, separatorIndices[i] - begin);
+                var xmlString = Encoding.UTF8.GetString(rawData, begin, separatorIndices[i] - begin);
 
                 if (xmlString == string.Empty) // TODO fix & remove
                     break;
 
-                XDocument xmlDoc = XDocument.Parse(xmlString);
-                MessageClass msgClass = Message.GetMessageClassFromString(xmlDoc.Root.Name.LocalName);
+                var xmlDoc = XDocument.Parse(xmlString);
+                var msgClass = Message.GetMessageClassFromString(xmlDoc.Root.Name.LocalName);
                 _validator.Validate(msgClass, xmlDoc);
 
                 // Deserialization
-                Message message = _serializer.Deserialize(rawData, begin, separatorIndices[i] - begin);
+                var message = _serializer.Deserialize(rawData, begin, separatorIndices[i] - begin);
                 outputMessages.Add(message);
 
                 begin = separatorIndices[i] + 1;
@@ -66,7 +65,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
                 {
                     byte[] data;
                     MessageClass type;
-                    for (int i = 0; i < messages.Count; ++i)
+                    for (var i = 0; i < messages.Count; ++i)
                     {
                         type = messages[i].MessageType;
                         data = _serializer.Serialize(messages[i]);

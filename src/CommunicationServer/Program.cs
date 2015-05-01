@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Configuration;
-using System.Net;
-using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Utilities;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
     public class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var config = new ServerConfig(args);
 
@@ -18,7 +16,7 @@ namespace _15pl04.Ucc.CommunicationServer
             config.CommunicationTimeout = uint.Parse(appSettings["timeout"]);
             config.Mode = ServerConfig.ServerMode.Primary;
 
-            Console.WriteLine("Server address: " + config.Address.ToString());
+            Console.WriteLine("Server address: " + config.Address);
             Console.WriteLine("Timeout: " + config.CommunicationTimeout);
 
             var communicationServer = new CommunicationServer(config);

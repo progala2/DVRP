@@ -1,7 +1,4 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models;
-using System.Collections.Generic;
-
-namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
+﻿namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
 {
     internal class PartialSolution
     {
@@ -9,38 +6,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
         {
             BeingGathered = 0,
             AwaitingMerge,
-            BeingMerged,
-        }
-
-        public PartialSolutionState State
-        {
-            get;
-            set;
-        }
-        public ulong? MergingNodeId
-        {
-            get;
-            set;
-        }
-        public PartialProblem PartialProblem
-        {
-            get;
-            private set;
-        }
-        public byte[] Data
-        {
-            get;
-            private set;
-        }
-        public ulong ComputationsTime
-        {
-            get;
-            private set;
-        }
-        public bool TimeoutOccured
-        {
-            get;
-            private set;
+            BeingMerged
         }
 
         public PartialSolution(PartialProblem partialProblem, byte[] data, ulong computationsTime, bool timeoutOccured)
@@ -51,5 +17,11 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
             TimeoutOccured = timeoutOccured;
         }
 
+        public PartialSolutionState State { get; set; }
+        public ulong? MergingNodeId { get; set; }
+        public PartialProblem PartialProblem { get; private set; }
+        public byte[] Data { get; private set; }
+        public ulong ComputationsTime { get; private set; }
+        public bool TimeoutOccured { get; private set; }
     }
 }
