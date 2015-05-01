@@ -12,13 +12,15 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
 
         bool TryAssignWork(SolverNodeInfo node, out Work work);
 
-        void AddProblem(string type, byte[] data, ulong solvingTimeout);
+        ulong AddProblem(string type, byte[] data, ulong solvingTimeout);
         void AddPartialProblem(ulong problemId, ulong partialProblemId, byte[] privateData);
         void AddSolution(ulong problemId, byte[] data, ulong computationsTime, bool timeoutOccured);
         void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime, bool timeoutOccured);
 
         Problem GetProblem(ulong problemId);
         Solution GetSolution(ulong problemId);
+        ulong GetComputationsTime(ulong problemId);
+        ulong? GetProcessingNodeId(ulong problemId, ulong? partialProblemId = null);
 
         void RemoveSolution(ulong problemId);
     }

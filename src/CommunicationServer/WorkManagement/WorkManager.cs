@@ -31,7 +31,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         #region Private fields
 
 
-        private static ILogger _logger = new TraceSourceLogger(typeof(WorkManager).Name);
+        private static ILogger _logger = new ConsoleLogger();
 
         private Random _random = new Random();
 
@@ -64,7 +64,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         #region Adding stuff
 
 
-        public void AddProblem(string type, byte[] data, ulong solvingTimeout)
+        public ulong AddProblem(string type, byte[] data, ulong solvingTimeout)
         {
             // Generate problem id.
             ulong id;
@@ -82,6 +82,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             _problems.Add(id, problem);
 
             _logger.Info("Added new problem (id: " + id + ", type: " + type + ").");
+            return id;
         }
 
         public void AddPartialProblem(ulong problemId, ulong partialProblemId, byte[] privateData)
@@ -249,12 +250,18 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
         public Solution GetSolution(ulong problemId)
         {
-            return _solutions[problemId];
+            if (_solutions.ContainsKey(problemId))
+                return _solutions[problemId];
+            else
+                return null;
         }
 
         public Problem GetProblem(ulong problemId)
         {
-            return _problems[problemId];
+            if (_problems.ContainsKey(problemId))
+                return _problems[problemId];
+            else
+                return null;
         }
 
         private ICollection<PartialProblem> GetPartialProblems(ulong problemId, PartialProblem.PartialProblemState? state = null)
@@ -277,6 +284,37 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 else
                     return problemId == pair.Key.Item1;
             });
+        }
+
+        public ulong GetComputationsTime(ulong problemId)
+        {
+            // TODO
+            return 1000;
+        }
+
+        // TODO make sure that processing node id is set to null if noone is processing a (partial)problem/solution.
+
+        public ulong? GetProcessingNodeId(ulong problemId, ulong? partialProblemId = null)
+        {
+            ulong? nodeId = null;
+
+            if (partialProblemId == null)
+            {
+                if (_problems.ContainsKey(problemId))
+                    nodeId = _problems[problemId].DividingNodeId;
+            }
+            else
+            {
+                var pairId = new Tuple<ulong, ulong>(problemId,partialProblemId.Value);
+
+                if (_partialProblems.ContainsKey(pairId))
+                    nodeId = _partialProblems[pairId].ComputingNodeId;
+
+                if (!nodeId.HasValue && _partialSolutions.ContainsKey(pairId))
+                    nodeId = _partialSolutions[pairId].MergingNodeId;
+            }
+
+            return nodeId;
         }
 
 

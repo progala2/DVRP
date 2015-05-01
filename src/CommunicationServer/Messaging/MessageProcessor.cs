@@ -33,7 +33,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         #region Private fields
 
 
-        private static ILogger _logger = new TraceSourceLogger(typeof(MessageProcessor).Name);
+        private static ILogger _logger = new ConsoleLogger();
 
         private RawDataQueue _inputDataQueue;
 
@@ -122,16 +122,18 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         {
             List<Message> messages = _marshaller.Unmarshall(data.Data);
             List<Message> responseMessages = new List<Message>();
-
+            
             foreach (Message msg in messages)
             {
                 _logger.Trace("Processing " + msg.MessageType + " message.");
-
+                
                 try
                 {
-                    HandleMessage(msg);
+                    var metadata = data.Metadata as TcpDataProviderMetadata;
+                    var response = HandleMessage(msg, metadata);
+                    responseMessages.AddRange(response);
                 }
-                catch (SystemException e)
+                catch (SystemException)
                 {
                     _logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
                     var errorMsg = new ErrorMessage()

@@ -34,7 +34,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         }
 
 
-        private static ILogger _logger = new TraceSourceLogger(typeof(ComponentOverseer).Name);
+        private static ILogger _logger = new ConsoleLogger();
         private ConcurrentDictionary<ulong, ComponentInfo> _registeredComponents;
         private Random _random;
 
@@ -62,8 +62,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
                 id = _random.NextUInt64();
             } while (!_registeredComponents.TryAdd(id, component));
 
-            component.AssignId(id);
-            component.UpdateTimestamp();
+            component.Register(id);
 
             return true;
         }
