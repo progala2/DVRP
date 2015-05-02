@@ -24,7 +24,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         public WorkManager(IComponentOverseer componentOverseer)
         {
             if (componentOverseer == null)
-                throw new ArgumentNullException("componentOverseer");
+                throw new ArgumentNullException();
 
             _componentOverseer = componentOverseer;
             _componentOverseer.Deregistration += OnComponentDeregistration;

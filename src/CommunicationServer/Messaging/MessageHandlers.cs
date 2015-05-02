@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
@@ -70,6 +71,8 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             }
             else
             {
+                _componentOverseer.UpdateTimestamp(msg.ComponentId);
+
                 var component = _componentOverseer.GetComponent(msg.ComponentId);
                 component.ThreadInfo = msg.Threads;
 
@@ -171,10 +174,20 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         {
             var responses = new List<Message>();
 
-            var senderId = _workManager.GetProcessingNodeId(msg.ProblemInstanceId,
-                msg.PartialProblems[0].PartialProblemId);
+            var senderId = _workManager.GetProcessingNodeId(msg.ProblemInstanceId);
 
-            if (!_componentOverseer.IsRegistered(senderId.Value))
+            if (!senderId.HasValue)
+            {
+                Logger.Error("Couldn't identify the sender.");
+                var errorMsg = new ErrorMessage
+                {
+                    ErrorType = ErrorType.UnknownSender,
+                    ErrorText = "The server couldn't identify the sender component."
+                };
+
+                responses.Add(errorMsg);
+            }
+            else if (!_componentOverseer.IsRegistered(senderId.Value))
             {
                 Logger.Warn("The component is not registered (id: " + senderId + ").");
                 var errorMsg = new ErrorMessage
@@ -187,6 +200,8 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             }
             else
             {
+                _componentOverseer.UpdateTimestamp(senderId.Value);
+
                 var problem = _workManager.GetProblem(msg.ProblemInstanceId);
 
                 if (problem.CommonData != null)
@@ -217,7 +232,18 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
             var senderId = _workManager.GetProcessingNodeId(msg.ProblemInstanceId, msg.Solutions[0].PartialProblemId);
 
-            if (!_componentOverseer.IsRegistered(senderId.Value))
+            if (!senderId.HasValue)
+            {
+                Logger.Error("Couldn't identify the sender.");
+                var errorMsg = new ErrorMessage
+                {
+                    ErrorType = ErrorType.UnknownSender,
+                    ErrorText = "The server couldn't identify the sender component."
+                };
+
+                responses.Add(errorMsg);
+            }
+            else if (!_componentOverseer.IsRegistered(senderId.Value))
             {
                 Logger.Warn("The component is not registered (id: " + senderId.Value + ").");
                 var errorMsg = new ErrorMessage
@@ -230,6 +256,8 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             }
             else
             {
+                _componentOverseer.UpdateTimestamp(senderId.Value);
+
                 foreach (var solution in msg.Solutions)
                 {
                     if (solution.Type == SolutionsMessage.SolutionType.Final)

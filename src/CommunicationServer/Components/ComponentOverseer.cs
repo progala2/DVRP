@@ -51,7 +51,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         public bool TryRegister(ComponentInfo component)
         {
             if (component == null)
-                throw new ArgumentNullException("component");
+                throw new ArgumentNullException();
             if (component.ComponentId != null)
                 throw new Exception("Registering component with id already assigned.");
 

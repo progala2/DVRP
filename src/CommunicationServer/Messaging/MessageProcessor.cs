@@ -28,9 +28,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         public MessageProcessor(IComponentOverseer componentOverseer, IWorkManager workManager)
         {
             if (componentOverseer == null)
-                throw new ArgumentNullException("componentOverseer");
+                throw new ArgumentNullException("IComponentOverseer dependancy is null.");
             if (workManager == null)
-                throw new ArgumentNullException("workManager");
+                throw new ArgumentNullException("IWorkManager dependancy is null.");
 
             _inputDataQueue = new RawDataQueue();
 
