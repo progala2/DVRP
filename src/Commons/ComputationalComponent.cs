@@ -19,11 +19,12 @@ namespace _15pl04.Ucc.Commons
     /// </summary>
     public abstract class ComputationalComponent
     {
-        private readonly MessageSender _messageSender;
         private readonly object _startLock = new object();
+        private readonly MessageSender _messageSender;
         private Task _messagesProcessingTask;
-        private ConcurrentQueue<Message> _messagesToSend;
         private ManualResetEvent _messagesToSendManualResetEvent;
+        private ConcurrentQueue<Message> _messagesToSend;
+        private ThreadManager _threadManager;
 
         /// <summary>
         ///     Creates component that can register to the server.
@@ -52,9 +53,15 @@ namespace _15pl04.Ucc.Commons
 
             TaskSolvers = TaskSolverLoader.GetTaskSolversFromRelativePath(taskSolversDirectoryRelativePath);
 
-            ThreadManager = threadManager;
+            _threadManager = threadManager;
 
             _messageSender = new MessageSender(serverAddress);
+
+            MessageHandlingException += (s, e) =>
+            {
+                if (e != null)
+                    InformServerAboutException(string.Format("Message caused exception: {0}", e.Message), e.Exception);
+            };
         }
 
         /// <summary>
@@ -82,11 +89,6 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         public ReadOnlyDictionary<string, Type> TaskSolvers { get; private set; }
 
-        /// <summary>
-        ///     The task pool that provides starting computations in tasks.
-        /// </summary>
-        protected ThreadManager ThreadManager { get; private set; }
-
         public event EventHandler<MessageEventArgs> MessageEnqueuedToSend;
         public event EventHandler<MessageEventArgs> MessageSent;
         public event EventHandler<MessageEventArgs> MessageReceived;
@@ -103,18 +105,14 @@ namespace _15pl04.Ucc.Commons
             lock (_startLock)
             {
                 if (IsRunning)
-                {
                     return;
-                }
 
                 RaiseEvent(OnStarting);
 
                 ResetComponent();
 
                 if (!Register())
-                {
                     return;
-                }
 
                 // start informing about statuses of threads            
                 _messagesProcessingTask.Start();
@@ -129,7 +127,7 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="message">A message to handle. It is received from server.</param>
         /// <remarks>
-        ///     Here can be started computational tasks using ComputationalTaskPool property.
+        ///     Here actions can be started using proper method.
         /// </remarks>
         protected abstract void HandleReceivedMessage(Message message);
 
@@ -142,6 +140,25 @@ namespace _15pl04.Ucc.Commons
             _messagesToSend.Enqueue(message);
             _messagesToSendManualResetEvent.Set();
             RaiseEvent(MessageEnqueuedToSend, message);
+        }
+
+        /// <summary>
+        ///     Starts executing action if there is an available idle thread. This method gets information needed for Status
+        ///     messages.
+        /// </summary>
+        /// <param name="actionToExecute">An action to be executed in new thread. If null no new thread will be started.</param>
+        /// <param name="actionDescription">An information about started action that will be send to server if exception occurs during execution.</param>
+        /// <param name="problemType">The name of the type as given by TaskSolver.</param>
+        /// <param name="problemInstanceId">The ID of the problem assigned when client connected.</param>
+        /// <param name="partialProblemId">The ID of the task within given problem instance.</param>
+        /// <returns>True if thread was successfully started; false otherwise.</returns>
+        /// <returns></returns>
+        protected bool StartActionInNewThread(Action actionToExecute, string actionDescription, string problemType,
+            ulong? problemInstanceId, ulong? partialProblemId)
+        {
+            var started = _threadManager.StartInNewThread(actionToExecute, exception => InformServerAboutException(
+                actionDescription, exception), problemType, problemInstanceId, partialProblemId);
+            return started;
         }
 
         protected bool Register()
@@ -260,6 +277,20 @@ namespace _15pl04.Ucc.Commons
             }
         }
 
+        private void InformServerAboutException(string reasonOfException, Exception exception)
+        {
+            if (exception == null)
+                return;
+            var errorText = string.Format("{0}(id={1})|{2}|Exception type: {3}|Exception message: {4}",
+                ComponentType, Id, reasonOfException, exception.GetType().FullName, exception.Message);
+            var errorMessage = new ErrorMessage()
+            {
+                ErrorType = ErrorType.ExceptionOccured,
+                ErrorText = errorText
+            };
+            EnqueueMessageToSend(errorMessage);
+        }
+
         /// <summary>
         ///     Gets RegisterMessage specified for this component.
         /// </summary>
@@ -269,7 +300,7 @@ namespace _15pl04.Ucc.Commons
             var registerMessage = new RegisterMessage
             {
                 ComponentType = ComponentType,
-                ParallelThreads = ThreadManager.ParallelThreads,
+                ParallelThreads = _threadManager.ParallelThreads,
                 SolvableProblems = new List<string>(TaskSolvers.Keys)
             };
             return registerMessage;
@@ -281,16 +312,16 @@ namespace _15pl04.Ucc.Commons
         /// <returns>Proper StatusMessage.</returns>
         private StatusMessage GetStatusMessage()
         {
-            var threadsStatuses = new List<ThreadStatus>(ThreadManager.ThreadStatuses.Count);
-            foreach (var computationalTask in ThreadManager.ThreadStatuses)
+            var threadsStatuses = new List<ThreadStatus>(_threadManager.ThreadStatuses.Count);
+            foreach (var computationalThreadStatus in _threadManager.ThreadStatuses)
             {
                 var threadStatus = new ThreadStatus
                 {
-                    ProblemType = computationalTask.ProblemType,
-                    ProblemInstanceId = computationalTask.ProblemInstanceId,
-                    PartialProblemId = computationalTask.PartialProblemId,
-                    State = computationalTask.State,
-                    TimeInThisState = (ulong) computationalTask.TimeSinceLastStateChange.TotalMilliseconds
+                    ProblemType = computationalThreadStatus.ProblemType,
+                    ProblemInstanceId = computationalThreadStatus.ProblemInstanceId,
+                    PartialProblemId = computationalThreadStatus.PartialProblemId,
+                    State = computationalThreadStatus.State,
+                    TimeInThisState = (ulong)computationalThreadStatus.TimeSinceLastStateChange.TotalMilliseconds
                 };
                 threadsStatuses.Add(threadStatus);
             }

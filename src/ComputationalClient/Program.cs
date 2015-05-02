@@ -26,7 +26,7 @@ namespace _15pl04.Ucc.ComputationalClient
             computationalClient.MessageReceived += computationalClient_MessageReceived;
             computationalClient.MessageSent += computationalClient_MessageSent;
 
-            var problemType = "UCC.MinMax";
+            var problemType = "_15pl04.UCC.MinMax";
 
             string line;
             while ((line = Console.ReadLine()) != "exit")
