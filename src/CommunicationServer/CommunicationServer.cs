@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.CommunicationServer
 {
     internal class CommunicationServer
     {
-        private const uint ComponentOverseerCheckInterval = 1000;
+        private const uint ComponentOverseerCheckInterval = 1;
         private readonly IComponentOverseer _componentOverseer;
         private readonly IDataProcessor _msgProcessor;
         private readonly TcpServer _tcpServer;

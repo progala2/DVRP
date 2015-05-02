@@ -19,6 +19,11 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         private CancellationTokenSource _cancellationTokenSource;
         private volatile bool _isMonitoring;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="communicationTimeout">In seconds.</param>
+        /// <param name="checkInterval">In seconds.</param>
         public ComponentOverseer(uint communicationTimeout, uint checkInterval)
         {
             _registeredComponents = new ConcurrentDictionary<ulong, ComponentInfo>();
@@ -28,9 +33,15 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             CheckInterval = checkInterval;
         }
 
+        /// <summary>
+        /// In seconds.
+        /// </summary>
         public uint CheckInterval { get; private set; }
-        public event DeregisterationEventHandler Deregistration;
+        /// <summary>
+        /// In seconds.
+        /// </summary>
         public uint CommunicationTimeout { get; private set; }
+        public event DeregisterationEventHandler Deregistration;
 
         public bool IsMonitoring
         {
@@ -81,10 +92,11 @@ namespace _15pl04.Ucc.CommunicationServer.Components
 
         public void UpdateTimestamp(ulong componentId)
         {
-            if (!_registeredComponents.ContainsKey(componentId))
+            ComponentInfo component;
+            if (!_registeredComponents.TryGetValue(componentId,out component))
                 throw new ArgumentException("Timestamp for an unregistered component was requested.");
 
-            _registeredComponents[componentId].UpdateTimestamp();
+            component.UpdateTimestamp();
         }
 
         public void StartMonitoring()
@@ -110,11 +122,13 @@ namespace _15pl04.Ucc.CommunicationServer.Components
                     foreach (var i in _registeredComponents)
                         if (i.Value.TimestampAge >= 1000 * CommunicationTimeout)
                             TryDeregister(i.Key);
+                        else
+                            i.Value.UpdateTimestamp();
 
                     if (token.IsCancellationRequested)
                         return;
 
-                    Thread.Sleep((int)CheckInterval);
+                    Thread.Sleep((int)(1000 * CheckInterval));
                 }
             }, token).Start();
 

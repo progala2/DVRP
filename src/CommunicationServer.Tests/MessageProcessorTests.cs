@@ -32,7 +32,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var validator = new MessageValidator();
             _marshaller = new Marshaller(serializer, validator);
 
-            _overseer = new ComponentOverseer(5000, 500);
+            _overseer = new ComponentOverseer(5, 1);
             _workManager = new WorkManager(_overseer);
 
             _processor = new MessageProcessor(_overseer, _workManager);
