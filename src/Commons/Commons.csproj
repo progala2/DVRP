@@ -81,6 +81,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\RandomExtensions.cs" />
+    <Compile Include="Utilities\TaskSolverExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

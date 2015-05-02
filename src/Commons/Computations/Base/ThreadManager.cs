@@ -51,14 +51,18 @@ namespace _15pl04.Ucc.Commons.Computations.Base
         ///     Starts executing action if there is an available idle thread. This method gets information needed for Status
         ///     messages.
         /// </summary>
-        /// <param name="actionToExecute">An action to be executed.</param>
+        /// <param name="actionToExecute">An action to be executed in new thread. If null no new thread will be started.</param>
+        /// <param name="actionOnException">An action to be executed when exception occurs in started thread. If null exception will be ignored.</param>
         /// <param name="problemType">The name of the type as given by TaskSolver.</param>
         /// <param name="problemInstanceId">The ID of the problem assigned when client connected.</param>
         /// <param name="partialProblemId">The ID of the task within given problem instance.</param>
         /// <returns>True if thread was successfully started; false otherwise.</returns>
-        public bool StartInNewThread(Action actionToExecute, string problemType, ulong? problemInstanceId,
-            ulong? partialProblemId)
+        public bool StartInNewThread(Action actionToExecute, Action<Exception> actionOnException, string problemType,
+            ulong? problemInstanceId, ulong? partialProblemId)
         {
+            if (actionToExecute == null)
+                return false;
+
             int threadIndex;
             if (!_availableThreads.TryDequeue(out threadIndex))
                 return false;
@@ -70,6 +74,11 @@ namespace _15pl04.Ucc.Commons.Computations.Base
                 try
                 {
                     actionToExecute();
+                }
+                catch (Exception ex)
+                {
+                    if (actionOnException != null)
+                        actionOnException(ex);
                 }
                 finally
                 {

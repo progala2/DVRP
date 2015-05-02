@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using UCCTaskSolver;
 using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Computations.Base;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using _15pl04.Ucc.Commons.Utilities;
+using UCCTaskSolver;
 
 namespace _15pl04.Ucc.TaskManager
 {
@@ -55,16 +56,16 @@ namespace _15pl04.Ucc.TaskManager
             switch (message.MessageType)
             {
                 case MessageClass.NoOperation:
-                    NoOperationMessageHandler((NoOperationMessage) message);
+                    NoOperationMessageHandler((NoOperationMessage)message);
                     break;
                 case MessageClass.DivideProblem:
-                    DivideProblemMessageHandler((DivideProblemMessage) message);
+                    DivideProblemMessageHandler((DivideProblemMessage)message);
                     break;
                 case MessageClass.Solutions:
-                    SolutionsMessageHandler((SolutionsMessage) message);
+                    SolutionsMessageHandler((SolutionsMessage)message);
                     break;
                 case MessageClass.Error:
-                    ErrorMessageHandler((ErrorMessage) message);
+                    ErrorMessageHandler((ErrorMessage)message);
                     break;
                 default:
                     throw new InvalidOperationException("Received not supported message type.");
@@ -99,22 +100,23 @@ namespace _15pl04.Ucc.TaskManager
             }
             var taskSolverType = TaskSolvers[message.ProblemType];
 
+            var actionDescription = string.Format("Dividing problem \"{0}\"(problem instance id={1})",
+                message.ProblemType, message.ProblemInstanceId);
             // should be started properly cause server sends at most as many tasks to do as count of component's tasks in idle state
-            var started = ThreadManager.StartInNewThread(() =>
+            var started = StartActionInNewThread(() =>
             {
-                var taskSolver = (TaskSolver) Activator.CreateInstance(taskSolverType, message.ProblemData);
+                var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.ProblemData);
+                taskSolver.ThrowIfError();
 
-                // measure time using DateTime cause StopWatch is not guaranteed to be thread safe
-                var start = DateTime.UtcNow;
-                var partialProblemsData = taskSolver.DivideProblem((int) message.ComputationalNodes);
-                var stop = DateTime.UtcNow;
+                var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
+                taskSolver.ThrowIfError();
 
                 var partialProblems = new List<PartialProblemsMessage.PartialProblem>(partialProblemsData.GetLength(0));
                 for (var i = 0; i < partialProblemsData.GetLength(0); i++)
                 {
                     partialProblems.Add(new PartialProblemsMessage.PartialProblem
                     {
-                        PartialProblemId = (ulong) i,
+                        PartialProblemId = (ulong)i,
                         Data = partialProblemsData[i],
                         TaskManagerId = ID
                     });
@@ -129,18 +131,79 @@ namespace _15pl04.Ucc.TaskManager
                 };
 
                 EnqueueMessageToSend(partialProblemsMessage);
-            }, message.ProblemType, message.ProblemInstanceId, null);
+            }, actionDescription, message.ProblemType, message.ProblemInstanceId, null);
             if (!started)
             {
                 // tragedy, CommunicationServer surprised us like the Spanish Inquisition
                 throw new InvalidOperationException(
-                    "Couldn't divide problem bacause no tasks are available in task pool.");
+                    "Couldn't divide problem because couldn't start new thread.");
             }
         }
 
         private void SolutionsMessageHandler(SolutionsMessage message)
         {
-            throw new NotImplementedException();
+            if (!TaskSolvers.ContainsKey(message.ProblemType))
+            {
+                // shouldn't ever get here - received unsolvable problem
+                throw new InvalidOperationException(
+                    string.Format("\"{0}\" problem type can't be merged with this TaskManager.", message.ProblemType));
+            }
+            var taskSolverType = TaskSolvers[message.ProblemType];
+
+            var actionDescription = string.Format("Merging partial problems \"{0}\"(problem instance id={1})",
+                message.ProblemType, message.ProblemInstanceId);
+            // should be started properly cause server sends at most as many tasks to do as count of component's tasks in idle state
+            var started = StartActionInNewThread(() =>
+            {
+                ulong totalComputationsTime = 0;
+                var timeoutOccured = false;
+                var solutionsData = new byte[message.Solutions.Count][];
+                for (int i = 0; i < message.Solutions.Count; i++)
+                {
+                    var solution = message.Solutions[i];
+
+                    if (solution.Type != SolutionsMessage.SolutionType.Partial)
+                        throw new InvalidOperationException(string.Format("Received non-partial solution({0})(partial problem id={1}).",
+                            solution.Type, solution.PartialProblemId));
+                    totalComputationsTime += solution.ComputationsTime;
+                    timeoutOccured |= solution.TimeoutOccured;
+                    solutionsData[i] = solution.Data;
+                }
+
+                var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
+                taskSolver.ThrowIfError();
+
+                // measure time using DateTime cause StopWatch is not guaranteed to be thread safe
+                var start = DateTime.UtcNow;
+                var finalSolutionData = taskSolver.MergeSolution(solutionsData);
+                var stop = DateTime.UtcNow;
+
+                taskSolver.ThrowIfError();
+                totalComputationsTime += (ulong)((stop - start).TotalMilliseconds);
+
+                var finalSolution = new SolutionsMessage.Solution()
+                {
+                    Type = SolutionsMessage.SolutionType.Final,
+                    ComputationsTime = totalComputationsTime,
+                    TimeoutOccured = timeoutOccured,
+                    Data = finalSolutionData
+                };
+                var finalSolutionMessage = new SolutionsMessage
+                {
+                    ProblemType = message.ProblemType,
+                    ProblemInstanceId = message.ProblemInstanceId,
+                    CommonData = message.CommonData,
+                    Solutions = new List<SolutionsMessage.Solution>() { finalSolution }
+                };
+
+                EnqueueMessageToSend(finalSolutionMessage);
+            }, actionDescription, message.ProblemType, message.ProblemInstanceId, null);
+            if (!started)
+            {
+                // tragedy, CommunicationServer surprised us like the Spanish Inquisition
+                throw new InvalidOperationException(
+                    "Couldn't merge partial solutions because couldn't start new thread.");
+            }
         }
 
         private void ErrorMessageHandler(ErrorMessage message)
@@ -149,10 +212,12 @@ namespace _15pl04.Ucc.TaskManager
             {
                 case ErrorType.UnknownSender:
                     Register();
-                    return;
+                    break;
                 case ErrorType.InvalidOperation:
+                    // nothing to do
+                    break;
                 case ErrorType.ExceptionOccured:
-                    throw new NotImplementedException();
+                    throw new InvalidOperationException("Information about exception on server shouldn't be send to component.");
             }
         }
     }
