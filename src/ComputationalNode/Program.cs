@@ -38,6 +38,8 @@ namespace _15pl04.Ucc.ComputationalNode
                 // input handling
                 if (line == "start")
                     computationalNode.Start();
+                if (line == "running")
+                    Console.WriteLine("ComputationalNode.IsRunning={0}", computationalNode.IsRunning);
             }
         }
 

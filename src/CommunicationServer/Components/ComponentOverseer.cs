@@ -50,6 +50,8 @@ namespace _15pl04.Ucc.CommunicationServer.Components
 
         public bool TryRegister(ComponentInfo component)
         {
+            if (component == null)
+                throw new ArgumentNullException("component");
             if (component.ComponentId != null)
                 throw new Exception("Registering component with id already assigned.");
 
@@ -93,7 +95,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         public void UpdateTimestamp(ulong componentId)
         {
             ComponentInfo component;
-            if (!_registeredComponents.TryGetValue(componentId,out component))
+            if (!_registeredComponents.TryGetValue(componentId, out component))
                 throw new ArgumentException("Timestamp for an unregistered component was requested.");
 
             component.UpdateTimestamp();
@@ -117,13 +119,9 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             {
                 while (true)
                 {
-                    var now = DateTime.UtcNow;
-
                     foreach (var i in _registeredComponents)
-                        if (i.Value.TimestampAge >= 1000 * CommunicationTimeout)
+                        if (i.Value.TimestampAge > 1000 * CommunicationTimeout)
                             TryDeregister(i.Key);
-                        else
-                            i.Value.UpdateTimestamp();
 
                     if (token.IsCancellationRequested)
                         return;
@@ -145,17 +143,18 @@ namespace _15pl04.Ucc.CommunicationServer.Components
 
         public ICollection<ComponentInfo> GetComponents(ComponentType type)
         {
-            var components = _registeredComponents.Values.Cast<ComponentInfo>().Where(c => c.ComponentType == type);
+            var components = _registeredComponents.Values.Where(c => c.ComponentType == type);
 
             return new List<ComponentInfo>(components);
         }
 
         public ComponentInfo GetComponent(ulong componentId)
         {
-            if (!_registeredComponents.ContainsKey(componentId))
+            ComponentInfo component;
+            if (!_registeredComponents.TryGetValue(componentId, out component))
                 throw new ArgumentException("No component info for specified id exists.");
 
-            return _registeredComponents[componentId];
+            return component;
         }
     }
 }

@@ -21,9 +21,12 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         private readonly Random _random = new Random();
         private readonly Dictionary<ulong, Solution> _solutions;
 
-        public WorkManager(IComponentOverseer co)
+        public WorkManager(IComponentOverseer componentOverseer)
         {
-            _componentOverseer = co;
+            if (componentOverseer == null)
+                throw new ArgumentNullException("componentOverseer");
+
+            _componentOverseer = componentOverseer;
             _componentOverseer.Deregistration += OnComponentDeregistration;
 
             _problems = new Dictionary<ulong, Problem>();
@@ -50,7 +53,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 var partialSolutionsToMerge = _partialSolutions.Values.Where(ps =>
                     ps.State == PartialSolution.PartialSolutionState.AwaitingMerge
                     && node.SolvableProblems.Contains(ps.PartialProblem.Problem.Type))
-                    as List<PartialSolution>;
+                    .ToList();
 
                 if (partialSolutionsToMerge != null && partialSolutionsToMerge.Count != 0)
                 {
@@ -58,7 +61,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
                     var solutionsToAssign = partialSolutionsToMerge.Where(ps =>
                         ps.PartialProblem.Problem.Id == problemId)
-                        as List<PartialSolution>;
+                        .ToList();
 
                     foreach (var ps in solutionsToAssign)
                     {
@@ -175,13 +178,12 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         public void AddPartialProblem(ulong problemId, ulong partialProblemId, byte[] privateData)
         {
             // Make sure the corresponding problem instance exists.
-            if (!_problems.ContainsKey(problemId))
+            Problem problem;
+            if (!_problems.TryGetValue(problemId, out problem))
             {
                 Logger.Error("Corresponding problem instance doesn't exist.");
                 return;
             }
-
-            var problem = _problems[problemId];
 
             // Make sure that state of the corresponding problem instance is set to "being divided".
             if (problem.State != Problem.ProblemState.BeingDivided)
@@ -393,7 +395,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 throw new NotImplementedException();
                 // TODO implement
             }
-            if (componentType == ComponentType.TaskManager)
+            else if (componentType == ComponentType.TaskManager)
             {
                 var component = e.Component as SolverNodeInfo;
 
@@ -404,7 +406,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 foreach (var p in problemsBeingDivided)
                 {
                     p.DividingNodeId = null;
-                    p.State = Problem.ProblemState.BeingDivided;
+                    p.State = Problem.ProblemState.AwaitingDivision;
                 }
 
                 var partialSolutionsBeingMerged = _partialSolutions.Values.Where(ps =>
@@ -414,7 +416,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 foreach (var ps in partialSolutionsBeingMerged)
                 {
                     ps.MergingNodeId = null;
-                    ps.State = PartialSolution.PartialSolutionState.BeingMerged;
+                    ps.State = PartialSolution.PartialSolutionState.AwaitingMerge;
                 }
             }
             else if (componentType == ComponentType.ComputationalNode)

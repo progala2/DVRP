@@ -81,14 +81,14 @@ namespace _15pl04.Ucc.ComputationalNode
         /// </exception>
         private void PartialProblemsMessageHandler(PartialProblemsMessage message)
         {
-            if (!TaskSolvers.ContainsKey(message.ProblemType))
+            Type taskSolverType;
+            if (!TaskSolvers.TryGetValue(message.ProblemType, out taskSolverType))
             {
                 // shouldn't ever get here - received unsolvable problem
                 throw new InvalidOperationException(
                     string.Format("\"{0}\" problem type can't be solved with this ComputationalNode.",
                         message.ProblemType));
             }
-            var taskSolverType = TaskSolvers[message.ProblemType];
             var timeout = message.SolvingTimeout.HasValue
                 ? TimeSpan.FromMilliseconds(message.SolvingTimeout.Value)
                 : TimeSpan.MaxValue;

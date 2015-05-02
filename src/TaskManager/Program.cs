@@ -38,9 +38,9 @@ namespace _15pl04.Ucc.TaskManager
             {
                 // input handling
                 if (line == "start")
-                {
                     taskManager.Start();
-                }
+                if (line == "running")
+                    Console.WriteLine("TaskManager.IsRunning={0}", taskManager.IsRunning);
             }
         }
 

@@ -89,16 +89,16 @@ namespace _15pl04.Ucc.TaskManager
             {
                 // shouldn't ever get here - received message for other TaskManager
                 throw new InvalidOperationException(
-                    string.Format("TaskManager manager with ID={0} received message for TaskManager with ID={1}.", Id,
+                    string.Format("TaskManager with ID={0} received message for TaskManager with ID={1}.", Id,
                         message.TaskManagerId));
             }
-            if (!TaskSolvers.ContainsKey(message.ProblemType))
+            Type taskSolverType;
+            if (!TaskSolvers.TryGetValue(message.ProblemType, out taskSolverType))
             {
                 // shouldn't ever get here - received unsolvable problem
                 throw new InvalidOperationException(
                     string.Format("\"{0}\" problem type can't be divided with this TaskManager.", message.ProblemType));
             }
-            var taskSolverType = TaskSolvers[message.ProblemType];
 
             var actionDescription = string.Format("Dividing problem \"{0}\"(problem instance id={1})",
                 message.ProblemType, message.ProblemInstanceId);
@@ -142,13 +142,13 @@ namespace _15pl04.Ucc.TaskManager
 
         private void SolutionsMessageHandler(SolutionsMessage message)
         {
-            if (!TaskSolvers.ContainsKey(message.ProblemType))
+            Type taskSolverType;
+            if (!TaskSolvers.TryGetValue(message.ProblemType, out taskSolverType))
             {
                 // shouldn't ever get here - received unsolvable problem
                 throw new InvalidOperationException(
                     string.Format("\"{0}\" problem type can't be merged with this TaskManager.", message.ProblemType));
             }
-            var taskSolverType = TaskSolvers[message.ProblemType];
 
             var actionDescription = string.Format("Merging partial problems \"{0}\"(problem instance id={1})",
                 message.ProblemType, message.ProblemInstanceId);

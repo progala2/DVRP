@@ -25,15 +25,20 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private CancellationTokenSource _cancellationTokenSource;
         private volatile bool _isProcessing;
 
-        public MessageProcessor(IComponentOverseer overseer, IWorkManager workManager)
+        public MessageProcessor(IComponentOverseer componentOverseer, IWorkManager workManager)
         {
+            if (componentOverseer == null)
+                throw new ArgumentNullException("componentOverseer");
+            if (workManager == null)
+                throw new ArgumentNullException("workManager");
+
             _inputDataQueue = new RawDataQueue();
 
             var serializer = new MessageSerializer();
             var validator = new MessageValidator();
             _marshaller = new Marshaller(serializer, validator);
 
-            _componentOverseer = overseer;
+            _componentOverseer = componentOverseer;
             _workManager = workManager;
 
             _processingLock = new AutoResetEvent(false);
