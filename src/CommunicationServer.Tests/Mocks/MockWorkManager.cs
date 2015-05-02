@@ -1,10 +1,7 @@
-﻿using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using _15pl04.Ucc.CommunicationServer.Components;
+using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
+using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests.Mocks
 {
@@ -38,12 +35,12 @@ namespace _15pl04.Ucc.CommunicationServer.Tests.Mocks
             throw new NotImplementedException();
         }
 
-        public WorkManagement.Models.Problem GetProblem(ulong problemId)
+        public Problem GetProblem(ulong problemId)
         {
             throw new NotImplementedException();
         }
 
-        public WorkManagement.Models.Solution GetSolution(ulong problemId)
+        public Solution GetSolution(ulong problemId)
         {
             throw new NotImplementedException();
         }

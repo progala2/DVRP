@@ -1,9 +1,8 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using TimeoutException = _15pl04.Ucc.Commons.Exceptions.TimeoutException;
+using _15pl04.Ucc.Commons.Exceptions;
 
 namespace _15pl04.Ucc.Commons
 {

@@ -111,8 +111,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     var response = HandleMessage(msg, metadata);
                     responseMessages.AddRange(response);
                 }
-                catch (InvalidCastException)
+                catch (InvalidCastException e)
                 {
+                    Logger.Debug(e.Message);
                     Logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
                     var errorMsg = new ErrorMessage
                     {
@@ -123,6 +124,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     break;
                 }
             }
+
+            foreach (Message msgToSend in responseMessages)
+                Logger.Trace("Sending " + msgToSend.MessageType + " message.");
 
             var marshalledResponse = _marshaller.Marshall(responseMessages);
             data.Callback(marshalledResponse);

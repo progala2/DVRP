@@ -17,7 +17,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private const int MaxPendingConnections = 100;
         private const int ReadBufferSize = 4096; // TODO make sure it's enough
-        private static readonly ILogger Logger = new TraceSourceLogger(typeof (TcpServer).Name);
+        private static readonly ILogger Logger = new ConsoleLogger();
         private readonly IDataProcessor _dataProcessor;
         private readonly Socket _listenerSocket;
         private CancellationTokenSource _cancellationTokenSource;

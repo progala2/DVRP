@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using UCCTaskSolver;
 using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Computations.Base;
@@ -8,7 +9,6 @@ using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.Commons.Utilities;
-using UCCTaskSolver;
 
 namespace _15pl04.Ucc.ComputationalNode
 {

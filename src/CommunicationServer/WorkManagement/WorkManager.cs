@@ -93,7 +93,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
                     var availableThreads = CountAvailableSolvingThreads(problemToDivide.Type);
 
-                    work = new DivisionWork(nodeId, problemToDivide, (ulong) availableThreads);
+                    work = new DivisionWork(nodeId, problemToDivide, (ulong)availableThreads);
 
                     var e = new WorkAssignmentEventArgs
                     {
@@ -158,7 +158,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             ulong id;
             do
             {
-                id = _random.NextUInt64();
+                id = _random.NextUInt64()%10;
+                //id = _random.NextUInt64(); TODO debug
             } while (_problems.ContainsKey(id));
 
             // Create problem instance.
@@ -199,13 +200,19 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 return;
             }
 
-            // Make sure the problem instance's number of partial problems & partial solutions is not greater than 'NumberOfParts'.
+            // Make sure the problem instance's number of partial problems & partial solutions is not greater than 'NumberOfParts' (excluding the partial problem being added).
             var ppNum = _partialProblems.Count(pair => pair.Key.Item1 == problemId);
             var psNum = _partialSolutions.Count(pair => pair.Key.Item1 == problemId);
-            if (ppNum + psNum >= (int) problem.NumberOfParts)
+            Logger.Debug("ppNum:" + ppNum + ", psNum:" + psNum + ", NumberOfParts:" + problem.NumberOfParts + ".");
+            if (ppNum + psNum > (int)problem.NumberOfParts - 1)
             {
-                Logger.Error("Received too many partial problems than expected.");
+                Logger.Error("Received more partial problems than expected.");
                 return;
+            }
+            else if (ppNum + psNum == (int)problem.NumberOfParts - 1)
+            {
+                Logger.Info("Received all expected partial problems (id: " + problem.Id + ").");
+                problem.State = Problem.ProblemState.AwaitingSolution;
             }
 
             // Create partial problem instance.
@@ -278,7 +285,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 return true;
             });
 
-            Logger.Info("Added new problem (id: " + problemId + ", type: " + problem.Type + ").");
+            Logger.Info("Added new solution (id: " + problemId + ", type: " + problem.Type + ").");
         }
 
         public void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime,
@@ -330,7 +337,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Check if all partial solutions are in and set appropriate state.
             var gatheredPartialSolutions = GetPartialSolutions(problemId,
                 PartialSolution.PartialSolutionState.BeingGathered);
-            if ((int) problem.NumberOfParts == gatheredPartialSolutions.Count)
+            if ((int)problem.NumberOfParts == gatheredPartialSolutions.Count)
             {
                 foreach (var ps in gatheredPartialSolutions)
                     ps.State = PartialSolution.PartialSolutionState.AwaitingMerge;
@@ -441,7 +448,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
             foreach (var componentInfo in _componentOverseer.GetComponents(ComponentType.ComputationalNode))
             {
-                var sn = (SolverNodeInfo) componentInfo;
+                var sn = (SolverNodeInfo)componentInfo;
                 if (!sn.SolvableProblems.Contains(problemType))
                     continue;
 
@@ -460,27 +467,27 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         private ICollection<PartialProblem> GetPartialProblems(ulong problemId,
             PartialProblem.PartialProblemState? state = null)
         {
-            return (ICollection<PartialProblem>) _partialProblems.Values.Where(pp =>
+            return _partialProblems.Values.Where(pp =>
             {
                 var pId = pp.Problem.Id;
 
                 if (state.HasValue)
                     return problemId == pId && state == pp.State;
                 return problemId == pId;
-            });
+            }).ToList();
         }
 
         private ICollection<PartialSolution> GetPartialSolutions(ulong problemId,
             PartialSolution.PartialSolutionState? state = null)
         {
-            return (ICollection<PartialSolution>) _partialSolutions.Values.Where(ps =>
+            return _partialSolutions.Values.Where(ps =>
             {
                 var pId = ps.PartialProblem.Problem.Id;
 
                 if (state.HasValue)
                     return problemId == pId && state == ps.State;
                 return problemId == pId;
-            });
+            }).ToList();
         }
     }
 }
