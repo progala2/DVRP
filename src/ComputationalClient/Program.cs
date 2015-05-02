@@ -42,9 +42,14 @@ namespace _15pl04.Ucc.ComputationalClient
                 if (line == "solution")
                 {
                     Console.Write("Enter problem id: ");
-                    uint id;
-                    uint.TryParse(Console.ReadLine(), out id);
-                    var solutionsMessages = computationalClient.SendSolutionRequest(id);
+                    ulong id;
+                    if (ulong.TryParse(Console.ReadLine(), out id))
+                    {
+                        var solutionsMessages = computationalClient.SendSolutionRequest(id);
+                        //
+                    }
+                    else
+                        Console.WriteLine("Parsing error!");
                 }
             }
         }

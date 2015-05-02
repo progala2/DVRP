@@ -75,7 +75,7 @@ namespace _15pl04.Ucc.Commons
         public ulong Id { get; private set; }
 
         /// <summary>
-        ///     The communication timeout configured on Communication Server.
+        ///     The communication timeout configured on Communication Server (in seconds).
         /// </summary>
         public uint Timeout { get; private set; }
 
@@ -212,7 +212,8 @@ namespace _15pl04.Ucc.Commons
         private void ProcessMessages()
         {
             IsRunning = true;
-            var timeToWait = (int) (Timeout/2);
+            // time in milliseconds
+            var timeToWait = (int)(Timeout * 1000 / 2);
             while (IsRunning)
             {
                 Message messageToSend = GetStatusMessage();

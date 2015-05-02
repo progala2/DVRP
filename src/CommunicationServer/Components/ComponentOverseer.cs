@@ -108,13 +108,13 @@ namespace _15pl04.Ucc.CommunicationServer.Components
                     var now = DateTime.UtcNow;
 
                     foreach (var i in _registeredComponents)
-                        if (i.Value.TimestampAge >= CommunicationTimeout)
+                        if (i.Value.TimestampAge >= 1000 * CommunicationTimeout)
                             TryDeregister(i.Key);
 
                     if (token.IsCancellationRequested)
                         return;
 
-                    Thread.Sleep((int) CheckInterval);
+                    Thread.Sleep((int)CheckInterval);
                 }
             }, token).Start();
 

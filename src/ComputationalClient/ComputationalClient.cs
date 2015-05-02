@@ -63,7 +63,7 @@ namespace _15pl04.Ucc.ComputationalClient
         /// </summary>
         /// <param name="id">The ID of the problem instance assigned by the server.</param>
         /// <returns>Solutions message(s) or null if server is not responding.</returns>
-        public SolutionsMessage[] SendSolutionRequest(uint id)
+        public SolutionsMessage[] SendSolutionRequest(ulong id)
         {
             var solutionRequestMessage = new SolutionRequestMessage
             {
