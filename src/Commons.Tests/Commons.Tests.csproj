@@ -47,20 +47,19 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="MessageTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MessageValidatorTests.cs" />
+    <Compile Include="IPEndPointParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MessagesTests.cs" />
-    <Compile Include="ResourcesTests.cs" />
     <Compile Include="MessageSenderTests.cs" />
     <Compile Include="TcpClientTests.cs" />
-    <Compile Include="Tools\XmlFileParser.cs" />
-    <Compile Include="MessageSerializerTests.cs" />
-    <Compile Include="MarshallerTests.cs" />
-    <Compile Include="ComputationalComponentTests.cs" />
     <Compile Include="TaskSolversLoaderTests.cs" />
+    <Compile Include="DeserializationTests.cs" />
+    <Compile Include="SerializationTests.cs" />
+    <Compile Include="ValidationTests.cs" />
+    <Compile Include="XmlMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>XmlMessages.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -74,42 +73,27 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TaskSolvers\Ucc.MinMaxTaskSolver.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XmlMessages\DivideProblem.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="XmlMessages\Error.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XmlMessages\NoOperation.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XmlMessages\PartialProblems.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XmlMessages\Register.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XmlMessages\RegisterResponse.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XmlMessages\Solutions.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XmlMessages\SolveRequest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XmlMessages\SolutionRequest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XmlMessages\SolveRequestResponse.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XmlMessages\Status.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Include="Resources\XmlMessages\DivideProblem.xml" />
+    <None Include="Resources\XmlMessages\Error.xml" />
+    <None Include="Resources\XmlMessages\NoOperation.xml" />
+    <None Include="Resources\XmlMessages\PartialProblems.xml" />
+    <None Include="Resources\XmlMessages\Register.xml" />
+    <None Include="Resources\XmlMessages\RegisterResponse.xml" />
+    <None Include="Resources\XmlMessages\SolutionRequest.xml" />
+    <None Include="Resources\XmlMessages\Solutions.xml" />
+    <None Include="Resources\XmlMessages\SolveRequest.xml" />
+    <None Include="Resources\XmlMessages\SolveRequestResponse.xml" />
+    <None Include="Resources\XmlMessages\Status.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="XmlMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>XmlMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TaskSolvers\_15pl04.Ucc.MinMaxTaskSolver.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Choose>

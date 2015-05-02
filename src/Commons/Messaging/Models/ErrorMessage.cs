@@ -2,73 +2,49 @@
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Error")]
     public class ErrorMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "Error.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "Error.xsd";
 
-        private ErrorMessageErrorType _errorMessageTypeField;
-
-        private string _errorMessageField;
-
-        [XmlElement(Order = 0)]
-        public ErrorMessageErrorType ErrorMessageType
-        {
-            get
-            {
-                return _errorMessageTypeField;
-            }
-            set
-            {
-                _errorMessageTypeField = value;
-            }
-        }
+        [XmlElement(Order = 0, ElementName = "ErrorMessageType")]
+        public ErrorType ErrorType { get; set; }
 
         [XmlElement(Order = 1, ElementName = "ErrorMessage")]
-        public string ErrorMessageText
-        {
-            get
-            {
-                return _errorMessageField;
-            }
-            set
-            {
-                _errorMessageField = value;
-            }
-        }
+        public string ErrorText { get; set; }
 
         [XmlIgnore]
-        public override MessageClassType MessageType
+        public override MessageClass MessageType
         {
-            get { return MessageClassType.Error; }
+            get { return MessageClass.Error; }
         }
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("ErrorMessageType="+ErrorMessageType+";");
-            sb.Append("ErrorMessageText="+ErrorMessageText);
-            sb.Append("]");
-            return sb.ToString();
+            var builder = new StringBuilder(base.ToString());
+
+            builder.Append(" ErrorType(" + ErrorType + ")");
+            builder.Append(" ErrorMessage(" + ErrorText + ")");
+
+            return builder.ToString();
         }
     }
 
     [Serializable]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public enum ErrorMessageErrorType
+    public enum ErrorType
     {
         UnknownSender,
-
         InvalidOperation,
-
-        ExceptionOccured,
+        ExceptionOccured
     }
 }

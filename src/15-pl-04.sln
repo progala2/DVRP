@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServer.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinMaxTaskSolver", "MinMaxTaskSolver\MinMaxTaskSolver.csproj", "{8530BFFD-EE0E-4E0F-928D-C4769D770762}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinMaxTaskSolverTests", "MinMaxTaskSolverTests\MinMaxTaskSolverTests.csproj", "{2EBEDB21-7E07-46FD-815A-360C1676D180}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinMaxTaskSolver.Tests", "MinMaxTaskSolver.Tests\MinMaxTaskSolver.Tests.csproj", "{87FDFEC7-CB2D-4EF9-866C-58DBAF0FE813}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,10 +89,10 @@ Global
 		{8530BFFD-EE0E-4E0F-928D-C4769D770762}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8530BFFD-EE0E-4E0F-928D-C4769D770762}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8530BFFD-EE0E-4E0F-928D-C4769D770762}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2EBEDB21-7E07-46FD-815A-360C1676D180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EBEDB21-7E07-46FD-815A-360C1676D180}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2EBEDB21-7E07-46FD-815A-360C1676D180}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2EBEDB21-7E07-46FD-815A-360C1676D180}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87FDFEC7-CB2D-4EF9-866C-58DBAF0FE813}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87FDFEC7-CB2D-4EF9-866C-58DBAF0FE813}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87FDFEC7-CB2D-4EF9-866C-58DBAF0FE813}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87FDFEC7-CB2D-4EF9-866C-58DBAF0FE813}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,12 +4,11 @@ using System.Runtime.Serialization;
 namespace _15pl04.Ucc.Commons.Exceptions
 {
     /// <summary>
-    /// Description of NoResponseException
+    ///     Description of NoResponseException
     /// </summary>
-    public class NoResponseException : Exception, ISerializable
+    public class NoResponseException : Exception
     {
         public NoResponseException()
-            : base()
         {
         }
 

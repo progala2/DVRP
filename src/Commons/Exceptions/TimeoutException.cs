@@ -4,12 +4,11 @@ using System.Runtime.Serialization;
 namespace _15pl04.Ucc.Commons.Exceptions
 {
     /// <summary>
-    /// Description of TimeoutException
+    ///     Description of TimeoutException
     /// </summary>
-    public class TimeoutException : Exception, ISerializable
+    public class TimeoutException : Exception
     {
         public TimeoutException()
-            : base()
         {
         }
 

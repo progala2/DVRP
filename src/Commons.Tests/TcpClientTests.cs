@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TimeoutException = _15pl04.Ucc.Commons.Exceptions.TimeoutException;
 
 namespace _15pl04.Ucc.Commons.Tests
 {
@@ -14,29 +13,27 @@ namespace _15pl04.Ucc.Commons.Tests
     public class TcpClientTests
     {
         private const int Port = 9123;
-        private readonly IPAddress _ipAddressv4 = new IPAddress(new byte[]{127, 0, 0, 1});
-        private readonly IPAddress _ipAddressv6 = IPAddress.Parse("0:0:0:0:0:0:0:1");
         private const int BufferSize = 2048;
-        Socket _socket;
-
+        private readonly IPAddress _ipAddressv4 = new IPAddress(new byte[] {127, 0, 0, 1});
+        private readonly IPAddress _ipAddressv6 = IPAddress.Parse("0:0:0:0:0:0:0:1");
+        private Socket _socket;
 
         [TestMethod]
         public void TcpClientConnectingWithSpecifiedSocketAndReceivingAnswerIpV4()
         {
-            TcpClient client = new TcpClient(new IPEndPoint(_ipAddressv4, Port));
+            var client = new TcpClient(new IPEndPoint(_ipAddressv4, Port));
 
             const string message = "to jest wiadomosc do przekazania";
 
-            byte[] data = Encoding.UTF8.GetBytes(message);
+            var data = Encoding.UTF8.GetBytes(message);
 
-            Task t = new Task(new Action(ListenAndResendV4));
+            var t = new Task(ListenAndResendV4);
             t.Start();
-            byte[] received = client.SendData(data);
-
+            var received = client.SendData(data);
 
 
             Assert.AreEqual(data.Length, received.Length);
-            for (int i = 0; i < data.Length; ++i)
+            for (var i = 0; i < data.Length; ++i)
             {
                 Assert.AreEqual(data[i], received[i]);
                 i++;
@@ -49,20 +46,19 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void TcpClientConnectingWithSpecifiedSocketAndReceivingAnswerIpv6()
         {
-            TcpClient client = new TcpClient(new IPEndPoint(_ipAddressv6, Port));
+            var client = new TcpClient(new IPEndPoint(_ipAddressv6, Port));
 
             const string message = "to jest wiadomosc do przekazania";
 
-            byte[] data = Encoding.UTF8.GetBytes(message);
+            var data = Encoding.UTF8.GetBytes(message);
 
-            Task t = new Task(new Action(ListenAndResendV6));
+            var t = new Task(ListenAndResendV6);
             t.Start();
-            byte[] received = client.SendData(data);
-
+            var received = client.SendData(data);
 
 
             Assert.AreEqual(data.Length, received.Length);
-            for (int i = 0; i < data.Length; ++i)
+            for (var i = 0; i < data.Length; ++i)
             {
                 Assert.AreEqual(data[i], received[i]);
                 i++;
@@ -73,24 +69,24 @@ namespace _15pl04.Ucc.Commons.Tests
         }
 
         //long test, takes TimeoutSeconds seconds
-        [ExpectedException(typeof(Commons.Exceptions.TimeoutException))]
+        [ExpectedException(typeof (TimeoutException))]
         [TestMethod]
         public void TcpClientConnectingToWrongIpAndThrowingOwnException()
         {
-            Task t = new Task(new Action(StartListeningV4));
+            var t = new Task(StartListeningV4);
             t.Start();
             try
             {
-                TcpClient client = new TcpClient(
-                new IPEndPoint(new IPAddress(new Byte[] { 126, 0, 0, 1 }), Port));
+                var client = new TcpClient(
+                    new IPEndPoint(new IPAddress(new byte[] {126, 0, 0, 1}), Port));
 
                 const string message = "to jest wiadomosc do przekazania";
 
-                byte[] data = Encoding.UTF8.GetBytes(message);
-                                
-                byte[] received = client.SendData(data);
+                var data = Encoding.UTF8.GetBytes(message);
+
+                var received = client.SendData(data);
             }
-            catch (Commons.Exceptions.TimeoutException e)
+            catch (TimeoutException e)
             {
                 EndConnection();
                 throw e;
@@ -100,7 +96,7 @@ namespace _15pl04.Ucc.Commons.Tests
                 EndConnection();
                 throw;
             }
-            
+
             //throw new Exception();
         }
 
@@ -110,6 +106,7 @@ namespace _15pl04.Ucc.Commons.Tests
             AcceptConnection();
             //EndConnection();
         }
+
         private void ListenAndResendV6()
         {
             StartListeningV6();
@@ -117,18 +114,17 @@ namespace _15pl04.Ucc.Commons.Tests
             //EndConnection();
         }
 
-
         private void AcceptConnection()
         {
-            Socket handlerSocket = _socket.Accept();
-            byte[] bytes = new byte[BufferSize];
-            int bytesReceived = handlerSocket.Receive(bytes);
+            var handlerSocket = _socket.Accept();
+            var bytes = new byte[BufferSize];
+            var bytesReceived = handlerSocket.Receive(bytes);
 
             bytes = bytes.Take(bytesReceived).ToArray();
 
             handlerSocket.Send(bytes);
             handlerSocket.Shutdown(SocketShutdown.Send);
-            handlerSocket.Close();  
+            handlerSocket.Close();
         }
 
         private void EndConnection()

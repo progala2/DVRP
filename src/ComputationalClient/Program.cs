@@ -4,21 +4,20 @@ using System.Configuration;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using _15pl04.Ucc.Commons;
-using _15pl04.Ucc.Commons.Computations;
 using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using MinMaxTaskSolver;
+using _15pl04.Ucc.Commons.Utilities;
+using _15pl04.Ucc.MinMaxTaskSolver;
 
 namespace _15pl04.Ucc.ComputationalClient
 {
     public class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var appSettings = ConfigurationManager.AppSettings;
             var primaryCSaddress = appSettings["primaryCSaddress"];
             var primaryCSport = appSettings["primaryCSport"];
-            var serverAddress = IPEndPointParser.Parse(primaryCSaddress, primaryCSport);
+            var serverAddress = IpEndPointParser.Parse(primaryCSaddress, primaryCSport);
             Console.WriteLine("server address from App.config: " + serverAddress);
 
             var computationalClient = new ComputationalClient(serverAddress);
@@ -36,10 +35,9 @@ namespace _15pl04.Ucc.ComputationalClient
                 if (line == "solve")
                 {
                     var numbers = GenerateNumbers(10, 0, 50);
-                    var minMaxProblem = new MinMaxProblem(numbers);
+                    var minMaxProblem = new MmProblem(numbers);
                     var problemData = GenerateProblemData(minMaxProblem);
                     computationalClient.SendSolveRequest(problemType, problemData, null);
-
                 }
                 if (line == "solution")
                 {
@@ -51,22 +49,22 @@ namespace _15pl04.Ucc.ComputationalClient
             }
         }
 
-        static void computationalClient_MessageSent(object sender, MessageEventArgs e)
+        private static void computationalClient_MessageSent(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Sent", e.Message);
         }
 
-        static void computationalClient_MessageReceived(object sender, MessageEventArgs e)
+        private static void computationalClient_MessageReceived(object sender, MessageEventArgs e)
         {
             ColorfulConsole.WriteMessageInfo("Received", e.Message);
         }
 
-        static void computationalClient_MessageSendingException(object sender, MessageExceptionEventArgs e)
+        private static void computationalClient_MessageSendingException(object sender, MessageExceptionEventArgs e)
         {
             ColorfulConsole.WriteMessageExceptionInfo("Message sending exception", e.Message, e.Exception);
         }
 
-        private static byte[] GenerateProblemData(MinMaxProblem minMaxProblem)
+        private static byte[] GenerateProblemData(MmProblem minMaxProblem)
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -77,12 +75,11 @@ namespace _15pl04.Ucc.ComputationalClient
             }
         }
 
-
         private static List<int> GenerateNumbers(int numbersCount, int min, int max)
         {
             var rand = new Random();
-            var result = new List<int>();
-            for (int i = 0; i < numbersCount; i++)
+            var result = new List<int>(numbersCount);
+            for (var i = 0; i < numbersCount; i++)
             {
                 result.Add(rand.Next(min, max));
             }

@@ -2,103 +2,63 @@
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolveRequest")]
     public class SolveRequestMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "SolveRequest.xsd";
-        private string _problemTypeField;
-
-        private ulong? _solvingTimeoutField;
-
-        private byte[] _dataField;
-
-        private ulong? _idField;
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "SolveRequest.xsd";
 
         [XmlElement(Order = 0)]
-        public string ProblemType
-        {
-            get
-            {
-                return _problemTypeField;
-            }
-            set
-            {
-                _problemTypeField = value;
-            }
-        }
+        public string ProblemType { get; set; }
 
         [XmlElement(Order = 1)]
-        public ulong? SolvingTimeout
+        public ulong? SolvingTimeout { get; set; }
+
+        [XmlElement(Order = 2, ElementName = "Data", DataType = "base64Binary")]
+        public byte[] ProblemData { get; set; }
+
+        [XmlElement(Order = 3, ElementName = "Id")]
+        public ulong? ProblemInstanceId { get; set; }
+
+        [XmlIgnore]
+        public override MessageClass MessageType
         {
-            get
-            {
-                return _solvingTimeoutField;
-            }
-            set
-            {
-                _solvingTimeoutField = value;
-            }
+            get { return MessageClass.SolveRequest; }
+        }
+
+        public bool ShouldSerializeProblemInstanceId()
+        {
+            return ProblemInstanceId.HasValue;
         }
 
         public bool ShouldSerializeSolvingTimeout()
         {
-            return _solvingTimeoutField.HasValue;
-        }
-
-        [XmlElement(DataType = "base64Binary", Order = 2)]
-        public byte[] Data
-        {
-            get
-            {
-                return _dataField;
-            }
-            set
-            {
-                _dataField = value;
-            }
-        }
-
-        [XmlElement(Order = 3)]
-        public ulong? Id
-        {
-            get
-            {
-                return _idField;
-            }
-            set
-            {
-                _idField = value;
-            }
-        }
-
-        public bool ShouldSerializeId()
-        {
-            return _idField.HasValue;
-        }
-
-        [XmlIgnore]
-        public override MessageClassType MessageType
-        {
-            get { return MessageClassType.SolveRequest; }
+            return SolvingTimeout.HasValue;
         }
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("ProblemType=" + ProblemType + ";");
-            sb.Append("SolvingTimeout=" + (SolvingTimeout.HasValue ? SolvingTimeout.ToString() : "null") + ";");
-            sb.Append("Data=" + Data.ToString() + ";");
-            sb.Append("Id=" + (Id.HasValue ? Id.ToString() : "null"));
-            sb.Append("]");
-            return sb.ToString();
+            var builder = new StringBuilder(base.ToString());
+
+            if (ProblemInstanceId.HasValue)
+                builder.Append(" ProblemInstanceId(" + ProblemInstanceId.Value + ")");
+
+            builder.Append(" ProblemType(" + ProblemType + ")");
+
+            if (SolvingTimeout.HasValue)
+                builder.Append(" SolvingTimeout(" + SolvingTimeout.Value + ")");
+            else
+                builder.Append(" SolvingTimeout(none)");
+
+            return builder.ToString();
         }
     }
 }

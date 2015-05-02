@@ -1,226 +1,126 @@
-﻿using _15pl04.Ucc.Commons;
-using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.CommunicationServer.Collections;
-using _15pl04.Ucc.CommunicationServer.Tasks.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using _15pl04.Ucc.Commons.Logging;
+using _15pl04.Ucc.Commons.Messaging.Marshalling;
+using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
+using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using _15pl04.Ucc.CommunicationServer.Collections;
+using _15pl04.Ucc.CommunicationServer.Components.Base;
+using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
-    internal class MessageProcessor
+    internal partial class MessageProcessor : IDataProcessor
     {
-        public delegate void MessageReceptionEventHandler(object sender, MessageReceptionEventArgs e);
-        public event MessageReceptionEventHandler MessageReception;
+        private static readonly ILogger Logger = new ConsoleLogger();
+        private readonly IComponentOverseer _componentOverseer;
+        private readonly RawDataQueue _inputDataQueue;
+        private readonly IMarshaller<Message> _marshaller;
+        private readonly AutoResetEvent _processingLock;
+        private readonly IWorkManager _workManager;
+        private CancellationTokenSource _cancellationTokenSource;
+        private volatile bool _isProcessing;
 
-        private InputMessageQueue _inputQueue;
-        private Marshaller _marshaller;
-        private Task _processingThread;
-        private uint _communicationTimeout;
-
-        public MessageProcessor(Marshaller marshaller, uint communicationTimeout)
+        public MessageProcessor(IComponentOverseer overseer, IWorkManager workManager)
         {
-            _inputQueue = new InputMessageQueue();
-            _marshaller = marshaller;
-            _communicationTimeout = communicationTimeout;
+            _inputDataQueue = new RawDataQueue();
+
+            var serializer = new MessageSerializer();
+            var validator = new MessageValidator();
+            _marshaller = new Marshaller(serializer, validator);
+
+            _componentOverseer = overseer;
+            _workManager = workManager;
+
+            _processingLock = new AutoResetEvent(false);
         }
 
-        public void EnqeueInputMessage(byte[] rawMsg, AsyncTcpServer.ResponseCallback callback)
+        public bool IsProcessing
         {
-            _inputQueue.Enqueue(rawMsg, callback);
+            get { return _isProcessing; }
+        }
 
-            if (_processingThread == null)
+        public void EnqueueDataToProcess(byte[] data, Metadata metadata, ProcessedDataCallback callback)
+        {
+            _inputDataQueue.Enqueue(data, metadata, callback);
+
+            _processingLock.Set();
+        }
+
+        public void StartProcessing()
+        {
+            if (_isProcessing)
+                return;
+
+            _cancellationTokenSource = new CancellationTokenSource();
+
+            var token = _cancellationTokenSource.Token;
+            token.Register(() => { _isProcessing = false; });
+
+            new Task(() =>
             {
-                _processingThread = new Task(ProcessQueuedMessages);
-                _processingThread.Start();
-            }
-        }
-
-        public void EnqueueOutputMessage(ComponentType addresseeType, Message msg)
-        {
-            // legacy (nie zmieniać dopóki Rad nie skończy pracy nad synchronizacją)
-        }
-
-        private void ProcessQueuedMessages()
-        {
-            while (true)
-            {
-                byte[] rawMsg;
-                AsyncTcpServer.ResponseCallback callback;
-
-                if (_inputQueue.TryDequeue(out rawMsg, out callback))
+                while (true)
                 {
-                    Message[] input = _marshaller.Unmarshall(rawMsg);
+                    if (_inputDataQueue.Count == 0)
+                        _processingLock.WaitOne(); // No data available, wait for some.
 
-                    foreach (var message in input)
-                    {
-                        ColorfulConsole.WriteMessageInfo("Received", message);
+                    RawDataQueueItem dataToProcess;
+                    _inputDataQueue.TryDequeue(out dataToProcess);
+                    if (dataToProcess != null)
+                        ProcessData(dataToProcess); // Actual processing.
 
-                        var responseMsgs = GetResponseMessages(message);
-
-                        ColorfulConsole.WriteMessageInfo("Sending", responseMsgs);
-                        var rawResponse = _marshaller.Marshall(new Message[] { responseMsgs });
-                        new Task(() => { callback(rawResponse); }).Start();
-                    }
+                    if (token.IsCancellationRequested)
+                        return;
                 }
-                else
-                {
-                    _processingThread = null;
-                    return;
-                }
-            }
+            }, token).Start();
+
+            _processingLock.Set();
+            _isProcessing = true;
         }
 
-        private Message GetResponseMessages(Message msg)
+        public void StopProcessing()
         {
-            switch (msg.MessageType)
-            {
-                //for AsyncTcp tests to work, from pie/architecture, can (even should) be replaced later
-                case Message.MessageClassType.Register:
-                    {
-                        var registerMsg = msg as RegisterMessage;
+            if (!_isProcessing)
+                return;
 
-                        ulong id;
-
-                        switch (registerMsg.Type)
-                        {
-                            case ComponentType.ComputationalNode:
-                            case ComponentType.TaskManager:
-                                id = ComponentMonitor.Instance.RegisterNode(registerMsg.Type, registerMsg.ParallelThreads, registerMsg.SolvableProblems);
-                                break;
-
-                            //TODO - case ComponentType.CommunicationServer:
-
-                            default:
-                                throw new Exception("Wrong type of component is trying to register.");
-                        }
-
-                        var registerResponseMsg = new RegisterResponseMessage()
-                        {
-                            Id = id,
-                            BackupCommunicationServers = new List<BackupCommunicationServer>(),
-                            Timeout = _communicationTimeout,
-                        };
-                        return registerResponseMsg;
-                    }
-
-                //for AsyncTcp tests to work, from pie/architecture, can (even should) be replaced later
-                case Message.MessageClassType.Status:
-                    {
-                        var statusMsg = msg as StatusMessage;
-                        // TODO - implement
-                        if (ComponentMonitor.Instance.IsRegistered(statusMsg.Id))
-                        {
-                            ComponentMonitor.Instance.UpdateTimestamp(statusMsg.Id);
-
-                            var noOperationMsg = new NoOperationMessage()
-                            {
-                                BackupCommunicationServers = new List<BackupCommunicationServer>(),
-                            };
-                            return noOperationMsg;
-                        }
-                        else
-                        {
-                            var errorMsg = new ErrorMessage()
-                            {
-                                ErrorMessageText = "Unregistered component error.",
-                                ErrorMessageType = ErrorMessageErrorType.UnknownSender,
-                            };
-                            return errorMsg;
-                        }
-                    }
-
-                case Message.MessageClassType.SolveRequest:
-                    {
-                        var solveRequestMsg = msg as SolveRequestMessage;
-
-                        ulong id = Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.GenerateProblemInstanceId();
-                        ulong solvingTimeout = solveRequestMsg.SolvingTimeout.GetValueOrDefault(0);
-
-                        var problemInstance = new ProblemInstance(id, solveRequestMsg.ProblemType, solveRequestMsg.Data, solvingTimeout);
-                        Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.AddNewProblemInstance(problemInstance);
-
-                        var solveRequestResponseMsg = new SolveRequestResponseMessage()
-                        {
-                            Id = problemInstance.Id
-                        };
-                        return solveRequestResponseMsg;
-                    }
-
-                case Message.MessageClassType.SolutionRequest:
-                    {
-                        var solutionRequestMsg = msg as SolutionRequestMessage;
-
-                        ulong id = solutionRequestMsg.Id;
-                        FinalSolution fs;
-                        SolutionsMessage solutionMsg;
-
-                        if (Ucc.CommunicationServer.Tasks.TaskScheduler.Instance.TryGetFinalSolution(id, out fs))
-                        {
-                            var ss = new SolutionsSolution()
-                            {
-                                ComputationsTime = fs.ComputationsTime,
-                                Data = fs.SolutionData,
-                                TaskId = fs.ProblemInstanceId,
-                                TimeoutOccured = fs.TimeoutOccured,
-                                Type = SolutionType.Final
-                            };
-
-                            solutionMsg = new SolutionsMessage()
-                            {
-                                Id = id,
-                                CommonData = null,
-                                ProblemType = fs.ProblemType,
-                                Solutions = new List<SolutionsSolution>() { ss },
-                            };
-                        }
-                        else
-                        {
-                            // TODO - stuff below is merely a temporary solution
-                            var ss = new SolutionsSolution()
-                            {
-                                ComputationsTime = 0,
-                                Data = new byte[0],
-                                TaskId = id,
-                                TimeoutOccured = true,
-                                Type = SolutionType.Ongoing
-                            };
-                            solutionMsg = new SolutionsMessage()
-                            {
-                                Id = id,
-                                CommonData = null,
-                                ProblemType = "dummy",
-                                Solutions = new List<SolutionsSolution>() { ss },
-                            };
-                        }
-                        return solutionMsg;
-                    }
-
-                case Message.MessageClassType.PartialProblems:
-                    {
-                        var partialProblemsMsg = msg as PartialProblemsMessage;
-
-                        // TODO
-
-                        return new NoOperationMessage();
-                    }
-
-                case Message.MessageClassType.Solutions:
-                    {
-                        var solutionsMessage = msg as SolutionsMessage;
-
-                        // TODO
-
-                        return new NoOperationMessage();
-                    }
-                default:
-                    throw new Exception("Unsupported type received: " + msg.MessageType.ToString());
-            }
+            _cancellationTokenSource.Cancel();
+            _processingLock.Set();
         }
 
-        // TODO additional MessageProcessor for backup CS
-        // TODO check if senders are registered
+        private void ProcessData(RawDataQueueItem data)
+        {
+            var messages = _marshaller.Unmarshall(data.Data);
+            var responseMessages = new List<Message>();
 
+            foreach (var msg in messages)
+            {
+                Logger.Trace("Processing " + msg.MessageType + " message.");
+
+                try
+                {
+                    var metadata = data.Metadata as TcpDataProviderMetadata;
+                    var response = HandleMessage(msg, metadata);
+                    responseMessages.AddRange(response);
+                }
+                catch (InvalidCastException)
+                {
+                    Logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
+                    var errorMsg = new ErrorMessage
+                    {
+                        ErrorType = ErrorType.InvalidOperation,
+                        ErrorText = "Computational Server doesn't handle " + msg.MessageType + " message."
+                    };
+                    responseMessages = new List<Message> {errorMsg};
+                    break;
+                }
+            }
+
+            var marshalledResponse = _marshaller.Marshall(responseMessages);
+            data.Callback(marshalledResponse);
+        }
     }
 }

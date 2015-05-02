@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using TimeoutException = _15pl04.Ucc.Commons.Exceptions.TimeoutException;
 
 namespace _15pl04.Ucc.Commons
 {
     public class TcpClient
     {
-        public IPEndPoint ServerAddress
-        {
-            get { return _serverAddress; }
-            set { _serverAddress = value; }
-        }
+        public IPEndPoint ServerAddress { get; set; }
 
-        private IPEndPoint _serverAddress;
 #if DEBUG
         private const int BufferSize = 8;
 #else
@@ -24,63 +19,55 @@ namespace _15pl04.Ucc.Commons
 
         public TcpClient(IPEndPoint serverAddress)
         {
-            _serverAddress = serverAddress;
+            ServerAddress = serverAddress;
         }
 
         /// <summary>
-        /// Functions send data to server and returns server's respnse
+        ///     Functions send data to server and returns server's respnse
         /// </summary>
         /// <param name="data">data to send</param>
         /// <returns>data received from host</returns>
         /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TimeoutException">connection to host timed out</exception>
         public byte[] SendData(byte[] data)
         {
-            List<byte> ret = new List<byte>();
-            byte[] buf = new byte[BufferSize];
+            var buf = new byte[BufferSize];
+
+            var socket = new Socket(ServerAddress.AddressFamily,
+                SocketType.Stream,
+                ProtocolType.Tcp);
 
             try
             {
-                Socket socket = new Socket(_serverAddress.AddressFamily,
-                    SocketType.Stream,
-                    ProtocolType.Tcp);
+                socket.Connect(ServerAddress);
 
-                try
+                Debug.WriteLine("Socket connected to " + ServerAddress);
+
+                socket.Send(data);
+                socket.Shutdown(SocketShutdown.Send);
+
+                using (var memory = new MemoryStream(BufferSize))
                 {
-                    socket.Connect(_serverAddress);
-
-                    Debug.WriteLine("Socket connected to " + _serverAddress.ToString());
-
-                    socket.Send(data);
-                    socket.Shutdown(SocketShutdown.Send);
-
-                    using (MemoryStream memory = new MemoryStream(BufferSize))
+                    int bytesRec;
+                    while ((bytesRec = socket.Receive(buf)) > 0)
                     {
-                        int bytesRec;
-                        while ((bytesRec = socket.Receive(buf)) > 0)
-                        {
-                            memory.Write(buf, 0, bytesRec);
-                            Debug.WriteLine("Capacity: " + memory.Capacity + " Length: " + memory.Length);
-                        }
+                        memory.Write(buf, 0, bytesRec);
+                        Debug.WriteLine("Capacity: " + memory.Capacity + " Length: " + memory.Length);
+                    }
 
-                        socket.Shutdown(SocketShutdown.Receive);
-                        socket.Close();
-                        buf = memory.ToArray();
-                    }
-                }
-                catch (SocketException e)
-                {
-                    switch (e.ErrorCode)
-                    {
-                        case 10060: //timeout
-                            throw new Commons.Exceptions.TimeoutException(_serverAddress.ToString(), e);
-                        default:
-                            throw;
-                    }
+                    socket.Shutdown(SocketShutdown.Receive);
+                    socket.Close();
+                    buf = memory.ToArray();
                 }
             }
-            catch (Exception)
+            catch (SocketException e)
             {
-                throw;
+                switch (e.ErrorCode)
+                {
+                    case 10060: //timeout
+                        throw new TimeoutException(ServerAddress.ToString(), e);
+                    default:
+                        throw;
+                }
             }
             return buf;
         }

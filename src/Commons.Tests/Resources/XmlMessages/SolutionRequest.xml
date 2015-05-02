@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<SolutionRequest xmlns="http://www.mini.pw.edu.pl/ucc/"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:noNamespaceSchemaLocation="SolutionRequest.xsd">
+  <Id>12</Id>
+</SolutionRequest>

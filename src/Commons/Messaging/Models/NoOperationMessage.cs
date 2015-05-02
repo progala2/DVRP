@@ -3,100 +3,45 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "NoOperation")]
     public class NoOperationMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "NoOperation.xsd";
-
-        private List<BackupCommunicationServer> _backupCommunicationServersField;
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "NoOperation.xsd";
 
         public NoOperationMessage()
         {
-            _backupCommunicationServersField = new List<BackupCommunicationServer>();
+            BackupServers = new List<ServerInfo>();
         }
 
-        [XmlArray(Order = 0)]
+        [XmlArray(Order = 0, ElementName = "BackupCommunicationServers")]
         [XmlArrayItem("BackupCommunicationServer", IsNullable = true)]
-        public List<BackupCommunicationServer> BackupCommunicationServers
-        {
-            get
-            {
-                return _backupCommunicationServersField;
-            }
-            set
-            {
-                _backupCommunicationServersField = value;
-            }
-        }
+        public List<ServerInfo> BackupServers { get; set; }
 
         [XmlIgnore]
-        public override MessageClassType MessageType
+        public override MessageClass MessageType
         {
-            get { return MessageClassType.NoOperation; }
+            get { return MessageClass.NoOperation; }
         }
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("BackupCommunicationServers={");
-            foreach (var backup in BackupCommunicationServers)
-                sb.Append(backup.ToString());
-            sb.Append("}]");
-            return sb.ToString();
-        }
-    }
+            var builder = new StringBuilder(base.ToString());
 
-    [Serializable]
-    [DesignerCategory("code")]
-    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public class BackupCommunicationServer
-    {
-        private string _addressField;
+            builder.Append(" BackupServers{");
+            builder.Append(string.Join(",", BackupServers));
+            builder.Append("}");
 
-        private ushort _portField;
-
-        [XmlAttribute("address", DataType = "anyURI")]
-        public string Address
-        {
-            get
-            {
-                return _addressField;
-            }
-            set
-            {
-                _addressField = value;
-            }
-        }
-
-        [XmlAttribute("port")]
-        public ushort Port
-        {
-            get
-            {
-                return _portField;
-            }
-            set
-            {
-                _portField = value;
-            }
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("Address=" + Address + ";");
-            sb.Append("Port=" + Port);
-            sb.Append("]");
-            return sb.ToString();
+            return builder.ToString();
         }
     }
 }

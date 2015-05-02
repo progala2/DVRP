@@ -3,86 +3,55 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "RegisterResponse")]
     public class RegisterResponseMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "RegisterResponse.xsd";
-
-        private ulong _idField;
-
-        private uint _timeoutField;
-
-        private List<BackupCommunicationServer> _backupCommunicationServersField;
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "RegisterResponse.xsd";
 
         public RegisterResponseMessage()
         {
-            _backupCommunicationServersField = new List<BackupCommunicationServer>();
+            BackupServers = new List<ServerInfo>();
         }
 
-        [XmlElement(Order = 0)]
-        public ulong Id
-        {
-            get
-            {
-                return _idField;
-            }
-            set
-            {
-                _idField = value;
-            }
-        }
+        [XmlElement(Order = 0, ElementName = "Id")]
+        public ulong AssignedId { get; set; }
 
-        [XmlElement(Order = 1)]
-        public uint Timeout
-        {
-            get
-            {
-                return _timeoutField;
-            }
-            set
-            {
-                _timeoutField = value;
-            }
-        }
+        [XmlElement(Order = 1, ElementName = "Timeout")]
+        public uint CommunicationTimeout { get; set; }
 
-        [XmlArray(Order = 2)]
+        [XmlArray(Order = 2, ElementName = "BackupCommunicationServers")]
         [XmlArrayItem("BackupCommunicationServer")]
-        public List<BackupCommunicationServer> BackupCommunicationServers
-        {
-            get
-            {
-                return _backupCommunicationServersField;
-            }
-            set
-            {
-                _backupCommunicationServersField = value;
-            }
-        }
+        public List<ServerInfo> BackupServers { get; set; }
 
         [XmlIgnore]
-        public override MessageClassType MessageType
+        public override MessageClass MessageType
         {
-            get { return MessageClassType.RegisterResponse;}
+            get { return MessageClass.RegisterResponse; }
         }
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("Id=" + Id.ToString()+";");
-            sb.Append("Timeout=" + Timeout.ToString() + ";");
-            sb.Append("BackupCommunicationServers={");
-            foreach (var backup in BackupCommunicationServers)
-                sb.Append(backup.ToString());
-            sb.Append("}]");
-            return sb.ToString();
+            var builder = new StringBuilder(base.ToString());
+
+            builder.Append(" AssignedId(" + AssignedId + ")");
+            builder.Append(" Timeout(" + CommunicationTimeout + ")");
+
+            builder.Append(" BackupServers{");
+            builder.Append(string.Join(",", BackupServers));
+            ;
+            builder.Append("}");
+
+            return builder.ToString();
         }
     }
 }

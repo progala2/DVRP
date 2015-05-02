@@ -3,213 +3,116 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Solutions")]
     public class SolutionsMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "Solutions.xsd";
+        [Serializable]
+        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+        public enum SolutionType
+        {
+            Ongoing,
+            Partial,
+            Final
+        }
 
-        private string _problemTypeField;
-
-        private ulong _idField;
-
-        private byte[] _commonDataField;
-
-        private List<SolutionsSolution> _solutionsField;
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "Solutions.xsd";
 
         public SolutionsMessage()
         {
-            _solutionsField = new List<SolutionsSolution>();
+            Solutions = new List<Solution>();
         }
 
         [XmlElement(Order = 0)]
-        public string ProblemType
-        {
-            get
-            {
-                return _problemTypeField;
-            }
-            set
-            {
-                _problemTypeField = value;
-            }
-        }
+        public string ProblemType { get; set; }
 
-        [XmlElement(Order = 1)]
-        public ulong Id
-        {
-            get
-            {
-                return _idField;
-            }
-            set
-            {
-                _idField = value;
-            }
-        }
+        [XmlElement(Order = 1, ElementName = "Id")]
+        public ulong ProblemInstanceId { get; set; }
 
         [XmlElement(DataType = "base64Binary", Order = 2)]
-        public byte[] CommonData
+        public byte[] CommonData { get; set; }
+
+        [XmlArray(Order = 3)]
+        [XmlArrayItem("Solution", IsNullable = false)]
+        public List<Solution> Solutions { get; set; }
+
+        [XmlIgnore]
+        public override MessageClass MessageType
         {
-            get
-            {
-                return _commonDataField;
-            }
-            set
-            {
-                _commonDataField = value;
-            }
+            get { return MessageClass.Solutions; }
         }
 
         public bool ShouldSerializeCommonData()
         {
-            return _commonDataField != null;
-        }
-
-        [XmlArray(Order = 3)]
-        [XmlArrayItem("Solution", IsNullable = false)]
-        public List<SolutionsSolution> Solutions
-        {
-            get
-            {
-                return _solutionsField;
-            }
-            set
-            {
-                _solutionsField = value;
-            }
-        }
-
-        [XmlIgnore]
-        public override MessageClassType MessageType
-        {
-            get { return MessageClassType.Solutions; }
+            return CommonData != null;
         }
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("ProblemType=" + ProblemType.ToString() + ";");
-            sb.Append("Id=" + Id.ToString() + ";");
-            sb.Append("CommonData.Length=" + (CommonData == null ? "null" : CommonData.Length.ToString()) + ";");
-            sb.Append("Solutions={");
-            foreach (var solution in Solutions)
-            {
-                sb.Append("[" + solution.ToString() + "]");
-            }
-            sb.Append("}]");
-            return sb.ToString();
-        }
-    }
+            var builder = new StringBuilder(base.ToString());
 
-    [Serializable]
-    [DesignerCategory("code")]
-    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public class SolutionsSolution
-    {
-        private ulong? _taskIdField;
+            builder.Append(" ProblemInstanceId(" + ProblemInstanceId + ")");
+            builder.Append(" ProblemType(" + ProblemType + ")");
 
-        private bool _timeoutOccuredField;
+            builder.Append(" Solutions{");
+            builder.Append(string.Join(",", Solutions));
+            builder.Append("}");
 
-        private SolutionType _typeField;
-
-        private ulong _computationsTimeField;
-
-        private byte[] _dataField;
-
-        [XmlElement(Order = 0)]
-        public ulong? TaskId
-        {
-            get
-            {
-                return _taskIdField;
-            }
-            set
-            {
-                _taskIdField = value;
-            }
+            return builder.ToString();
         }
 
-        public bool ShouldSerializeTaskId()
+        [Serializable]
+        [DesignerCategory("code")]
+        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+        public class Solution
         {
-            return _taskIdField.HasValue;
-        }
+            [XmlElement(Order = 0, ElementName = "TaskId")]
+            public ulong? PartialProblemId { get; set; }
 
-        [XmlElement(Order = 1)]
-        public bool TimeoutOccured
-        {
-            get
-            {
-                return _timeoutOccuredField;
-            }
-            set
-            {
-                _timeoutOccuredField = value;
-            }
-        }
+            [XmlElement(Order = 1)]
+            public bool TimeoutOccured { get; set; }
 
-        [XmlElement(Order = 2)]
-        public SolutionType Type
-        {
-            get
-            {
-                return _typeField;
-            }
-            set
-            {
-                _typeField = value;
-            }
-        }
+            [XmlElement(Order = 2)]
+            public SolutionType Type { get; set; }
 
-        [XmlElement(Order = 3)]
-        public ulong ComputationsTime
-        {
-            get
-            {
-                return _computationsTimeField;
-            }
-            set
-            {
-                _computationsTimeField = value;
-            }
-        }
+            [XmlElement(Order = 3)]
+            public ulong ComputationsTime { get; set; }
 
-        [XmlElement(DataType = "base64Binary", Order = 4)]
-        public byte[] Data
-        {
-            get
-            {
-                return _dataField;
-            }
-            set
-            {
-                _dataField = value;
-            }
-        }
+            [XmlElement(Order = 4, DataType = "base64Binary")]
+            public byte[] Data { get; set; }
 
-        public bool ShouldSerializeData()
-        {
-            return _dataField != null;
-        }
+            public bool ShouldSerializePartialProblemId()
+            {
+                return PartialProblemId.HasValue;
+            }
 
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append("TaskId=" + (TaskId.HasValue ? TaskId.ToString() : "null") + ";");
-            sb.Append("TimeoutOccured=" + TimeoutOccured.ToString() + ";");
-            sb.Append("Type=" + Type.ToString() + ";");
-            sb.Append("ComputationsTime=" + ComputationsTime.ToString() + ";");
-            sb.Append("Data.Length=" + (Data == null ? "null" : Data.Length.ToString()));
-            sb.Append("]");
-            return sb.ToString();
+            public bool ShouldSerializeData()
+            {
+                return Data != null;
+            }
+
+            public override string ToString()
+            {
+                var builder = new StringBuilder();
+
+                builder.Append("Type(" + Type + ")");
+
+                if (PartialProblemId.HasValue)
+                    builder.Append(" Id(" + PartialProblemId + ")");
+
+                builder.Append(" TimeoutOccured(" + TimeoutOccured + ")");
+                builder.Append(" ComputationsTime(" + ComputationsTime + ")");
+
+                return builder.ToString();
+            }
         }
     }
 }

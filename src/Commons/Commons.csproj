@@ -31,15 +31,36 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ColorfulConsole.cs" />
-    <Compile Include="ComponentType.cs" />
-    <Compile Include="Computations\ComputationalComponent.cs" />
-    <Compile Include="Computations\ComputationalTask.cs" />
+    <Compile Include="Components\ComponentType.cs" />
+    <Compile Include="Components\ServerInfo.cs" />
+    <Compile Include="Components\ThreadStatus.cs" />
+    <Compile Include="ComputationalComponent.cs" />
+    <Compile Include="Computations\Base\IThreadManagerFactory.cs" />
+    <Compile Include="Computations\Base\ThreadManager.cs" />
+    <Compile Include="Computations\ComputationalThreadStatus.cs" />
+    <Compile Include="Computations\ThreadPoolThreadManager.cs" />
+    <Compile Include="Computations\ThreadPoolThreadManagerFactory.cs" />
+    <Compile Include="Logging\CustomConsoleTraceListener.cs" />
+    <Compile Include="Logging\TraceSourceLogger.cs" />
+    <Compile Include="MessageSchemas.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MessageSchemas.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TaskSolverLoader.cs" />
+    <Compile Include="Utilities\DictionaryExtensions.cs" />
+    <Compile Include="Utilities\IPEndPointParser.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Messaging\Marshalling\Base\IMarshaller.cs" />
+    <Compile Include="Messaging\Marshalling\Base\ISerializer.cs" />
+    <Compile Include="Messaging\Marshalling\Base\IXmlValidator.cs" />
     <Compile Include="Messaging\MessageExceptionEventArgs.cs" />
     <Compile Include="Exceptions\NoResponseException.cs" />
-    <Compile Include="IPEndPointParser.cs" />
     <Compile Include="Messaging\MessageEventArgs.cs" />
-    <Compile Include="MessageSender.cs" />
-    <Compile Include="Messaging\MessageValidator.cs" />
+    <Compile Include="Messaging\MessageSender.cs" />
+    <Compile Include="Messaging\Marshalling\MessageValidator.cs" />
+    <Compile Include="Messaging\MessageClass.cs" />
     <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
     <Compile Include="Messaging\Models\Base\Message.cs" />
     <Compile Include="Messaging\Models\NoOperationMessage.cs" />
@@ -52,18 +73,14 @@
     <Compile Include="Messaging\Models\SolveRequestResponseMessage.cs" />
     <Compile Include="Messaging\Models\ErrorMessage.cs" />
     <Compile Include="Messaging\Models\StatusMessage.cs" />
-    <Compile Include="Messaging\Marshaller.cs" />
-    <Compile Include="Computations\ComputationalTaskPool.cs" />
-    <Compile Include="Messaging\MessageSerializer.cs" />
+    <Compile Include="Messaging\Marshalling\Marshaller.cs" />
+    <Compile Include="Messaging\Marshalling\MessageSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources.cs" />
-    <Compile Include="SolutionType.cs" />
-    <Compile Include="Computations\TaskSolversLoader.cs" />
     <Compile Include="TcpClient.cs" />
-    <Compile Include="ThreadState.cs" />
     <Compile Include="Exceptions\TimeoutException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\RandomExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -75,40 +92,44 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\DivideProblem.xsd">
+    <None Include="Resources\MessageSchemas\DivideProblem.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\NoOperation.xsd">
+    </None>
+    <None Include="Resources\MessageSchemas\Error.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\PartialProblems.xsd">
+    </None>
+    <None Include="Resources\MessageSchemas\NoOperation.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Register.xsd">
+    </None>
+    <None Include="Resources\MessageSchemas\PartialProblems.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\RegisterResponse.xsd">
+    </None>
+    <None Include="Resources\MessageSchemas\Register.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Solutions.xsd">
+    </None>
+    <None Include="Resources\MessageSchemas\RegisterResponse.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SolutionRequest.xsd">
+    </None>
+    <None Include="Resources\MessageSchemas\SolutionRequest.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SolveRequest.xsd">
+    </None>
+    <None Include="Resources\MessageSchemas\Solutions.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SolveRequestResponse.xsd">
+    </None>
+    <None Include="Resources\MessageSchemas\SolveRequest.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Status.xsd">
+    </None>
+    <None Include="Resources\MessageSchemas\SolveRequestResponse.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
+    </None>
+    <None Include="Resources\MessageSchemas\Status.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Error.xsd">
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="MessageSchemas.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MessageSchemas.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

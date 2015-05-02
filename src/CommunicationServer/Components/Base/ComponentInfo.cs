@@ -1,44 +1,55 @@
-﻿using _15pl04.Ucc.Commons;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using _15pl04.Ucc.Commons.Components;
 
-namespace _15pl04.Ucc.CommunicationServer
+namespace _15pl04.Ucc.CommunicationServer.Components.Base
 {
-    /// <summary>
-    /// Class that represents a registred component in Communication Server.
-    /// </summary>
     public abstract class ComponentInfo
     {
+        protected ComponentInfo(ComponentType type, int numberOfThreads)
+        {
+            ComponentType = type;
+            NumberOfThreads = numberOfThreads;
+        }
+
+        public static Comparison<ComponentInfo> RegistrationTimeComparer
+        {
+            get { return (a, b) => a.RegistrationTimestamp.CompareTo(b.RegistrationTimestamp); }
+        }
+
+        public ulong? ComponentId { get; private set; }
+        public ComponentType ComponentType { get; private set; }
+        public int NumberOfThreads { get; private set; }
+
         /// <summary>
-        /// Component type.
+        ///     Information provided by status messages. Do not rely on this data as different cluster implementations may
+        ///     implement these messages slightly differently.
         /// </summary>
-        public ComponentType Type { get; private set; }
-        /// <summary>
-        /// Timestamp of the last connection between the component and the Computational Server.
-        /// </summary>
-        public DateTime Timestamp { get; private set; } // DateTime class might not be the best time measuring tool.
-        /// <summary>
-        /// Number of milliseconds between now and time of the timestamp.
-        /// </summary>
-        public ulong TimestampAge
+        public ICollection<ThreadStatus> ThreadInfo { get; set; }
+
+        public DateTime RegistrationTimestamp { get; private set; }
+        public DateTime Timestamp { get; private set; }
+
+        public uint TimestampAge
         {
             get
             {
-                TimeSpan diff = DateTime.UtcNow - Timestamp;
-                return (ulong)diff.TotalMilliseconds;
+                var diff = DateTime.UtcNow - Timestamp;
+                return (uint) diff.TotalMilliseconds;
             }
         }
 
-        public ComponentInfo(ComponentType type)
+        public void Register(ulong id)
         {
-            Type = type;
+            if (ComponentId != null)
+                throw new Exception("Component re-register.");
 
+            RegistrationTimestamp = DateTime.UtcNow;
             Timestamp = DateTime.UtcNow;
+
+            ComponentId = id;
         }
 
-        /// <summary>
-        /// Updates the timestamp so it represents the current time.
-        /// </summary>
         public void UpdateTimestamp()
         {
             Timestamp = DateTime.UtcNow;
