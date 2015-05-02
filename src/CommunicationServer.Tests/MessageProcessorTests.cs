@@ -3,25 +3,39 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Messaging.Marshalling;
+using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using _15pl04.Ucc.CommunicationServer.Components;
+using _15pl04.Ucc.CommunicationServer.Components.Base;
 using _15pl04.Ucc.CommunicationServer.Messaging;
+using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+using _15pl04.Ucc.CommunicationServer.Tests.Mocks;
+using _15pl04.Ucc.CommunicationServer.WorkManagement;
+using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests
 {
     [TestClass]
     public class MessageProcessorTests
     {
-        private readonly Marshaller _marshaller;
+        private IComponentOverseer _overseer;
+        private IWorkManager _workManager;
+
+        private IMarshaller<Message> _marshaller;
+
         private MessageProcessor _processor;
 
         public MessageProcessorTests()
         {
-            var validator = new MessageValidator();
             var serializer = new MessageSerializer();
+            var validator = new MessageValidator();
             _marshaller = new Marshaller(serializer, validator);
 
-            //_processor = new MessageProcessor(_marshaller, 10000);
+            _overseer = new ComponentOverseer(5000, 500);
+            _workManager = new WorkManager(_overseer);
+
+            _processor = new MessageProcessor(_overseer, _workManager);
         }
 
         [TestMethod]
@@ -32,20 +46,24 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
             var msg = new RegisterMessage
             {
+                ComponentType = ComponentType.TaskManager,
                 ParallelThreads = 5,
-                SolvableProblems = new List<string> {"dvrp"},
-                ComponentType = ComponentType.ComputationalNode
+                SolvableProblems = new List<string> { "dvrp" },
             };
 
-            var rawMsg = _marshaller.Marshall(new Message[] {msg});
-            TcpServer.ResponseCallback c = (byte[] r) =>
+            var rawMsg = _marshaller.Marshall(new Message[] { msg });
+
+            ProcessedDataCallback c = response =>
             {
                 callbackCalled = true;
                 waitHandle.Set();
             };
-            //_processor.EnqueueDataToProcess(rawMsg, null,c);
+
+            _processor.StartProcessing();
+            _processor.EnqueueDataToProcess(rawMsg, null, c);
 
             waitHandle.WaitOne(5000);
+            _processor.StopProcessing();
 
             Assert.IsTrue(callbackCalled);
         }
@@ -58,22 +76,25 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var msg = new RegisterMessage
             {
                 ParallelThreads = 5,
-                SolvableProblems = new List<string> {"dvrp"},
+                SolvableProblems = new List<string> { "dvrp" },
                 ComponentType = ComponentType.ComputationalNode
             };
-            var rawMsg = _marshaller.Marshall(new Message[] {msg});
+            var rawMsg = _marshaller.Marshall(new Message[] { msg });
 
             Message outputMessage = null;
-            TcpServer.ResponseCallback c = (byte[] r) =>
+            ProcessedDataCallback c = response =>
             {
-                outputMessage = _marshaller.Unmarshall(r)[0];
+                outputMessage = _marshaller.Unmarshall(response)[0];
                 waitHandle.Set();
             };
-            //_processor.EnqeueInputMessage(rawMsg, c);
+
+            _processor.StartProcessing();
+            _processor.EnqueueDataToProcess(rawMsg, null, c);
 
             waitHandle.WaitOne(10000);
+            _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof (RegisterResponseMessage));
+            Assert.IsInstanceOfType(outputMessage, typeof(RegisterResponseMessage));
         }
 
         [TestMethod]
@@ -86,19 +107,22 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                 ProblemData = new byte[0],
                 ProblemType = "dvrp"
             };
-            var rawMsg = _marshaller.Marshall(new Message[] {msg});
+            var rawMsg = _marshaller.Marshall(new Message[] { msg });
 
             Message outputMessage = null;
-            TcpServer.ResponseCallback c = r =>
+            ProcessedDataCallback c = response =>
             {
-                outputMessage = _marshaller.Unmarshall(r)[0];
+                outputMessage = _marshaller.Unmarshall(response)[0];
                 waitHandle.Set();
             };
-            //_processor.EnqeueInputMessage(rawMsg, c);
+
+            _processor.StartProcessing();
+            _processor.EnqueueDataToProcess(rawMsg, null, c);
 
             waitHandle.WaitOne(5000);
+            _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof (SolveRequestResponseMessage));
+            Assert.IsInstanceOfType(outputMessage, typeof(SolveRequestResponseMessage));
         }
 
         [TestMethod]
@@ -109,48 +133,51 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var msg = new StatusMessage
             {
                 ComponentId = 5,
-                Threads = new List<ThreadStatus> {new ThreadStatus {ProblemType = "dvrp"}}
+                Threads = new List<ThreadStatus> { new ThreadStatus { ProblemType = "dvrp" } }
             };
-            var rawMsg = _marshaller.Marshall(new Message[] {msg});
+            var rawMsg = _marshaller.Marshall(new Message[] { msg });
 
             Message outputMessage = null;
-            TcpServer.ResponseCallback c = (byte[] r) =>
+            ProcessedDataCallback c = response =>
             {
-                outputMessage = _marshaller.Unmarshall(r)[0];
+                outputMessage = _marshaller.Unmarshall(response)[0];
                 waitHandle.Set();
             };
-            //_processor.EnqeueInputMessage(rawMsg, c);
+
+            _processor.StartProcessing();
+            _processor.EnqueueDataToProcess(rawMsg, null, c);
 
             waitHandle.WaitOne(5000);
+            _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof (ErrorMessage));
+            Assert.IsInstanceOfType(outputMessage, typeof(ErrorMessage));
         }
 
         [TestMethod]
         public void StatusMessageFromARegisteredComponentReturnsNoOperationIfThereAreNoTasksPending()
         {
-            //ComponentMonitor.Instance.RegisterNode(Commons.ComponentType.TaskManager, 1, new string[]{"dvrp"});
-
             var waitHandle = new AutoResetEvent(false);
 
             var msg = new StatusMessage
             {
                 ComponentId = 5,
-                Threads = new List<ThreadStatus> {new ThreadStatus {ProblemType = "dvrp"}}
+                Threads = new List<ThreadStatus> { new ThreadStatus { ProblemType = "dvrp" } }
             };
-            var rawMsg = _marshaller.Marshall(new Message[] {msg});
+            var rawMsg = _marshaller.Marshall(new Message[] { msg });
 
             Message outputMessage = null;
-            TcpServer.ResponseCallback c = (byte[] r) =>
+            ProcessedDataCallback c = response =>
             {
-                outputMessage = _marshaller.Unmarshall(r)[0];
+                outputMessage = _marshaller.Unmarshall(response)[0];
                 waitHandle.Set();
             };
-            //_processor.EnqeueInputMessage(rawMsg, c);
+            _processor.StartProcessing();
+            _processor.EnqueueDataToProcess(rawMsg, null, c);
 
             waitHandle.WaitOne(5000);
+            _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof (ErrorMessage));
+            Assert.IsInstanceOfType(outputMessage, typeof(ErrorMessage));
         }
     }
 }
