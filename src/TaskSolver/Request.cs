@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.TaskSolver
     [Serializable]
     public class Request
     {
-        public Request(float x, float y, int demand, float availabilityTime, float duration)
+        public Request(double x, double y, int demand, double availabilityTime, double duration)
         {
             X = x;
             Y = y;
@@ -18,10 +18,10 @@ namespace _15pl04.Ucc.TaskSolver
             Duration = duration;
         }
 
-        public float X { get; private set; }
-        public float Y { get; private set; }
+        public double X { get; private set; }
+        public double Y { get; private set; }
         public int Demand { get; private set; }
-        public float AvailabilityTime { get; private set; }
-        public float Duration { get; private set; }
+        public double AvailabilityTime { get; private set; }
+        public double Duration { get; private set; }
     }
 }

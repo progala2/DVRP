@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.TaskSolver
     [Serializable]
     public class Depot
     {
-        public Depot(float x, float y, float startTime, float endTime)
+        public Depot(double x, double y, double startTime, double endTime)
         {
             X = x;
             Y = y;
@@ -17,9 +17,9 @@ namespace _15pl04.Ucc.TaskSolver
             EndTime = endTime;
         }
 
-        public float X { get; private set; }
-        public float Y { get; private set; }
-        public float StartTime { get; private set; }
-        public float EndTime { get; private set; }
+        public double X { get; private set; }
+        public double Y { get; private set; }
+        public double StartTime { get; private set; }
+        public double EndTime { get; private set; }
     }
 }

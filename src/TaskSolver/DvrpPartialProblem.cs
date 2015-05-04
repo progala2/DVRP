@@ -9,5 +9,11 @@ namespace _15pl04.Ucc.TaskSolver
     [Serializable]
     public class DvrpPartialProblem
     {
+        public DvrpPartialProblem(int[][] sets)
+        {
+            Sets = sets;
+        }
+
+        public int[][] Sets { get; private set; }
     }
 }
