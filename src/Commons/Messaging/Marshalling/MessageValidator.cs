@@ -1,27 +1,26 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Base;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
 
-namespace _15pl04.Ucc.Commons.Messaging
+namespace _15pl04.Ucc.Commons.Messaging.Marshalling
 {
     public class MessageValidator : IXmlValidator<MessageClass>
     {
-        private Dictionary<MessageClass, XmlSchemaSet> _schemaSets;
+        private readonly Dictionary<MessageClass, XmlSchemaSet> _schemaSets;
 
         public MessageValidator()
         {
-            int capacity = Enum.GetValues(typeof(MessageClass)).Length;
+            var capacity = Enum.GetValues(typeof (MessageClass)).Length;
             _schemaSets = new Dictionary<MessageClass, XmlSchemaSet>(capacity);
 
-            foreach (MessageClass type in Enum.GetValues(typeof(MessageClass)).Cast<MessageClass>())
+            foreach (var type in Enum.GetValues(typeof (MessageClass)).Cast<MessageClass>())
             {
-                XmlReader reader = XmlReader.Create(new StringReader(type.GetXmlSchema()));
+                var reader = XmlReader.Create(new StringReader(type.GetXmlSchema()));
 
                 _schemaSets.Add(type, new XmlSchemaSet());
                 _schemaSets[type].Add("http://www.mini.pw.edu.pl/ucc/", reader);

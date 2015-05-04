@@ -1,4 +1,4 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models;
+﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
 {
@@ -6,7 +6,6 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
     {
         public abstract ulong AssigneeId { get; protected set; }
         public abstract WorkType Type { get; }
-
         public abstract Message CreateMessage();
     }
 
@@ -14,6 +13,6 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
     {
         Division = 1,
         Computation,
-        Merge,
+        Merge
     }
 }

@@ -1,13 +1,14 @@
 ﻿using System;
+using _15pl04.Ucc.Commons.Messaging.Models;
 
-namespace _15pl04.Ucc.Commons.Messaging.Models.Base
+namespace _15pl04.Ucc.Commons.Messaging
 {
     public enum MessageClass
     {
         DivideProblem,
         Error,
         NoOperation,
-        SolvePartialProblems, 
+        SolvePartialProblems,
         Register,
         RegisterResponse,
         SolutionRequest,
@@ -55,27 +56,27 @@ namespace _15pl04.Ucc.Commons.Messaging.Models.Base
             switch (msgClass)
             {
                 case MessageClass.DivideProblem:
-                    return typeof(DivideProblemMessage);
+                    return typeof (DivideProblemMessage);
                 case MessageClass.Error:
-                    return typeof(ErrorMessage);
+                    return typeof (ErrorMessage);
                 case MessageClass.NoOperation:
-                    return typeof(NoOperationMessage);
+                    return typeof (NoOperationMessage);
                 case MessageClass.SolvePartialProblems:
-                    return typeof(PartialProblemsMessage);
+                    return typeof (PartialProblemsMessage);
                 case MessageClass.Register:
-                    return typeof(RegisterMessage);
+                    return typeof (RegisterMessage);
                 case MessageClass.RegisterResponse:
-                    return typeof(RegisterResponseMessage);
+                    return typeof (RegisterResponseMessage);
                 case MessageClass.SolutionRequest:
-                    return typeof(SolutionRequestMessage);
+                    return typeof (SolutionRequestMessage);
                 case MessageClass.Solutions:
-                    return typeof(SolutionsMessage);
+                    return typeof (SolutionsMessage);
                 case MessageClass.SolveRequest:
-                    return typeof(SolveRequestMessage);
+                    return typeof (SolveRequestMessage);
                 case MessageClass.SolveRequestResponse:
-                    return typeof(SolveRequestResponseMessage);
+                    return typeof (SolveRequestResponseMessage);
                 case MessageClass.Status:
-                    return typeof(StatusMessage);
+                    return typeof (StatusMessage);
                 default:
                     throw new Exception("Message XML schema not found.");
             }

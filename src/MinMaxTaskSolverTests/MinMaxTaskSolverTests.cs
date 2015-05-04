@@ -6,7 +6,6 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using _15pl04.Ucc.MinMaxTaskSolver;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MinMaxTaskSolver;
 
 namespace MinMaxTaskSolverTests
 {
@@ -36,7 +35,7 @@ namespace MinMaxTaskSolverTests
             var expectedMaximum = numbers.Max();
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + " expected results found");
 
-            var problem = new MinMaxProblem(numbers);
+            var problem = new MMProblem(numbers);
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
 
             byte[] problemData;
@@ -64,7 +63,7 @@ namespace MinMaxTaskSolverTests
 
             using (var memoryStream = new MemoryStream(finalSolutionData))
             {
-                var finalSolution = (MinMaxSolution)formatter.Deserialize(memoryStream);
+                var finalSolution = (MMSolution)formatter.Deserialize(memoryStream);
                 Assert.AreEqual(finalSolution.Min, expectedMinimum);
                 Assert.AreEqual(finalSolution.Max, expectedMaximum);
             }

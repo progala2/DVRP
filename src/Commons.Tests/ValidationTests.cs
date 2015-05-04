@@ -1,15 +1,15 @@
-﻿using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Base;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
+﻿using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Xml.Linq;
+using _15pl04.Ucc.Commons.Messaging;
+using _15pl04.Ucc.Commons.Messaging.Marshalling;
+using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
 
 namespace _15pl04.Ucc.Commons.Tests
 {
     [TestClass]
     public class ValidationTests
     {
-        private IXmlValidator<MessageClass> _validator;
+        private readonly IXmlValidator<MessageClass> _validator;
 
         public ValidationTests()
         {
@@ -19,8 +19,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExampleDivideProblemMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.DivideProblem.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.DivideProblem, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.DivideProblem.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.DivideProblem, xmlDoc);
 
             Assert.IsTrue(passed);
         }
@@ -28,8 +28,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExampleErrorMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.Error.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.Error, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.Error.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.Error, xmlDoc);
 
             Assert.IsTrue(passed);
         }
@@ -37,8 +37,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExampleNoOperationMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.NoOperation.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.NoOperation, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.NoOperation.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.NoOperation, xmlDoc);
 
             Assert.IsTrue(passed);
         }
@@ -46,8 +46,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExamplePartialProblemsMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.SolvePartialProblems.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.SolvePartialProblems, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.SolvePartialProblems.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.SolvePartialProblems, xmlDoc);
 
             Assert.IsTrue(passed);
         }
@@ -55,8 +55,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExampleRegisterMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.Register.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.Register, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.Register.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.Register, xmlDoc);
 
             Assert.IsTrue(passed);
         }
@@ -64,8 +64,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExampleRegisterResponseMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.RegisterResponse.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.RegisterResponse, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.RegisterResponse.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.RegisterResponse, xmlDoc);
 
             Assert.IsTrue(passed);
         }
@@ -73,8 +73,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExampleSolutionRequestMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.SolutionRequest.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.SolutionRequest, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.SolutionRequest.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.SolutionRequest, xmlDoc);
 
             Assert.IsTrue(passed);
         }
@@ -82,8 +82,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExampleSolutionsMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.Solutions.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.Solutions, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.Solutions.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.Solutions, xmlDoc);
 
             Assert.IsTrue(passed);
         }
@@ -91,8 +91,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExampleSolveRequestMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.SolveRequest.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.SolveRequest, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.SolveRequest.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.SolveRequest, xmlDoc);
 
             Assert.IsTrue(passed);
         }
@@ -100,8 +100,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExampleSolveRequestResponseMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.SolveRequestResponse.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.SolveRequestResponse, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.SolveRequestResponse.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.SolveRequestResponse, xmlDoc);
 
             Assert.IsTrue(passed);
         }
@@ -109,8 +109,8 @@ namespace _15pl04.Ucc.Commons.Tests
         [TestMethod]
         public void ExampleStatusMessageXmlPassesValidation()
         {
-            XDocument xmlDoc = XDocument.Parse(MessageClass.Status.GetXmlSchema());
-            bool passed = _validator.Validate(MessageClass.Status, xmlDoc);
+            var xmlDoc = XDocument.Parse(MessageClass.Status.GetXmlSchema());
+            var passed = _validator.Validate(MessageClass.Status, xmlDoc);
 
             Assert.IsTrue(passed);
         }

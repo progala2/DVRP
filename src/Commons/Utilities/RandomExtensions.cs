@@ -6,7 +6,7 @@ namespace _15pl04.Ucc.Commons.Utilities
     {
         public static ulong NextUInt64(this Random random)
         {
-            byte[] buffer = new byte[sizeof(ulong)];
+            var buffer = new byte[sizeof (ulong)];
             random.NextBytes(buffer);
             return BitConverter.ToUInt64(buffer, 0);
         }

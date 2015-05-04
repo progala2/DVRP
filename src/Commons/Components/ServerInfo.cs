@@ -3,10 +3,10 @@ using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace _15pl04.Ucc.Commons.Messaging.Models
+namespace _15pl04.Ucc.Commons.Components
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class ServerInfo
     {
@@ -15,7 +15,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
         [XmlAttribute("port")]
         public ushort Port { get; set; }
-
 
         public override string ToString()
         {

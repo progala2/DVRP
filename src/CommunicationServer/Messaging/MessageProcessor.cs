@@ -1,33 +1,52 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Base;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.CommunicationServer.Collections;
-using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using _15pl04.Ucc.Commons.Logging;
+using _15pl04.Ucc.Commons.Messaging.Marshalling;
+using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
+using _15pl04.Ucc.Commons.Messaging.Models;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using _15pl04.Ucc.CommunicationServer.Collections;
+using _15pl04.Ucc.CommunicationServer.Components.Base;
+using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
-    internal class MessageProcessor : IDataProcessor
+    internal partial class MessageProcessor : IDataProcessor
     {
+        private static readonly ILogger Logger = new ConsoleLogger();
+        private readonly IComponentOverseer _componentOverseer;
+        private readonly RawDataQueue _inputDataQueue;
+        private readonly IMarshaller<Message> _marshaller;
+        private readonly AutoResetEvent _processingLock;
+        private readonly IWorkManager _workManager;
+        private CancellationTokenSource _cancellationTokenSource;
+        private volatile bool _isProcessing;
+
+        public MessageProcessor(IComponentOverseer componentOverseer, IWorkManager workManager)
+        {
+            if (componentOverseer == null)
+                throw new ArgumentNullException("IComponentOverseer dependancy is null.");
+            if (workManager == null)
+                throw new ArgumentNullException("IWorkManager dependancy is null.");
+
+            _inputDataQueue = new RawDataQueue();
+
+            var serializer = new MessageSerializer();
+            var validator = new MessageValidator();
+            _marshaller = new Marshaller(serializer, validator);
+
+            _componentOverseer = componentOverseer;
+            _workManager = workManager;
+
+            _processingLock = new AutoResetEvent(false);
+        }
+
         public bool IsProcessing
         {
             get { return _isProcessing; }
-        }
-
-        private RawDataQueue _inputDataQueue;
-        private IMarshaller<Message> _marshaller;
-
-        private CancellationTokenSource _cancellationTokenSource;
-        private AutoResetEvent _processingLock;
-
-        private volatile bool _isProcessing;
-
-        public MessageProcessor(IMarshaller<Message> marshaller)
-        {
-            _inputDataQueue = new RawDataQueue();
-            _marshaller = marshaller;
-
-            _processingLock = new AutoResetEvent(false);
         }
 
         public void EnqueueDataToProcess(byte[] data, Metadata metadata, ProcessedDataCallback callback)
@@ -45,10 +64,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             _cancellationTokenSource = new CancellationTokenSource();
 
             var token = _cancellationTokenSource.Token;
-            token.Register(() =>
-            {
-                _isProcessing = false;
-            });
+            token.Register(() => { _isProcessing = false; });
 
             new Task(() =>
             {
@@ -82,12 +98,38 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private void ProcessData(RawDataQueueItem data)
         {
-            Message[] messages = _marshaller.Unmarshall(data.Data);
+            var messages = _marshaller.Unmarshall(data.Data);
+            var responseMessages = new List<Message>();
 
-            foreach(Message msg in messages)
+            foreach (var msg in messages)
             {
-                //TODO
+                Logger.Trace("Processing " + msg.MessageType + " message.");
+
+                try
+                {
+                    var metadata = data.Metadata as TcpDataProviderMetadata;
+                    var response = HandleMessage(msg, metadata);
+                    responseMessages.AddRange(response);
+                }
+                catch (InvalidCastException e)
+                {
+                    Logger.Debug(e.Message);
+                    Logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
+                    var errorMsg = new ErrorMessage
+                    {
+                        ErrorType = ErrorType.InvalidOperation,
+                        ErrorText = "Computational Server doesn't handle " + msg.MessageType + " message."
+                    };
+                    responseMessages = new List<Message> {errorMsg};
+                    break;
+                }
             }
+
+            foreach (Message msgToSend in responseMessages)
+                Logger.Trace("Sending " + msgToSend.MessageType + " message.");
+
+            var marshalledResponse = _marshaller.Marshall(responseMessages);
+            data.Callback(marshalledResponse);
         }
     }
 }

@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Collections\LexicographicList.cs" />
     <Compile Include="Collections\RawDataQueue.cs" />
     <Compile Include="CommunicationServer.cs" />
     <Compile Include="Components\BackupServerInfo.cs" />
@@ -40,6 +41,7 @@
     <Compile Include="Components\ComponentOverseer.cs" />
     <Compile Include="Components\SolverNodeInfo.cs" />
     <Compile Include="Messaging\Base\IDataProcessor.cs" />
+    <Compile Include="Messaging\MessageHandlers.cs" />
     <Compile Include="Messaging\TcpDataProviderMetadata.cs" />
     <Compile Include="Messaging\MessageProcessor.cs" />
     <Compile Include="Program.cs" />
@@ -55,6 +57,7 @@
     <Compile Include="WorkManagement\Models\PartialSolution.cs" />
     <Compile Include="WorkManagement\Models\Problem.cs" />
     <Compile Include="WorkManagement\Models\Solution.cs" />
+    <Compile Include="WorkManagement\WorkManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -66,6 +69,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
   </ItemGroup>

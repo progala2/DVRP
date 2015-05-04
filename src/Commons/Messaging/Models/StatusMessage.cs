@@ -1,97 +1,27 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Status")]
     public class StatusMessage : Message
     {
-        [Serializable]
-        [DesignerCategory("code")]
-        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-        public class ThreadStatus
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "Status.xsd";
+
+        public StatusMessage()
         {
-            [Serializable]
-            [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-            public enum ThreadState
-            {
-                Idle,
-                Busy,
-            }
-
-
-            [XmlElement(Order = 0)]
-            public ThreadState State { get; set; }
-
-            [XmlElement(Order = 1, ElementName = "HowLong")]
-            public ulong? TimeInThisState { get; set; }
-
-            [XmlElement(Order = 2)]
-            public ulong? ProblemInstanceId { get; set; }
-
-            [XmlElement(Order = 3, ElementName = "TaskId")]
-            public ulong? PartialProblemId { get; set; } // PartialProblemId / ProblemInstanceId
-
-            [XmlElement(Order = 4)]
-            public string ProblemType { get; set; }
-
-
-
-            public bool ShouldSerializeTimeInThisState()
-            {
-                return TimeInThisState.HasValue;
-            }
-
-            public bool ShouldSerializeProblemInstanceId()
-            {
-                return ProblemInstanceId.HasValue;
-            }
-
-            public bool ShouldSerializePartialProblemId()
-            {
-                return PartialProblemId.HasValue;
-            }
-
-            public bool ShouldSerializeProblemType()
-            {
-                return ProblemType != null;
-            }
-
-            public override string ToString()
-            {
-                var builder = new StringBuilder();
-
-                builder.Append("State(" + State + ")");
-
-                if (TimeInThisState.HasValue)
-                    builder.Append(" HowLong(" + TimeInThisState + ")");
-
-                if (ProblemInstanceId.HasValue)
-                    builder.Append(" ProblemInstanceId(" + ProblemInstanceId + ")");
-
-                if (PartialProblemId.HasValue)
-                    builder.Append(" PartialProblemId(" + PartialProblemId + ")");
-
-                if (ProblemType != null)
-                    builder.Append(" ProblemType(" + ProblemType + ")");
-
-                return builder.ToString();
-            }
+            Threads = new List<ThreadStatus>();
         }
-
-
-
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "Status.xsd";
-
-
 
         [XmlElement(Order = 0, ElementName = "Id")]
         public ulong ComponentId { get; set; }
@@ -106,13 +36,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.Status; }
         }
 
-
-
-        public StatusMessage()
-        {
-            Threads = new List<ThreadStatus>();
-        }
-
         public override string ToString()
         {
             var builder = new StringBuilder(base.ToString());
@@ -120,8 +43,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             builder.Append(" ComponentId(" + ComponentId + ")");
 
             builder.Append(" Threads{");
-            foreach (var thread in Threads)
-                builder.Append(thread.ToString() + ",");
+            builder.Append(string.Join(",", Threads));
             builder.Append("}");
 
             return builder.ToString();

@@ -1,18 +1,32 @@
-﻿using _15pl04.Ucc.CommunicationServer.Components;
+﻿using System;
+using _15pl04.Ucc.CommunicationServer.Components;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
-using System.Collections.Generic;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
 {
-    public interface IWorkManager
+    public delegate void WorkAssignmentEventHandler(object sender, WorkAssignmentEventArgs e);
+
+    internal interface IWorkManager
     {
-        bool TryGetWork(SolverNodeInfo node, out Work work);
-        bool TryGetSolution(ulong problemId, out Solution solution);
+        event WorkAssignmentEventHandler WorkAssignment;
+        bool TryAssignWork(SolverNodeInfo node, out Work work);
+        ulong AddProblem(string type, byte[] data, ulong solvingTimeout);
+        void AddPartialProblem(ulong problemId, ulong partialProblemId, byte[] privateData);
+        void AddSolution(ulong problemId, byte[] data, ulong computationsTime, bool timeoutOccured);
 
+        void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime,
+            bool timeoutOccured);
 
-        ulong AddProblem(Problem problem);
-        void AddPartialProblems(ICollection<PartialProblem> partialProblems);
-        void AddSolution(Solution solution);
-        void AddPartialSolutions(ICollection<PartialSolution> partialSolutions);
+        Problem GetProblem(ulong problemId);
+        Solution GetSolution(ulong problemId);
+        ulong GetComputationsTime(ulong problemId);
+        ulong? GetProcessingNodeId(ulong problemId, ulong? partialProblemId = null);
+        void RemoveSolution(ulong problemId);
+    }
+
+    public class WorkAssignmentEventArgs : EventArgs
+    {
+        public Work Work { get; set; }
+        public ulong AssigneeId { get; set; }
     }
 }

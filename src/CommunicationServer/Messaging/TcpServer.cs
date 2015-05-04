@@ -1,133 +1,142 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using _15pl04.Ucc.CommunicationServer.Messaging;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
+using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.CommunicationServer.Messaging.Base;
 
-namespace _15pl04.Ucc.CommunicationServer
+namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
     internal class TcpServer
     {
-        private IDataProcessor _dataProcessor;
-        private EndPoint _address;
-
-        private const int MaxPendingConnections = 100;
-        private const int ReadBufferSize = 1024;
-
-        private readonly ManualResetEvent _allDoneEvent;
-        private Socket _listenerSocket;
-        private bool _isListening;
-
+        // TODO interface/abstract class
 
         public delegate void ResponseCallback(byte[] response);
+
+        private const int MaxPendingConnections = 100;
+        private const int ReadBufferSize = 4096; // TODO make sure it's enough
+        private static readonly ILogger Logger = new ConsoleLogger();
+        private readonly IDataProcessor _dataProcessor;
+        private readonly Socket _listenerSocket;
+        private CancellationTokenSource _cancellationTokenSource;
+        private ManualResetEvent _clientAcceptanceEvent;
+        private volatile bool _isListening;
 
         public TcpServer(IPEndPoint address, IDataProcessor processor)
         {
             _dataProcessor = processor;
-            _address = address;
 
-            _allDoneEvent = new ManualResetEvent(false);
-            _isListening = false;
+            _listenerSocket = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            _listenerSocket.Bind(address);
         }
 
         public void StartListening()
         {
-            Console.WriteLine("Listening for incoming connections...");
+            if (_isListening)
+                return;
+
+            Logger.Info("TcpServer is starting...");
+
+            _clientAcceptanceEvent = new ManualResetEvent(false);
+            _cancellationTokenSource = new CancellationTokenSource();
+
+            var token = _cancellationTokenSource.Token;
+            token.Register(() =>
+            {
+                _isListening = false;
+                _listenerSocket.Close();
+                _clientAcceptanceEvent.Close();
+            });
+
+            _listenerSocket.Listen(MaxPendingConnections);
+
+            new Task(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        _clientAcceptanceEvent.Reset();
+                        _listenerSocket.BeginAccept(AcceptCallback, _listenerSocket);
+                        _clientAcceptanceEvent.WaitOne();
+                    }
+                    catch (Exception)
+                    {
+                        // *crickets*
+                    }
+                }
+            }, token).Start();
 
             _isListening = true;
-            _listenerSocket = new Socket(_address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-            try
-            {
-                
-                _listenerSocket.Bind(_address);
-                _listenerSocket.Listen(MaxPendingConnections);
-
-                while (_isListening)
-                {
-                    _allDoneEvent.Reset();
-
-                    _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket);
-
-                    _allDoneEvent.WaitOne();
-                }
-            }
-            catch (Exception)
-            {
-                //TODO
-                throw;
-            }
         }
 
         public void StopListening()
         {
-            _isListening = false;
-            _allDoneEvent.Set();
-            _listenerSocket.Close();
+            if (!_isListening)
+                return;
+
+            _cancellationTokenSource.Cancel();
         }
 
         private static ProcessedDataCallback GenerateResponseCallback(Socket clientSocket)
         {
-            return new ProcessedDataCallback((byte[] response) =>
+            return response =>
             {
-                //There can happen a situation where clientSocked is closed before message would be sent. 
-                //In such situation function does nothing
+                // A situation can occur where client socket has been closed before message was sent. 
+                // In that case the method does nothing.
                 try
                 {
                     clientSocket.Send(response);
                     clientSocket.Shutdown(SocketShutdown.Send);
                     clientSocket.Close();
                 }
-                catch (Exception)
+                catch (SocketException)
                 {
-                    //Nothing to do, function doesnt inform that it could not send response
+                    // *crickets*
+
+                    Logger.Warn("Client socket was closed before response message could be sent.");
                 }
-            });
+            };
         }
 
         private void AcceptCallback(IAsyncResult ar)
         {
-            _allDoneEvent.Set();
+            _clientAcceptanceEvent.Set();
 
             if (!_isListening)
                 return;
 
-            Socket listenerSocket = (Socket)ar.AsyncState;
-            Socket handlerSocket = listenerSocket.EndAccept(ar);
+            var listenerSocket = (Socket) ar.AsyncState;
+            var clientSocket = listenerSocket.EndAccept(ar);
 
+            Logger.Trace("Client accepted.");
 
-            byte[] buffer = new byte[ReadBufferSize];
-
+            var buffer = new byte[ReadBufferSize];
 
             using (var memStream = new MemoryStream())
             {
                 int bytesRead;
                 do
                 {
-                    bytesRead = handlerSocket.Receive(buffer);
+                    bytesRead = clientSocket.Receive(buffer);
                     memStream.Write(buffer, 0, bytesRead);
-
                 } while (bytesRead > 0);
 
-
-
-                var metadata = new TcpDataProviderMetadata()
+                var metadata = new TcpDataProviderMetadata
                 {
                     ReceptionTime = DateTime.UtcNow,
-                    SenderAddress = (IPEndPoint)handlerSocket.RemoteEndPoint,
+                    SenderAddress = (IPEndPoint) clientSocket.RemoteEndPoint
                 };
 
-                _dataProcessor.EnqueueDataToProcess(memStream.ToArray(), metadata, GenerateResponseCallback(handlerSocket));
+                _dataProcessor.EnqueueDataToProcess(
+                    memStream.ToArray(),
+                    metadata,
+                    GenerateResponseCallback(clientSocket));
+
+                Logger.Trace("Client sent " + memStream.Length + " bytes of data.");
             }
         }
-
-
-
-
-
     }
 }

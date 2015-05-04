@@ -1,21 +1,27 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "NoOperation")]
     public class NoOperationMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "NoOperation.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "NoOperation.xsd";
 
+        public NoOperationMessage()
+        {
+            BackupServers = new List<ServerInfo>();
+        }
 
         [XmlArray(Order = 0, ElementName = "BackupCommunicationServers")]
         [XmlArrayItem("BackupCommunicationServer", IsNullable = true)]
@@ -27,20 +33,12 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.NoOperation; }
         }
 
-
-        public NoOperationMessage()
-        {
-            BackupServers = new List<ServerInfo>();
-        }
-
-
         public override string ToString()
         {
             var builder = new StringBuilder(base.ToString());
 
             builder.Append(" BackupServers{");
-            foreach (var backup in BackupServers)
-                builder.Append(backup.ToString() + ",");
+            builder.Append(string.Join(",", BackupServers));
             builder.Append("}");
 
             return builder.ToString();

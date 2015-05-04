@@ -1,36 +1,34 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace _15pl04.Ucc.Commons.Messaging.Models
+namespace _15pl04.Ucc.Commons.Messaging.Models.Base
 {
     public abstract class Message
     {
-        private static Dictionary<string, MessageClass> _messageTypes;
+        private static readonly Dictionary<string, MessageClass> MessageTypes;
+
+        static Message()
+        {
+            var capacity = Enum.GetValues(typeof (MessageClass)).Length;
+            MessageTypes = new Dictionary<string, MessageClass>(capacity);
+
+            foreach (var type in Enum.GetValues(typeof (MessageClass)).Cast<MessageClass>())
+                MessageTypes.Add(type.ToString(), type);
+        }
 
         [XmlIgnore]
         public abstract MessageClass MessageType { get; }
 
-
-        static Message()
-        {
-            int capacity = Enum.GetValues(typeof(MessageClass)).Length;
-            _messageTypes = new Dictionary<string, MessageClass>(capacity);
-
-            foreach (MessageClass type in Enum.GetValues(typeof(MessageClass)).Cast<MessageClass>())
-                _messageTypes.Add(type.ToString(), type);
-        }
-
         public static MessageClass GetMessageClassFromString(string str)
         {
-            return _messageTypes[str];
+            return MessageTypes[str];
         }
-        
+
         public override string ToString()
         {
-            return "[" + MessageType.ToString() + "]";
+            return "[" + MessageType + "]";
         }
     }
 }

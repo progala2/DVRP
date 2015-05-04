@@ -1,52 +1,27 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models;
-
-namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
+﻿namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
 {
-    public class PartialSolution
+    internal class PartialSolution
     {
-        public PartialProblem PartialProblem
+        public enum PartialSolutionState
         {
-            get;
-            private set;
-        }
-        public byte[] Data
-        {
-            get;
-            private set;
-        }
-        public ulong ComputationsTime
-        {
-            get;
-            private set;
-        }
-        public bool TimeoutOccured
-        {
-            get;
-            private set;
+            BeingGathered = 0,
+            AwaitingMerge,
+            BeingMerged
         }
 
-
-        public PartialSolution(PartialProblem problem, byte[] data,
-            ulong computationsTime, bool timeoutOccured = false)
+        public PartialSolution(PartialProblem partialProblem, byte[] data, ulong computationsTime, bool timeoutOccured)
         {
-            PartialProblem = problem;
+            PartialProblem = partialProblem;
             Data = data;
             ComputationsTime = computationsTime;
             TimeoutOccured = timeoutOccured;
         }
 
-        public static explicit operator SolutionsMessage.Solution(PartialSolution ps)
-        {
-            var output = new SolutionsMessage.Solution()
-            {
-                ComputationsTime = ps.ComputationsTime,
-                Data = ps.Data,
-                PartialProblemId = ps.PartialProblem.Id,
-                TimeoutOccured = ps.TimeoutOccured,
-                Type = SolutionsMessage.SolutionType.Partial,
-            };
-
-            return output;
-        }
+        public PartialSolutionState State { get; set; }
+        public ulong? MergingNodeId { get; set; }
+        public PartialProblem PartialProblem { get; private set; }
+        public byte[] Data { get; private set; }
+        public ulong ComputationsTime { get; private set; }
+        public bool TimeoutOccured { get; private set; }
     }
 }

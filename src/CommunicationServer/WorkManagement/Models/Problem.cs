@@ -1,53 +1,29 @@
-﻿using System;
-
-namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
+﻿namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
 {
-    public class Problem
+    internal class Problem
     {
-        public string ProblemType 
-        { 
-            get; 
-            private set; 
-        }
-        public ulong SolvingTimeout 
-        { 
-            get; 
-            private set; 
-        }
-        public byte[] Data 
-        { 
-            get; 
-            private set; 
-        }
-        public ulong? Id
+        public enum ProblemState
         {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                if (_id.HasValue)
-                    throw new Exception("Value has already been set.");
-
-                _id = value;
-            }
+            AwaitingDivision = 0,
+            BeingDivided,
+            AwaitingSolution
         }
 
-        public ulong? NumberOfParts 
-        { 
-            get; 
-            set; 
-        }
-
-        private ulong? _id;
-
-
-        public Problem(string type, ulong timeout, byte[] data)
+        public Problem(ulong id, string type, byte[] data, ulong solvingTimeout)
         {
-            ProblemType = type;
-            SolvingTimeout = timeout;
+            Id = id;
+            Type = type;
             Data = data;
+            SolvingTimeout = solvingTimeout;
         }
+
+        public ProblemState State { get; set; }
+        public ulong? DividingNodeId { get; set; }
+        public string Type { get; private set; }
+        public ulong SolvingTimeout { get; private set; }
+        public byte[] Data { get; private set; }
+        public byte[] CommonData { get; set; }
+        public ulong Id { get; private set; }
+        public ulong? NumberOfParts { get; set; }
     }
 }

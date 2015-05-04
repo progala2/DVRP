@@ -1,5 +1,4 @@
-﻿
-namespace _15pl04.Ucc.Commons.Messaging.Base
+﻿namespace _15pl04.Ucc.Commons.Messaging.Marshalling.Base
 {
     public interface ISerializer<T>
     {

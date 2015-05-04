@@ -47,10 +47,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="IPEndPointParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MessageSenderTests.cs" />
     <Compile Include="TcpClientTests.cs" />
-    <Compile Include="ComputationalComponentTests.cs" />
     <Compile Include="TaskSolversLoaderTests.cs" />
     <Compile Include="DeserializationTests.cs" />
     <Compile Include="SerializationTests.cs" />
@@ -84,15 +84,17 @@
     <None Include="Resources\XmlMessages\SolveRequest.xml" />
     <None Include="Resources\XmlMessages\SolveRequestResponse.xml" />
     <None Include="Resources\XmlMessages\Status.xml" />
-    <Content Include="TaskSolvers\Ucc.MinMaxTaskSolver.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="XmlMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>XmlMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TaskSolvers\_15pl04.Ucc.MinMaxTaskSolver.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

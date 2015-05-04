@@ -1,7 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <SolvePartialProblems xmlns="http://www.mini.pw.edu.pl/ucc/"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:noNamespaceSchemaLocation="PartialProblems.xsd">
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xsi:noNamespaceSchemaLocation="PartialProblems.xsd">
   <ProblemType>TSP</ProblemType>
   <Id>12</Id>
   <CommonData>

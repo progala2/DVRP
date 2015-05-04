@@ -1,20 +1,20 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Error")]
     public class ErrorMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "Error.xsd";
-
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "Error.xsd";
 
         [XmlElement(Order = 0, ElementName = "ErrorMessageType")]
         public ErrorType ErrorType { get; set; }
@@ -27,7 +27,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClass.Error; }
         }
-
 
         public override string ToString()
         {
@@ -46,6 +45,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     {
         UnknownSender,
         InvalidOperation,
-        ExceptionOccured,
+        ExceptionOccured
     }
 }

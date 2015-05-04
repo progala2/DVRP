@@ -1,60 +1,34 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models;
-using System;
+﻿using System;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
 {
-    public class PartialProblem
+    internal class PartialProblem
     {
-        public Problem Problem
+        public enum PartialProblemState
         {
-            get;
-            private set;
+            AwaitingComputation = 0,
+            BeingComputed
         }
-        public ulong Id
+
+        public PartialProblem(ulong id, Problem problem, byte[] privateData)
         {
-            get;
-            private set;
+            Id = id;
+            Problem = problem;
+            PrivateData = privateData;
+
+            if (problem.CommonData == null)
+                throw new Exception("Common data in the corresponding problem instance must be set.");
         }
-        public byte[] PrivateData
-        {
-            get;
-            private set;
-        }
+
+        public PartialProblemState State { get; set; }
+        public ulong? ComputingNodeId { get; set; }
+        public Problem Problem { get; private set; }
+        public ulong Id { get; private set; }
+        public byte[] PrivateData { get; private set; }
+
         public byte[] CommonData
         {
-            get;
-            private set;
-        }
-        public ulong DividingTaskManagerId
-        {
-            get;
-            private set;
-        }
-
-
-        public PartialProblem(Problem problem, ulong id, 
-            byte[] privateData, byte[] commonData, ulong dividingTaskManagerId)
-        {
-            if (!problem.Id.HasValue)
-                throw new Exception("Problem has no id set.");
-
-            Problem = problem;
-            Id = id;
-            PrivateData = privateData;
-            CommonData = commonData;
-            DividingTaskManagerId = dividingTaskManagerId;
-        }
-
-        public static explicit operator PartialProblemsMessage.PartialProblem(PartialProblem pp)
-        {
-            var output = new PartialProblemsMessage.PartialProblem()
-            {
-                Data = pp.PrivateData,
-                PartialProblemId = pp.Id,
-                TaskManagerId = pp.DividingTaskManagerId,
-            };
-
-            return output;
+            get { return Problem.CommonData; }
         }
     }
 }

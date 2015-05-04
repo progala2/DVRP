@@ -1,21 +1,27 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Components;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Register")]
     public class RegisterMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "Register.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "Register.xsd";
 
+        public RegisterMessage()
+        {
+            SolvableProblems = new List<string>();
+        }
 
         [XmlElement(Order = 0, ElementName = "Type")]
         public ComponentType ComponentType { get; set; }
@@ -39,13 +45,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.Register; }
         }
 
-
-        public RegisterMessage()
-        {
-            SolvableProblems = new List<string>();
-        }
-
-
         public bool ShouldSerializeDeregistration()
         {
             return Deregistration.HasValue;
@@ -67,18 +66,17 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
                 builder.Append("[Deregister]");
                 builder.Append(" ComponentId(" + IdToDeregister + ")");
-                builder.Append(" ComponentType(" + ComponentType.ToString() + ")");
+                builder.Append(" ComponentType(" + ComponentType + ")");
             }
             else
             {
                 builder.Append(base.ToString());
 
-                builder.Append(" ComponentType(" + ComponentType.ToString() + ")");
+                builder.Append(" ComponentType(" + ComponentType + ")");
                 builder.Append(" ParallelThreads(" + ParallelThreads + ")");
 
                 builder.Append(" SolvableProblems{");
-                foreach (var problem in SolvableProblems)
-                    builder.Append(problem + ",");
+                builder.Append(string.Join(",", SolvableProblems));
                 builder.Append("}");
             }
             return builder.ToString();

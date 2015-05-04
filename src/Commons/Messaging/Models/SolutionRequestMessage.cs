@@ -1,20 +1,20 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolutionRequest")]
     public class SolutionRequestMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")] 
-        public string noNamespaceSchemaLocation = "SolutionRequest.xsd";
-
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "SolutionRequest.xsd";
 
         [XmlElement(Order = 0, ElementName = "Id")]
         public ulong ProblemInstanceId { get; set; }
@@ -24,7 +24,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClass.SolutionRequest; }
         }
-
 
         public override string ToString()
         {

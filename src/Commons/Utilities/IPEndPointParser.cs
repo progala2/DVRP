@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Net;
 
-namespace _15pl04.Ucc.Commons
+namespace _15pl04.Ucc.Commons.Utilities
 {
-    public static class IPEndPointParser
+    public static class IpEndPointParser
     {
-
         /// <exception cref="System.FormatException"></exception>
         /// <exception cref="System.ArgumentException"></exception>
         public static IPEndPoint Parse(string endPointString)
@@ -23,46 +22,36 @@ namespace _15pl04.Ucc.Commons
                 return Parse(endPointString, port);
             return Parse(endPointString);
         }
+
         /// <exception cref="System.FormatException"></exception>
         /// <exception cref="System.ArgumentException"></exception>
         public static IPEndPoint Parse(string endPointString, int defaultPort)
         {
-            if (string.IsNullOrEmpty(endPointString)
-                || endPointString.Trim().Length == 0)
-            {
+            if (string.IsNullOrWhiteSpace(endPointString))
                 throw new ArgumentException("Endpoint descriptor may not be empty.");
-            }
 
-            if (defaultPort != -1 &&
-                (defaultPort < IPEndPoint.MinPort
-                || defaultPort > IPEndPoint.MaxPort))
-            {
+            if (defaultPort != -1 && (defaultPort < IPEndPoint.MinPort || defaultPort > IPEndPoint.MaxPort))
                 throw new ArgumentException(string.Format("Invalid default port '{0}'", defaultPort));
-            }
 
-            string[] values = endPointString.Split(new char[] { ':' });
+            var values = endPointString.Split(':');
             IPAddress ipAddress;
-            int port = -1;
+            var port = -1;
 
             // check if we have an IPv6 or ports
             if (values.Length <= 2) // ipv4 or hostname
             {
-                if (values.Length == 1)
-                    // no port is specified, default
-                    port = defaultPort;
-                else
-                    port = GetPort(values[1]);
+                port = values.Length == 1 ? defaultPort : GetPort(values[1]);
 
                 // try to use the address as IPv4, otherwise get hostname
                 if (!IPAddress.TryParse(values[0], out ipAddress))
-                    ipAddress = GetIPFromHost(values[0]);
+                    ipAddress = GetIpFromHost(values[0]);
             }
             else if (values.Length > 2) // ipv6
             {
                 // could [a:b:c]:d
                 if (values[0].StartsWith("[") && values[values.Length - 2].EndsWith("]"))
                 {
-                    string ipaddressstring = string.Join(":", values.Take(values.Length - 1).ToArray());
+                    var ipaddressstring = string.Join(":", values.Take(values.Length - 1).ToArray());
                     ipAddress = IPAddress.Parse(ipaddressstring);
                     port = GetPort(values[values.Length - 1]);
                 }
@@ -87,17 +76,13 @@ namespace _15pl04.Ucc.Commons
         {
             int port;
 
-            if (!int.TryParse(p, out port)
-             || port < IPEndPoint.MinPort
-             || port > IPEndPoint.MaxPort)
-            {
+            if (!int.TryParse(p, out port) || port < IPEndPoint.MinPort || port > IPEndPoint.MaxPort)
                 throw new FormatException(string.Format("Invalid end point port '{0}'", p));
-            }
 
             return port;
         }
 
-        private static IPAddress GetIPFromHost(string p)
+        private static IPAddress GetIpFromHost(string p)
         {
             var hosts = Dns.GetHostAddresses(p);
 

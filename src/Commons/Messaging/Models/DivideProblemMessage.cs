@@ -1,21 +1,20 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Text;
-using System.Xml.Schema;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
     [Serializable]
-    [DesignerCategory("code")]
+    [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "DivideProblem")]
     public class DivideProblemMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string noNamespaceSchemaLocation = "DivideProblem.xsd";
-
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
+            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
+                "DivideProblem.xsd";
 
         [XmlElement(Order = 0)]
         public string ProblemType { get; set; }
@@ -37,7 +36,6 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         {
             get { return MessageClass.DivideProblem; }
         }
-
 
         public override string ToString()
         {
