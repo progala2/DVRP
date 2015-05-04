@@ -62,8 +62,24 @@ namespace _15pl04.Ucc.TaskSolver
         {
             if (threadCount < 1)
                 throw new ArgumentOutOfRangeException("threadCount");
-            return new byte[1][];
-
+            byte[][] ret = new byte[threadCount][];
+            if (threadCount <= _dvrpProblem.Requests.Length)
+            {
+                float k = _dvrpProblem.Requests.Length / (float)threadCount;
+                for (int i = 0; i < threadCount; ++i)
+                {
+                    List<int> set = new List<int>();
+                    for (int j = (int)(i * k); j < (int)(i * k + k); ++j)
+                        set.Add(j);
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        var partialProblem = new DvrpPartialProblem(set);
+                        _formatter.Serialize(memoryStream, partialProblem);
+                        ret[i] = memoryStream.ToArray();
+                    }
+                }
+            }
+            return ret;
         }
 
         public override byte[] MergeSolution(byte[][] solutions)
@@ -94,12 +110,17 @@ namespace _15pl04.Ucc.TaskSolver
         {
             double min = Double.MaxValue;
             bool[] visited = new bool[_dvrpProblem.Requests.Length];
-            for (int i = 0; i < _dvrpProblem.Requests.Length; i++)
+            DvrpPartialProblem partProblem;
+            using (var memoryStream = new MemoryStream(partialData))
+            {
+                partProblem = (DvrpPartialProblem)_formatter.Deserialize(memoryStream);
+            }
+            foreach(var i in partProblem.Sets)
             {
                 int capacity = _dvrpProblem.Requests[i].Demand;
                 double actual = _depotDistances[0, i] + _dvrpProblem.Requests[i].Duration + _dvrpProblem.Requests[i].AvailabilityTime;
                 visited[i] = true;
-                double tmp = RecurrenceSolve(i, capacity, actual, 0, ref visited);
+                double tmp = RecurrenceSolve(i, capacity, actual, 1, ref visited);
                 if (tmp < min)
                     min = tmp;
                 visited[i] = false;
@@ -115,7 +136,7 @@ namespace _15pl04.Ucc.TaskSolver
         private double RecurrenceSolve(int lastIndex, int capacity, double actual, int deepth, ref bool[] visited)
         {
             if (deepth == _dvrpProblem.Requests.Length)
-                return actual;
+                return actual + _depotDistances[0, lastIndex];
             double min = Double.MaxValue;
             for (int i = 0; i < _dvrpProblem.Requests.Length; i++)
             {
@@ -129,7 +150,7 @@ namespace _15pl04.Ucc.TaskSolver
                     visited[i] = true;
                     if (actual <= min)
                     {
-                        var tmp = RecurrenceSolve(i, capacity, actual, ++deepth, ref visited);
+                        var tmp = RecurrenceSolve(i, capacity, actual, deepth + 1, ref visited);
                         if (tmp < min)
                             min = tmp;
                     }
@@ -151,7 +172,7 @@ namespace _15pl04.Ucc.TaskSolver
                     visited[i] = true;
                     if (actual <= min)
                     {
-                        var tmp = RecurrenceSolve(i, capacity, actual, ++deepth, ref visited);
+                        var tmp = RecurrenceSolve(i, capacity, actual, deepth + 1, ref visited);
                         if (tmp < min)
                             min = tmp;
                     }
