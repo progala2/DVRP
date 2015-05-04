@@ -11,8 +11,12 @@ namespace _15pl04.Ucc.TaskSolver
     {
         readonly IFormatter _formatter;
         readonly DvrpProblem _dvrpProblem;
-        
+
         double[,] _distances;
+        /// <summary>
+        /// index0 - depot
+        /// index1 - request
+        /// </summary>
         double[,] _depotDistances;
         public DvrpTaskSolver(byte[] problemData)
             : base(problemData)
@@ -38,7 +42,7 @@ namespace _15pl04.Ucc.TaskSolver
                 {
                     double dx = _dvrpProblem.Requests[i].X - _dvrpProblem.Requests[j].X;
                     double dy = _dvrpProblem.Requests[i].Y - _dvrpProblem.Requests[j].Y;
-                    _distances[i, j] = _distances[j, i] = Math.Sqrt(dx*dx + dy*dy);
+                    _distances[i, j] = _distances[j, i] = Math.Sqrt(dx * dx + dy * dy);
                 }
             }
             var m = _dvrpProblem.Depots.Length;
@@ -58,27 +62,8 @@ namespace _15pl04.Ucc.TaskSolver
         {
             if (threadCount < 1)
                 throw new ArgumentOutOfRangeException("threadCount");
-            var sortList = new List<Request>(_dvrpProblem.Requests);
-            sortList.Sort((request, request1) => request.Demand.CompareTo(request1.Demand));
-            var linkedList = new LinkedList<Request>(sortList);
-            var sets = new List<List<int>>(sortList.Count);
-            for (int i = 0; i < sortList.Count; i++)
-            {
-                
-            }
+            return new byte[0][];
 
-            var partialProblemsData = new byte[threadCount][];
-            for (int i = 0; i < threadCount; i++)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    var partialProblem = new DvrpPartialProblem(i);
-                    _formatter.Serialize(memoryStream, partialProblem);
-                    partialProblemsData[i] = memoryStream.ToArray();
-                }
-            }
-            return partialProblemsData;
-            
         }
 
         public override byte[] MergeSolution(byte[][] solutions)
@@ -107,12 +92,50 @@ namespace _15pl04.Ucc.TaskSolver
 
         public override byte[] Solve(byte[] partialData, System.TimeSpan timeout)
         {
+            double min = Double.MaxValue;
             using (var memoryStream = new MemoryStream(partialData))
             {
                 var partProblem = (DvrpPartialProblem)_formatter.Deserialize(memoryStream);
-
+                
+                double actual = 0;
+                bool depot = true;
+                int capacity = 0;
+                for (int i = 0; i < _dvrpProblem.Requests.Length; i++)
+                {
+                    capacity += _dvrpProblem.Requests[i].Demand;
+                    actual += _depotDistances[0, i] + _dvrpProblem.Requests[i].Duration + Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - actual, 0);
+                    double tmp = RecurrenceSolve(i, capacity, actual, 0);
+                    if (tmp < min)
+                        min = tmp;
+                }
             }
-            return new byte[0];
+            var finalSolution = new DvrpSolution(min);
+            using (var memoryStream = new MemoryStream())
+            {
+                _formatter.Serialize(memoryStream, finalSolution);
+                return memoryStream.ToArray();
+            }
+        }
+
+        private double RecurrenceSolve(int lastIndex, int capacity, double actual, int deepth)
+        {
+            for (int i = 0; i < _dvrpProblem.Requests.Length; i++)
+            {
+                bool depot;
+                if (capacity + _dvrpProblem.Requests[i].Demand <= -_dvrpProblem.VehicleCapacity)
+                {
+                    capacity += _dvrpProblem.Requests[i].Demand;
+                    if (depot)
+                        actual += _depotDistances[0, i] + _dvrpProblem.Requests[i].Demand;
+                    else
+                        actual += _depotDistances[0, i] + _dvrpProblem.Requests[i].Demand;
+                }
+                else
+                {
+
+                }
+            }
         }
     }
+
 }

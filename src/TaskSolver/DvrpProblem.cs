@@ -12,7 +12,7 @@ namespace _15pl04.Ucc.TaskSolver
         public int VehicleCapacity { get; private set; }
         public Depot[] Depots { get; private set; }
         public Request[] Requests { get; private set; }
-        public DvrpProblem(int vehicleCount, int vehicleCapacity, IEnumerable<Depot> depots, IEnumerable<Request> requests, double cutOffTime)
+        public DvrpProblem(int vehicleCount, int vehicleCapacity, IEnumerable<Depot> depots, IEnumerable<Request> requests, double cutOffTime = 0.5)
         {
             VehicleCount = vehicleCount;
             VehicleCapacity = vehicleCapacity;
