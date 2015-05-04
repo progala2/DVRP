@@ -80,7 +80,8 @@ namespace _15pl04.Ucc.Commons.Logging
             }
             catch (Exception e)
             {
-                message = string.Format("Exception during formatting [{0}]; exception message: {1}", format, e.Message);
+                message = string.Format("Exception during formatting string: {0}|ExceptionType: {1}|ExceptionMessage: {2}",
+                    format, e.GetType().FullName, e.Message);
             }
             TraceEvent(eventCache, source, eventType, id, message);
         }
