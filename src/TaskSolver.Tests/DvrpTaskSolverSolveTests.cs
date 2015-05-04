@@ -33,7 +33,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             Assert.IsTrue(HelpingFunctionForTests(problem, 5, 110, stopwatch));
             stopwatch.Stop();
 
-            stopwatch.Start();
+           /* stopwatch.Start();
             problem = new DvrpProblem(1, 100, new Depot[]
             {
                 new Depot(0, 0, 0, 700), 
@@ -48,7 +48,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests
 
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
             Assert.IsTrue(HelpingFunctionForTests(problem, 5, 110, stopwatch));
-            stopwatch.Stop();
+            stopwatch.Stop();*/
         }
 
         private bool HelpingFunctionForTests(DvrpProblem problem, int threadsCount, double expectectedResult, Stopwatch stopwatch)
@@ -81,6 +81,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             using (var memoryStream = new MemoryStream(finalSolutionData))
             {
                 var finalSolution = (DvrpSolution)_formatter.Deserialize(memoryStream);
+                Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final time: " + finalSolution.FinalTime);
                 result = Math.Abs(finalSolution.FinalTime - expectectedResult) < Double.Epsilon;
             }
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final solution deserialized");
