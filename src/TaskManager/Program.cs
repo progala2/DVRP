@@ -26,7 +26,7 @@ namespace _15pl04.Ucc.TaskManager
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.StackTrace);
+                _logger.Error(ex.ToString());
                 return;
             }
 
@@ -103,7 +103,7 @@ namespace _15pl04.Ucc.TaskManager
         private static string GetMessageExceptionInfo(MessageExceptionEventArgs e)
         {
             string errorInfo = string.Format(" Message: {0}\n Exception: {1}\n  {2}",
-                   e.Message, e.GetType().FullName, e.Exception.Message);
+                   e.Message, e.Exception.GetType().FullName, e.Exception.Message);
             return errorInfo;
         }
 
