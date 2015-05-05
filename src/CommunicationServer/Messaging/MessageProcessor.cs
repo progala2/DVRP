@@ -123,7 +123,19 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     responseMessages = new List<Message> {errorMsg};
                     break;
                 }
+                catch (Exception e)
+                {
+                    Logger.Error("Unexpected error.\n" + e.Message);
+                    var errorMsg = new ErrorMessage
+                    {
+                        ErrorType = ErrorType.InvalidOperation,
+                        ErrorText = "The server encountered unexpected error."
+                    };
+                    responseMessages = new List<Message> {errorMsg};
+                    break;
+                }
             }
+        }
 
             foreach (Message msgToSend in responseMessages)
                 Logger.Trace("Sending " + msgToSend.MessageType + " message.");

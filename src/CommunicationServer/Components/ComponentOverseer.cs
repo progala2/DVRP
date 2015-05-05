@@ -58,7 +58,8 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             ulong id;
             do
             {
-                id = _random.NextUInt64();
+                id = _random.NextUInt64() % 100; //TODO this is debug solution
+                //id = _random.NextUInt64(); 
             } while (!_registeredComponents.TryAdd(id, component));
 
             Logger.Info("Registering " + component.ComponentType +
