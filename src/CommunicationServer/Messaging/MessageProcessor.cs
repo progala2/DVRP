@@ -128,7 +128,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     Logger.Error("Unexpected error.\n" + e.Message);
                     var errorMsg = new ErrorMessage
                     {
-                        ErrorType = ErrorType.InvalidOperation,
+                        ErrorType = ErrorType.ExceptionOccured,
                         ErrorText = "The server encountered unexpected error."
                     };
                     responseMessages = new List<Message> {errorMsg};
