@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Configuration;
-using _15pl04.Ucc.Commons;
+using System.Net;
 using _15pl04.Ucc.Commons.Computations;
+using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Utilities;
 
@@ -9,13 +10,27 @@ namespace _15pl04.Ucc.ComputationalNode
 {
     public class Program
     {
+        private static ILogger _logger = new TraceSourceLogger("ComputationalNode");
+
         private static void Main(string[] args)
         {
             var appSettings = ConfigurationManager.AppSettings;
-            var primaryCSaddress = appSettings["primaryCSaddress"];
-            var primaryCSport = appSettings["primaryCSport"];
-            var serverAddress = IpEndPointParser.Parse(primaryCSaddress, primaryCSport);
-            Console.WriteLine("server address from App.config: " + serverAddress);
+            string primaryCSaddress;
+            string primaryCSport;
+            IPEndPoint serverAddress;
+            try
+            {
+                primaryCSaddress = appSettings["primaryCSaddress"];
+                primaryCSport = appSettings["primaryCSport"];
+                serverAddress = IpEndPointParser.Parse(primaryCSaddress, primaryCSport);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+                return;
+            }
+
+            _logger.Info("Server address from App.config: " + serverAddress);
 
             var taskSolversDirectoryRelativePath = @""; // current directory
 
@@ -45,37 +60,50 @@ namespace _15pl04.Ucc.ComputationalNode
 
         private static void computationalNode_OnStarted(object sender, EventArgs e)
         {
-            Console.WriteLine("ComputationalNode started.");
+            _logger.Info("ComputationalNode started.");
         }
 
         private static void computationalNode_OnStarting(object sender, EventArgs e)
         {
-            Console.WriteLine("ComputationalNode is starting...");
+            _logger.Info("ComputationalNode is starting...");
         }
 
         private static void computationalNode_MessageSendingException(object sender, MessageExceptionEventArgs e)
         {
-            ColorfulConsole.WriteMessageExceptionInfo("Message sending exception", e.Message, e.Exception);
+            _logger.Error("Message sending exception:\n" + GetMessageExceptionInfo(e));
         }
 
         private static void computationalNode_MessageHandlingException(object sender, MessageExceptionEventArgs e)
         {
-            ColorfulConsole.WriteMessageExceptionInfo("Message handling exception", e.Message, e.Exception);
+            _logger.Warn("Message handling exception:\n" + GetMessageExceptionInfo(e));
         }
 
         private static void computationalNode_MessageEnqueuedToSend(object sender, MessageEventArgs e)
         {
-            ColorfulConsole.WriteMessageInfo("Enqueued to send", e.Message);
+            LogMessageInfo("Enqueued to send", e);
         }
 
         private static void computationalNode_MessageReceived(object sender, MessageEventArgs e)
         {
-            ColorfulConsole.WriteMessageInfo("Received", e.Message);
+            LogMessageInfo("Received", e);
         }
 
         private static void computationalNode_MessageSent(object sender, MessageEventArgs e)
         {
-            ColorfulConsole.WriteMessageInfo("Sent", e.Message);
+            LogMessageInfo("Sent", e);
+        }
+
+        private static void LogMessageInfo(string description, MessageEventArgs e)
+        {
+            _logger.Info(description + ": [" + e.Message.MessageType + "]");
+            _logger.Debug("\t" + e.Message);
+        }
+
+        private static string GetMessageExceptionInfo(MessageExceptionEventArgs e)
+        {
+            string errorInfo = string.Format(" Message: {0}\n Exception: {1}\n  {2}",
+                   e.Message, e.Exception.GetType().FullName, e.Exception.Message);
+            return errorInfo;
         }
     }
 }

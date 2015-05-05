@@ -63,7 +63,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             } while (!_registeredComponents.TryAdd(id, component));
 
             Logger.Info("Registering " + component.ComponentType +
-            " (id: " + component.ComponentId + ").");
+            " (id: " + id + ").");
 
             component.Register(id);
 
