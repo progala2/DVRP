@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using _15pl04.Ucc.TaskSolver.DvrpAlgorithm;
@@ -11,7 +12,7 @@ namespace _15pl04.Ucc.TaskSolver
     {
         readonly IFormatter _formatter;
         readonly DvrpProblem _dvrpProblem;
-       
+
         public DvrpTaskSolver(byte[] problemData)
             : base(problemData)
         {
@@ -44,66 +45,69 @@ namespace _15pl04.Ucc.TaskSolver
             // 1 2 1
             // 1 2 2
             // 1 2 3
-            
+
             if (threadCount < 1)
                 throw new ArgumentOutOfRangeException("threadCount");
-            int n = _dvrpProblem.Requests.Length;
-            int[] ai = new int[n];
-            int[] max = new int[n];
-            // there is need to find only a start and end ai set for each thread
-            // and compute the partitions dynamically in the DvrpSolver because of large memory overhead with this solution
-            List<int[]> partitions = new List<int[]>();
-            for (int i = n - 2; i > -1; --i)
-                ai[i] = 0;
-            ai[n-1] = max[0] = -1;
+            var n = _dvrpProblem.Requests.Length;
+            var part = new int[n];
+            
+            var max = new int[n];
+            var maxNumberofSets = TriangularMethodBellNumber(n);
+            var numberOfSetsForThread = maxNumberofSets / (ulong)threadCount;
+            var result = new byte[threadCount][];
+            var solver = new DvrpSolver(_dvrpProblem);
+            var approximateResult = solver.SolveApproximately();
+
+            for (var i = n - 2; i > -1; --i)
+                part[i] = 0;
+            part[n - 1] = max[0] = -1;
+            var partLast = (int[])part.Clone();
+            ulong j = 0;
+            int k = 0;
             do
             {
-                for (int i = 1; i < n; ++i)
+                for (var i = 1; i < n; ++i)
                 {
-                    if (max[i - 1] < ai[i - 1])
-                        max[i] = ai[i - 1];
+                    if (max[i - 1] < part[i - 1])
+                        max[i] = part[i - 1];
                     else
                         max[i] = max[i - 1];
                 }
-                int p = n - 1;
-                while (ai[p] == max[p] + 1)
+                var p = n - 1;
+                while (part[p] == max[p] + 1)
                 {
-                    ai[p] = 0;
+                    part[p] = 0;
                     p = p - 1;
                 }
-            ai[p] = ai[p]+1;
-            partitions.Add((int[])ai.Clone());              
-                // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
-            } while (ai[n-1] != n-1);
-            DvrpSolver solver = new DvrpSolver(_dvrpProblem);
-            double approximateResult = solver.SolveApproximately();
-            
-            byte[][] result = new byte[threadCount][];
-            var k = partitions.Count/threadCount;
-            var d = partitions.Count%threadCount;
-            var b = 0;
-            for (int i = 0; i < threadCount; i++)
-            {
-                using (var memoryStream = new MemoryStream())
+                part[p] = part[p] + 1;
+                ++j;
+                if (j == numberOfSetsForThread)
                 {
-                    if (d > 0)
-                    {
-                        DvrpPartialProblem partialProblem = new DvrpPartialProblem(partitions.GetRange(i*k + b, k + 1),
-                            approximateResult);
-                        --d;
-                        ++b;
-                        _formatter.Serialize(memoryStream, partialProblem);
-                        result[i] = memoryStream.ToArray();
-                    }
-                    else
-                    {
-                        DvrpPartialProblem partialProblem = new DvrpPartialProblem(partitions.GetRange(i * k + b, k),
-                            approximateResult);
-                        _formatter.Serialize(memoryStream, partialProblem);
-                        result[i] = memoryStream.ToArray();
-                    }
                     
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        _formatter.Serialize(memoryStream, new DvrpPartialProblem(partLast, approximateResult, j));
+                        result[k] = memoryStream.ToArray();
+                    }
+                    partLast = (int[])part.Clone();
+                    ++k;
+                    j = 0;
+                    if (k == threadCount - 1)
+                    {
+                        break;
+                    }
                 }
+
+                // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
+            } while (part[n - 1] != n - 1);
+            using (var memoryStream = new MemoryStream())
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    part[i] = i;
+                }
+                _formatter.Serialize(memoryStream, new DvrpPartialProblem(partLast, approximateResult, maxNumberofSets - (ulong)k * numberOfSetsForThread));
+                result[k] = memoryStream.ToArray();
             }
             return result;
 
@@ -111,8 +115,8 @@ namespace _15pl04.Ucc.TaskSolver
 
         public override byte[] MergeSolution(byte[][] solutions)
         {
-            DvrpSolution finalSolution = new DvrpSolution(double.MaxValue, null);
-            foreach (byte[] t in solutions)
+            var finalSolution = new DvrpSolution(double.MaxValue, null);
+            foreach (var t in solutions)
             {
                 using (var memoryStream = new MemoryStream(t))
                 {
@@ -142,12 +146,33 @@ namespace _15pl04.Ucc.TaskSolver
             {
                 problem = (DvrpPartialProblem)_formatter.Deserialize(memoryStream);
             }
-            DvrpSolver solver = new DvrpSolver(_dvrpProblem);
+            var solver = new DvrpSolver(_dvrpProblem);
             using (var memoryStream = new MemoryStream())
             {
                 _formatter.Serialize(memoryStream, solver.Solve(problem, timeout));
                 return memoryStream.ToArray();
             }
+        }
+
+        static ulong TriangularMethodBellNumber(int n)
+        {
+            Dictionary<long, List<ulong>> triangle =
+                                    new Dictionary<long, List<ulong>>();
+            triangle.Add(1, new List<ulong>(new ulong[] { 1 }));
+
+            for (int i = 2; i <= n; i++)
+            {
+                triangle.Add(i, new List<ulong>());
+                triangle[i].Add(triangle[i - 1].Last());
+                for (int k = 1; k < i; k++)
+                {
+                    var lastVal = triangle[i][k - 1] + triangle[i - 1][k - 1];
+                    triangle[i].Add(lastVal);
+                }
+
+                triangle.Remove(i - 2);
+            }
+            return triangle[n].Last();
         }
     }
 

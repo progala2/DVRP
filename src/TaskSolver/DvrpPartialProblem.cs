@@ -6,13 +6,15 @@ namespace _15pl04.Ucc.TaskSolver
     [Serializable]
     public class DvrpPartialProblem
     {
-        public DvrpPartialProblem(List<int[]> sets, double approximateResult)
+        public DvrpPartialProblem(int[] setStart, double approximateResult, ulong numberOfSets)
         {
-            Sets = sets;
+            SetBegin = (int[])setStart.Clone();
             ApproximateResult = approximateResult;
+            NumberOfSets = numberOfSets;
         }
 
-        public List<int[]> Sets { get; private set; }
+        public int[] SetBegin { get; private set; }
+        public ulong NumberOfSets { get; private set; }
         public double ApproximateResult { get; private set; }
     }
 }

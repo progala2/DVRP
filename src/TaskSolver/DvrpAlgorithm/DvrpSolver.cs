@@ -52,10 +52,29 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         public DvrpSolution Solve(DvrpPartialProblem partProblem, TimeSpan timeout)
         {
             var min = partProblem.ApproximateResult;
-            
+
+            int n = _dvrpProblem.Requests.Length;
+            int[] max = new int[n];
+            max[0] = -1;
+            var part = partProblem.SetBegin;
+
             // let's check all the partitions
-            foreach (var part in partProblem.Sets)
+            for (ulong i = 0; i < partProblem.NumberOfSets; ++i)
             {
+                for (var j = 1; j < n; ++j)
+                {
+                    if (max[j - 1] < part[j - 1])
+                        max[j] = part[j - 1];
+                    else
+                        max[j] = max[j - 1];
+                }
+                var p = n - 1;
+                while (part[p] == max[p] + 1)
+                {
+                    part[p] = 0;
+                    p = p - 1;
+                }
+                part[p] = part[p] + 1;
                 
                 var breaking = false;
                 var cap = new List<int>();
@@ -126,7 +145,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             {
                 roads[i] = _carsRoads[i].ToArray();
             }
-           return new DvrpSolution(min, roads);         
+           return new DvrpSolution(min, roads);  
         }
 
         public double SolveApproximately()

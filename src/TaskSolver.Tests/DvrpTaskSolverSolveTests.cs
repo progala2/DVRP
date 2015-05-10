@@ -32,7 +32,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests
                 new Request(7, 0, -30, 0, 20),
                 new Request(8, 0, -30, 0, 20),
                 new Request(9, 0, -30, 0, 20),
-                new Request(10, 0, -30, 0, 20),
+                new Request(10, 0, -30, 0, 20)
             });
 
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
@@ -62,6 +62,35 @@ namespace _15pl04.Ucc.TaskSolver.Tests
 
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
             Assert.IsTrue(HelpingFunctionForTests(problem, 4, 680.09, stopwatch));
+            stopwatch.Stop();
+        }
+
+        [TestMethod]
+        public void TestSolvingOkulewiczTwentyClients()
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            DvrpProblem problem = new DvrpProblem(12, 100, new[]
+            {
+                new Depot(0, 0, 0, 640), 
+            }, new[]
+            {
+                new Request(-55, -26, -48, 616, 20),
+                new Request(-24, 38, -20, 91, 20),
+                new Request(-99, -29, -45, 240, 20),
+                new Request(-42, 30, -19, 356, 20),
+                new Request(59, 66, -32, 528, 20),
+                new Request(55, -35, -42, 459, 20),
+                new Request(-42, 3, -19, 433, 20),
+                new Request(95, 13, -35, 513, 20),
+                new Request(71, -90, -30, 444, 20),
+                new Request(38, 32, -26, 44, 20),
+                new Request(67, -22, -41, 318, 20),
+                new Request(58, -97, -27, 20, 20),
+            });
+
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
+            Assert.IsTrue(HelpingFunctionForTests(problem, 4, 976.27, stopwatch));
             stopwatch.Stop();
         }
 
