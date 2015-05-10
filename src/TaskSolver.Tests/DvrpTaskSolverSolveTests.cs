@@ -14,11 +14,11 @@ namespace _15pl04.Ucc.TaskSolver.Tests
     {
         BinaryFormatter _formatter = new BinaryFormatter();
         [TestMethod]
-        public void TestSolvingSimpleOneCarProblemWithFiveClients()
+        public void TestSolvingSimpleFourCarProblemWithTenClients()
         { 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            DvrpProblem problem = new DvrpProblem(2, 100, new Depot[]
+            DvrpProblem problem = new DvrpProblem(4, 100, new Depot[]
             {
                 new Depot(0, 0, 0, 700), 
             }, new Request[]
@@ -27,27 +27,42 @@ namespace _15pl04.Ucc.TaskSolver.Tests
                 new Request(2, 0, -20, 0, 20),
                 new Request(3, 0, -20, 0, 20),
                 new Request(4, 0, -50, 0, 20),
-                //new Request(5, 0, -30, 0, 20),
+                new Request(5, 0, -30, 0, 20),
+                new Request(6, 0, -30, 0, 20),
+                new Request(7, 0, -30, 0, 20),
+                new Request(8, 0, -30, 0, 20),
+                new Request(9, 0, -30, 0, 20),
+                new Request(10, 0, -30, 0, 20),
             });
 
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
-            HelpingFunctionForTests(problem, 8, 152, stopwatch);
-           /* stopwatch.Restart();
-            problem = new DvrpProblem(1, 100, new Depot[]
+            Assert.IsTrue(HelpingFunctionForTests(problem, 4, 44, stopwatch));
+            stopwatch.Stop();
+        }
+
+        [TestMethod]
+        public void TestSolvingOkulewiczSimpleProblem()
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            DvrpProblem problem = new DvrpProblem(8, 100, new Depot[]
             {
-                new Depot(0, 0, 0, 700), 
+                new Depot(0, 0, 0, 560), 
             }, new Request[]
             {
-                new Request(1, 0, -20, 125, 20),
-                new Request(2, 0, -20, 512, 20),
-                new Request(3, 0, -20, 340, 20),
-                new Request(4, 0, -20, 222, 20),
-                new Request(5, 0, -20, 134, 20),
+                new Request(-39, 97, -29, 276, 20),
+                new Request(34, -45, -21, 451, 20),
+                new Request(77, -20, -28, 171, 20),
+                new Request(-34, -99, -20, 365, 20),
+                new Request(75, -43, -8, 479, 20),
+                new Request(87, -66, -31, 546, 20),
+                new Request(-55, 86, -13, 376, 20),
+                new Request(-93, -3, -29, 289, 20),
             });
 
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
-            HelpingFunctionForTests(problem, 3, 110, stopwatch);
-            stopwatch.Stop();*/
+            Assert.IsTrue(HelpingFunctionForTests(problem, 4, 680.09, stopwatch));
+            stopwatch.Stop();
         }
 
         private bool HelpingFunctionForTests(DvrpProblem problem, int threadsCount, double expectectedResult, Stopwatch stopwatch)
@@ -69,7 +84,12 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             foreach (var partialProblemData in partialProblemsData)
             {
                 var data = partialProblemData;
-                tasks.Add(new Task<byte[]> (() => taskSolver.Solve(data, new TimeSpan())));
+                tasks.Add(new Task<byte[]> (() =>
+                {
+                    DvrpTaskSolver taskSolver2 = new DvrpTaskSolver(problemData);
+                    return taskSolver2.Solve(data, new TimeSpan());                   
+                }
+                ));
                tasks[tasks.Count - 1].Start();
             }
             Task.WaitAll(tasks.ToArray());
@@ -83,7 +103,12 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             {
                 var finalSolution = (DvrpSolution)_formatter.Deserialize(memoryStream);
                 Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final time: " + finalSolution.FinalTime);
-                result = Math.Abs(finalSolution.FinalTime - expectectedResult) < Double.Epsilon;
+                for (int i = 0; i < finalSolution.CarsRoutes.Length; i++)
+                {
+                    Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "route: " +
+                                    string.Join(", ", finalSolution.CarsRoutes[i].Select(v => v.ToString())));
+                }
+                result = Math.Abs(Math.Round((double)new decimal(finalSolution.FinalTime), 2) - expectectedResult) < Double.Epsilon;
             }
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final solution deserialized");
 

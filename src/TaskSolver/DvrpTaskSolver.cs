@@ -56,37 +56,60 @@ namespace _15pl04.Ucc.TaskSolver
                 int p = n - 1;
                 while (AI[p] == Max[p] + 1)
                 {
-                    AI[p] = 1;
+                    AI[p] = 0;
                     p = p - 1;
                 }
             AI[p] = AI[p]+1;
-            Debug.WriteLine("My array: {0}",
-                string.Join(", ", AI.Select(v => v.ToString()))
-                );
             partitions.Add((int[])AI.Clone());              
             } while (AI[n-1] != n-1);
-            DvrpPartialProblem partialProblem = new DvrpPartialProblem(partitions);
-            byte[][] result = new byte[1][];
-            using (var memoryStream = new MemoryStream())
+            DvrpSolver solver = new DvrpSolver(_dvrpProblem);
+            double approximateResult = solver.SolveApproximately();
+            
+            byte[][] result = new byte[threadCount][];
+            var k = partitions.Count/threadCount;
+            var d = partitions.Count%threadCount;
+            var b = 0;
+            for (int i = 0; i < threadCount; i++)
             {
-                _formatter.Serialize(memoryStream, partialProblem);
-                result[0] = memoryStream.ToArray();
-                return result;
+                using (var memoryStream = new MemoryStream())
+                {
+                    if (d > 0)
+                    {
+                        DvrpPartialProblem partialProblem = new DvrpPartialProblem(partitions.GetRange(i*k + b, k + 1),
+                            approximateResult);
+                        --d;
+                        ++b;
+                        _formatter.Serialize(memoryStream, partialProblem);
+                        result[i] = memoryStream.ToArray();
+                    }
+                    else
+                    {
+                        DvrpPartialProblem partialProblem = new DvrpPartialProblem(partitions.GetRange(i * k + b, k),
+                            approximateResult);
+                        _formatter.Serialize(memoryStream, partialProblem);
+                        result[i] = memoryStream.ToArray();
+                    }
+                    
+                }
             }
+            return result;
+
         }
 
         public override byte[] MergeSolution(byte[][] solutions)
         {
-            double min = double.MaxValue;
+            DvrpSolution finalSolution = new DvrpSolution(double.MaxValue, null);
             for (int i = 0; i < solutions.Length; i++)
             {
                 using (var memoryStream = new MemoryStream(solutions[i]))
                 {
                     var solution = (DvrpSolution)_formatter.Deserialize(memoryStream);
-                    if (solution.FinalTime < min) min = solution.FinalTime;
+                    if (solution.FinalTime < finalSolution.FinalTime)
+                    {
+                        finalSolution = solution;
+                    }
                 }
             }
-            var finalSolution = new DvrpSolution(min);
             using (var memoryStream = new MemoryStream())
             {
                 _formatter.Serialize(memoryStream, finalSolution);

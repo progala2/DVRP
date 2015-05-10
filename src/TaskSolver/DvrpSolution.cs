@@ -6,9 +6,11 @@ namespace _15pl04.Ucc.TaskSolver
     public class DvrpSolution
     {
         public double FinalTime { get; private set; }
-        public DvrpSolution(double finalTime)
+        public int[][] CarsRoutes { get; private set; }
+        public DvrpSolution(double finalTime, int[][] carsRoutes)
         {
             FinalTime = finalTime;
+            CarsRoutes = carsRoutes;
         }
     }
 }

@@ -17,8 +17,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         /// </summary>
         readonly double[,] _depotDistances;
         private int[] _carsLocations; 
-        private double[] _carsActuals;
-        private double[] _carsRoads;
+        private List<int>[] _carsRoads;
         readonly DvrpProblem _dvrpProblem;
         private bool[] _visited;
 
@@ -50,16 +49,17 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
 
             _visited = new bool[_dvrpProblem.Requests.Length];
             _carsLocations = new int[_dvrpProblem.VehicleCount];
-            _carsActuals = new double[_dvrpProblem.VehicleCount];
+            _carsRoads = new List<int>[_dvrpProblem.VehicleCount];
             for (int i = 0; i < _dvrpProblem.VehicleCount; i++)
             {
                 _carsLocations[i] = -1;
+                _carsRoads[i] = new List<int>();
             }
         }
 
         public DvrpSolution Solve(DvrpPartialProblem partProblem, System.TimeSpan timeout)
         {
-            double min = Double.MaxValue;
+            double min = partProblem.ApproximateResult;
             
             for (var i = 0; i < partProblem.Sets.Count; ++i)
             {
@@ -70,6 +70,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 {
                     if (list.Count == partProblem.Sets[i][j])
                     {
+                        if (list.Count == _dvrpProblem.VehicleCount)
+                        {
+                            breaking = true;
+                            break;
+                        }
                         list.Add(new List<int>
                         {
                             j
@@ -96,12 +101,14 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                     foreach (var city in list[j])
                     {
                         _visited[city] = true;
+                        var carRoute = new List<int> {city};
                         double result = SolveTsp(list[j], city, _depotDistances[0, city],
                             _dvrpProblem.Requests[city].AvailabilityTime + _dvrpProblem.Requests[city].Duration,
-                            oneCarDist, 1);
+                            oneCarDist, ref carRoute, 1);
                         if (result < oneCarDist)
                         {
                             oneCarDist = result;
+                            _carsRoads[j] = new List<int>(carRoute);
                         }
                         _visited[city] = false;
                     }
@@ -117,17 +124,35 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                     min = distance;
                 }
             }
-           return new DvrpSolution(min);         
+            int[][] roads = new int[_dvrpProblem.VehicleCount][];
+            for (int i = 0; i < roads.Length; i++)
+            {
+                roads[i] = _carsRoads[i].ToArray();
+            }
+           return new DvrpSolution(min, roads);         
         }
 
-        private double SolveTsp(List<int> citiesList, int lastIndex, double distance, double actual, double min, int deepth)
+        public double SolveApproximately()
+        {
+            //TODO to improve
+            double result = 0;
+            for (int i = 0; i < _dvrpProblem.Requests.Length; i++)
+            {
+                result += _depotDistances[0, i]*2;
+            }
+            return result;
+        }
+        private double SolveTsp(List<int> citiesList, int lastIndex, double distance, double actual, double min, ref List<int> carRoute, int deepth)
         {
             if (deepth == citiesList.Count)
             {
-                if (actual + _depotDistances[0, lastIndex] > _dvrpProblem.Depots[0].EndTime)
+                if (_dvrpProblem.Requests[carRoute[0]].AvailabilityTime < _dvrpProblem.Depots[0].EndTime &&
+                    _depotDistances[0, lastIndex] > _dvrpProblem.Depots[0].EndTime)
                     return Double.MaxValue;
+                carRoute.Add(-1);
                 return distance + _depotDistances[0, lastIndex];
             }
+            List<int> carRouteTemp = new List<int>(carRoute);
             foreach (var i in citiesList)
             {
                 if (_visited[i])
@@ -137,61 +162,20 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 actual += act;
                 distance += dist;
                 _visited[i] = true;
+                carRouteTemp.Add(i);
                 if (distance < min)
                 {
-                    var tmp = SolveTsp(citiesList, i, distance, actual, min, deepth + 1);
+                    var tmp = SolveTsp(citiesList, i, distance, actual, min, ref carRouteTemp, deepth + 1);
                     if (tmp < min)
+                    {
                         min = tmp;
+                        carRoute = new List<int>(carRouteTemp);
+                    }
                 }
+                carRouteTemp.RemoveAt(carRoute.Count-1);
                 distance -= dist;
                 actual -= act;
                 _visited[i] = false;
-            }
-            return min;
-        }
-
-        private double RecurrenceSolve(int lastIndex, int capacity, double actual, int deepth)
-        {
-            // there is no city left so we back to the depot
-            if (deepth == _dvrpProblem.Requests.Length)
-                return actual + _depotDistances[0, lastIndex];
-
-            double min = Double.MaxValue;
-            for (int i = 0; i < _dvrpProblem.Requests.Length; i++)
-            {
-                if (_visited[i])
-                    continue;
-                double dist;
-                if (capacity + _dvrpProblem.Requests[i].Demand >= -_dvrpProblem.VehicleCapacity)
-                {
-                    capacity += _dvrpProblem.Requests[i].Demand;
-                    dist = _distances[lastIndex, i] + _dvrpProblem.Requests[i].Duration + Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - actual, 0);
-                }
-                else
-                {
-                    actual += _depotDistances[0, i];
-                    if (actual > min)
-                    {
-                        actual -= _depotDistances[0, i];
-                        continue;
-                    }
-                    capacity = _dvrpProblem.Requests[i].Demand;
-                    dist = _depotDistances[0, i] + _dvrpProblem.Requests[i].Duration + Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - actual, 0);
-
-                }
-                actual += dist;
-                _visited[i] = true;
-                _carsLocations[0] = i;
-                if (actual <= min)
-                {
-                    var tmp = RecurrenceSolve(i, capacity, actual, deepth + 1);
-                    if (tmp < min)
-                        min = tmp;
-                }
-                capacity -= _dvrpProblem.Requests[i].Demand;
-                actual -= dist;
-                _visited[i] = false;
-                _carsLocations[0] = lastIndex;
             }
             return min;
         }
