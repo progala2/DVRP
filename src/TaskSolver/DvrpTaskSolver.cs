@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using _15pl04.Ucc.TaskSolver.DvrpAlgorithm;
@@ -35,33 +32,49 @@ namespace _15pl04.Ucc.TaskSolver
 
         public override byte[][] DivideProblem(int threadCount)
         {
+            // we generate all the partitions
+            // set {{0 0 0 0 0}} represents {{0 1 2 3 4}}
+            // set {{0 1 2 3 4}} represents {{0}{1}{2}{3}{4}}
+            // ai - a partition, i - 
+            // max[i] = max{max[i-1], ai[i-1]}
+            // max[0] = -1
+            // example:
+            // 1 1 1
+            // 1 1 2
+            // 1 2 1
+            // 1 2 2
+            // 1 2 3
+            
             if (threadCount < 1)
                 throw new ArgumentOutOfRangeException("threadCount");
             int n = _dvrpProblem.Requests.Length;
-            int[] AI = new int[n];
-            int[] Max = new int[n];
+            int[] ai = new int[n];
+            int[] max = new int[n];
+            // there is need to find only a start and end ai set for each thread
+            // and compute the partitions dynamically in the DvrpSolver because of large memory overhead with this solution
             List<int[]> partitions = new List<int[]>();
             for (int i = n - 2; i > -1; --i)
-                AI[i] = 0;
-            AI[n-1] = Max[0] = -1;
+                ai[i] = 0;
+            ai[n-1] = max[0] = -1;
             do
             {
                 for (int i = 1; i < n; ++i)
                 {
-                    if (Max[i - 1] < AI[i - 1])
-                        Max[i] = AI[i - 1];
+                    if (max[i - 1] < ai[i - 1])
+                        max[i] = ai[i - 1];
                     else
-                        Max[i] = Max[i - 1];
+                        max[i] = max[i - 1];
                 }
                 int p = n - 1;
-                while (AI[p] == Max[p] + 1)
+                while (ai[p] == max[p] + 1)
                 {
-                    AI[p] = 0;
+                    ai[p] = 0;
                     p = p - 1;
                 }
-            AI[p] = AI[p]+1;
-            partitions.Add((int[])AI.Clone());              
-            } while (AI[n-1] != n-1);
+            ai[p] = ai[p]+1;
+            partitions.Add((int[])ai.Clone());              
+                // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
+            } while (ai[n-1] != n-1);
             DvrpSolver solver = new DvrpSolver(_dvrpProblem);
             double approximateResult = solver.SolveApproximately();
             
@@ -99,9 +112,9 @@ namespace _15pl04.Ucc.TaskSolver
         public override byte[] MergeSolution(byte[][] solutions)
         {
             DvrpSolution finalSolution = new DvrpSolution(double.MaxValue, null);
-            for (int i = 0; i < solutions.Length; i++)
+            foreach (byte[] t in solutions)
             {
-                using (var memoryStream = new MemoryStream(solutions[i]))
+                using (var memoryStream = new MemoryStream(t))
                 {
                     var solution = (DvrpSolution)_formatter.Deserialize(memoryStream);
                     if (solution.FinalTime < finalSolution.FinalTime)
@@ -122,7 +135,7 @@ namespace _15pl04.Ucc.TaskSolver
             get { return "UCC.Dvrp"; }
         }
 
-        public override byte[] Solve(byte[] partialData, System.TimeSpan timeout)
+        public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
             DvrpPartialProblem problem;
             using (var memoryStream = new MemoryStream(partialData))

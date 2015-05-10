@@ -19,13 +19,13 @@ namespace _15pl04.Ucc.TaskSolver
             CutOffTime = cutOffTime;
             Depots = depots.ToArray();
             Requests = requests.ToArray();
-            for (int i = 0; i < Requests.Length; i++)
+            foreach (var t in Requests)
             {
-                double dx = Depots[0].X - Requests[i].X;
-                double dy = Depots[0].Y - Requests[i].Y;
-                if (Requests[i].AvailabilityTime >= Depots[0].EndTime * cutOffTime || Requests[i].AvailabilityTime + Math.Sqrt(dx * dx + dy * dy) > Depots[0].EndTime)
+                var dx = Depots[0].X - t.X;
+                var dy = Depots[0].Y - t.Y;
+                if (t.AvailabilityTime >= Depots[0].EndTime * cutOffTime || t.AvailabilityTime + Math.Sqrt(dx * dx + dy * dy) > Depots[0].EndTime)
                 {
-                    Requests[i].AvailabilityTime = Depots[0].EndTime;
+                    t.AvailabilityTime = Depots[0].EndTime;
                 }
             }
         }

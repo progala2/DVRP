@@ -18,10 +18,10 @@ namespace _15pl04.Ucc.TaskSolver.Tests
         { 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            DvrpProblem problem = new DvrpProblem(4, 100, new Depot[]
+            DvrpProblem problem = new DvrpProblem(4, 100, new[]
             {
                 new Depot(0, 0, 0, 700), 
-            }, new Request[]
+            }, new[]
             {
                 new Request(1, 0, -20, 0, 20),
                 new Request(2, 0, -20, 0, 20),
@@ -45,10 +45,10 @@ namespace _15pl04.Ucc.TaskSolver.Tests
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            DvrpProblem problem = new DvrpProblem(8, 100, new Depot[]
+            DvrpProblem problem = new DvrpProblem(8, 100, new[]
             {
                 new Depot(0, 0, 0, 560), 
-            }, new Request[]
+            }, new[]
             {
                 new Request(-39, 97, -29, 276, 20),
                 new Request(34, -45, -21, 451, 20),
@@ -103,10 +103,10 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             {
                 var finalSolution = (DvrpSolution)_formatter.Deserialize(memoryStream);
                 Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final time: " + finalSolution.FinalTime);
-                for (int i = 0; i < finalSolution.CarsRoutes.Length; i++)
+                foreach (int[] t in finalSolution.CarsRoutes)
                 {
                     Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "route: " +
-                                    string.Join(", ", finalSolution.CarsRoutes[i].Select(v => v.ToString())));
+                                    string.Join(", ", t.Select(v => v.ToString())));
                 }
                 result = Math.Abs(Math.Round((double)new decimal(finalSolution.FinalTime), 2) - expectectedResult) < Double.Epsilon;
             }
