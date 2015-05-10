@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using _15pl04.Ucc.TaskSolver.DvrpAlgorithm;
 
 namespace _15pl04.Ucc.TaskSolver
 {
@@ -11,13 +14,7 @@ namespace _15pl04.Ucc.TaskSolver
     {
         readonly IFormatter _formatter;
         readonly DvrpProblem _dvrpProblem;
-
-        readonly double[,] _distances;
-        /// <summary>
-        /// index0 - depot
-        /// index1 - request
-        /// </summary>
-        readonly double[,] _depotDistances;
+       
         public DvrpTaskSolver(byte[] problemData)
             : base(problemData)
         {
@@ -34,52 +31,48 @@ namespace _15pl04.Ucc.TaskSolver
             {
                 State = TaskSolverState.Error;
             }
-            var n = _dvrpProblem.Requests.Length;
-            _distances = new double[n, n];
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = i + 1; j < n; j++)
-                {
-                    double dx = _dvrpProblem.Requests[i].X - _dvrpProblem.Requests[j].X;
-                    double dy = _dvrpProblem.Requests[i].Y - _dvrpProblem.Requests[j].Y;
-                    _distances[i, j] = _distances[j, i] = Math.Sqrt(dx * dx + dy * dy);
-                }
-            }
-            var m = _dvrpProblem.Depots.Length;
-            _depotDistances = new double[m, n];
-            for (int i = 0; i < m; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    double dx = _dvrpProblem.Depots[i].X - _dvrpProblem.Requests[j].X;
-                    double dy = _dvrpProblem.Depots[i].Y - _dvrpProblem.Requests[j].Y;
-                    _depotDistances[i, j] = Math.Sqrt(dx * dx + dy * dy);
-                }
-            }
         }
 
         public override byte[][] DivideProblem(int threadCount)
         {
             if (threadCount < 1)
                 throw new ArgumentOutOfRangeException("threadCount");
-            byte[][] ret = new byte[threadCount][];
-            if (threadCount <= _dvrpProblem.Requests.Length)
+            int n = _dvrpProblem.Requests.Length;
+            int[] AI = new int[n];
+            int[] Max = new int[n];
+            List<int[]> partitions = new List<int[]>();
+            for (int i = n - 2; i > -1; --i)
+                AI[i] = 0;
+            AI[n-1] = Max[0] = -1;
+            do
             {
-                float k = _dvrpProblem.Requests.Length / (float)threadCount;
-                for (int i = 0; i < threadCount; ++i)
+                for (int i = 1; i < n; ++i)
                 {
-                    List<int> set = new List<int>();
-                    for (int j = (int)(i * k); j < (int)(i * k + k); ++j)
-                        set.Add(j);
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        var partialProblem = new DvrpPartialProblem(set);
-                        _formatter.Serialize(memoryStream, partialProblem);
-                        ret[i] = memoryStream.ToArray();
-                    }
+                    if (Max[i - 1] < AI[i - 1])
+                        Max[i] = AI[i - 1];
+                    else
+                        Max[i] = Max[i - 1];
                 }
+                int p = n - 1;
+                while (AI[p] == Max[p] + 1)
+                {
+                    AI[p] = 1;
+                    p = p - 1;
+                }
+            AI[p] = AI[p]+1;
+            Debug.WriteLine("My array: {0}",
+                string.Join(", ", AI.Select(v => v.ToString()))
+                );
+            partitions.Add((int[])AI.Clone());              
+            } while (AI[n-1] != n-1);
+            DvrpPartialProblem partialProblem = new DvrpPartialProblem(partitions);
+            byte[][] result = new byte[1][];
+            using (var memoryStream = new MemoryStream())
+            {
+                _formatter.Serialize(memoryStream, partialProblem);
+                result[0] = memoryStream.ToArray();
+                return result;
             }
-            return ret;
         }
 
         public override byte[] MergeSolution(byte[][] solutions)
@@ -108,81 +101,17 @@ namespace _15pl04.Ucc.TaskSolver
 
         public override byte[] Solve(byte[] partialData, System.TimeSpan timeout)
         {
-            double min = Double.MaxValue;
-            bool[] visited = new bool[_dvrpProblem.Requests.Length];
-            DvrpPartialProblem partProblem;
+            DvrpPartialProblem problem;
             using (var memoryStream = new MemoryStream(partialData))
             {
-                partProblem = (DvrpPartialProblem)_formatter.Deserialize(memoryStream);
+                problem = (DvrpPartialProblem)_formatter.Deserialize(memoryStream);
             }
-            foreach(var i in partProblem.Sets)
-            {
-                int capacity = _dvrpProblem.Requests[i].Demand;
-                double actual = _depotDistances[0, i] + _dvrpProblem.Requests[i].Duration + _dvrpProblem.Requests[i].AvailabilityTime;
-                visited[i] = true;
-                double tmp = RecurrenceSolve(i, capacity, actual, 1, ref visited);
-                if (tmp < min)
-                    min = tmp;
-                visited[i] = false;
-            }
-            var finalSolution = new DvrpSolution(min);
+            DvrpSolver solver = new DvrpSolver(_dvrpProblem);
             using (var memoryStream = new MemoryStream())
             {
-                _formatter.Serialize(memoryStream, finalSolution);
+                _formatter.Serialize(memoryStream, solver.Solve(problem, timeout));
                 return memoryStream.ToArray();
             }
-        }
-
-        private double RecurrenceSolve(int lastIndex, int capacity, double actual, int deepth, ref bool[] visited)
-        {
-            if (deepth == _dvrpProblem.Requests.Length)
-                return actual + _depotDistances[0, lastIndex];
-            double min = Double.MaxValue;
-            for (int i = 0; i < _dvrpProblem.Requests.Length; i++)
-            {
-                if (visited[i])
-                    continue;
-                if (capacity + _dvrpProblem.Requests[i].Demand >= -_dvrpProblem.VehicleCapacity)
-                {
-                    capacity += _dvrpProblem.Requests[i].Demand;
-                    double dist = _distances[lastIndex, i] + _dvrpProblem.Requests[i].Duration + Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - actual, 0);
-                    actual += dist;
-                    visited[i] = true;
-                    if (actual <= min)
-                    {
-                        var tmp = RecurrenceSolve(i, capacity, actual, deepth + 1, ref visited);
-                        if (tmp < min)
-                            min = tmp;
-                    }
-                    capacity -= _dvrpProblem.Requests[i].Demand;
-                    actual -= dist;
-                    visited[i] = false;
-                }
-                else
-                {
-                    actual += _depotDistances[0, i];
-                    if (actual > min)
-                    {
-                        actual -= _depotDistances[0, i];
-                        continue;
-                    }
-                    capacity = _dvrpProblem.Requests[i].Demand;
-                    double dist = _depotDistances[0, i] + _dvrpProblem.Requests[i].Duration + Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - actual, 0);
-                    actual += dist;
-                    visited[i] = true;
-                    if (actual <= min)
-                    {
-                        var tmp = RecurrenceSolve(i, capacity, actual, deepth + 1, ref visited);
-                        if (tmp < min)
-                            min = tmp;
-                    }
-                    capacity -= _dvrpProblem.Requests[i].Demand;
-                    actual -= dist;
-                    visited[i] = false;
-                }
-                
-            }
-            return min;
         }
     }
 

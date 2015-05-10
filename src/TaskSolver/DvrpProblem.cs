@@ -19,6 +19,13 @@ namespace _15pl04.Ucc.TaskSolver
             CutOffTime = cutOffTime;
             Depots = depots.ToArray();
             Requests = requests.ToArray();
+            for (int i = 0; i < Requests.Length; i++)
+            {
+                if (Requests[i].AvailabilityTime >= Depots[0].EndTime*cutOffTime)
+                {
+                    Requests[i].AvailabilityTime = Depots[0].EndTime;
+                }
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests
         { 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            DvrpProblem problem = new DvrpProblem(1, 100, new Depot[]
+            DvrpProblem problem = new DvrpProblem(2, 100, new Depot[]
             {
                 new Depot(0, 0, 0, 700), 
             }, new Request[]
@@ -26,19 +26,13 @@ namespace _15pl04.Ucc.TaskSolver.Tests
                 new Request(1, 0, -20, 0, 20),
                 new Request(2, 0, -20, 0, 20),
                 new Request(3, 0, -20, 0, 20),
-                new Request(4, 0, -20, 0, 20),
-                new Request(5, 0, -20, 0, 20),
-                new Request(6, 0, -20, 0, 20),
-                new Request(7, 0, -20, 0, 20),
-                new Request(8, 0, -20, 0, 20),
-                new Request(9, 0, -20, 0, 20),
-                new Request(10, 0, -20, 0, 20),
-                new Request(11, 0, -20, 0, 20),
+                new Request(4, 0, -50, 0, 20),
+                //new Request(5, 0, -30, 0, 20),
             });
 
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
             HelpingFunctionForTests(problem, 8, 152, stopwatch);
-            stopwatch.Restart();
+           /* stopwatch.Restart();
             problem = new DvrpProblem(1, 100, new Depot[]
             {
                 new Depot(0, 0, 0, 700), 
@@ -52,8 +46,8 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             });
 
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
-            HelpingFunctionForTests(problem, 8, 110, stopwatch);
-            stopwatch.Stop();
+            HelpingFunctionForTests(problem, 3, 110, stopwatch);
+            stopwatch.Stop();*/
         }
 
         private bool HelpingFunctionForTests(DvrpProblem problem, int threadsCount, double expectectedResult, Stopwatch stopwatch)
@@ -71,24 +65,17 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             var partialProblemsData = taskSolver.DivideProblem(threadsCount);
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem divided; threadsCount=" + threadsCount);
 
-            var partialSolutionsData = new List<byte[]>();
             var tasks = new List<Task<byte[]>>(threadsCount);
             foreach (var partialProblemData in partialProblemsData)
             {
-               tasks.Add(new Task<byte[]> (() =>
-                    {
-                        return taskSolver.Solve(partialProblemData, new TimeSpan());
-                    }));
+                var data = partialProblemData;
+                tasks.Add(new Task<byte[]> (() => taskSolver.Solve(data, new TimeSpan())));
                tasks[tasks.Count - 1].Start();
             }
             Task.WaitAll(tasks.ToArray());
-            foreach (var task in tasks)
-            {
-                partialSolutionsData.Add(task.Result);
-            }
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "partial solutions solved");
 
-            var finalSolutionData = taskSolver.MergeSolution(partialSolutionsData.ToArray());
+            var finalSolutionData = taskSolver.MergeSolution(tasks.Select(task => task.Result).ToArray());
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problems merged");
 
             bool result;

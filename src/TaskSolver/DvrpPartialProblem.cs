@@ -9,11 +9,11 @@ namespace _15pl04.Ucc.TaskSolver
     [Serializable]
     public class DvrpPartialProblem
     {
-        public DvrpPartialProblem(List<int> sets)
+        public DvrpPartialProblem(List<int[]> sets)
         {
             Sets = sets;
         }
 
-        public List<int> Sets { get; private set; }
+        public List<int[]> Sets { get; private set; }
     }
 }

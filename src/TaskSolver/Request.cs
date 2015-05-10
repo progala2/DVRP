@@ -21,7 +21,7 @@ namespace _15pl04.Ucc.TaskSolver
         public double X { get; private set; }
         public double Y { get; private set; }
         public int Demand { get; private set; }
-        public double AvailabilityTime { get; private set; }
+        public double AvailabilityTime { get; internal set; }
         public double Duration { get; private set; }
     }
 }
