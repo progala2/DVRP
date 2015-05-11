@@ -121,7 +121,7 @@ namespace _15pl04.Ucc.TaskSolver
                 using (var memoryStream = new MemoryStream(t))
                 {
                     var solution = (DvrpSolution)_formatter.Deserialize(memoryStream);
-                    if (solution.FinalTime < finalSolution.FinalTime)
+                    if (solution.FinalDistance < finalSolution.FinalDistance)
                     {
                         finalSolution = solution;
                     }

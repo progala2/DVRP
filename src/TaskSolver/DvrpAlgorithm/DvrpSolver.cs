@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
 {
@@ -11,9 +12,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         /// index1 - request
         /// </summary>
         readonly double[,] _depotDistances; 
-        private readonly List<int>[] _carsRoads;
+        private List<int>[] _carsRoads;
         readonly DvrpProblem _dvrpProblem;
         private readonly bool[] _visited;
+        Stopwatch _timer = new Stopwatch();
+        TimeSpan _timeout;
 
         public DvrpSolver(DvrpProblem problem)
         {
@@ -58,8 +61,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             max[0] = -1;
             var part = partProblem.SetBegin;
 
+            _timeout = timeout;
+            _timer.Reset();
+            _timer.Start();
             // let's check all the partitions
-            for (ulong i = 0; i < partProblem.NumberOfSets; ++i)
+            for (ulong i = 0; i < partProblem.NumberOfSets && _timer.Elapsed.TotalSeconds < timeout.TotalSeconds; ++i)
             {
                 for (var j = 1; j < n; ++j)
                 {
@@ -111,6 +117,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 if (breaking)
                     continue;
                 double distance = 0;
+                var carsRoads = new List<int>[_dvrpProblem.VehicleCount];
                 for (var j = 0; j < list.Count; ++j)
                 {
                     var oneCarDist = double.MaxValue;
@@ -124,7 +131,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                         if (result < oneCarDist)
                         {
                             oneCarDist = result;
-                            _carsRoads[j] = new List<int>(carRoute);
+                            carsRoads[j] = new List<int>(carRoute);
                         }
                         _visited[city] = false;
                     }
@@ -138,6 +145,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 if (min > distance)
                 {
                     min = distance;
+                    for (var j = 0; j < _dvrpProblem.VehicleCount; j++)
+                    {
+                        if (carsRoads[j] == null) break;
+                        _carsRoads[j] = new List<int>(carsRoads[j]);
+                    }
                 }
             }
             var roads = new int[_dvrpProblem.VehicleCount][];
@@ -145,6 +157,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             {
                 roads[i] = _carsRoads[i].ToArray();
             }
+            _timer.Stop();
            return new DvrpSolution(min, roads);  
         }
 
@@ -171,6 +184,8 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             var carRouteTemp = new List<int>(carRoute);
             foreach (var i in citiesList)
             {
+                if (_timer.Elapsed.TotalSeconds >= _timeout.TotalSeconds)
+                    return double.MaxValue;
                 if (_visited[i])
                     continue;
                 var act = _distances[lastIndex, i] + _dvrpProblem.Requests[i].Duration + Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - actual, 0);
