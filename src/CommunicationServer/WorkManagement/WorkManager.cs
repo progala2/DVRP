@@ -158,8 +158,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             ulong id;
             do
             {
-                id = _random.NextUInt64()%10;
-                //id = _random.NextUInt64(); TODO debug
+                id = _random.NextUInt64() % 100; //TODO this is debug solution
+                //id = _random.NextUInt64(); 
             } while (_problems.ContainsKey(id));
 
             // Create problem instance.
@@ -203,16 +203,15 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Make sure the problem instance's number of partial problems & partial solutions is not greater than 'NumberOfParts' (excluding the partial problem being added).
             var ppNum = _partialProblems.Count(pair => pair.Key.Item1 == problemId);
             var psNum = _partialSolutions.Count(pair => pair.Key.Item1 == problemId);
-            Logger.Debug("ppNum:" + ppNum + ", psNum:" + psNum + ", NumberOfParts:" + problem.NumberOfParts + ".");
-            if (ppNum + psNum > (int)problem.NumberOfParts - 1)
+            if (ppNum + psNum == (int)problem.NumberOfParts - 1)
             {
-                Logger.Error("Received more partial problems than expected.");
-                return;
-            }
-            else if (ppNum + psNum == (int)problem.NumberOfParts - 1)
-            {
-                Logger.Info("Received all expected partial problems (id: " + problem.Id + ").");
+                Logger.Info("Got all partial problems (id: " + problem.Id + ").");
                 problem.State = Problem.ProblemState.AwaitingSolution;
+            }
+            else if (ppNum + psNum > (int)problem.NumberOfParts - 1)
+            {
+                Logger.Warn("Received more partial problems than expected.");
+                return;
             }
 
             // Create partial problem instance.

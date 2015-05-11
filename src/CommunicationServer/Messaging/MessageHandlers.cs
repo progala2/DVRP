@@ -168,7 +168,6 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 };
             }
 
-            Logger.Debug("returing response");
             return new List<Message> { response };
         }
 
