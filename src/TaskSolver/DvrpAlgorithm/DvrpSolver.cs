@@ -120,7 +120,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 var carsRoads = new List<int>[_dvrpProblem.VehicleCount];
                 for (var j = 0; j < list.Count; ++j)
                 {
-                    var oneCarDist = double.MaxValue;
+                    var oneCarDist = min;
                     foreach (var city in list[j])
                     {
                         _visited[city] = true;
@@ -135,12 +135,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                         }
                         _visited[city] = false;
                     }
-                    if (Math.Abs(oneCarDist - double.MaxValue) < double.Epsilon)
+                    distance += oneCarDist;
+                    if (distance > min)
                     {
-                        distance = double.MaxValue;
                         break;
                     }
-                    distance += oneCarDist;
                 }
                 if (min > distance)
                 {
@@ -185,7 +184,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             foreach (var i in citiesList)
             {
                 if (_timer.Elapsed.TotalSeconds >= _timeout.TotalSeconds)
-                    return double.MaxValue;
+                    return min;
                 if (_visited[i])
                     continue;
                 var act = _distances[lastIndex, i] + _dvrpProblem.Requests[i].Duration + Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - actual, 0);

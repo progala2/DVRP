@@ -117,6 +117,8 @@ namespace _15pl04.Ucc.TaskSolver.Tests
                 new Request(11, 0, -30, 0, 20),
                 new Request(12, 0, -30, 0, 20),
                 new Request(13, 0, -30, 0, 20),
+                new Request(14, 0, -30, 0, 20),
+                new Request(15, 0, -30, 0, 20),
             });
 
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
