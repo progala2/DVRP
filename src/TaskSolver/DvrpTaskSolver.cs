@@ -76,7 +76,7 @@ namespace _15pl04.Ucc.TaskSolver
                     else
                         max[i] = max[i - 1];
                 }
-                // we check if the lasts elements of set are in theirs actual maximum
+                // we check if the last elements of the set are in their actual maximum
                 // for example
                 // 01200345 p = 7
                 // 01200340 p = 6

@@ -66,7 +66,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests
         }
 
         [TestMethod]
-        public void TestSolvingOkulewiczTwelfClients()
+        public void TestSolvingOkulewiczTwelveClients()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
