@@ -32,7 +32,6 @@
   <ItemGroup>
     <Compile Include="DvrpAlgorithm\DvrpDivider.cs" />
     <Compile Include="DvrpAlgorithm\DvrpSolver.cs" />
-    <Compile Include="DvrpAlgorithm\TspSolver.cs" />
     <Compile Include="DvrpPartialProblem.cs" />
     <Compile Include="DvrpTaskSolver.cs" />
     <Compile Include="DvrpProblem.cs" />

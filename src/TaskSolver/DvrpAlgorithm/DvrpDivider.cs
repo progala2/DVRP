@@ -69,14 +69,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                     p = p - 1;
                 }
                 #region optimalization
-                // now it is (B/n) insted of (B*n)
-                // B - bell number 2^n < B < n!
-                if (p == n - 3 && part[p] == 0 && part[p + 1] == 0 && part[p + 2] == 0)
+                // now it is (n^2) insted of (B*n)
+                if (p <= n - 2 && p > 1 && CheckZeros(part, p, n))
                 {
-                    var tmp = max[p] + 2;
-                    // tmp = (tmp * max[p] + tmp + 1)*(max[p] + 1) + ((tmp + 1) * (max[p] + 1) + tmp + 2);
-                    tmp = (tmp * max[p] + 3 * tmp + 2) * max[p] + 3 * tmp + 4;
-                    if ((ulong)tmp > numberOfSetsForThread - j - 1)
+                    var tmp = CalculateCombinations(max[p], p, n);
+                    if (tmp > numberOfSetsForThread - j - 1)
                     {
                         part[p] = part[p] + 1;
                         ++j;
@@ -84,25 +81,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                     else
                     {
                         part[p] = max[p] + 1;
-                        part[p + 1] = part[p] + 1;
-                        part[p + 2] = part[p] + 2;
-                        j += (ulong)tmp;
-                    }
-                }
-                else if (p == n - 2 && part[p] == 0 && part[p + 1] == 0)
-                {
-                    var tmp = max[p] + 2;
-                    tmp = tmp * max[p] + tmp + 1;
-                    if ((ulong)tmp > numberOfSetsForThread - j - 1)
-                    {
-                        part[p] = part[p] + 1;
-                        ++j;
-                    }
-                    else
-                    {
-                        part[p] = max[p] + 1;
-                        part[p + 1] = part[p] + 1;
-                        j += (ulong)tmp;
+                        for (int i = p + 1; i < n; i++)
+                        {
+                            part[i] = part[i-1] + 1;
+                        }
+                        j += tmp;
                     }
                 }
                 else if (p == n - 1 && part[p] == 0)
@@ -155,6 +138,27 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 triangle.Remove(i - 2);
             }
             return triangle[n].Last();
+        }
+
+        static ulong CalculateCombinations(int max, int p, int n)
+        {
+            if (p == n - 2)
+            {
+                ulong tmp = (ulong)max + 2;
+                tmp = tmp*(ulong) max + tmp + 1;
+                return tmp;
+            }
+            return CalculateCombinations(max, p + 1, n)*(ulong) (max + 1) + CalculateCombinations(max + 1, p + 1, n);
+        }
+
+        static bool CheckZeros(int[] part, int p, int n)
+        {
+            for (; p < n; p++)
+            {
+                if (part[p] != 0)
+                    return false;
+            }
+            return true;
         }
     }
 }
