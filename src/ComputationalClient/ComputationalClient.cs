@@ -29,7 +29,7 @@ namespace _15pl04.Ucc.ComputationalClient
         /// <param name="data">The serialized problem data.</param>
         /// <param name="solvingTimeout">The optional time restriction for solving the problem (in ms).</param>
         /// <returns>The ID of the problem instance assigned by the server or null if server is not responding.</returns>
-        public uint? SendSolveRequest(string problemType, byte[] data, ulong? solvingTimeout)
+        public ulong? SendSolveRequest(string problemType, byte[] data, ulong? solvingTimeout)
         {
             var solveRequestMessage = new SolveRequestMessage
             {
@@ -41,13 +41,13 @@ namespace _15pl04.Ucc.ComputationalClient
             if (receivedMessages == null)
                 return null;
 
-            uint? problemId = null;
+            ulong? problemId = null;
             foreach (var receivedMessage in receivedMessages)
             {
                 SolveRequestResponseMessage solveRequestResponseMessage;
                 if ((solveRequestResponseMessage = receivedMessage as SolveRequestResponseMessage) != null)
                 {
-                    problemId = (uint?) solveRequestResponseMessage.AssignedId;
+                    problemId = (ulong?)solveRequestResponseMessage.AssignedId;
                 }
                 else
                 {
@@ -63,7 +63,7 @@ namespace _15pl04.Ucc.ComputationalClient
         /// </summary>
         /// <param name="id">The ID of the problem instance assigned by the server.</param>
         /// <returns>Solutions message(s) or null if server is not responding.</returns>
-        public SolutionsMessage[] SendSolutionRequest(ulong id)
+        public List<SolutionsMessage> SendSolutionRequest(ulong id)
         {
             var solutionRequestMessage = new SolutionRequestMessage
             {
@@ -87,7 +87,7 @@ namespace _15pl04.Ucc.ComputationalClient
                         new InvalidOperationException("SolutionsMessage expected."));
                 }
             }
-            return solutionsMessages.ToArray();
+            return solutionsMessages;
         }
 
         private List<Message> SendMessage(Message message)

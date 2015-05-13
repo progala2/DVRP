@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mail;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using _15pl04.Ucc.TaskSolver.DvrpAlgorithm;
@@ -52,7 +51,7 @@ namespace _15pl04.Ucc.TaskSolver
                 throw new ArgumentOutOfRangeException("threadCount");
             var n = _dvrpProblem.Requests.Length;
             var part = new int[n];
-            
+
             var max = new int[n];
             var maxNumberofSets = TriangularMethodBellNumber(n);
             var numberOfSetsForThread = maxNumberofSets / (ulong)threadCount;
@@ -114,17 +113,17 @@ namespace _15pl04.Ucc.TaskSolver
                 else if (p == n - 2 && part[p] == 0 && part[p + 1] == 0)
                 {
                     var tmp = max[p] + 2;
-                    tmp = tmp*max[p] + tmp + 1;
+                    tmp = tmp * max[p] + tmp + 1;
                     if ((ulong)tmp > numberOfSetsForThread - j - 1)
                     {
                         part[p] = part[p] + 1;
-                        ++j;   
+                        ++j;
                     }
                     else
                     {
                         part[p] = max[p] + 1;
                         part[p + 1] = part[p] + 1;
-                        j += (ulong)tmp;  
+                        j += (ulong)tmp;
                     }
                 }
                 else if (p == n - 1 && part[p] == 0)
@@ -141,7 +140,7 @@ namespace _15pl04.Ucc.TaskSolver
                 }
                 #endregion
                 if (j == numberOfSetsForThread)
-                {                   
+                {
                     using (var memoryStream = new MemoryStream())
                     {
                         _formatter.Serialize(memoryStream, new DvrpPartialProblem(partLast, approximateResult, j));
@@ -214,7 +213,7 @@ namespace _15pl04.Ucc.TaskSolver
 
         static ulong TriangularMethodBellNumber(int n)
         {
-            var triangle = new Dictionary<long, List<ulong>> {{1, new List<ulong>(new ulong[] {1})}};
+            var triangle = new Dictionary<long, List<ulong>> { { 1, new List<ulong>(new ulong[] { 1 }) } };
             for (int i = 2; i <= n; i++)
             {
                 triangle.Add(i, new List<ulong>());

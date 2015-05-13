@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
+using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
 using _15pl04.Ucc.Commons;
+using _15pl04.Ucc.Commons.Config;
+using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Utilities;
 using _15pl04.Ucc.MinMaxTaskSolver;
@@ -12,15 +14,30 @@ namespace _15pl04.Ucc.ComputationalClient
 {
     public class Program
     {
+        private static ILogger _logger = new TraceSourceLogger("ComputationalClient");
+
         private static void Main(string[] args)
         {
-            var appSettings = ConfigurationManager.AppSettings;
-            var primaryCSaddress = appSettings["primaryCSaddress"];
-            var primaryCSport = appSettings["primaryCSport"];
-            var serverAddress = IpEndPointParser.Parse(primaryCSaddress, primaryCSport);
-            Console.WriteLine("server address from App.config: " + serverAddress);
+            ComputationalClient computationalClient;
+            try
+            {
+                ComponentConfigurationSection config = ComponentConfigurationSection.LoadConfig("componentConfig", args);
 
-            var computationalClient = new ComputationalClient(serverAddress);
+                IPEndPoint serverAddress = IpEndPointParser.Parse(config.PrimaryServer.Address, config.PrimaryServer.Port);
+                //string taskSolversDirectoryRelativePath = config.TaskSolversPath;
+
+                _logger.Info("Server address: " + serverAddress);
+
+                computationalClient = new ComputationalClient(serverAddress);
+            }
+            catch (Exception ex)
+            {
+                var errorText = string.Format("{0}:{1}", ex.GetType().FullName, ex.Message);
+                if (ex.InnerException != null)
+                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName, ex.InnerException.Message);
+                _logger.Error(errorText);
+                return;
+            }
 
             computationalClient.MessageSendingException += computationalClient_MessageSendingException;
             computationalClient.MessageReceived += computationalClient_MessageReceived;
@@ -29,9 +46,13 @@ namespace _15pl04.Ucc.ComputationalClient
             var problemType = "_15pl04.UCC.MinMax";
 
             string line;
-            while ((line = Console.ReadLine()) != "exit")
+            while (true)
             {
-                // input handling
+                line = Console.ReadLine().ToLower();
+                if (line == "stop" || line == "quit" || line == "exit")
+                    break;
+
+                // TODO
                 if (line == "solve")
                 {
                     var numbers = GenerateNumbers(10, 0, 50);
