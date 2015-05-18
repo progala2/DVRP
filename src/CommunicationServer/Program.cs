@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using _15pl04.Ucc.Commons.Utilities;
+using System.Net;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
@@ -11,7 +12,7 @@ namespace _15pl04.Ucc.CommunicationServer
             var config = new ServerConfig(args);
 
             var appSettings = ConfigurationManager.AppSettings;
-            var address = "127.0.0.1"; //Dns.GetHostName();
+            var address = Dns.GetHostName();
             config.Address = IpEndPointParser.Parse(address, appSettings["listeningPort"]);
             config.CommunicationTimeout = uint.Parse(appSettings["timeout"]);
             config.Mode = ServerConfig.ServerMode.Primary;

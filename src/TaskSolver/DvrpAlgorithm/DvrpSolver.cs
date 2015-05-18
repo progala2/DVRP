@@ -16,9 +16,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         readonly DvrpProblem _dvrpProblem;
         readonly Stopwatch _timer = new Stopwatch();
         private TspSolver _tspSolver;
+        public UCCTaskSolver.TaskSolver.TaskSolverState State { get; private set; }
 
         public DvrpSolver(DvrpProblem problem)
         {
+            State = UCCTaskSolver.TaskSolver.TaskSolverState.OK;
             _dvrpProblem = problem;
             var n = _dvrpProblem.Requests.Length;
             _distances = new double[n, n];
@@ -63,8 +65,13 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             _timer.Reset();
             _timer.Start();
             // let's check all the partitions
-            for (ulong i = 0; i < partProblem.NumberOfSets && _timer.Elapsed.TotalSeconds < timeout.TotalSeconds; ++i)
+            for (ulong i = 0; i < partProblem.NumberOfSets; ++i)
             {
+                if (_timer.Elapsed.TotalSeconds >= timeout.TotalSeconds)
+                {
+                    State = UCCTaskSolver.TaskSolver.TaskSolverState.Timeout;
+                    break;
+                }
                 for (var j = 1; j < n; ++j)
                 {
                     if (max[j - 1] < part[j - 1])

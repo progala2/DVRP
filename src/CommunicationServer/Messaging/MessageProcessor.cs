@@ -135,7 +135,6 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     break;
                 }
             }
-        }
 
             foreach (Message msgToSend in responseMessages)
                 Logger.Trace("Sending " + msgToSend.MessageType + " message.");
