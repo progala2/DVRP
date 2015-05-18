@@ -12,14 +12,12 @@ namespace _15pl04.Ucc.Commons.Logging
             <string, Action<string>>
         {
             {"printDate", val => bool.TryParse(val, out _printDate)},
-            {"printSource", val => bool.TryParse(val, out _printSource)},
-            {"printCallerInfo", val => bool.TryParse(val, out _printCallerInfo)}
+            {"printSource", val => bool.TryParse(val, out _printSource)}
         };
 
         private static bool _customAttributesInitialized;
         private static bool _printDate;
         private static bool _printSource;
-        private static bool _printCallerInfo;
 
         public CustomConsoleTraceListener()
         {
@@ -45,15 +43,6 @@ namespace _15pl04.Ucc.Commons.Logging
             {
                 EnsureCustomAttributesInitialized();
                 return _printSource;
-            }
-        }
-
-        protected bool PrintCallerInfo
-        {
-            get
-            {
-                EnsureCustomAttributesInitialized();
-                return _printCallerInfo;
             }
         }
 
@@ -96,8 +85,6 @@ namespace _15pl04.Ucc.Commons.Logging
                 outputs.Add(eventCache.DateTime.ToString());
             if (PrintSource)
                 outputs.Add(string.Format("[{0}]", source));
-            if (PrintCallerInfo)
-                outputs.Add(GetCallerInfoPrefix());
             if (!string.IsNullOrWhiteSpace(message))
                 outputs.Add(message);
             Console.WriteLine(string.Join(" ", outputs));
@@ -149,17 +136,6 @@ namespace _15pl04.Ucc.Commons.Logging
                 }
             }
             _customAttributesInitialized = true;
-        }
-
-        private string GetCallerInfoPrefix()
-        {
-            var frame = new StackFrame(4);
-            var method = frame.GetMethod();
-
-            var className = method.DeclaringType.Name;
-            var methodName = method.Name;
-
-            return "[" + className + "/" + methodName + "]";
         }
     }
 }

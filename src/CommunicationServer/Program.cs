@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Configuration;
-using _15pl04.Ucc.Commons.Utilities;
 using System.Net;
+using _15pl04.Ucc.Commons.Config;
+using _15pl04.Ucc.Commons.Utilities;
 
 namespace _15pl04.Ucc.CommunicationServer
 {
@@ -9,18 +10,38 @@ namespace _15pl04.Ucc.CommunicationServer
     {
         private static void Main(string[] args)
         {
-            var config = new ServerConfig(args);
+            CommunicationServer communicationServer;
+            try
+            {
+                ServerConfigurationSection config = ServerConfigurationSection.LoadConfig("serverConfig", args);
 
-            var appSettings = ConfigurationManager.AppSettings;
-            var address = Dns.GetHostName();
-            config.Address = IpEndPointParser.Parse(address, appSettings["listeningPort"]);
-            config.CommunicationTimeout = uint.Parse(appSettings["timeout"]);
-            config.Mode = ServerConfig.ServerMode.Primary;
+                IPEndPoint serverAddress = IpEndPointParser.Parse(config.Address, config.Port);
+                uint timeout = config.Timeout;
+                bool isBackup = config.IsBackup;
 
-            Console.WriteLine("Server address: " + config.Address);
-            Console.WriteLine("Timeout: " + config.CommunicationTimeout);
+                IPEndPoint masterServerAddress;
+                if (isBackup)
+                    masterServerAddress = IpEndPointParser.Parse(config.MasterServer.Address, config.MasterServer.Port);
 
-            var communicationServer = new CommunicationServer(config);
+                //_logger.Info("Server address: " + serverAddress);
+
+                var serverConfig = new ServerConfig()
+                {
+                    Mode = isBackup ? ServerConfig.ServerMode.Backup : ServerConfig.ServerMode.Primary,
+                    Address = serverAddress,
+                    CommunicationTimeout = timeout
+                };
+
+                communicationServer = new CommunicationServer(serverConfig);
+            }
+            catch (Exception ex)
+            {
+                var errorText = string.Format("{0}:{1}", ex.GetType().FullName, ex.Message);
+                if (ex.InnerException != null)
+                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName, ex.InnerException.Message);
+                //_logger.Error(errorText);
+                return;
+            }
 
             communicationServer.Start();
 

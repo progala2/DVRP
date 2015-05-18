@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Configuration;
 using System.Net;
 using _15pl04.Ucc.Commons.Computations;
+using _15pl04.Ucc.Commons.Computations.Base;
+using _15pl04.Ucc.Commons.Config;
 using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Utilities;
@@ -14,28 +15,27 @@ namespace _15pl04.Ucc.TaskManager
 
         private static void Main(string[] args)
         {
-            var appSettings = ConfigurationManager.AppSettings;
-            string primaryCSaddress;
-            string primaryCSport;
-            IPEndPoint serverAddress;
+            TaskManager taskManager;
             try
             {
-                primaryCSaddress = appSettings["primaryCSaddress"];
-                primaryCSport = appSettings["primaryCSport"];
-                serverAddress = IpEndPointParser.Parse(primaryCSaddress, primaryCSport);
+                ComponentConfigurationSection config = ComponentConfigurationSection.LoadConfig("componentConfig", args);
+
+                IPEndPoint serverAddress = IpEndPointParser.Parse(config.PrimaryServer.Address, config.PrimaryServer.Port);
+                string taskSolversDirectoryRelativePath = config.TaskSolversPath;
+
+                _logger.Info("Server address: " + serverAddress);
+
+                ThreadManager threadManager = new ThreadPoolThreadManager();
+                taskManager = new TaskManager(threadManager, serverAddress, taskSolversDirectoryRelativePath);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.ToString());
+                var errorText = string.Format("{0}:{1}", ex.GetType().FullName, ex.Message);
+                if (ex.InnerException != null)
+                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName, ex.InnerException.Message);
+                _logger.Error(errorText);
                 return;
             }
-
-            _logger.Info("Server address from App.config: " + serverAddress);
-
-            var taskSolversDirectoryRelativePath = @""; // current directory
-
-            var threadManager = new ThreadPoolThreadManager();
-            var taskManager = new TaskManager(threadManager, serverAddress, taskSolversDirectoryRelativePath);
 
             taskManager.MessageEnqueuedToSend += taskManager_MessageEnqueuedToSend;
             taskManager.MessageSent += taskManager_MessageSent;
@@ -49,9 +49,11 @@ namespace _15pl04.Ucc.TaskManager
 
             taskManager.Start();
             string line;
-            while ((line = Console.ReadLine()) != "exit")
+            while (true)
             {
-                // input handling
+                line = Console.ReadLine().ToLower();
+                if (line == "stop" || line == "quit" || line == "exit")
+                    break;
                 if (line == "start")
                     taskManager.Start();
                 if (line == "running")

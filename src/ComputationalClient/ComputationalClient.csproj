@@ -48,6 +48,10 @@
       <Project>{8530bffd-ee0e-4e0f-928d-c4769d770762}</Project>
       <Name>MinMaxTaskSolver</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TaskSolver\TaskSolver.csproj">
+      <Project>{5495f07e-3ac5-4b01-b64e-2482b718e5e9}</Project>
+      <Name>TaskSolver</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

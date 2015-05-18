@@ -40,6 +40,9 @@
     <Compile Include="Computations\ComputationalThreadStatus.cs" />
     <Compile Include="Computations\ThreadPoolThreadManager.cs" />
     <Compile Include="Computations\ThreadPoolThreadManagerFactory.cs" />
+    <Compile Include="Config\ComponentConfigurationSection.cs" />
+    <Compile Include="Config\IPEndPointConfigurationElement.cs" />
+    <Compile Include="Config\ServerConfigurationSection.cs" />
     <Compile Include="Logging\CustomConsoleTraceListener.cs" />
     <Compile Include="Logging\TraceSourceLogger.cs" />
     <Compile Include="MessageSchemas.Designer.cs">
@@ -85,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="UCCTaskSolver, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
