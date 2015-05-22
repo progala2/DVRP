@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CSharp.RuntimeBinder;
 using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging.Marshalling;
 using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
@@ -119,7 +120,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     var response = HandleMessage(msg, metadata);
                     responseMessages.AddRange(response);
                 }
-                catch (InvalidCastException e)
+                catch (RuntimeBinderException e)
                 {
                     Logger.Debug(e.Message);
                     Logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
