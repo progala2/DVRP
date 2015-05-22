@@ -118,18 +118,18 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                     pp.State == PartialProblem.PartialProblemState.AwaitingComputation
                     && node.SolvableProblems.Contains(pp.Problem.Type));
 
-                if (!partialProblemsToCompute.Any())
+                if (availableThreads == 0 || !partialProblemsToCompute.Any())
                 {
                     work = null;
                     return false;
                 }
 
-                var problemId = partialProblemsToCompute.First().Id;
+                var problemId = partialProblemsToCompute.First().Problem.Id;
                 var problemsToAssign = new List<PartialProblem>(availableThreads);
 
                 foreach (var pp in partialProblemsToCompute)
                 {
-                    if (availableThreads-- == 0)
+                    if (availableThreads == 0)
                         break;
 
                     if (pp.Problem.Id == problemId)
@@ -138,6 +138,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                         pp.ComputingNodeId = nodeId;
 
                         problemsToAssign.Add(pp);
+                        availableThreads--;
                     }
                 }
 
