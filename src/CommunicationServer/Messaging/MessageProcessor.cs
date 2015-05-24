@@ -117,7 +117,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 try
                 {
                     var metadata = data.Metadata as TcpDataProviderMetadata;
-                    var response = HandleMessage(msg, metadata);
+                    var response = HandleMessageGeneric(msg, metadata);
                     responseMessages.AddRange(response);
                 }
                 catch (RuntimeBinderException e)

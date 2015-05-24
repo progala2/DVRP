@@ -15,7 +15,7 @@ namespace _15pl04.Ucc.ComputationalClient
 {
     public class Program
     {
-        private static ILogger _logger = new TraceSourceLogger("ComputationalClient");
+        private static readonly ILogger Logger = new ConsoleLogger();
 
         private static void Main(string[] args)
         {
@@ -27,7 +27,7 @@ namespace _15pl04.Ucc.ComputationalClient
                 IPEndPoint serverAddress = IpEndPointParser.Parse(config.PrimaryServer.Address, config.PrimaryServer.Port);
                 //string taskSolversDirectoryRelativePath = config.TaskSolversPath;
 
-                _logger.Info("Server address: " + serverAddress);
+                Logger.Info("Server address: " + serverAddress);
 
                 computationalClient = new ComputationalClient(serverAddress);
             }
@@ -36,7 +36,7 @@ namespace _15pl04.Ucc.ComputationalClient
                 var errorText = string.Format("{0}:{1}", ex.GetType().FullName, ex.Message);
                 if (ex.InnerException != null)
                     errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName, ex.InnerException.Message);
-                _logger.Error(errorText);
+                Logger.Error(errorText);
                 return;
             }
 
@@ -103,17 +103,17 @@ namespace _15pl04.Ucc.ComputationalClient
 
         private static void computationalClient_MessageSent(object sender, MessageEventArgs e)
         {
-            ColorfulConsole.WriteMessageInfo("Sent", e.Message);
+            Logger.Info(e.Message.ToString());
         }
 
         private static void computationalClient_MessageReceived(object sender, MessageEventArgs e)
         {
-            ColorfulConsole.WriteMessageInfo("Received", e.Message);
+            Logger.Info(e.Message.ToString());
         }
 
         private static void computationalClient_MessageSendingException(object sender, MessageExceptionEventArgs e)
         {
-            ColorfulConsole.WriteMessageExceptionInfo("Message sending exception", e.Message, e.Exception);
+            Logger.Warn(e.Message.ToString() + "\n" + e.Exception);
         }
 
         private static byte[] GenerateProblemData(DvrpProblem dvrpProblem)

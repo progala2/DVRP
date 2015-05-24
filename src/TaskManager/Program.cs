@@ -11,7 +11,7 @@ namespace _15pl04.Ucc.TaskManager
 {
     public class Program
     {
-        private static ILogger _logger = new TraceSourceLogger("TaskManager");
+        private static ILogger _logger = new ConsoleLogger();
 
         private static void Main(string[] args)
         {

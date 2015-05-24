@@ -30,7 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ColorfulConsole.cs" />
     <Compile Include="Components\ComponentType.cs" />
     <Compile Include="Components\ServerInfo.cs" />
     <Compile Include="Components\ThreadStatus.cs" />
@@ -43,8 +42,8 @@
     <Compile Include="Config\ComponentConfigurationSection.cs" />
     <Compile Include="Config\IPEndPointConfigurationElement.cs" />
     <Compile Include="Config\ServerConfigurationSection.cs" />
-    <Compile Include="Logging\CustomConsoleTraceListener.cs" />
-    <Compile Include="Logging\TraceSourceLogger.cs" />
+    <Compile Include="Logging\LoggerAggregator.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="MessageSchemas.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
