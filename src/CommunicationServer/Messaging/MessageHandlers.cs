@@ -11,7 +11,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
     internal partial class MessageProcessor
     {
-        private List<Message> HandleMessage<T>(T msg, TcpDataProviderMetadata metadata) where T : Message
+        private List<Message> HandleMessageGeneric<T>(T msg, TcpDataProviderMetadata metadata) where T : Message
         {
             return HandleMessage((dynamic)msg, metadata);
         }
@@ -104,7 +104,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
         private List<Message> HandleMessage(SolveRequestMessage msg, TcpDataProviderMetadata metadata)
         {
-            var solvingTimeout = msg.SolvingTimeout ?? 0;
+            var solvingTimeout = msg.SolvingTimeout ?? ulong.MaxValue;
             var id = _workManager.AddProblem(msg.ProblemType, msg.ProblemData, solvingTimeout);
 
             var response = new SolveRequestResponseMessage

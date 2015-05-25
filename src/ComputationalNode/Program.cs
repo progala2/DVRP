@@ -11,7 +11,7 @@ namespace _15pl04.Ucc.ComputationalNode
 {
     public class Program
     {
-        private static ILogger _logger = new TraceSourceLogger("ComputationalNode");
+        private static ILogger _logger = new ConsoleLogger();
 
         private static void Main(string[] args)
         {

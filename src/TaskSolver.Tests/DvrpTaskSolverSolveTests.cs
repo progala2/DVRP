@@ -99,7 +99,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            DvrpProblem problem = new DvrpProblem(13, 100, new[]
+            DvrpProblem problem = new DvrpProblem(18, 100, new[]
             {
                 new Depot(0, 0, 0, 700), 
             }, new[]
@@ -119,6 +119,9 @@ namespace _15pl04.Ucc.TaskSolver.Tests
                 new Request(13, 0, -30, 0, 20),
                 new Request(14, 0, -30, 0, 20),
                 new Request(15, 0, -30, 0, 20),
+                new Request(16, 0, -30, 0, 20),
+                new Request(17, 0, -30, 0, 20),
+                new Request(18, 0, -30, 0, 20),
             });
 
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");

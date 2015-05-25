@@ -55,7 +55,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                     && node.SolvableProblems.Contains(ps.PartialProblem.Problem.Type))
                     .ToList();
 
-                if (partialSolutionsToMerge != null && partialSolutionsToMerge.Count != 0)
+                if (partialSolutionsToMerge.Count != 0)
                 {
                     var problemId = partialSolutionsToMerge[0].PartialProblem.Problem.Id;
 
@@ -109,7 +109,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 work = null;
                 return false;
             }
-            if (type == ComponentType.ComputationalNode)
+            else if (type == ComponentType.ComputationalNode)
             {
                 var availableThreads = node.ThreadInfo.Count(ts =>
                     ts.State == ThreadStatus.ThreadState.Idle);
@@ -118,36 +118,41 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                     pp.State == PartialProblem.PartialProblemState.AwaitingComputation
                     && node.SolvableProblems.Contains(pp.Problem.Type));
 
+                if (availableThreads == 0 || !partialProblemsToCompute.Any())
+                {
+                    work = null;
+                    return false;
+                }
+
+                var problemId = partialProblemsToCompute.First().Problem.Id;
                 var problemsToAssign = new List<PartialProblem>(availableThreads);
 
                 foreach (var pp in partialProblemsToCompute)
                 {
-                    if (availableThreads-- == 0)
+                    if (availableThreads == 0)
                         break;
 
-                    pp.State = PartialProblem.PartialProblemState.BeingComputed;
-                    pp.ComputingNodeId = nodeId;
-
-                    problemsToAssign.Add(pp);
-                }
-
-                if (problemsToAssign.Count != 0)
-                {
-                    work = new ComputationWork(nodeId, problemsToAssign);
-
-                    var e = new WorkAssignmentEventArgs
+                    if (pp.Problem.Id == problemId)
                     {
-                        AssigneeId = nodeId,
-                        Work = work
-                    };
-                    if (WorkAssignment != null)
-                        WorkAssignment(this, e);
+                        pp.State = PartialProblem.PartialProblemState.BeingComputed;
+                        pp.ComputingNodeId = nodeId;
 
-                    return true;
+                        problemsToAssign.Add(pp);
+                        availableThreads--;
+                    }
                 }
 
-                work = null;
-                return false;
+                work = new ComputationWork(nodeId, problemsToAssign);
+
+                var e = new WorkAssignmentEventArgs
+                {
+                    AssigneeId = nodeId,
+                    Work = work
+                };
+                if (WorkAssignment != null)
+                    WorkAssignment(this, e);
+
+                return true;
             }
             throw new InvalidOperationException();
         }

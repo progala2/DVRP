@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CSharp.RuntimeBinder;
 using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging.Marshalling;
 using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
@@ -66,7 +67,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             var token = _cancellationTokenSource.Token;
             token.Register(() => { _isProcessing = false; });
 
-            new Task(() =>
+            var task = new Task(() =>
             {
                 while (true)
                 {
@@ -81,7 +82,15 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     if (token.IsCancellationRequested)
                         return;
                 }
-            }, token).Start();
+            }, token);
+            
+            task.ContinueWith(t =>
+            {
+                Logger.Error(t.Exception.ToString());
+                Logger.Error(t.Exception.StackTrace);
+            }, TaskContinuationOptions.OnlyOnFaulted);
+
+            task.Start();
 
             _processingLock.Set();
             _isProcessing = true;
@@ -108,10 +117,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 try
                 {
                     var metadata = data.Metadata as TcpDataProviderMetadata;
-                    var response = HandleMessage(msg, metadata);
+                    var response = HandleMessageGeneric(msg, metadata);
                     responseMessages.AddRange(response);
                 }
-                catch (InvalidCastException e)
+                catch (RuntimeBinderException e)
                 {
                     Logger.Debug(e.Message);
                     Logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
@@ -119,17 +128,6 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     {
                         ErrorType = ErrorType.InvalidOperation,
                         ErrorText = "Computational Server doesn't handle " + msg.MessageType + " message."
-                    };
-                    responseMessages = new List<Message> { errorMsg };
-                    break;
-                }
-                catch (Exception e)
-                {
-                    Logger.Error("Unexpected error.\n" + e.Message);
-                    var errorMsg = new ErrorMessage
-                    {
-                        ErrorType = ErrorType.ExceptionOccured,
-                        ErrorText = "The server encountered unexpected error."
                     };
                     responseMessages = new List<Message> { errorMsg };
                     break;

@@ -25,46 +25,65 @@ namespace _15pl04.Ucc.TaskSolver
                 }
                 State = TaskSolverState.OK;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                this.Exception = ex;
                 State = TaskSolverState.Error;
             }
         }
 
         public override byte[][] DivideProblem(int threadCount)
         {
-            var divider = new DvrpDivider();
-            var problems = divider.Divide(_dvrpProblem, threadCount);
-            var result = new byte[threadCount][];
-            for (var i = 0; i < threadCount; ++i)
+            try
+            {
+                var divider = new DvrpDivider();
+                var problems = divider.Divide(_dvrpProblem, threadCount);
+                var result = new byte[threadCount][];
+                for (var i = 0; i < threadCount; ++i)
                 {
                     using (var memoryStream = new MemoryStream())
                     {
-                    _formatter.Serialize(memoryStream, problems[i]);
-                    result[i] = memoryStream.ToArray();
+                        _formatter.Serialize(memoryStream, problems[i]);
+                        result[i] = memoryStream.ToArray();
+                    }
                 }
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                this.Exception = ex;
+                State = TaskSolverState.Error;
+                return null;
+            }
         }
 
         public override byte[] MergeSolution(byte[][] solutions)
         {
-            var finalSolution = new DvrpSolution(double.MaxValue, null);
-            foreach (var t in solutions)
+            try
             {
-                using (var memoryStream = new MemoryStream(t))
+                var finalSolution = new DvrpSolution(double.MaxValue, null);
+                foreach (var t in solutions)
                 {
-                    var solution = (DvrpSolution)_formatter.Deserialize(memoryStream);
-                    if (solution.FinalDistance < finalSolution.FinalDistance)
+                    using (var memoryStream = new MemoryStream(t))
                     {
-                        finalSolution = solution;
+                        var solution = (DvrpSolution)_formatter.Deserialize(memoryStream);
+                        if (solution.FinalDistance < finalSolution.FinalDistance)
+                        {
+                            finalSolution = solution;
+                        }
                     }
                 }
+                using (var memoryStream = new MemoryStream())
+                {
+                    _formatter.Serialize(memoryStream, finalSolution);
+                    return memoryStream.ToArray();
+                }
             }
-            using (var memoryStream = new MemoryStream())
+            catch (Exception ex)
             {
-                _formatter.Serialize(memoryStream, finalSolution);
-                return memoryStream.ToArray();
+                this.Exception = ex;
+                State = TaskSolverState.Error;
+                return null;
             }
         }
 
@@ -75,16 +94,26 @@ namespace _15pl04.Ucc.TaskSolver
 
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
-            DvrpPartialProblem problem;
-            using (var memoryStream = new MemoryStream(partialData))
+            try
             {
-                problem = (DvrpPartialProblem)_formatter.Deserialize(memoryStream);
+                DvrpPartialProblem problem;
+                using (var memoryStream = new MemoryStream(partialData))
+                {
+                    problem = (DvrpPartialProblem)_formatter.Deserialize(memoryStream);
+                }
+                var solver = new DvrpSolver(_dvrpProblem);
+                using (var memoryStream = new MemoryStream())
+                {
+                    _formatter.Serialize(memoryStream, solver.Solve(problem, timeout));
+                    State = solver.State;
+                    return memoryStream.ToArray();
+                }
             }
-            var solver = new DvrpSolver(_dvrpProblem);
-            using (var memoryStream = new MemoryStream())
+            catch (Exception ex)
             {
-                _formatter.Serialize(memoryStream, solver.Solve(problem, timeout));
-                return memoryStream.ToArray();
+                this.Exception = ex;
+                State = TaskSolverState.Error;
+                return null;
             }
         }
     }
