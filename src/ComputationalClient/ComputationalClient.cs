@@ -47,7 +47,7 @@ namespace _15pl04.Ucc.ComputationalClient
                 SolveRequestResponseMessage solveRequestResponseMessage;
                 if ((solveRequestResponseMessage = receivedMessage as SolveRequestResponseMessage) != null)
                 {
-                    problemId = (ulong?)solveRequestResponseMessage.AssignedId;
+                    problemId = solveRequestResponseMessage.AssignedId;
                 }
                 else
                 {
