@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
-using _15pl04.Ucc.Commons;
+using System.Text;
 using _15pl04.Ucc.Commons.Config;
 using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging;
+using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Utilities;
-using _15pl04.Ucc.MinMaxTaskSolver;
-using _15pl04.Ucc.TaskSolver;
 
 namespace _15pl04.Ucc.ComputationalClient
 {
@@ -44,59 +42,90 @@ namespace _15pl04.Ucc.ComputationalClient
             computationalClient.MessageReceived += computationalClient_MessageReceived;
             computationalClient.MessageSent += computationalClient_MessageSent;
 
-            var problemType = "UCC.Dvrp";
-
             string line;
             while (true)
             {
-                line = Console.ReadLine().ToLower();
-                if (line == "stop" || line == "quit" || line == "exit")
-                    break;
+                Console.WriteLine(@"commands: -stop, quit, exit -solve -solution");
 
-                // TODO
-                if (line == "solve")
+                line = Console.ReadLine();
+                if (line != null) line = line.ToLower();
+                else continue;
+
+                switch (line)
                 {
-                    DvrpProblem problem = new DvrpProblem(12, 100, new[]
-                {
-                new Depot(0, 0, 0, 640), 
-            }, new[]
-            {
-                new Request(-55, -26, -48, 616, 20),
-                new Request(-24, 38, -20, 91, 20),
-                new Request(-99, -29, -45, 240, 20),
-                new Request(-42, 30, -19, 356, 20),
-                new Request(59, 66, -32, 528, 20),
-                new Request(55, -35, -42, 459, 20),
-                new Request(-42, 3, -19, 433, 20),
-                new Request(95, 13, -35, 513, 20),
-                new Request(71, -90, -30, 444, 20),
-                new Request(38, 32, -26, 44, 20),
-                new Request(67, -22, -41, 318, 20),
-                new Request(58, -97, -27, 20, 20),
-            });
-                    var problemData = GenerateProblemData(problem);
-                    computationalClient.SendSolveRequest(problemType, problemData, null);
-                }
-                if (line == "solution")
-                {
-                    Console.Write("Enter problem id: ");
-                    ulong id;
-                    if (ulong.TryParse(Console.ReadLine(), out id))
-                    {
-                        var solutionsMessages = computationalClient.SendSolutionRequest(id);
-                        if (solutionsMessages[0].Solutions[0].Type == Commons.Messaging.Models.SolutionsMessage.SolutionType.Final)
+                    case "stop":
+                    case "quit":
+                    case "exit":
+                        return;
+                    case "solve":
+                        Console.WriteLine(@"File name that contains the problem: ");
+                        line = Console.ReadLine();
+                        if (line == null)
+                            goto case "solve";
+                        byte[] problemData;
+                        try
                         {
-                            DvrpSolution solution;
-                            using (var memoryStream = new MemoryStream(solutionsMessages[0].Solutions[0].Data))
+                            using (var memoryStream = new MemoryStream())
                             {
                                 var formatter = new BinaryFormatter();
-                                solution = (DvrpSolution)formatter.Deserialize(memoryStream);
+                                formatter.Serialize(memoryStream, File.ReadAllText(line, Encoding.UTF8));
+                                problemData = memoryStream.ToArray();
                             }
-                            Console.WriteLine("Result: {0}", solution.FinalDistance);
                         }
-                    }
-                    else
-                        Console.WriteLine("Parsing error!");
+                        catch (Exception)
+                        {
+                            Console.WriteLine(@"Wrong file!");
+                            continue;
+                        }
+                        Console.WriteLine(@"Timeout in seconds: ");
+                        ulong timeout;
+                        if (!ulong.TryParse(Console.ReadLine(), out timeout))
+                        {
+                            timeout = (ulong)TimeSpan.MaxValue.TotalSeconds;
+                        }
+                        Console.WriteLine(@"Problem type (for example 'dvrp'): ");
+                        line = Console.ReadLine();
+                        if (line == null)
+                            goto case "solve";
+                        line = line.ToLower();
+                        if (line == "dvrp")
+                        {
+                            var problemType = "UCC.Dvrp";
+                            computationalClient.SendSolveRequest(problemType, problemData, timeout);
+                        }
+                        break;
+                    case "solution":
+                        Console.Write(@"Enter problem id: ");
+                        ulong id;
+                        if (ulong.TryParse(Console.ReadLine(), out id))
+                        {
+                            var solutionsMessages = computationalClient.SendSolutionRequest(id);
+                            if (solutionsMessages != null && solutionsMessages.Count > 0)
+                            {
+                                switch (solutionsMessages[0].Solutions[0].Type)
+                                {
+                                    case SolutionsMessage.SolutionType.Ongoing:
+                                        Console.WriteLine(@"Server is still solving the problem");
+                                        break;
+                                    case SolutionsMessage.SolutionType.Partial:
+                                    case SolutionsMessage.SolutionType.Final:
+                                        string problem;
+                                        using (var mem = new MemoryStream(solutionsMessages[0].Solutions[0].Data))
+                                        {
+                                            var formatter = new BinaryFormatter();
+                                            problem = (string)formatter.Deserialize(mem);
+                                        }
+                                        Console.WriteLine(@"Result message: {0}", problem);
+                                        break;
+                                    default:
+                                        throw new ArgumentOutOfRangeException();
+                                }
+
+                            }
+                        }
+                        else
+                            Console.WriteLine(@"Parsing error!");
+                        break;
                 }
             }
         }
@@ -113,18 +142,7 @@ namespace _15pl04.Ucc.ComputationalClient
 
         private static void computationalClient_MessageSendingException(object sender, MessageExceptionEventArgs e)
         {
-            Logger.Warn(e.Message.ToString() + "\n" + e.Exception);
-        }
-
-        private static byte[] GenerateProblemData(DvrpProblem dvrpProblem)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(memoryStream, dvrpProblem);
-                var problemData = memoryStream.ToArray();
-                return problemData;
-            }
+            Logger.Warn(e.Message + "\n" + e.Exception);
         }
     }
 }
