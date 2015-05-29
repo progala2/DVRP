@@ -11,35 +11,33 @@ namespace _15pl04.Ucc.Commons.Config
         [ConfigurationProperty(PrimaryServerPropertyString)]
         public IPEndPointConfigurationElement PrimaryServer
         {
-            get { return (IPEndPointConfigurationElement)this[PrimaryServerPropertyString]; }
+            get { return (IPEndPointConfigurationElement) this[PrimaryServerPropertyString]; }
             set { this[PrimaryServerPropertyString] = value; }
         }
 
         [ConfigurationProperty(TaskSolversPathPropertyString), DefaultSettingValue("")]
         public string TaskSolversPath
         {
-            get { return (string)this[TaskSolversPathPropertyString]; }
+            get { return (string) this[TaskSolversPathPropertyString]; }
             set { this[TaskSolversPathPropertyString] = value; }
         }
-
 
         public override bool IsReadOnly()
         {
             return false;
         }
 
-
-
         public static ComponentConfigurationSection LoadConfig(string componentConfigurationSectionName,
             string[] commandLineParameters)
         {
-            var config = (ComponentConfigurationSection)ConfigurationManager.GetSection(componentConfigurationSectionName);
+            var config =
+                (ComponentConfigurationSection) ConfigurationManager.GetSection(componentConfigurationSectionName);
 
             // possible overriting with command line parameters
             if (commandLineParameters != null && commandLineParameters.Length > 0)
             {
-                int n = commandLineParameters.Length;
-                int i = 0;
+                var n = commandLineParameters.Length;
+                var i = 0;
                 Exception exception = null;
                 try
                 {

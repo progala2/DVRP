@@ -56,13 +56,13 @@ namespace _15pl04.Ucc.ComputationalNode
             switch (message.MessageType)
             {
                 case MessageClass.NoOperation:
-                    NoOperationMessageHandler((NoOperationMessage)message);
+                    NoOperationMessageHandler((NoOperationMessage) message);
                     break;
                 case MessageClass.SolvePartialProblems:
-                    PartialProblemsMessageHandler((PartialProblemsMessage)message);
+                    PartialProblemsMessageHandler((PartialProblemsMessage) message);
                     break;
                 case MessageClass.Error:
-                    ErrorMessageHandler((ErrorMessage)message);
+                    ErrorMessageHandler((ErrorMessage) message);
                     break;
                 default:
                     throw new InvalidOperationException("Received not supported message type.");
@@ -96,12 +96,13 @@ namespace _15pl04.Ucc.ComputationalNode
             {
                 /* each partial problem should be started properly cause server sends at most 
                  * as many partial problems as count of component's tasks in idle state */
-                var actionDescription = string.Format("Solving partial problem \"{0}\"(problem instance id={1})(partial problem id={2})",
-                    message.ProblemType, message.ProblemInstanceId, partialProblem.PartialProblemId);
+                var actionDescription =
+                    string.Format("Solving partial problem \"{0}\"(problem instance id={1})(partial problem id={2})",
+                        message.ProblemType, message.ProblemInstanceId, partialProblem.PartialProblemId);
                 var started = StartActionInNewThread(() =>
                 {
                     // not sure if TaskSolver can change CommonData during computations so recreate it for each partial problem
-                    var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
+                    var taskSolver = (TaskSolver) Activator.CreateInstance(taskSolverType, message.CommonData);
                     taskSolver.ThrowIfError();
 
                     // measure time using DateTime cause StopWatch is not guaranteed to be thread safe
@@ -118,7 +119,7 @@ namespace _15pl04.Ucc.ComputationalNode
                             PartialProblemId = partialProblem.PartialProblemId,
                             TimeoutOccured = taskSolver.State == TaskSolver.TaskSolverState.Timeout,
                             Type = SolutionsMessage.SolutionType.Partial,
-                            ComputationsTime = (ulong)(stop - start).TotalMilliseconds,
+                            ComputationsTime = (ulong) (stop - start).TotalMilliseconds,
                             Data = partialProblemSolutionData
                         }
                     };
@@ -151,7 +152,8 @@ namespace _15pl04.Ucc.ComputationalNode
                     // nothing to do
                     break;
                 case ErrorType.ExceptionOccured:
-                    throw new InvalidOperationException("Information about exception on server shouldn't be send to component.");
+                    throw new InvalidOperationException(
+                        "Information about exception on server shouldn't be send to component.");
             }
         }
     }

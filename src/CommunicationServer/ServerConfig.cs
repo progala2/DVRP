@@ -10,10 +10,6 @@ namespace _15pl04.Ucc.CommunicationServer
             Backup = 2
         }
 
-        public ServerConfig()
-        {
-        }
-
         public ServerMode Mode { get; set; }
         public IPEndPoint Address { get; set; }
         public uint CommunicationTimeout { get; set; }

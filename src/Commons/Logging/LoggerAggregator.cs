@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,14 +11,12 @@ namespace _15pl04.Ucc.Commons.Logging
         private static readonly Lazy<LoggerAggregator> lazy =
             new Lazy<LoggerAggregator>(() => new LoggerAggregator());
 
-        public static LoggerAggregator Instance { get { return lazy.Value; } }
+        private readonly List<ILogger> _loggers = new List<ILogger>();
 
-        
+        private readonly ConcurrentQueue<Tuple<LogLevel, string>> _logQueue =
+            new ConcurrentQueue<Tuple<LogLevel, string>>();
 
-        private List<ILogger> _loggers = new List<ILogger>();
-        private ConcurrentQueue<Tuple<LogLevel, string>> _logQueue = new ConcurrentQueue<Tuple<LogLevel, string>>();
-        private AutoResetEvent _logsAvailable = new AutoResetEvent(false);
-
+        private readonly AutoResetEvent _logsAvailable = new AutoResetEvent(false);
 
         private LoggerAggregator()
         {
@@ -58,10 +54,9 @@ namespace _15pl04.Ucc.Commons.Logging
             }).Start();
         }
 
-
-        public void AddLogger(ILogger logger)
+        public static LoggerAggregator Instance
         {
-            _loggers.Add(logger);
+            get { return lazy.Value; }
         }
 
         public void Trace(string s)
@@ -87,6 +82,11 @@ namespace _15pl04.Ucc.Commons.Logging
         public void Error(string s)
         {
             EnqueueLog(LogLevel.Error, s);
+        }
+
+        public void AddLogger(ILogger logger)
+        {
+            _loggers.Add(logger);
         }
 
         private void EnqueueLog(LogLevel level, string log)

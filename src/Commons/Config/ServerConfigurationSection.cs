@@ -15,7 +15,7 @@ namespace _15pl04.Ucc.Commons.Config
         [ConfigurationProperty(AddressPropertyString), DefaultSettingValue("127.0.0.1")]
         public string Address
         {
-            get { return (string)this[AddressPropertyString]; }
+            get { return (string) this[AddressPropertyString]; }
             set { this[AddressPropertyString] = value; }
         }
 
@@ -23,49 +23,46 @@ namespace _15pl04.Ucc.Commons.Config
         [IntegerValidator(ExcludeRange = false, MinValue = IPEndPoint.MinPort, MaxValue = IPEndPoint.MaxPort)]
         public int Port
         {
-            get { return (int)this[PortPropertyString]; }
+            get { return (int) this[PortPropertyString]; }
             set { this[PortPropertyString] = value; }
         }
 
         [ConfigurationProperty(TimeoutPropertyString)]
         public uint Timeout
         {
-            get { return (uint)this[TimeoutPropertyString]; }
+            get { return (uint) this[TimeoutPropertyString]; }
             set { this[TimeoutPropertyString] = value; }
         }
 
         [ConfigurationProperty(IsBackupPropertyString)]
         public bool IsBackup
         {
-            get { return (bool)this[IsBackupPropertyString]; }
+            get { return (bool) this[IsBackupPropertyString]; }
             set { this[IsBackupPropertyString] = value; }
         }
 
         [ConfigurationProperty(MasterServerPropertyString, IsRequired = false)]
         public IPEndPointConfigurationElement MasterServer
         {
-            get { return (IPEndPointConfigurationElement)this[MasterServerPropertyString]; }
+            get { return (IPEndPointConfigurationElement) this[MasterServerPropertyString]; }
             set { this[MasterServerPropertyString] = value; }
         }
-
 
         public override bool IsReadOnly()
         {
             return false;
         }
 
-
-
         public static ServerConfigurationSection LoadConfig(string serverConfigurationSectionName,
             string[] commandLineParameters)
         {
-            var config = (ServerConfigurationSection)ConfigurationManager.GetSection(serverConfigurationSectionName);
+            var config = (ServerConfigurationSection) ConfigurationManager.GetSection(serverConfigurationSectionName);
 
             // possible overriting with command line parameters
             if (commandLineParameters != null && commandLineParameters.Length > 0)
             {
-                int n = commandLineParameters.Length;
-                int i = 0;
+                var n = commandLineParameters.Length;
+                var i = 0;
                 Exception exception = null;
                 try
                 {
@@ -106,7 +103,8 @@ namespace _15pl04.Ucc.Commons.Config
 
         private static void PrintUsage()
         {
-            Console.WriteLine("Usage: {0} [-port [port number]] [-backup –maddress [IPv4 address or IPv6 address or host name] –mport [portNumber]] [-t [time in seconds]]",
+            Console.WriteLine(
+                "Usage: {0} [-port [port number]] [-backup –maddress [IPv4 address or IPv6 address or host name] –mport [portNumber]] [-t [time in seconds]]",
                 AppDomain.CurrentDomain.FriendlyName);
         }
     }

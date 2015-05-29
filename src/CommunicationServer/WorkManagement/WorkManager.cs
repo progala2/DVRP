@@ -93,7 +93,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
                     var availableThreads = CountAvailableSolvingThreads(problemToDivide.Type);
 
-                    work = new DivisionWork(nodeId, problemToDivide, (ulong)availableThreads);
+                    work = new DivisionWork(nodeId, problemToDivide, (ulong) availableThreads);
 
                     var e = new WorkAssignmentEventArgs
                     {
@@ -109,7 +109,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 work = null;
                 return false;
             }
-            else if (type == ComponentType.ComputationalNode)
+            if (type == ComponentType.ComputationalNode)
             {
                 var availableThreads = node.ThreadInfo.Count(ts =>
                     ts.State == ThreadStatus.ThreadState.Idle);
@@ -163,7 +163,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             ulong id;
             do
             {
-                id = _random.NextUInt64() % 100; //TODO this is debug solution
+                id = _random.NextUInt64()%100; //TODO this is debug solution
                 //id = _random.NextUInt64(); 
             } while (_problems.ContainsKey(id));
 
@@ -208,12 +208,12 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Make sure the problem instance's number of partial problems & partial solutions is not greater than 'NumberOfParts' (excluding the partial problem being added).
             var ppNum = _partialProblems.Count(pair => pair.Key.Item1 == problemId);
             var psNum = _partialSolutions.Count(pair => pair.Key.Item1 == problemId);
-            if (ppNum + psNum == (int)problem.NumberOfParts - 1)
+            if (ppNum + psNum == (int) problem.NumberOfParts - 1)
             {
                 Logger.Info("Got all partial problems (id: " + problem.Id + ").");
                 problem.State = Problem.ProblemState.AwaitingSolution;
             }
-            else if (ppNum + psNum > (int)problem.NumberOfParts - 1)
+            else if (ppNum + psNum > (int) problem.NumberOfParts - 1)
             {
                 Logger.Warn("Received more partial problems than expected.");
                 return;
@@ -341,7 +341,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Check if all partial solutions are in and set appropriate state.
             var gatheredPartialSolutions = GetPartialSolutions(problemId,
                 PartialSolution.PartialSolutionState.BeingGathered);
-            if ((int)problem.NumberOfParts == gatheredPartialSolutions.Count)
+            if ((int) problem.NumberOfParts == gatheredPartialSolutions.Count)
             {
                 foreach (var ps in gatheredPartialSolutions)
                     ps.State = PartialSolution.PartialSolutionState.AwaitingMerge;
@@ -406,7 +406,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 throw new NotImplementedException();
                 // TODO implement
             }
-            else if (componentType == ComponentType.TaskManager)
+            if (componentType == ComponentType.TaskManager)
             {
                 var component = e.Component as SolverNodeInfo;
 
@@ -452,7 +452,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
             foreach (var componentInfo in _componentOverseer.GetComponents(ComponentType.ComputationalNode))
             {
-                var sn = (SolverNodeInfo)componentInfo;
+                var sn = (SolverNodeInfo) componentInfo;
                 if (!sn.SolvableProblems.Contains(problemType))
                     continue;
 

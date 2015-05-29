@@ -18,7 +18,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         {
             _overseer = new ComponentOverseer(5, 5);
 
-            var solvableProblems = new List<string> { "dvrp" };
+            var solvableProblems = new List<string> {"dvrp"};
 
             var serverInfo = new ServerInfo
             {
@@ -55,7 +55,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             _overseer.Deregistration += (o, e) => { deregistrationEventLock.Set(); };
             _overseer.StartMonitoring();
 
-            var solvableProblems = new List<string> { "dvrp" };
+            var solvableProblems = new List<string> {"dvrp"};
 
             ComponentInfo computationalNode = new SolverNodeInfo(ComponentType.ComputationalNode, solvableProblems, 5);
             _overseer.TryRegister(computationalNode);
@@ -64,12 +64,12 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
             Assert.IsTrue(_overseer.IsRegistered(computationalNode.ComponentId.Value));
 
-            deregistrationEventLock.WaitOne(1000 * (int)(communicationTimeout + checkInterval + 1));
+            deregistrationEventLock.WaitOne(1000*(int) (communicationTimeout + checkInterval + 1));
 
             stopwatch.Stop();
 
             Assert.IsFalse(_overseer.IsRegistered(computationalNode.ComponentId.Value));
-            Assert.IsTrue((ulong)stopwatch.ElapsedMilliseconds >= communicationTimeout);
+            Assert.IsTrue((ulong) stopwatch.ElapsedMilliseconds >= communicationTimeout);
 
             _overseer.StopMonitoring();
         }

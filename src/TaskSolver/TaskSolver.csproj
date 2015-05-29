@@ -47,12 +47,6 @@
       <HintPath>..\..\lib\UCCTaskSolver.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Commons\Commons.csproj">
-      <Project>{6ee7686f-d191-4151-ad36-b8b7199310f5}</Project>
-      <Name>Commons</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

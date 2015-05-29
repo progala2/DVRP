@@ -20,7 +20,6 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         private volatile bool _isMonitoring;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="communicationTimeout">In seconds.</param>
         /// <param name="checkInterval">In seconds.</param>
@@ -34,13 +33,15 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         }
 
         /// <summary>
-        /// In seconds.
+        ///     In seconds.
         /// </summary>
         public uint CheckInterval { get; private set; }
+
         /// <summary>
-        /// In seconds.
+        ///     In seconds.
         /// </summary>
         public uint CommunicationTimeout { get; private set; }
+
         public event DeregisterationEventHandler Deregistration;
 
         public bool IsMonitoring
@@ -58,12 +59,12 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             ulong id;
             do
             {
-                id = _random.NextUInt64() % 100; //TODO this is debug solution
+                id = _random.NextUInt64()%100; //TODO this is debug solution
                 //id = _random.NextUInt64(); 
             } while (!_registeredComponents.TryAdd(id, component));
 
             Logger.Info("Registering " + component.ComponentType +
-            " (id: " + id + ").");
+                        " (id: " + id + ").");
 
             component.Register(id);
 
@@ -124,13 +125,13 @@ namespace _15pl04.Ucc.CommunicationServer.Components
                 while (true)
                 {
                     foreach (var i in _registeredComponents)
-                        if (i.Value.TimestampAge > 1000 * CommunicationTimeout)
+                        if (i.Value.TimestampAge > 1000*CommunicationTimeout)
                             TryDeregister(i.Key);
 
                     if (token.IsCancellationRequested)
                         return;
 
-                    Thread.Sleep((int)(1000 * CheckInterval));
+                    Thread.Sleep((int) (1000*CheckInterval));
                 }
             }, token).Start();
 

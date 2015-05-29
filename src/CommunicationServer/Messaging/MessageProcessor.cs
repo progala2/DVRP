@@ -83,7 +83,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         return;
                 }
             }, token);
-            
+
             task.ContinueWith(t =>
             {
                 Logger.Error(t.Exception.ToString());
@@ -129,13 +129,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         ErrorType = ErrorType.InvalidOperation,
                         ErrorText = "Computational Server doesn't handle " + msg.MessageType + " message."
                     };
-                    responseMessages = new List<Message> { errorMsg };
+                    responseMessages = new List<Message> {errorMsg};
                     break;
                 }
-
             }
 
-            foreach (Message msgToSend in responseMessages)
+            foreach (var msgToSend in responseMessages)
                 Logger.Trace("Sending " + msgToSend.MessageType + " message.");
 
             var marshalledResponse = _marshaller.Marshall(responseMessages);

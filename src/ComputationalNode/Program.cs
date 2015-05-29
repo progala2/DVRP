@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using _15pl04.Ucc.Commons.Computations;
 using _15pl04.Ucc.Commons.Computations.Base;
 using _15pl04.Ucc.Commons.Config;
@@ -11,17 +10,17 @@ namespace _15pl04.Ucc.ComputationalNode
 {
     public class Program
     {
-        private static ILogger _logger = new ConsoleLogger();
+        private static readonly ILogger _logger = new ConsoleLogger();
 
         private static void Main(string[] args)
         {
             ComputationalNode computationalNode;
             try
             {
-                ComponentConfigurationSection config = ComponentConfigurationSection.LoadConfig("componentConfig", args);
+                var config = ComponentConfigurationSection.LoadConfig("componentConfig", args);
 
-                IPEndPoint serverAddress = IpEndPointParser.Parse(config.PrimaryServer.Address, config.PrimaryServer.Port);
-                string taskSolversDirectoryRelativePath = config.TaskSolversPath;
+                var serverAddress = IpEndPointParser.Parse(config.PrimaryServer.Address, config.PrimaryServer.Port);
+                var taskSolversDirectoryRelativePath = config.TaskSolversPath;
 
                 _logger.Info("Server address: " + serverAddress);
 
@@ -32,7 +31,8 @@ namespace _15pl04.Ucc.ComputationalNode
             {
                 var errorText = string.Format("{0}:{1}", ex.GetType().FullName, ex.Message);
                 if (ex.InnerException != null)
-                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName, ex.InnerException.Message);
+                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName,
+                        ex.InnerException.Message);
                 _logger.Error(errorText);
                 return;
             }
@@ -103,8 +103,8 @@ namespace _15pl04.Ucc.ComputationalNode
 
         private static string GetMessageExceptionInfo(MessageExceptionEventArgs e)
         {
-            string errorInfo = string.Format(" Message: {0}\n Exception: {1}\n  {2}",
-                   e.Message, e.Exception.GetType().FullName, e.Exception.Message);
+            var errorInfo = string.Format(" Message: {0}\n Exception: {1}\n  {2}",
+                e.Message, e.Exception.GetType().FullName, e.Exception.Message);
             return errorInfo;
         }
     }

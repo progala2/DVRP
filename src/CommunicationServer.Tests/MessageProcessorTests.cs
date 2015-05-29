@@ -18,12 +18,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
     [TestClass]
     public class MessageProcessorTests
     {
-        private IComponentOverseer _overseer;
-        private IWorkManager _workManager;
-
-        private IMarshaller<Message> _marshaller;
-
-        private MessageProcessor _processor;
+        private readonly IMarshaller<Message> _marshaller;
+        private readonly IComponentOverseer _overseer;
+        private readonly MessageProcessor _processor;
+        private readonly IWorkManager _workManager;
 
         public MessageProcessorTests()
         {
@@ -47,10 +45,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 ComponentType = ComponentType.TaskManager,
                 ParallelThreads = 5,
-                SolvableProblems = new List<string> { "dvrp" },
+                SolvableProblems = new List<string> {"dvrp"}
             };
 
-            var rawMsg = _marshaller.Marshall(new Message[] { msg });
+            var rawMsg = _marshaller.Marshall(new Message[] {msg});
 
             ProcessedDataCallback c = response =>
             {
@@ -75,10 +73,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var msg = new RegisterMessage
             {
                 ParallelThreads = 5,
-                SolvableProblems = new List<string> { "dvrp" },
+                SolvableProblems = new List<string> {"dvrp"},
                 ComponentType = ComponentType.ComputationalNode
             };
-            var rawMsg = _marshaller.Marshall(new Message[] { msg });
+            var rawMsg = _marshaller.Marshall(new Message[] {msg});
 
             Message outputMessage = null;
             ProcessedDataCallback c = response =>
@@ -93,7 +91,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             waitHandle.WaitOne(10000);
             _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof(RegisterResponseMessage));
+            Assert.IsInstanceOfType(outputMessage, typeof (RegisterResponseMessage));
         }
 
         [TestMethod]
@@ -106,7 +104,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                 ProblemData = new byte[0],
                 ProblemType = "dvrp"
             };
-            var rawMsg = _marshaller.Marshall(new Message[] { msg });
+            var rawMsg = _marshaller.Marshall(new Message[] {msg});
 
             Message outputMessage = null;
             ProcessedDataCallback c = response =>
@@ -121,7 +119,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof(SolveRequestResponseMessage));
+            Assert.IsInstanceOfType(outputMessage, typeof (SolveRequestResponseMessage));
         }
 
         [TestMethod]
@@ -132,9 +130,9 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var msg = new StatusMessage
             {
                 ComponentId = 5,
-                Threads = new List<ThreadStatus> { new ThreadStatus { ProblemType = "dvrp" } }
+                Threads = new List<ThreadStatus> {new ThreadStatus {ProblemType = "dvrp"}}
             };
-            var rawMsg = _marshaller.Marshall(new Message[] { msg });
+            var rawMsg = _marshaller.Marshall(new Message[] {msg});
 
             Message outputMessage = null;
             ProcessedDataCallback c = response =>
@@ -149,7 +147,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof(ErrorMessage));
+            Assert.IsInstanceOfType(outputMessage, typeof (ErrorMessage));
         }
 
         [TestMethod]
@@ -160,9 +158,9 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var msg = new StatusMessage
             {
                 ComponentId = 5,
-                Threads = new List<ThreadStatus> { new ThreadStatus { ProblemType = "dvrp" } }
+                Threads = new List<ThreadStatus> {new ThreadStatus {ProblemType = "dvrp"}}
             };
-            var rawMsg = _marshaller.Marshall(new Message[] { msg });
+            var rawMsg = _marshaller.Marshall(new Message[] {msg});
 
             Message outputMessage = null;
             ProcessedDataCallback c = response =>
@@ -176,7 +174,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof(ErrorMessage));
+            Assert.IsInstanceOfType(outputMessage, typeof (ErrorMessage));
         }
     }
 }

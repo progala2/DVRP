@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.Net;
 using _15pl04.Ucc.Commons.Config;
 using _15pl04.Ucc.Commons.Utilities;
@@ -13,11 +12,11 @@ namespace _15pl04.Ucc.CommunicationServer
             CommunicationServer communicationServer;
             try
             {
-                ServerConfigurationSection config = ServerConfigurationSection.LoadConfig("serverConfig", args);
+                var config = ServerConfigurationSection.LoadConfig("serverConfig", args);
 
-                IPEndPoint serverAddress = IpEndPointParser.Parse(config.Address, config.Port);
-                uint timeout = config.Timeout;
-                bool isBackup = config.IsBackup;
+                var serverAddress = IpEndPointParser.Parse(config.Address, config.Port);
+                var timeout = config.Timeout;
+                var isBackup = config.IsBackup;
 
                 IPEndPoint masterServerAddress;
                 if (isBackup)
@@ -25,7 +24,7 @@ namespace _15pl04.Ucc.CommunicationServer
 
                 //_logger.Info("Server address: " + serverAddress);
 
-                var serverConfig = new ServerConfig()
+                var serverConfig = new ServerConfig
                 {
                     Mode = isBackup ? ServerConfig.ServerMode.Backup : ServerConfig.ServerMode.Primary,
                     Address = serverAddress,
@@ -38,7 +37,8 @@ namespace _15pl04.Ucc.CommunicationServer
             {
                 var errorText = string.Format("{0}:{1}", ex.GetType().FullName, ex.Message);
                 if (ex.InnerException != null)
-                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName, ex.InnerException.Message);
+                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName,
+                        ex.InnerException.Message);
                 //_logger.Error(errorText);
                 return;
             }

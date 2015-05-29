@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;

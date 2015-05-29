@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -12,8 +11,8 @@ namespace _15pl04.Ucc.TaskSolver
 {
     public class DvrpTaskSolver : UCCTaskSolver.TaskSolver
     {
-        readonly IFormatter _formatter = new BinaryFormatter();
-        readonly DvrpProblem _dvrpProblem;
+        private readonly DvrpProblem _dvrpProblem;
+        private readonly IFormatter _formatter = new BinaryFormatter();
 
         public DvrpTaskSolver(byte[] problemData)
             : base(problemData)
@@ -23,7 +22,7 @@ namespace _15pl04.Ucc.TaskSolver
                 string problem;
                 using (var mem = new MemoryStream(problemData))
                 {
-                    problem = (string)_formatter.Deserialize(mem);
+                    problem = (string) _formatter.Deserialize(mem);
                 }
                 var data = Encoding.UTF8.GetBytes(problem);
                 using (var mem = new MemoryStream(data))
@@ -86,7 +85,7 @@ namespace _15pl04.Ucc.TaskSolver
                     for (var i = 0; i < 2; i++)
                         r.ReadLine();
                     var timeAvail = new int[numVisits];
-                    for (int i = 0; i < timeAvail.Length; i++)
+                    for (var i = 0; i < timeAvail.Length; i++)
                     {
                         line = r.ReadLine();
                         m = reg.Matches(line);
@@ -95,11 +94,12 @@ namespace _15pl04.Ucc.TaskSolver
                     var requests = new Request[numVisits];
                     for (var i = 0; i < requests.Length; i++)
                     {
-                        requests[i] = new Request(locationCoord[i + 1, 0], locationCoord[i + 1, 1], demands[i], timeAvail[i], durations[i]);
+                        requests[i] = new Request(locationCoord[i + 1, 0], locationCoord[i + 1, 1], demands[i],
+                            timeAvail[i], durations[i]);
                     }
                     _dvrpProblem = new DvrpProblem(numVehicles, capacity, new[]
                     {
-                        new Depot(locationCoord[0, 0], locationCoord[0, 1], depotStart, depotEnd),
+                        new Depot(locationCoord[0, 0], locationCoord[0, 1], depotStart, depotEnd)
                     }, requests);
                 }
             }
@@ -108,6 +108,11 @@ namespace _15pl04.Ucc.TaskSolver
                 Exception = ex;
                 State = TaskSolverState.Error;
             }
+        }
+
+        public override string Name
+        {
+            get { return "UCC.Dvrp"; }
         }
 
         public override byte[][] DivideProblem(int threadCount)
@@ -129,7 +134,7 @@ namespace _15pl04.Ucc.TaskSolver
             }
             catch (Exception ex)
             {
-                this.Exception = ex;
+                Exception = ex;
                 State = TaskSolverState.Error;
                 return null;
             }
@@ -144,7 +149,7 @@ namespace _15pl04.Ucc.TaskSolver
                 {
                     using (var memoryStream = new MemoryStream(t))
                     {
-                        var solution = (DvrpSolution)_formatter.Deserialize(memoryStream);
+                        var solution = (DvrpSolution) _formatter.Deserialize(memoryStream);
                         if (solution.FinalDistance < finalSolution.FinalDistance)
                         {
                             finalSolution = solution;
@@ -153,7 +158,7 @@ namespace _15pl04.Ucc.TaskSolver
                 }
                 using (var memoryStream = new MemoryStream())
                 {
-                    string result = "Final Distance: " + finalSolution.FinalDistance;
+                    var result = "Final Distance: " + finalSolution.FinalDistance;
                     foreach (var route in finalSolution.CarsRoutes)
                     {
                         result += "\n";
@@ -167,15 +172,10 @@ namespace _15pl04.Ucc.TaskSolver
             }
             catch (Exception ex)
             {
-                this.Exception = ex;
+                Exception = ex;
                 State = TaskSolverState.Error;
                 return null;
             }
-        }
-
-        public override string Name
-        {
-            get { return "UCC.Dvrp"; }
         }
 
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
@@ -185,7 +185,7 @@ namespace _15pl04.Ucc.TaskSolver
                 DvrpPartialProblem problem;
                 using (var memoryStream = new MemoryStream(partialData))
                 {
-                    problem = (DvrpPartialProblem)_formatter.Deserialize(memoryStream);
+                    problem = (DvrpPartialProblem) _formatter.Deserialize(memoryStream);
                 }
                 var solver = new DvrpSolver(_dvrpProblem);
                 using (var memoryStream = new MemoryStream())
@@ -197,11 +197,10 @@ namespace _15pl04.Ucc.TaskSolver
             }
             catch (Exception ex)
             {
-                this.Exception = ex;
+                Exception = ex;
                 State = TaskSolverState.Error;
                 return null;
             }
         }
     }
-
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace _15pl04.Ucc.TaskSolver
 {
@@ -8,7 +7,7 @@ namespace _15pl04.Ucc.TaskSolver
     {
         public DvrpPartialProblem(int[] setStart, double approximateResult, ulong numberOfSets)
         {
-            SetBegin = (int[])setStart.Clone();
+            SetBegin = (int[]) setStart.Clone();
             ApproximateResult = approximateResult;
             NumberOfSets = numberOfSets;
         }

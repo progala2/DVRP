@@ -52,7 +52,10 @@ namespace _15pl04.Ucc.Commons.Computations.Base
         ///     messages.
         /// </summary>
         /// <param name="actionToExecute">An action to be executed in new thread. If null no new thread will be started.</param>
-        /// <param name="actionOnException">An action to be executed when exception occurs in started thread. If null exception will be ignored.</param>
+        /// <param name="actionOnException">
+        ///     An action to be executed when exception occurs in started thread. If null exception
+        ///     will be ignored.
+        /// </param>
         /// <param name="problemType">The name of the type as given by TaskSolver.</param>
         /// <param name="problemInstanceId">The ID of the problem assigned when client connected.</param>
         /// <param name="partialProblemId">The ID of the task within given problem instance.</param>

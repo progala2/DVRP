@@ -5,9 +5,8 @@ using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests.Mocks
 {
-    class MockWorkManager : IWorkManager
+    internal class MockWorkManager : IWorkManager
     {
-
         public event WorkAssignmentEventHandler WorkAssignment;
 
         public bool TryAssignWork(SolverNodeInfo node, out Work work)
@@ -30,7 +29,8 @@ namespace _15pl04.Ucc.CommunicationServer.Tests.Mocks
             throw new NotImplementedException();
         }
 
-        public void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime, bool timeoutOccured)
+        public void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime,
+            bool timeoutOccured)
         {
             throw new NotImplementedException();
         }

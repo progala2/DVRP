@@ -7,16 +7,16 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
 {
     internal class DvrpSolver
     {
-        readonly double[,] _distances;
         /// <summary>
-        /// index0 - depot
-        /// index1 - request
+        ///     index0 - depot
+        ///     index1 - request
         /// </summary>
-        readonly double[,] _depotDistances;
-        readonly DvrpProblem _dvrpProblem;
-        readonly Stopwatch _timer = new Stopwatch();
-        private TspSolver _tspSolver;
-        public UCCTaskSolver.TaskSolver.TaskSolverState State { get; private set; }
+        private readonly double[,] _depotDistances;
+
+        private readonly double[,] _distances;
+        private readonly DvrpProblem _dvrpProblem;
+        private readonly Stopwatch _timer = new Stopwatch();
+        private readonly TspSolver _tspSolver;
 
         public DvrpSolver(DvrpProblem problem)
         {
@@ -30,7 +30,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 {
                     var dx = _dvrpProblem.Requests[i].X - _dvrpProblem.Requests[j].X;
                     var dy = _dvrpProblem.Requests[i].Y - _dvrpProblem.Requests[j].Y;
-                    _distances[i, j] = _distances[j, i] = Math.Sqrt(dx * dx + dy * dy);
+                    _distances[i, j] = _distances[j, i] = Math.Sqrt(dx*dx + dy*dy);
                 }
             }
             var m = _dvrpProblem.Depots.Length;
@@ -41,12 +41,14 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 {
                     var dx = _dvrpProblem.Depots[i].X - _dvrpProblem.Requests[j].X;
                     var dy = _dvrpProblem.Depots[i].Y - _dvrpProblem.Requests[j].Y;
-                    _depotDistances[i, j] = Math.Sqrt(dx * dx + dy * dy);
+                    _depotDistances[i, j] = Math.Sqrt(dx*dx + dy*dy);
                 }
-            }           
+            }
             var dvrpSolver = this;
             _tspSolver = new TspSolver(ref dvrpSolver);
         }
+
+        public UCCTaskSolver.TaskSolver.TaskSolverState State { get; private set; }
 
         public DvrpSolution Solve(DvrpPartialProblem partProblem, TimeSpan timeout)
         {
@@ -132,7 +134,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                     }
                 }
                 if (!(min > distance)) continue;
-                
+
                 min = distance;
                 for (var j = 0; j < _dvrpProblem.VehicleCount; j++)
                 {
@@ -157,20 +159,20 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             double result = 0;
             for (var i = 0; i < _dvrpProblem.Requests.Length; i++)
             {
-                result += _depotDistances[0, i] * 2;
+                result += _depotDistances[0, i]*2;
             }
             return result;
         }
+
         internal class TspSolver
         {
-            readonly double[,] _distances;
-            readonly double[,] _depotDistances;
-            readonly DvrpProblem _dvrpProblem;
-            
+            private readonly double[,] _depotDistances;
+            private readonly double[,] _distances;
+            private readonly DvrpProblem _dvrpProblem;
             private readonly bool[] _visited;
-            private double _oneCarDistance;
             private List<int> _carFinalRoute;
             private List<int> _listOfCities;
+            private double _oneCarDistance;
 
             public TspSolver(ref DvrpSolver solver)
             {
@@ -188,8 +190,9 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 foreach (var city in _listOfCities)
                 {
                     _visited[city] = true;
-                    var route = new List<int> { city };
-                    RecurenceSolve(_depotDistances[0, city], _dvrpProblem.Requests[city].AvailabilityTime + _dvrpProblem.Requests[city].Duration, ref route);
+                    var route = new List<int> {city};
+                    RecurenceSolve(_depotDistances[0, city],
+                        _dvrpProblem.Requests[city].AvailabilityTime + _dvrpProblem.Requests[city].Duration, ref route);
                     _visited[city] = false;
                 }
                 carRoute = _carFinalRoute;
@@ -205,7 +208,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                         return;
                     distance += _depotDistances[0, carRoute.Last()];
                     if (!(distance < _oneCarDistance)) return;
-                    
+
                     _carFinalRoute = new List<int>(carRoute);
                     _oneCarDistance = distance;
                     return;
@@ -214,7 +217,8 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 {
                     if (_visited[i])
                         continue;
-                    var act = _distances[carRoute.Last(), i] + _dvrpProblem.Requests[i].Duration + Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - actual, 0);
+                    var act = _distances[carRoute.Last(), i] + _dvrpProblem.Requests[i].Duration +
+                              Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - actual, 0);
                     var dist = _distances[carRoute.Last(), i];
                     actual += act;
                     distance += dist;
@@ -224,13 +228,12 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                     {
                         RecurenceSolve(distance, actual, ref carRoute);
                     }
-                    carRoute.RemoveAt(carRoute.Count-1);
+                    carRoute.RemoveAt(carRoute.Count - 1);
                     distance -= dist;
                     actual -= act;
                     _visited[i] = false;
                 }
             }
         }
-        
     }
 }

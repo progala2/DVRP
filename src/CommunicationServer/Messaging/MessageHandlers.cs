@@ -13,7 +13,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
     {
         private List<Message> HandleMessageGeneric<T>(T msg, TcpDataProviderMetadata metadata) where T : Message
         {
-            return HandleMessage((dynamic)msg, metadata);
+            return HandleMessage((dynamic) msg, metadata);
         }
 
         private List<Message> HandleMessage(RegisterMessage msg, TcpDataProviderMetadata metadata)
@@ -26,7 +26,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     var serverInfo = new ServerInfo
                     {
                         IpAddress = metadata.SenderAddress.Address.ToString(),
-                        Port = (ushort)metadata.SenderAddress.Port
+                        Port = (ushort) metadata.SenderAddress.Port
                     };
                     componentInfo = new BackupServerInfo(serverInfo, msg.ParallelThreads);
                     break;
@@ -50,7 +50,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 CommunicationTimeout = _componentOverseer.CommunicationTimeout
             };
 
-            return new List<Message> { responseMsg };
+            return new List<Message> {responseMsg};
         }
 
         private List<Message> HandleMessage(StatusMessage msg, TcpDataProviderMetadata metadata)
@@ -79,20 +79,20 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 {
                     case ComponentType.ComputationalNode:
                     case ComponentType.TaskManager:
-                        {
-                            Work work;
-                            _workManager.TryAssignWork((SolverNodeInfo)component, out work);
+                    {
+                        Work work;
+                        _workManager.TryAssignWork((SolverNodeInfo) component, out work);
 
-                            if (work != null)
-                                responses.Add(work.CreateMessage());
-                            break;
-                        }
+                        if (work != null)
+                            responses.Add(work.CreateMessage());
+                        break;
+                    }
 
                     case ComponentType.CommunicationServer:
-                        {
-                            //TODO get stuff from the sync queue
-                            break;
-                        }
+                    {
+                        //TODO get stuff from the sync queue
+                        break;
+                    }
                 }
             }
 
@@ -112,7 +112,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 AssignedId = id
             };
 
-            return new List<Message> { response };
+            return new List<Message> {response};
         }
 
         private List<Message> HandleMessage(SolutionRequestMessage msg, TcpDataProviderMetadata metadata)
@@ -139,7 +139,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     CommonData = problem.CommonData,
                     ProblemInstanceId = problem.Id,
                     ProblemType = problem.Type,
-                    Solutions = new List<SolutionsMessage.Solution> { msgSolution }
+                    Solutions = new List<SolutionsMessage.Solution> {msgSolution}
                 };
             }
             else if (problem != null)
@@ -156,7 +156,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     CommonData = problem.CommonData,
                     ProblemInstanceId = problem.Id,
                     ProblemType = problem.Type,
-                    Solutions = new List<SolutionsMessage.Solution> { msgSolution }
+                    Solutions = new List<SolutionsMessage.Solution> {msgSolution}
                 };
             }
             else
@@ -168,7 +168,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 };
             }
 
-            return new List<Message> { response };
+            return new List<Message> {response};
         }
 
         private List<Message> HandleMessage(PartialProblemsMessage msg, TcpDataProviderMetadata metadata)
@@ -304,7 +304,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         {
             Logger.Error(msg.ErrorType + " error message received: \n" + msg.ErrorText);
 
-            return new List<Message> { CreateNoOperationMessage() };
+            return new List<Message> {CreateNoOperationMessage()};
         }
 
         private NoOperationMessage CreateNoOperationMessage()
@@ -326,11 +326,11 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
             foreach (var componentInfo in backupServers)
             {
-                var bs = (BackupServerInfo)componentInfo;
+                var bs = (BackupServerInfo) componentInfo;
                 var backupInfo = new ServerInfo
                 {
                     IpAddress = bs.Address.Address.ToString(),
-                    Port = (ushort)bs.Address.Port
+                    Port = (ushort) bs.Address.Port
                 };
 
                 backupInfoToSend.Add(backupInfo);

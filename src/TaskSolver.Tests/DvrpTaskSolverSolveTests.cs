@@ -5,22 +5,24 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace _15pl04.Ucc.TaskSolver.Tests
 {
     [TestClass]
     public class DvrpTaskSolverSolveTests
     {
-        BinaryFormatter _formatter = new BinaryFormatter();
+        private readonly BinaryFormatter _formatter = new BinaryFormatter();
+
         [TestMethod]
         public void TestSolvingOkulewiczSimpleProblem()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
-            Assert.IsTrue(HelpingFunctionForTests(DvrpProblems.io2_8_plain_a_D, new TimeSpan(1, 0, 0), 4, 680.09, stopwatch));
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
+            Assert.IsTrue(HelpingFunctionForTests(DvrpProblems.io2_8_plain_a_D, new TimeSpan(1, 0, 0), 4, 680.09,
+                stopwatch));
             stopwatch.Stop();
         }
 
@@ -29,7 +31,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
             Assert.IsTrue(HelpingFunctionForTests(DvrpProblems.okul12D, new TimeSpan(1, 0, 0), 4, 976.27, stopwatch));
             stopwatch.Stop();
         }
@@ -40,14 +42,15 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
             HelpingFunctionForTests(DvrpProblems.okul17D, new TimeSpan(0, 0, 3), 4, 44, stopwatch);
             stopwatch.Stop();
         }
 
-        private bool HelpingFunctionForTests(byte[] problem, TimeSpan timeout, int threadsCount, double expectectedResult, Stopwatch stopwatch)
+        private bool HelpingFunctionForTests(byte[] problem, TimeSpan timeout, int threadsCount,
+            double expectectedResult, Stopwatch stopwatch)
         {
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem serialized");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem serialized");
 
             byte[] problemData;
             using (var memoryStream = new MemoryStream())
@@ -58,39 +61,43 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             }
             var taskSolver = new DvrpTaskSolver(problemData);
             var partialProblemsData = taskSolver.DivideProblem(threadsCount);
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem divided; threadsCount=" + threadsCount);
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem divided; threadsCount=" +
+                            threadsCount);
 
             var tasks = new List<Task<byte[]>>(threadsCount);
             foreach (var partialProblemData in partialProblemsData)
             {
                 var data = partialProblemData;
-                tasks.Add(new Task<byte[]> (() =>
+                tasks.Add(new Task<byte[]>(() =>
                 {
-                    DvrpTaskSolver taskSolver2 = new DvrpTaskSolver(problemData);
-                    return taskSolver2.Solve(data, timeout);                   
+                    var taskSolver2 = new DvrpTaskSolver(problemData);
+                    return taskSolver2.Solve(data, timeout);
                 }
-                ));
-               tasks[tasks.Count - 1].Start();
+                    ));
+                tasks[tasks.Count - 1].Start();
             }
             Task.WaitAll(tasks.ToArray());
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "partial solutions solved");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "partial solutions solved");
 
             var finalSolutionData = taskSolver.MergeSolution(tasks.Select(task => task.Result).ToArray());
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problems merged");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problems merged");
 
             bool result;
             using (var memoryStream = new MemoryStream(finalSolutionData))
             {
-                var finalSolution = (DvrpSolution)_formatter.Deserialize(memoryStream);
-                Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final time: " + finalSolution.FinalDistance);
-                foreach (int[] t in finalSolution.CarsRoutes)
+                var finalSolution = (DvrpSolution) _formatter.Deserialize(memoryStream);
+                Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "final time: " +
+                                finalSolution.FinalDistance);
+                foreach (var t in finalSolution.CarsRoutes)
                 {
                     Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "route: " +
                                     string.Join(", ", t.Select(v => v.ToString())));
                 }
-                result = Math.Abs(Math.Round((double)new decimal(finalSolution.FinalDistance), 2) - expectectedResult) < Double.Epsilon;
+                result =
+                    Math.Abs(Math.Round((double) new decimal(finalSolution.FinalDistance), 2) - expectectedResult) <
+                    double.Epsilon;
             }
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final solution deserialized");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "final solution deserialized");
 
             return result;
         }

@@ -19,12 +19,12 @@ namespace _15pl04.Ucc.Commons
     /// </summary>
     public abstract class ComputationalComponent
     {
-        private readonly object _startLock = new object();
         private readonly MessageSender _messageSender;
+        private readonly object _startLock = new object();
+        private readonly ThreadManager _threadManager;
         private Task _messagesProcessingTask;
-        private ManualResetEvent _messagesToSendManualResetEvent;
         private ConcurrentQueue<Message> _messagesToSend;
-        private ThreadManager _threadManager;
+        private ManualResetEvent _messagesToSendManualResetEvent;
 
         /// <summary>
         ///     Creates component that can register to the server.
@@ -147,7 +147,10 @@ namespace _15pl04.Ucc.Commons
         ///     messages.
         /// </summary>
         /// <param name="actionToExecute">An action to be executed in new thread. If null no new thread will be started.</param>
-        /// <param name="actionDescription">An information about started action that will be send to server if exception occurs during execution.</param>
+        /// <param name="actionDescription">
+        ///     An information about started action that will be send to server if exception occurs
+        ///     during execution.
+        /// </param>
         /// <param name="problemType">The name of the type as given by TaskSolver.</param>
         /// <param name="problemInstanceId">The ID of the problem assigned when client connected.</param>
         /// <param name="partialProblemId">The ID of the task within given problem instance.</param>
@@ -213,7 +216,7 @@ namespace _15pl04.Ucc.Commons
         {
             IsRunning = true;
             // time in milliseconds
-            var timeToWait = (int)(Timeout * 1000 / 2);
+            var timeToWait = (int) (Timeout*1000/2);
             while (IsRunning)
             {
                 Message messageToSend = GetStatusMessage();
@@ -284,7 +287,7 @@ namespace _15pl04.Ucc.Commons
                 return;
             var errorText = string.Format("{0}(id={1})|{2}|Exception type: {3}|Exception message: {4}",
                 ComponentType, Id, reasonOfException, exception.GetType().FullName, exception.Message);
-            var errorMessage = new ErrorMessage()
+            var errorMessage = new ErrorMessage
             {
                 ErrorType = ErrorType.ExceptionOccured,
                 ErrorText = errorText
@@ -322,7 +325,7 @@ namespace _15pl04.Ucc.Commons
                     ProblemInstanceId = computationalThreadStatus.ProblemInstanceId,
                     PartialProblemId = computationalThreadStatus.PartialProblemId,
                     State = computationalThreadStatus.State,
-                    TimeInThisState = (ulong)computationalThreadStatus.TimeSinceLastStateChange.TotalMilliseconds
+                    TimeInThisState = (ulong) computationalThreadStatus.TimeSinceLastStateChange.TotalMilliseconds
                 };
                 threadsStatuses.Add(threadStatus);
             }

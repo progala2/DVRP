@@ -17,7 +17,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
         public TcpServerTests()
         {
-            _serverAddress = new IPEndPoint(new IPAddress(new byte[] { 127, 0, 0, 1 }), 9123);
+            _serverAddress = new IPEndPoint(new IPAddress(new byte[] {127, 0, 0, 1}), 9123);
             // _serverAddress = new IPEndPoint(IPAddress.Any, 9123);
 
             _server = new TcpServer(_serverAddress, new MockProcessor());
@@ -27,12 +27,12 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
         [TestMethod]
         public void DataIsEnqueued() //change
         {
-            byte[] inputData = { 1, 2, 3, 4, 5 };
+            byte[] inputData = {1, 2, 3, 4, 5};
             var outputData = ClientCreateSendAndReceive(inputData);
-            var expectedData = new byte[] { 5, 4, 3, 2, 1 };
+            var expectedData = new byte[] {5, 4, 3, 2, 1};
 
             Assert.AreEqual(outputData.Length, expectedData.Length);
-            for (int i = 0; i < expectedData.Length; i++)
+            for (var i = 0; i < expectedData.Length; i++)
             {
                 Assert.AreEqual(outputData[i], expectedData[i]);
             }
@@ -70,10 +70,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             {
                 Array.Reverse(data);
 
-                new Task(() =>
-                {
-                    callback(data);
-                }).Start();
+                new Task(() => { callback(data); }).Start();
             }
 
             public void StartProcessing()

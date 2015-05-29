@@ -56,16 +56,16 @@ namespace _15pl04.Ucc.TaskManager
             switch (message.MessageType)
             {
                 case MessageClass.NoOperation:
-                    NoOperationMessageHandler((NoOperationMessage)message);
+                    NoOperationMessageHandler((NoOperationMessage) message);
                     break;
                 case MessageClass.DivideProblem:
-                    DivideProblemMessageHandler((DivideProblemMessage)message);
+                    DivideProblemMessageHandler((DivideProblemMessage) message);
                     break;
                 case MessageClass.Solutions:
-                    SolutionsMessageHandler((SolutionsMessage)message);
+                    SolutionsMessageHandler((SolutionsMessage) message);
                     break;
                 case MessageClass.Error:
-                    ErrorMessageHandler((ErrorMessage)message);
+                    ErrorMessageHandler((ErrorMessage) message);
                     break;
                 default:
                     throw new InvalidOperationException("Received not supported message type.");
@@ -105,10 +105,10 @@ namespace _15pl04.Ucc.TaskManager
             // should be started properly cause server sends at most as many tasks to do as count of component's tasks in idle state
             var started = StartActionInNewThread(() =>
             {
-                var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.ProblemData);
+                var taskSolver = (TaskSolver) Activator.CreateInstance(taskSolverType, message.ProblemData);
                 taskSolver.ThrowIfError();
 
-                var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
+                var partialProblemsData = taskSolver.DivideProblem((int) message.ComputationalNodes);
                 taskSolver.ThrowIfError();
 
                 var partialProblems = new List<PartialProblemsMessage.PartialProblem>(partialProblemsData.GetLength(0));
@@ -116,7 +116,7 @@ namespace _15pl04.Ucc.TaskManager
                 {
                     partialProblems.Add(new PartialProblemsMessage.PartialProblem
                     {
-                        PartialProblemId = (ulong)i,
+                        PartialProblemId = (ulong) i,
                         Data = partialProblemsData[i],
                         TaskManagerId = Id
                     });
@@ -158,19 +158,20 @@ namespace _15pl04.Ucc.TaskManager
                 ulong totalComputationsTime = 0;
                 var timeoutOccured = false;
                 var solutionsData = new byte[message.Solutions.Count][];
-                for (int i = 0; i < message.Solutions.Count; i++)
+                for (var i = 0; i < message.Solutions.Count; i++)
                 {
                     var solution = message.Solutions[i];
 
                     if (solution.Type != SolutionsMessage.SolutionType.Partial)
-                        throw new InvalidOperationException(string.Format("Received non-partial solution({0})(partial problem id={1}).",
-                            solution.Type, solution.PartialProblemId));
+                        throw new InvalidOperationException(
+                            string.Format("Received non-partial solution({0})(partial problem id={1}).",
+                                solution.Type, solution.PartialProblemId));
                     totalComputationsTime += solution.ComputationsTime;
                     timeoutOccured |= solution.TimeoutOccured;
                     solutionsData[i] = solution.Data;
                 }
 
-                var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
+                var taskSolver = (TaskSolver) Activator.CreateInstance(taskSolverType, message.CommonData);
                 taskSolver.ThrowIfError();
 
                 // measure time using DateTime cause StopWatch is not guaranteed to be thread safe
@@ -179,9 +180,9 @@ namespace _15pl04.Ucc.TaskManager
                 var stop = DateTime.UtcNow;
 
                 taskSolver.ThrowIfError();
-                totalComputationsTime += (ulong)((stop - start).TotalMilliseconds);
+                totalComputationsTime += (ulong) ((stop - start).TotalMilliseconds);
 
-                var finalSolution = new SolutionsMessage.Solution()
+                var finalSolution = new SolutionsMessage.Solution
                 {
                     Type = SolutionsMessage.SolutionType.Final,
                     ComputationsTime = totalComputationsTime,
@@ -193,7 +194,7 @@ namespace _15pl04.Ucc.TaskManager
                     ProblemType = message.ProblemType,
                     ProblemInstanceId = message.ProblemInstanceId,
                     CommonData = message.CommonData,
-                    Solutions = new List<SolutionsMessage.Solution>() { finalSolution }
+                    Solutions = new List<SolutionsMessage.Solution> {finalSolution}
                 };
 
                 EnqueueMessageToSend(finalSolutionMessage);
@@ -217,7 +218,8 @@ namespace _15pl04.Ucc.TaskManager
                     // nothing to do
                     break;
                 case ErrorType.ExceptionOccured:
-                    throw new InvalidOperationException("Information about exception on server shouldn't be send to component.");
+                    throw new InvalidOperationException(
+                        "Information about exception on server shouldn't be send to component.");
             }
         }
     }

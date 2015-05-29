@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using _15pl04.Ucc.Commons.Config;
@@ -20,9 +19,9 @@ namespace _15pl04.Ucc.ComputationalClient
             ComputationalClient computationalClient;
             try
             {
-                ComponentConfigurationSection config = ComponentConfigurationSection.LoadConfig("componentConfig", args);
+                var config = ComponentConfigurationSection.LoadConfig("componentConfig", args);
 
-                IPEndPoint serverAddress = IpEndPointParser.Parse(config.PrimaryServer.Address, config.PrimaryServer.Port);
+                var serverAddress = IpEndPointParser.Parse(config.PrimaryServer.Address, config.PrimaryServer.Port);
                 //string taskSolversDirectoryRelativePath = config.TaskSolversPath;
 
                 Logger.Info("Server address: " + serverAddress);
@@ -33,7 +32,8 @@ namespace _15pl04.Ucc.ComputationalClient
             {
                 var errorText = string.Format("{0}:{1}", ex.GetType().FullName, ex.Message);
                 if (ex.InnerException != null)
-                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName, ex.InnerException.Message);
+                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName,
+                        ex.InnerException.Message);
                 Logger.Error(errorText);
                 return;
             }
@@ -81,7 +81,7 @@ namespace _15pl04.Ucc.ComputationalClient
                         ulong timeout;
                         if (!ulong.TryParse(Console.ReadLine(), out timeout))
                         {
-                            timeout = (ulong)TimeSpan.MaxValue.TotalSeconds;
+                            timeout = (ulong) TimeSpan.MaxValue.TotalSeconds;
                         }
                         Console.WriteLine(@"Problem type (for example 'dvrp'): ");
                         line = Console.ReadLine();
@@ -113,14 +113,13 @@ namespace _15pl04.Ucc.ComputationalClient
                                         using (var mem = new MemoryStream(solutionsMessages[0].Solutions[0].Data))
                                         {
                                             var formatter = new BinaryFormatter();
-                                            problem = (string)formatter.Deserialize(mem);
+                                            problem = (string) formatter.Deserialize(mem);
                                         }
                                         Console.WriteLine(@"Result message: {0}", problem);
                                         break;
                                     default:
                                         throw new ArgumentOutOfRangeException();
                                 }
-
                             }
                         }
                         else

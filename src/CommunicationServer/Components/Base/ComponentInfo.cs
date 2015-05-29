@@ -31,14 +31,14 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
         public DateTime Timestamp { get; private set; }
 
         /// <summary>
-        /// In milliseconds.
+        ///     In milliseconds.
         /// </summary>
         public uint TimestampAge
         {
             get
             {
                 var diff = DateTime.UtcNow - Timestamp;
-                return (uint)diff.TotalMilliseconds;
+                return (uint) diff.TotalMilliseconds;
             }
         }
 
