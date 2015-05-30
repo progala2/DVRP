@@ -15,6 +15,9 @@ using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
+    /// <summary>
+    /// Module responsible for processing and generating output for incoming messages.
+    /// </summary>
     internal partial class MessageProcessor : IDataProcessor
     {
         private static readonly ILogger Logger = new ConsoleLogger();
@@ -26,6 +29,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private CancellationTokenSource _cancellationTokenSource;
         private volatile bool _isProcessing;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="componentOverseer">Component overseer module.</param>
+        /// <param name="workManager">Work manager to get work from.</param>
         public MessageProcessor(IComponentOverseer componentOverseer, IWorkManager workManager)
         {
             if (componentOverseer == null)
@@ -45,11 +52,20 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             _processingLock = new AutoResetEvent(false);
         }
 
+        /// <summary>
+        /// True if the message processor is processing messages. False otherwise.
+        /// </summary>
         public bool IsProcessing
         {
             get { return _isProcessing; }
         }
 
+        /// <summary>
+        /// Enqueues new raw message to process.
+        /// </summary>
+        /// <param name="data">Raw message data.</param>
+        /// <param name="metadata">Information about received data.</param>
+        /// <param name="callback">Callback invoked after processing containing marshalled response messages.</param>
         public void EnqueueDataToProcess(byte[] data, Metadata metadata, ProcessedDataCallback callback)
         {
             _inputDataQueue.Enqueue(data, metadata, callback);
@@ -57,6 +73,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             _processingLock.Set();
         }
 
+        /// <summary>
+        /// Starts processing messages.
+        /// </summary>
         public void StartProcessing()
         {
             if (_isProcessing)
@@ -96,6 +115,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             _isProcessing = true;
         }
 
+        /// <summary>
+        /// Stop processing messages.
+        /// </summary>
         public void StopProcessing()
         {
             if (!_isProcessing)
@@ -105,6 +127,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             _processingLock.Set();
         }
 
+        /// <summary>
+        /// Process item from raw data queue.
+        /// </summary>
+        /// <param name="data">Dequeued data.</param>
         private void ProcessData(RawDataQueueItem data)
         {
             var messages = _marshaller.Unmarshall(data.Data);

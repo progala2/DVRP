@@ -9,14 +9,19 @@ using _15pl04.Ucc.CommunicationServer.Messaging.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
+    /// <summary>
+    /// Accepts TCP clients, schedules incoming data processing and passes response.
+    /// </summary>
     internal class TcpServer
     {
-        // TODO interface/abstract class
-
+        /// <summary>
+        /// Delegate invoked with a response in order to send it back to the client.
+        /// </summary>
+        /// <param name="response">Response byte data.</param>
         public delegate void ResponseCallback(byte[] response);
 
         private const int MaxPendingConnections = 100;
-        private const int ReadBufferSize = 4096; // TODO make sure it's enough
+        private const int ReadBufferSize = 4096;
         private static readonly ILogger Logger = new ConsoleLogger();
         private readonly IDataProcessor _dataProcessor;
         private readonly Socket _listenerSocket;
@@ -24,6 +29,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private ManualResetEvent _clientAcceptanceEvent;
         private volatile bool _isListening;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="address">Listener address.</param>
+        /// <param name="processor">Incoming data processing module.</param>
         public TcpServer(IPEndPoint address, IDataProcessor processor)
         {
             _dataProcessor = processor;
@@ -32,6 +41,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             _listenerSocket.Bind(address);
         }
 
+        /// <summary>
+        /// Starts listening, accepting and reading from the clients.
+        /// </summary>
         public void StartListening()
         {
             if (_isListening)
@@ -72,6 +84,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             _isListening = true;
         }
 
+        /// <summary>
+        /// Stops listening for and accepting TCP clients.
+        /// </summary>
         public void StopListening()
         {
             if (!_isListening)
@@ -80,6 +95,11 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             _cancellationTokenSource.Cancel();
         }
 
+        /// <summary>
+        /// Generates a callback that sends response and finalizes the connection.
+        /// </summary>
+        /// <param name="clientSocket">Client socket to handle.</param>
+        /// <returns>Generated callback.</returns>
         private static ProcessedDataCallback GenerateResponseCallback(Socket clientSocket)
         {
             return response =>
@@ -101,6 +121,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             };
         }
 
+        /// <summary>
+        /// Invoked on TCP client acceptance; reads data from its buffer.
+        /// </summary>
+        /// <param name="ar">Data about the socket.</param>
         private void AcceptCallback(IAsyncResult ar)
         {
             _clientAcceptanceEvent.Set();
