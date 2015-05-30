@@ -11,11 +11,24 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
     internal partial class MessageProcessor
     {
+        /// <summary>
+        /// Handle message received from the cluster component.
+        /// </summary>
+        /// <typeparam name="T">Class-type of the received message.</typeparam>
+        /// <param name="msg">Received message.</param>
+        /// <param name="metadata">Information about data and the TCP connection it came from.</param>
+        /// <returns>List of response messages.</returns>
         private List<Message> HandleMessageGeneric<T>(T msg, TcpDataProviderMetadata metadata) where T : Message
         {
             return HandleMessage((dynamic) msg, metadata);
         }
 
+        /// <summary>
+        /// Handle registration message.
+        /// </summary>
+        /// <param name="msg">Register message.</param>
+        /// <param name="metadata">Information about data and the TCP connection it came from.</param>
+        /// <returns>List of response messages.</returns>
         private List<Message> HandleMessage(RegisterMessage msg, TcpDataProviderMetadata metadata)
         {
             ComponentInfo componentInfo;
@@ -53,6 +66,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             return new List<Message> {responseMsg};
         }
 
+        /// <summary>
+        /// Handle status message.
+        /// </summary>
+        /// <param name="msg">Status message.</param>
+        /// <param name="metadata">Information about data and the TCP connection it came from.</param>
+        /// <returns>List of response messages.</returns>
         private List<Message> HandleMessage(StatusMessage msg, TcpDataProviderMetadata metadata)
         {
             var responses = new List<Message>();
@@ -102,6 +121,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             return responses;
         }
 
+        /// <summary>
+        /// Handle solve request message.
+        /// </summary>
+        /// <param name="msg">Solve request message.</param>
+        /// <param name="metadata">Information about data and the TCP connection it came from.</param>
+        /// <returns>List of response messages.</returns>
         private List<Message> HandleMessage(SolveRequestMessage msg, TcpDataProviderMetadata metadata)
         {
             var solvingTimeout = msg.SolvingTimeout ?? ulong.MaxValue;
@@ -115,6 +140,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             return new List<Message> {response};
         }
 
+        /// <summary>
+        /// Handle solution request message.
+        /// </summary>
+        /// <param name="msg">Solution request message.</param>
+        /// <param name="metadata">Information about data and the TCP connection it came from.</param>
+        /// <returns>List of response messages.</returns>
         private List<Message> HandleMessage(SolutionRequestMessage msg, TcpDataProviderMetadata metadata)
         {
             var solution = _workManager.GetSolution(msg.ProblemInstanceId);
@@ -171,6 +202,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             return new List<Message> {response};
         }
 
+        /// <summary>
+        /// Handle partial problems message.
+        /// </summary>
+        /// <param name="msg">Partial problems message.</param>
+        /// <param name="metadata">Information about data and the TCP connection it came from.</param>
+        /// <returns>List of response messages.</returns>
         private List<Message> HandleMessage(PartialProblemsMessage msg, TcpDataProviderMetadata metadata)
         {
             var responses = new List<Message>();
@@ -227,6 +264,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             return responses;
         }
 
+        /// <summary>
+        /// Handle solutios message.
+        /// </summary>
+        /// <param name="msg">Solutions message.</param>
+        /// <param name="metadata">Information about data and the TCP connection it came from.</param>
+        /// <returns>List of response messages.</returns>
         private List<Message> HandleMessage(SolutionsMessage msg, TcpDataProviderMetadata metadata)
         {
             var responses = new List<Message>();
@@ -300,6 +343,12 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             return responses;
         }
 
+        /// <summary>
+        /// Handle error message.
+        /// </summary>
+        /// <param name="msg">Error message.</param>
+        /// <param name="metadata">Information about data and the TCP connection it came from.</param>
+        /// <returns>List of response messages.</returns>
         private List<Message> HandleMessage(ErrorMessage msg, TcpDataProviderMetadata metadata)
         {
             Logger.Error(msg.ErrorType + " error message received: \n" + msg.ErrorText);
@@ -307,6 +356,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             return new List<Message> {CreateNoOperationMessage()};
         }
 
+        /// <summary>
+        /// Generate no-operation message.
+        /// </summary>
+        /// <returns>No operation message.</returns>
         private NoOperationMessage CreateNoOperationMessage()
         {
             var noOperationMsg = new NoOperationMessage
@@ -316,6 +369,10 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             return noOperationMsg;
         }
 
+        /// <summary>
+        /// Generate current backup server list.
+        /// </summary>
+        /// <returns>List of information about currently registered backup servers.</returns>
         private List<ServerInfo> CreateBackupList()
         {
             var backupInfoToSend = new List<ServerInfo>();

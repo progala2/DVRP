@@ -6,8 +6,16 @@ using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 {
+    /// <summary>
+    /// Class representing division work assignable to a task manager.
+    /// </summary>
     internal class DivisionWork : Work
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="assigneeId">ID of the assignee task manager.</param>
+        /// <param name="problem">Problem instance to divide.</param>
+        /// <param name="availableThreads">Number of threads within the system that can solve this type of problem. De facto number of parts to divide into.</param>
         public DivisionWork(ulong assigneeId, Problem problem, ulong availableThreads)
         {
             if (problem == null)
@@ -18,15 +26,25 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
             Problem.NumberOfParts = availableThreads;
         }
-
+        /// <summary>
+        /// Problem instance to divide.
+        /// </summary>
         public Problem Problem { get; private set; }
+        /// <summary>
+        /// ID of the task manager this division work has been assigned to.
+        /// </summary>
         public override ulong AssigneeId { get; protected set; }
-
+        /// <summary>
+        /// Type of work to be done (division).
+        /// </summary>
         public override WorkType Type
         {
             get { return WorkType.Division; }
         }
-
+        /// <summary>
+        /// Create divide problem message that can be send to a task manager.
+        /// </summary>
+        /// <returns>Divide problem message.</returns>
         public override Message CreateMessage()
         {
             var message = new DivideProblemMessage

@@ -7,8 +7,15 @@ using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 {
+    /// <summary>
+    /// Class representing computation work assignable to a computational node.
+    /// </summary>
     internal class ComputationWork : Work
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="assigneeId">ID of the assignee computational node.</param>
+        /// <param name="partialProblems">Assigned partial problems to compute.</param>
         public ComputationWork(ulong assigneeId, IList<PartialProblem> partialProblems)
         {
             if (partialProblems == null)
@@ -27,15 +34,25 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             PartialProblems = new List<PartialProblem>(partialProblems);
             AssigneeId = assigneeId;
         }
-
+        /// <summary>
+        /// Assigned partial problems to compute. All must belong to the same problem instance.
+        /// </summary>
         public List<PartialProblem> PartialProblems { get; private set; }
+        /// <summary>
+        /// ID of the task manager this computational node has been assigned to.
+        /// </summary>
         public override ulong AssigneeId { get; protected set; }
-
+        /// <summary>
+        /// Type of work to be done (computation).
+        /// </summary>
         public override WorkType Type
         {
             get { return WorkType.Computation; }
         }
-
+        /// <summary>
+        /// Create partial problems message that can be send to a computational node.
+        /// </summary>
+        /// <returns>Partial problems message.</returns>
         public override Message CreateMessage()
         {
             var msgPartialProblems = new List<PartialProblemsMessage.PartialProblem>(PartialProblems.Count);
