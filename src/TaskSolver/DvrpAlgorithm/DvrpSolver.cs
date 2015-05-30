@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class DvrpSolver
     {
         /// <summary>
@@ -18,6 +21,10 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         private readonly Stopwatch _timer = new Stopwatch();
         private readonly TspSolver _tspSolver;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="problem"></param>
         public DvrpSolver(DvrpProblem problem)
         {
             State = UCCTaskSolver.TaskSolver.TaskSolverState.OK;
@@ -44,12 +51,20 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                     _depotDistances[i, j] = Math.Sqrt(dx*dx + dy*dy);
                 }
             }
-            var dvrpSolver = this;
-            _tspSolver = new TspSolver(ref dvrpSolver);
+            _tspSolver = new TspSolver(this);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public UCCTaskSolver.TaskSolver.TaskSolverState State { get; private set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="partProblem"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
         public DvrpSolution Solve(DvrpPartialProblem partProblem, TimeSpan timeout)
         {
             var resultCarsRoutes = new List<int>[_dvrpProblem.VehicleCount];
@@ -169,6 +184,10 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             return new DvrpSolution(min, routes);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public double SolveApproximately()
         {
             //TODO to improve
@@ -180,6 +199,12 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lowerSet"></param>
+        /// <param name="higherSet"></param>
+        /// <returns></returns>
         private bool IsLowerSet(int[] lowerSet, int[] higherSet)
         {
             for (int i = 0; i < lowerSet.Length; i++)
@@ -193,6 +218,9 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         internal class TspSolver
         {
             private readonly double[,] _depotDistances;
@@ -203,7 +231,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             private List<int> _listOfCities;
             private double _oneCarDistance;
 
-            public TspSolver(ref DvrpSolver solver)
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="solver"></param>
+            public TspSolver(DvrpSolver solver)
             {
                 _distances = solver._distances;
                 _depotDistances = solver._depotDistances;
@@ -212,6 +244,13 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 _visited = new bool[_dvrpProblem.Requests.Length];
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="listOfCities"></param>
+            /// <param name="min"></param>
+            /// <param name="carRoute"></param>
+            /// <returns></returns>
             public double Solve(List<int> listOfCities, double min, out List<int> carRoute)
             {
                 _oneCarDistance = min;
@@ -228,6 +267,12 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 return _oneCarDistance;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="distance"></param>
+            /// <param name="actual"></param>
+            /// <param name="carRoute"></param>
             private void RecurenceSolve(double distance, double actual, ref List<int> carRoute)
             {
                 if (carRoute.Count == _listOfCities.Count)

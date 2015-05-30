@@ -4,8 +4,17 @@ using System.Linq;
 
 namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class DvrpDivider
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dvrpProblem"></param>
+        /// <param name="numberOfParts"></param>
+        /// <returns></returns>
         public DvrpPartialProblem[] Divide(DvrpProblem dvrpProblem, int numberOfParts)
         {
             // we generate all the partitions
@@ -124,6 +133,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
         private static ulong TriangularMethodBellNumber(int n)
         {
             var triangle = new Dictionary<long, List<ulong>> {{1, new List<ulong>(new ulong[] {1})}};
@@ -141,6 +155,13 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             return triangle[n].Last();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="max"></param>
+        /// <param name="p"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
         private static ulong CalculateCombinations(int max, int p, int n)
         {
             if (p == n - 2)
@@ -152,6 +173,13 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             return CalculateCombinations(max, p + 1, n)*(ulong) (max + 1) + CalculateCombinations(max + 1, p + 1, n);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="p"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
         private static bool CheckZeros(int[] part, int p, int n)
         {
             for (; p < n; p++)
