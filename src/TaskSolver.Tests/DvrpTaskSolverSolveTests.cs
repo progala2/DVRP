@@ -22,7 +22,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
-            Assert.IsTrue(HelpingFunctionForTests(DvrpProblems.io2_8_plain_a_D, new TimeSpan(1, 0, 0), 4, 680.09,
+            Assert.IsTrue(HelpingFunctionForTests(DvrpProblems.io2_8_plain_a_D, new TimeSpan(1, 0, 0), 2, 680.09,
                 stopwatch));
             stopwatch.Stop();
         }
@@ -34,6 +34,26 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             stopwatch.Start();
             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
             Assert.IsTrue(HelpingFunctionForTests(DvrpProblems.okul12D, new TimeSpan(1, 0, 0), 4, 976.27, stopwatch));
+            stopwatch.Stop();
+        }
+
+        [TestMethod]
+        public void TestSolvingOkulewiczThirteenClients()
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
+            Assert.IsTrue(HelpingFunctionForTests(DvrpProblems.okul13D, new TimeSpan(1, 0, 0), 4, 1154.38, stopwatch));
+            stopwatch.Stop();
+        }
+
+        [TestMethod]
+        public void TestSolvingOkulewiczFourteenClients()
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
+            Assert.IsTrue(HelpingFunctionForTests(DvrpProblems.okul14D, new TimeSpan(1, 0, 0), 4, 948.59, stopwatch));
             stopwatch.Stop();
         }
 

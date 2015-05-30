@@ -103,7 +103,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
 
                 if (j == numberOfSetsForThread)
                 {
-                    result[k] = new DvrpPartialProblem(partLast, approximateResult, j);
+                    result[k] = new DvrpPartialProblem(partLast, approximateResult, j, part);
                     partLast = (int[]) part.Clone();
                     ++k;
                     j = 0;
@@ -120,7 +120,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 part[i] = i;
             }
             result[k] = new DvrpPartialProblem(partLast, approximateResult,
-                maxNumberofSets - (ulong) k*numberOfSetsForThread);
+                maxNumberofSets - (ulong) k*numberOfSetsForThread, part);
             return result;
         }
 

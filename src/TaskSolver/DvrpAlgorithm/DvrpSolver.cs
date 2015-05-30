@@ -67,7 +67,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             _timer.Reset();
             _timer.Start();
             // let's check all the partitions
-            for (ulong i = 0; i < partProblem.NumberOfSets; ++i)
+            for (ulong i = 0; IsLowerSet(part, partProblem.SetEnd); ++i)
             {
                 if (_timer.Elapsed.TotalSeconds >= timeout.TotalSeconds)
                 {
@@ -116,6 +116,11 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                         if (cap[part[j]] < -_dvrpProblem.VehicleCapacity)
                         {
                             breaking = true;
+                            var tmp = Math.Max(max[j], part[j]);
+                            for (int k = j + 1; k < part.Length; k++)
+                            {
+                                part[k] = ++tmp;
+                            }
                             break;
                         }
                     }
@@ -127,9 +132,20 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 var carsRoutes = new List<int>[_dvrpProblem.VehicleCount];
                 for (var j = 0; j < listOfRoutes.Count; ++j)
                 {
-                    distance += _tspSolver.Solve(listOfRoutes[j], min-distance, out carsRoutes[j]);
+                    distance += _tspSolver.Solve(listOfRoutes[j], min, out carsRoutes[j]);
                     if (distance > min)
                     {
+                        int k = 0;
+                        for (int l = 0; l <= j; l++)
+                        {
+                            k = Math.Max(listOfRoutes[l][listOfRoutes[l].Count - 1], k);    
+                        }
+                        
+                        var tmp = Math.Max(max[k], part[k]);
+                        for (k += 1; k < part.Length; k++)
+                        {
+                            part[k] = ++tmp;
+                        }
                         break;
                     }
                 }
@@ -162,6 +178,19 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 result += _depotDistances[0, i]*2;
             }
             return result;
+        }
+
+        private bool IsLowerSet(int[] lowerSet, int[] higherSet)
+        {
+            for (int i = 0; i < lowerSet.Length; i++)
+            {
+                if (lowerSet[i] == higherSet[i])
+                {
+                    continue;
+                }
+                return lowerSet[i] < higherSet[i];
+            }
+            return false;
         }
 
         internal class TspSolver
