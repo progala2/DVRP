@@ -11,6 +11,9 @@ using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
 
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 {
+    /// <summary>
+    /// Module responsible for storing information about problems/computations and assigning them to compatible cluster components.
+    /// </summary>
     internal class WorkManager : IWorkManager
     {
         private static readonly ILogger Logger = new ConsoleLogger();
@@ -21,6 +24,9 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         private readonly Random _random = new Random();
         private readonly Dictionary<ulong, Solution> _solutions;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="componentOverseer">Component overseer managing components of whom work is scheduled.</param>
         public WorkManager(IComponentOverseer componentOverseer)
         {
             if (componentOverseer == null)
@@ -35,14 +41,27 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             _partialSolutions = new Dictionary<Tuple<ulong, ulong>, PartialSolution>();
         }
 
+        /// <summary>
+        /// Event that indicates assignement of computation/division/merge work to an appropriate cluster component.
+        /// </summary>
         public event WorkAssignmentEventHandler WorkAssignment;
 
+        /// <summary>
+        /// Removes final solution from the system.
+        /// </summary>
+        /// <param name="problemId">Corresponding problem instance ID.</param>
         public void RemoveSolution(ulong problemId)
         {
             _solutions.Remove(problemId);
             Logger.Info("Removed solution from the server (id: " + problemId + ").");
         }
 
+        /// <summary>
+        /// Try get and assign work to the specified component.
+        /// </summary>
+        /// <param name="node">Node to assign work to.</param>
+        /// <param name="work">Assigned work.</param>
+        /// <returns>Whether there is any work compatible with the component.</returns>
         public bool TryAssignWork(SolverNodeInfo node, out Work work)
         {
             var type = node.ComponentType;
@@ -156,7 +175,13 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             }
             throw new InvalidOperationException();
         }
-
+        /// <summary>
+        /// Adds new problem instance to the system.
+        /// </summary>
+        /// <param name="type">Type name of the problem.</param>
+        /// <param name="data">Problem data.</param>
+        /// <param name="solvingTimeout">Timeout </param>
+        /// <returns>ID assigned to the problem instance.</returns>
         public ulong AddProblem(string type, byte[] data, ulong solvingTimeout)
         {
             // Generate problem id.
@@ -180,7 +205,12 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             Logger.Info("Added new problem (id: " + id + ", type: " + type + ").");
             return id;
         }
-
+        /// <summary>
+        /// Adds new partial problem to the system.
+        /// </summary>
+        /// <param name="problemId">ID of the problem instance this partial problem bleongs to.</param>
+        /// <param name="partialProblemId">ID of the partial problem withing the problem instance.</param>
+        /// <param name="privateData">Partial problem private data.</param>
         public void AddPartialProblem(ulong problemId, ulong partialProblemId, byte[] privateData)
         {
             // Make sure the corresponding problem instance exists.
@@ -233,7 +263,13 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             Logger.Info("Added new partial problem (id: " + problemId + "/" + partialProblemId + ", type: " +
                         problem.Type + ").");
         }
-
+        /// <summary>
+        /// Adds final solution to the system.
+        /// </summary>
+        /// <param name="problemId">ID of the solved problem instance.</param>
+        /// <param name="data">Solution data.</param>
+        /// <param name="computationsTime">Total time of problem computations.</param>
+        /// <param name="timeoutOccured">Whether timeout stopped the computations.</param>
         public void AddSolution(ulong problemId, byte[] data, ulong computationsTime, bool timeoutOccured)
         {
             // Make sure the corresponding problem instance exists.
@@ -291,7 +327,14 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
             Logger.Info("Added new solution (id: " + problemId + ", type: " + problem.Type + ").");
         }
-
+        /// <summary>
+        /// Adds new partial solution to the system.
+        /// </summary>
+        /// <param name="problemId">ID of the corresponding problem instance.</param>
+        /// <param name="partialProblemId">ID of the corresponding partial problem.</param>
+        /// <param name="data">Partial solution data.</param>
+        /// <param name="computationsTime">Time of the foregoing computations.</param>
+        /// <param name="timeoutOccured">Whether timeout stopped the computations.</param>
         public void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime,
             bool timeoutOccured)
         {
@@ -349,29 +392,45 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 Logger.Info("Partial solutions are ready to merge (id: " + problemId + ").");
             }
         }
-
+        /// <summary>
+        /// Gets final solution data by problem instance ID.
+        /// </summary>
+        /// <param name="problemId">Problem instance (solution) ID.</param>
+        /// <returns>Final solution.</returns>
         public Solution GetSolution(ulong problemId)
         {
             if (_solutions.ContainsKey(problemId))
                 return _solutions[problemId];
             return null;
         }
-
+        /// <summary>
+        /// Gets problem instance information by ID.
+        /// </summary>
+        /// <param name="problemId">Problem instance ID.</param>
+        /// <returns>Problem instance.</returns>
         public Problem GetProblem(ulong problemId)
         {
             if (_problems.ContainsKey(problemId))
                 return _problems[problemId];
             return null;
         }
-
+        /// <summary>
+        /// Gets foregoing computations time for the problem instance specified by ID.
+        /// </summary>
+        /// <param name="problemId">ID of the problem instance.</param>
+        /// <returns>Computations time in milliseconds.</returns>
         public ulong GetComputationsTime(ulong problemId)
         {
-            // TODO
-            return 1000;
+            if (_solutions.ContainsKey(problemId))
+                return _solutions[problemId].ComputationsTime;
+            return 0;
         }
-
-        // TODO make sure that processing node id is set to null if noone is processing a (partial)problem/solution.
-
+        /// <summary>
+        /// Gets ID of the node that is currently processing (partial) problem specified by its ID.
+        /// </summary>
+        /// <param name="problemId">ID of the problem instance.</param>
+        /// <param name="partialProblemId">ID of the partial problem within the problem instance. Can be null.</param>
+        /// <returns>Problem or partial problem ID depending on partialProblemId value. Null if (partial)problem not found or isn't processed by any component.</returns>
         public ulong? GetProcessingNodeId(ulong problemId, ulong? partialProblemId = null)
         {
             ulong? nodeId = null;
@@ -394,7 +453,11 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
             return nodeId;
         }
-
+        /// <summary>
+        /// Handles component's deregistration by reclaiming all the work it's currently been doing.
+        /// </summary>
+        /// <param name="sender">Component overseer that invoked the event.</param>
+        /// <param name="e">Information about the deregistration.</param>
         private void OnComponentDeregistration(object sender, DeregisterationEventArgs e)
         {
             var componentType = e.Component.ComponentType;
@@ -445,7 +508,11 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 }
             }
         }
-
+        /// <summary>
+        /// Gets the total number of threads within the system that can compute the specified problem type.
+        /// </summary>
+        /// <param name="problemType">Type name of the problem class.</param>
+        /// <returns>Number of threads.</returns>
         private int CountAvailableSolvingThreads(string problemType)
         {
             var availableThreads = 0;
@@ -467,7 +534,12 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
             return availableThreads;
         }
-
+        /// <summary>
+        /// Gets partial problems belonging to the problem instance specified by ID and in (optionally) specified state.
+        /// </summary>
+        /// <param name="problemId">ID of the corresponding problem instance.</param>
+        /// <param name="state">Partial problem state filter. Can be null.</param>
+        /// <returns>Collection of matching partial problems.</returns>
         private ICollection<PartialProblem> GetPartialProblems(ulong problemId,
             PartialProblem.PartialProblemState? state = null)
         {
@@ -480,7 +552,12 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 return problemId == pId;
             }).ToList();
         }
-
+        /// <summary>
+        /// Gets partial solutions by the corresponding problem instance ID and in (optionally) specified state.
+        /// </summary>
+        /// <param name="problemId">ID of the corresponding problem instance.</param>
+        /// <param name="state">Partial solution state filter. Can be null.</param>
+        /// <returns>Collection of matching partial solutions.</returns>
         private ICollection<PartialSolution> GetPartialSolutions(ulong problemId,
             PartialSolution.PartialSolutionState? state = null)
         {
