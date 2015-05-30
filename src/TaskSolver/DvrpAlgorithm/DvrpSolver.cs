@@ -127,7 +127,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                 var carsRoutes = new List<int>[_dvrpProblem.VehicleCount];
                 for (var j = 0; j < listOfRoutes.Count; ++j)
                 {
-                    distance += _tspSolver.Solve(listOfRoutes[j], min, out carsRoutes[j]);
+                    distance += _tspSolver.Solve(listOfRoutes[j], min-distance, out carsRoutes[j]);
                     if (distance > min)
                     {
                         break;

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -85,19 +86,14 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             bool result;
             using (var memoryStream = new MemoryStream(finalSolutionData))
             {
-                var finalSolution = (DvrpSolution) _formatter.Deserialize(memoryStream);
-                Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "final time: " +
-                                finalSolution.FinalDistance);
-                foreach (var t in finalSolution.CarsRoutes)
-                {
-                    Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "route: " +
-                                    string.Join(", ", t.Select(v => v.ToString())));
-                }
-                result =
-                    Math.Abs(Math.Round((double) new decimal(finalSolution.FinalDistance), 2) - expectectedResult) <
-                    double.Epsilon;
+                var finalSolution = (string)_formatter.Deserialize(memoryStream);
+                Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + finalSolution);
+                var reg = new Regex(@"[-+]?\d+([,.]\d+)?");
+                MatchCollection m;
+                m = reg.Matches(finalSolution);
+                result = Math.Abs(Math.Round((double)new decimal(double.Parse(m[0].Value)), 2) - expectectedResult) < Double.Epsilon;
             }
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "final solution deserialized");
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final solution deserialized");
 
             return result;
         }
