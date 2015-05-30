@@ -4,8 +4,15 @@ using _15pl04.Ucc.CommunicationServer.Components.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Components
 {
+    /// <summary>
+    /// Information about backup server.
+    /// </summary>
     public class BackupServerInfo : ComponentInfo
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="serverInfo">Communication Server specific information.</param>
+        /// <param name="numberOfThreads">Number of threads provided by the backup.</param>
         public BackupServerInfo(ServerInfo serverInfo, int numberOfThreads)
             : base(ComponentType.CommunicationServer, numberOfThreads)
         {
@@ -14,12 +21,19 @@ namespace _15pl04.Ucc.CommunicationServer.Components
                 serverInfo.Port);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="endPoint">IPEndPoint data of the backup.</param>
+        /// <param name="numberOfThreads">Number of threads provided by the backup.</param>
         public BackupServerInfo(IPEndPoint endPoint, int numberOfThreads)
             : base(ComponentType.CommunicationServer, numberOfThreads)
         {
             Address = endPoint;
         }
 
+        /// <summary>
+        /// Backup server's address.
+        /// </summary>
         public IPEndPoint Address { get; private set; }
     }
 }

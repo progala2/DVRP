@@ -11,6 +11,9 @@ using _15pl04.Ucc.CommunicationServer.Components.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Components
 {
+    /// <summary>
+    /// Module responsible for monitoring and (de)registering cluster components.
+    /// </summary>
     internal class ComponentOverseer : IComponentOverseer
     {
         private static readonly ILogger Logger = new ConsoleLogger();
@@ -21,8 +24,8 @@ namespace _15pl04.Ucc.CommunicationServer.Components
 
         /// <summary>
         /// </summary>
-        /// <param name="communicationTimeout">In seconds.</param>
-        /// <param name="checkInterval">In seconds.</param>
+        /// <param name="communicationTimeout">Communication timeout in seconds.</param>
+        /// <param name="checkInterval">Communication timeout check interval in seconds.</param>
         public ComponentOverseer(uint communicationTimeout, uint checkInterval)
         {
             _registeredComponents = new ConcurrentDictionary<ulong, ComponentInfo>();
@@ -33,22 +36,33 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         }
 
         /// <summary>
-        ///     In seconds.
+        /// Communication timeout check interval in seconds.
         /// </summary>
         public uint CheckInterval { get; private set; }
 
         /// <summary>
-        ///     In seconds.
+        /// Communication timeout in seconds.
         /// </summary>
         public uint CommunicationTimeout { get; private set; }
 
+        /// <summary>
+        /// Invoked on component's deregistration.
+        /// </summary>
         public event DeregisterationEventHandler Deregistration;
 
+        /// <summary>
+        /// True if the component overseer is checking for communication timeout. False otherwise.
+        /// </summary>
         public bool IsMonitoring
         {
             get { return _isMonitoring; }
         }
 
+        /// <summary>
+        /// Tries to register a cluster component in the system.
+        /// </summary>
+        /// <param name="component">Information about the component to register.</param>
+        /// <returns>True if succeeded to register the component. False otherwise.</returns>
         public bool TryRegister(ComponentInfo component)
         {
             if (component == null)
@@ -71,6 +85,11 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             return true;
         }
 
+        /// <summary>
+        /// Tries to deregister a cluster component.
+        /// </summary>
+        /// <param name="componentId">ID of the component to deregister.</param>
+        /// <returns>True if succeeded to deregister the component. False otherwise.</returns>
         public bool TryDeregister(ulong componentId)
         {
             ComponentInfo deregisteredComponent;
@@ -92,11 +111,20 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             return false;
         }
 
+        /// <summary>
+        /// Checks whether a component is register within the system.
+        /// </summary>
+        /// <param name="componentId">Component ID.</param>
+        /// <returns>True if the component is currently registered. False otherwise.</returns>
         public bool IsRegistered(ulong componentId)
         {
             return _registeredComponents.ContainsKey(componentId);
         }
 
+        /// <summary>
+        /// Updates communication timestamp of the specified component.
+        /// </summary>
+        /// <param name="componentId">ID of the component.</param>
         public void UpdateTimestamp(ulong componentId)
         {
             ComponentInfo component;
@@ -106,6 +134,9 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             component.UpdateTimestamp();
         }
 
+        /// <summary>
+        /// Starts checking the communication timeout and deregisters if necessary.
+        /// </summary>
         public void StartMonitoring()
         {
             if (_isMonitoring)
@@ -138,6 +169,9 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             _isMonitoring = true;
         }
 
+        /// <summary>
+        /// Stops checking the communication timeout.
+        /// </summary>
         public void StopMonitoring()
         {
             if (!_isMonitoring)
@@ -146,6 +180,11 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             _cancellationTokenSource.Cancel();
         }
 
+        /// <summary>
+        /// Get imformation about all components of specified type.
+        /// </summary>
+        /// <param name="type">Type of the cluster component.</param>
+        /// <returns>Collection of components data.</returns>
         public ICollection<ComponentInfo> GetComponents(ComponentType type)
         {
             var components = _registeredComponents.Values.Where(c => c.ComponentType == type);
@@ -153,6 +192,11 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             return new List<ComponentInfo>(components);
         }
 
+        /// <summary>
+        /// Get information about the component by specifying its ID.
+        /// </summary>
+        /// <param name="componentId">ID of the component.</param>
+        /// <returns>Component information.</returns>
         public ComponentInfo GetComponent(ulong componentId)
         {
             ComponentInfo component;
