@@ -3,10 +3,15 @@ using System.Diagnostics;
 
 namespace _15pl04.Ucc.Commons.Logging
 {
+    /// <summary>
+    /// Prints logger messages on the console in an appropriate color.
+    /// </summary>
     public class ConsoleLogger : ILogger
     {
-        // TODO singleton
-
+        /// <summary>
+        /// Log TRACE level message.
+        /// </summary>
+        /// <param name="s">Message to log.</param>
         public void Trace(string s)
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -14,6 +19,10 @@ namespace _15pl04.Ucc.Commons.Logging
             Console.ResetColor();
         }
 
+        /// <summary>
+        /// Log DEBUG level message.
+        /// </summary>
+        /// <param name="s">Message to log.</param>
         public void Debug(string s)
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -21,6 +30,10 @@ namespace _15pl04.Ucc.Commons.Logging
             Console.ResetColor();
         }
 
+        /// <summary>
+        /// Log INFO level message.
+        /// </summary>
+        /// <param name="s">Message to log.</param>
         public void Info(string s)
         {
             Console.ForegroundColor = ConsoleColor.White;
@@ -28,6 +41,10 @@ namespace _15pl04.Ucc.Commons.Logging
             Console.ResetColor();
         }
 
+        /// <summary>
+        /// Log WARN level message.
+        /// </summary>
+        /// <param name="s">Message to log.</param>
         public void Warn(string s)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -35,6 +52,10 @@ namespace _15pl04.Ucc.Commons.Logging
             Console.ResetColor();
         }
 
+        /// <summary>
+        /// Log ERROR level message.
+        /// </summary>
+        /// <param name="s">Message to log.</param>
         public void Error(string s)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -42,6 +63,10 @@ namespace _15pl04.Ucc.Commons.Logging
             Console.ResetColor();
         }
 
+        /// <summary>
+        /// Gets information about caller class and method as string.
+        /// </summary>
+        /// <returns>Log message prefix.</returns>
         private string GetCallerInfoPrefix()
         {
             var frame = new StackFrame(2);

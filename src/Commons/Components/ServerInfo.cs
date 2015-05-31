@@ -5,17 +5,29 @@ using System.Xml.Serialization;
 
 namespace _15pl04.Ucc.Commons.Components
 {
+    /// <summary>
+    /// Server-specific information.
+    /// </summary>
     [Serializable]
     [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class ServerInfo
     {
+        /// <summary>
+        /// Server IP address.
+        /// </summary>
         [XmlAttribute("address", DataType = "anyURI")]
         public string IpAddress { get; set; }
-
+        /// <summary>
+        /// Listening port.
+        /// </summary>
         [XmlAttribute("port")]
         public ushort Port { get; set; }
 
+        /// <summary>
+        /// Gets string representation.
+        /// </summary>
+        /// <returns>String value that represents this object.</returns>
         public override string ToString()
         {
             var builder = new StringBuilder();
