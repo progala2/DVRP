@@ -10,6 +10,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
     public abstract class ComponentInfo
     {
         /// <summary>
+        /// Creates ComponentInfo instance.
         /// </summary>
         /// <param name="type">Type of the component.</param>
         /// <param name="numberOfThreads">Number of threads provided by the component.</param>
@@ -62,7 +63,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
             get
             {
                 var diff = DateTime.UtcNow - Timestamp;
-                return (uint) diff.TotalMilliseconds;
+                return (uint)diff.TotalMilliseconds;
             }
         }
 

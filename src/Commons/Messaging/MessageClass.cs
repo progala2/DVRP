@@ -3,6 +3,9 @@ using _15pl04.Ucc.Commons.Messaging.Models;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
+    /// <summary>
+    /// Describes possible message types.
+    /// </summary>
     public enum MessageClass
     {
         DivideProblem,
@@ -18,6 +21,9 @@ namespace _15pl04.Ucc.Commons.Messaging
         Status
     }
 
+    /// <summary>
+    /// Extension methods for a MessageClass enum.
+    /// </summary>
     public static class MessageClassExtensions
     {
         internal static string GetXmlSchema(this MessageClass msgClass)
@@ -51,34 +57,39 @@ namespace _15pl04.Ucc.Commons.Messaging
             }
         }
 
+        /// <summary>
+        /// Gets type of message corresponding to this MessageClass value.
+        /// </summary>
+        /// <param name="msgClass"></param>
+        /// <returns></returns>
         public static Type GetMessageType(this MessageClass msgClass)
         {
             switch (msgClass)
             {
                 case MessageClass.DivideProblem:
-                    return typeof (DivideProblemMessage);
+                    return typeof(DivideProblemMessage);
                 case MessageClass.Error:
-                    return typeof (ErrorMessage);
+                    return typeof(ErrorMessage);
                 case MessageClass.NoOperation:
-                    return typeof (NoOperationMessage);
+                    return typeof(NoOperationMessage);
                 case MessageClass.SolvePartialProblems:
-                    return typeof (PartialProblemsMessage);
+                    return typeof(PartialProblemsMessage);
                 case MessageClass.Register:
-                    return typeof (RegisterMessage);
+                    return typeof(RegisterMessage);
                 case MessageClass.RegisterResponse:
-                    return typeof (RegisterResponseMessage);
+                    return typeof(RegisterResponseMessage);
                 case MessageClass.SolutionRequest:
-                    return typeof (SolutionRequestMessage);
+                    return typeof(SolutionRequestMessage);
                 case MessageClass.Solutions:
-                    return typeof (SolutionsMessage);
+                    return typeof(SolutionsMessage);
                 case MessageClass.SolveRequest:
-                    return typeof (SolveRequestMessage);
+                    return typeof(SolveRequestMessage);
                 case MessageClass.SolveRequestResponse:
-                    return typeof (SolveRequestResponseMessage);
+                    return typeof(SolveRequestResponseMessage);
                 case MessageClass.Status:
-                    return typeof (StatusMessage);
+                    return typeof(StatusMessage);
                 default:
-                    throw new Exception("Message XML schema not found.");
+                    throw new Exception("Unknown message type.");
             }
         }
     }

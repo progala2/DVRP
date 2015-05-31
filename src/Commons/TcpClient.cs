@@ -6,13 +6,16 @@ using _15pl04.Ucc.Commons.Exceptions;
 
 namespace _15pl04.Ucc.Commons
 {
+    /// <summary>
+    /// Class allowing direct sending data and receiving response from hosts.
+    /// </summary>
     public class TcpClient
     {
         /// <summary>
         /// Main server address.
         /// </summary>
         public IPEndPoint ServerAddress { get; set; }
-        
+
         private const int BufferSize = 1024;
 
         /// <summary>
@@ -29,7 +32,7 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="data">Byte data to send.</param>
         /// <returns>Marshalled messages from the server.</returns>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TimeoutException">connection to host timed out</exception>
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TimeoutException">Connection to host timed out.</exception>
         public byte[] SendData(byte[] data)
         {
             var buf = new byte[BufferSize];

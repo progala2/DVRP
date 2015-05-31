@@ -17,15 +17,20 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "NoOperation")]
     public class NoOperationMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
-            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
-                "NoOperation.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string NoNamespaceSchemaLocation = "NoOperation.xsd";
 
+        /// <summary>
+        /// Creates NoOperationMessage instance.
+        /// </summary>
         public NoOperationMessage()
         {
             BackupServers = new List<ServerInfo>();
         }
 
+        /// <summary>
+        /// The list of backup servers.
+        /// </summary>
         [XmlArray(Order = 0, ElementName = "BackupCommunicationServers")]
         [XmlArrayItem("BackupCommunicationServer", IsNullable = true)]
         public List<ServerInfo> BackupServers { get; set; }

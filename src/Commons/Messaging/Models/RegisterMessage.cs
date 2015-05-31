@@ -17,30 +17,47 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Register")]
     public class RegisterMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
-            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
-                "Register.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string NoNamespaceSchemaLocation = "Register.xsd";
 
+        /// <summary>
+        /// Creates RegisterMessage instance.
+        /// </summary>
         public RegisterMessage()
         {
             SolvableProblems = new List<string>();
         }
 
+        /// <summary>
+        /// The type of component.
+        /// </summary>
         [XmlElement(Order = 0, ElementName = "Type")]
         public ComponentType ComponentType { get; set; }
 
+        /// <summary>
+        /// The list of names of the problems which could be solved.
+        /// </summary>
         [XmlArray(Order = 1)]
         [XmlArrayItem("ProblemName", IsNullable = false)]
         public List<string> SolvableProblems { get; set; }
 
+        /// <summary>
+        /// The number of threads that could be efficiently run in parallel.
+        /// </summary>
         [XmlElement(Order = 2)]
         public byte ParallelThreads { get; set; }
 
+        /// <summary>
+        /// When message is used to inform Backup Server of the need to remove element should be set to true.
+        /// </summary>
         [XmlElement(Order = 3, ElementName = "Deregister")]
         public bool? Deregistration { get; set; }
 
+        /// <summary>
+        /// When message is used to inform Backup Server of the need to add/remove element it is set to ID given by main server.
+        /// </summary>
         [XmlElement(Order = 4, ElementName = "Id")]
-        public ulong? IdToDeregister { get; set; }
+        public ulong? Id { get; set; }
 
         /// <summary>
         /// Gets corresponding MessageClass enum value.
@@ -51,14 +68,22 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.Register; }
         }
 
+        /// <summary>
+        /// Determines whether Deregistration property should be serialized.
+        /// </summary>
+        /// <returns>True if Deregistration property should be serialized; false otherwise.</returns>
         public bool ShouldSerializeDeregistration()
         {
             return Deregistration.HasValue;
         }
 
-        public bool ShouldSerializeIdToDeregister()
+        /// <summary>
+        /// Determines whether Id property should be serialized.
+        /// </summary>
+        /// <returns>True if Id property should be serialized; false otherwise.</returns>
+        public bool ShouldSerializeId()
         {
-            return IdToDeregister.HasValue;
+            return Id.HasValue;
         }
 
         /// <summary>
@@ -71,11 +96,8 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
 
             if (Deregistration.HasValue && Deregistration.Value)
             {
-                if (!IdToDeregister.HasValue)
-                    throw new Exception("Deregister message doesn't have the id to deregister");
-
                 builder.Append("[Deregister]");
-                builder.Append(" ComponentId(" + IdToDeregister + ")");
+                builder.Append(" ComponentId(" + Id + ")");
                 builder.Append(" ComponentType(" + ComponentType + ")");
             }
             else

@@ -12,6 +12,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
     internal class DivisionWork : Work
     {
         /// <summary>
+        /// Creates DivisionWork instance.
         /// </summary>
         /// <param name="assigneeId">ID of the assignee task manager.</param>
         /// <param name="problem">Problem instance to divide.</param>

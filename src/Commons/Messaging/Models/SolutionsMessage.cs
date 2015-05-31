@@ -28,24 +28,38 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             Final
         }
 
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
-            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
-                "Solutions.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string NoNamespaceSchemaLocation = "Solutions.xsd";
 
+        /// <summary>
+        /// Creates SoultionsMessage instance.
+        /// </summary>
         public SolutionsMessage()
         {
             Solutions = new List<Solution>();
         }
 
+        /// <summary>
+        /// The problem type name as given by TaskSolver and Client.
+        /// </summary>
         [XmlElement(Order = 0)]
         public string ProblemType { get; set; }
 
+        /// <summary>
+        /// The ID of the problem instance assigned by the server.
+        /// </summary>
         [XmlElement(Order = 1, ElementName = "Id")]
         public ulong ProblemInstanceId { get; set; }
 
+        /// <summary>
+        /// The Common data which was previously sent to all Computational Nodes.
+        /// </summary>
         [XmlElement(DataType = "base64Binary", Order = 2)]
         public byte[] CommonData { get; set; }
 
+        /// <summary>
+        /// The solutions.
+        /// </summary>
         [XmlArray(Order = 3)]
         [XmlArrayItem("Solution", IsNullable = false)]
         public List<Solution> Solutions { get; set; }
@@ -59,6 +73,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.Solutions; }
         }
 
+        /// <summary>
+        /// Determines whether CommonData property should be serialized.
+        /// </summary>
+        /// <returns>True if CommonData property should be serialized; false otherwise.</returns>
         public bool ShouldSerializeCommonData()
         {
             return CommonData != null;
@@ -90,26 +108,49 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
         public class Solution
         {
+            /// <summary>
+            /// The id of subproblem given by TaskManager – no TaskId for final/merged solution.
+            /// </summary>
             [XmlElement(Order = 0, ElementName = "TaskId")]
             public ulong? PartialProblemId { get; set; }
 
+            /// <summary>
+            /// The indicator that the computations ended because of timeout.
+            /// </summary>
             [XmlElement(Order = 1)]
             public bool TimeoutOccured { get; set; }
 
+            /// <summary>
+            /// The information about the status of result (Partial/Final) or status of computations (Ongoing).
+            /// </summary>
             [XmlElement(Order = 2)]
             public SolutionType Type { get; set; }
 
+            /// <summary>
+            /// Total amount of time used by all threads in system for computing the solution / during the ongoingcomputations (in ms).
+            /// </summary>
             [XmlElement(Order = 3)]
             public ulong ComputationsTime { get; set; }
 
+            /// <summary>
+            /// The solution data.
+            /// </summary>
             [XmlElement(Order = 4, DataType = "base64Binary")]
             public byte[] Data { get; set; }
 
+            /// <summary>
+            /// Determines whether PartialProblemId property should be serialized.
+            /// </summary>
+            /// <returns>True if CommonDataPartialProblemId property should be serialized; false otherwise.</returns>
             public bool ShouldSerializePartialProblemId()
             {
                 return PartialProblemId.HasValue;
             }
 
+            /// <summary>
+            /// Determines whether Data property should be serialized.
+            /// </summary>
+            /// <returns>True if Data property should be serialized; false otherwise.</returns>
             public bool ShouldSerializeData()
             {
                 return Data != null;
