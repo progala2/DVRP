@@ -10,12 +10,19 @@ using TimeoutException = _15pl04.Ucc.Commons.Exceptions.TimeoutException;
 
 namespace _15pl04.Ucc.Commons.Messaging
 {
+    /// <summary>
+    /// The class providing sending messages to server and getting response messages from that server.
+    /// </summary>
     public class MessageSender
     {
         private readonly Marshaller _marshaller;
         private readonly TcpClient _tcpClient;
         private List<ServerInfo> _servers;
 
+        /// <summary>
+        /// Creates a message sender.
+        /// </summary>
+        /// <param name="serverAddress">The address of server that messages will be send to.</param>
         public MessageSender(IPEndPoint serverAddress)
         {
             _servers = new List<ServerInfo>();
@@ -28,21 +35,21 @@ namespace _15pl04.Ucc.Commons.Messaging
 
         /// <summary>
         ///     Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to
-        ///     other exception
+        ///     other exception.
         /// </summary>
-        /// <param name="message">message to send</param>
-        /// <returns>messages returned or null</returns>
+        /// <param name="message">Message to send.</param>
+        /// <returns>Messages returned or null.</returns>
         public List<Message> Send(Message message)
         {
-            return Send(new List<Message> {message});
+            return Send(new List<Message> { message });
         }
 
         /// <summary>
         ///     Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to
-        ///     other exception
+        ///     other exception.
         /// </summary>
-        /// <param name="messages">messages to send</param>
-        /// <returns>messages returned or null</returns>
+        /// <param name="messages">Messages to send.</param>
+        /// <returns>Messages returned or null.</returns>
         public List<Message> Send(IList<Message> messages)
         {
             var data = _marshaller.Marshall(messages);
@@ -101,10 +108,10 @@ namespace _15pl04.Ucc.Commons.Messaging
                 switch (message.MessageType)
                 {
                     case MessageClass.NoOperation:
-                        _servers = ((NoOperationMessage) message).BackupServers;
+                        _servers = ((NoOperationMessage)message).BackupServers;
                         return;
                     case MessageClass.RegisterResponse:
-                        _servers = ((RegisterResponseMessage) message).BackupServers;
+                        _servers = ((RegisterResponseMessage)message).BackupServers;
                         return;
                 }
             }

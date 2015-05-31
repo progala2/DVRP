@@ -4,26 +4,26 @@ using System.Runtime.Serialization;
 namespace _15pl04.Ucc.Commons.Exceptions
 {
     /// <summary>
-    ///     Description of NoResponseException
+    /// Description of NoResponseException
     /// </summary>
-    public class NoResponseException : Exception
+    public class TaskSolverLoadingException : Exception
     {
-        public NoResponseException()
+        public TaskSolverLoadingException()
         {
         }
 
-        public NoResponseException(string message)
+        public TaskSolverLoadingException(string message)
             : base(message)
         {
         }
 
-        public NoResponseException(string message, Exception innerException)
+        public TaskSolverLoadingException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         // This constructor is needed for serialization.
-        protected NoResponseException(SerializationInfo info, StreamingContext context)
+        protected TaskSolverLoadingException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

@@ -6,6 +6,11 @@ namespace _15pl04.Ucc.Commons.Utilities
 {
     public static class IpEndPointParser
     {
+        /// <summary>
+        /// Converts IP end point representation to an instance of System.Net.IPEndPoint class.
+        /// </summary>
+        /// <param name="endPointString">The address as IPv4/IPv6/host name.</param>
+        /// <returns>The parsed IP end point.</returns>
         /// <exception cref="System.FormatException"></exception>
         /// <exception cref="System.ArgumentException"></exception>
         public static IPEndPoint Parse(string endPointString)
@@ -13,6 +18,12 @@ namespace _15pl04.Ucc.Commons.Utilities
             return Parse(endPointString, -1);
         }
 
+        /// <summary>
+        /// Converts IP end point representation to an instance of System.Net.IPEndPoint class.
+        /// </summary>
+        /// <param name="endPointString">The address as IPv4/IPv6/host name.</param>
+        /// <param name="defaultPort">The default port.</param>
+        /// <returns>The parsed IP end point.</returns>
         /// <exception cref="System.FormatException"></exception>
         /// <exception cref="System.ArgumentException"></exception>
         public static IPEndPoint Parse(string endPointString, string defaultPort)
@@ -23,6 +34,12 @@ namespace _15pl04.Ucc.Commons.Utilities
             return Parse(endPointString);
         }
 
+        /// <summary>
+        /// Converts IP end point representation to an instance of System.Net.IPEndPoint class.
+        /// </summary>
+        /// <param name="endPointString">The address as IPv4/IPv6/host name.</param>
+        /// <param name="defaultPort">The default port.</param>
+        /// <returns>The parsed IP end point.</returns>
         /// <exception cref="System.FormatException"></exception>
         /// <exception cref="System.ArgumentException"></exception>
         public static IPEndPoint Parse(string endPointString, int defaultPort)

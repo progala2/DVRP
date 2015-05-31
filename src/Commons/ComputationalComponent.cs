@@ -27,22 +27,32 @@ namespace _15pl04.Ucc.Commons
         private ManualResetEvent _messagesToSendManualResetEvent;
 
         /// <summary>
+        /// Creates computational manager with given thread manager and primary server address. It will look for task
+        /// solvers in current directory.
         /// </summary>
         /// <param name="threadManager">Thread manager instance. Cannot be null.</param>
         /// <param name="serverAddress">The Communication Server address. Cannot be null.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if either <paramref name="threadManager"/> or
+        /// <paramref name="serverAddress"/> is null.</exception>
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// during loading task solvers.</exception>
         protected ComputationalComponent(ThreadManager threadManager, IPEndPoint serverAddress)
             : this(threadManager, serverAddress, null)
         {
         }
 
         /// <summary>
+        /// Creates computational manager with given thread manager, primary server address and relative path to task
+        /// solvers directory.
         /// </summary>
         /// <param name="threadManager">Thread manager instance. Cannot be null.</param>
         /// <param name="serverAddress">The Communication Server address. Cannot be null.</param>
-        /// <param name="taskSolversDirectoryRelativePath">Relative path to directory containing task solver libraries.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
+        /// <param name="taskSolversDirectoryRelativePath">Relative path to directory containing task solver libraries.
+        /// If null current directory will be searched for task solvers.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown if either <paramref name="threadManager"/> or
+        /// <paramref name="serverAddress"/> is null.</exception>
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// during loading task solvers from given <paramref name="taskSolversDirectoryRelativePath"/>.</exception>
         protected ComputationalComponent(ThreadManager threadManager, IPEndPoint serverAddress,
             string taskSolversDirectoryRelativePath)
         {
@@ -87,12 +97,39 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         public ReadOnlyDictionary<string, Type> TaskSolvers { get; private set; }
 
+        /// <summary>
+        ///     Event which is raised after enqueuing message to be send to the server.
+        /// </summary>
         public event EventHandler<MessageEventArgs> MessageEnqueuedToSend;
+
+        /// <summary>
+        ///     Event which is raised after successful sending message to the server.
+        /// </summary>
         public event EventHandler<MessageEventArgs> MessageSent;
+
+        /// <summary>
+        ///     Event which is raised after receiving message from the server.
+        /// </summary>
         public event EventHandler<MessageEventArgs> MessageReceived;
-        public event EventHandler<MessageExceptionEventArgs> MessageHandlingException;
+
+        /// <summary>
+        ///     Event which is raised if exception occured during sending message to the server.
+        /// </summary>
         public event EventHandler<MessageExceptionEventArgs> MessageSendingException;
+
+        /// <summary>
+        ///     Event which is raised if exception occured during handling message received from the server.
+        /// </summary>
+        public event EventHandler<MessageExceptionEventArgs> MessageHandlingException;
+
+        /// <summary>
+        ///     Event which is raised when component is about to start running.
+        /// </summary>
         public event EventHandler OnStarting;
+
+        /// <summary>
+        ///     Event which is raised when component has just started running.
+        /// </summary>
         public event EventHandler OnStarted;
 
         /// <summary>
@@ -194,7 +231,9 @@ namespace _15pl04.Ucc.Commons
             return registered;
         }
 
-
+        /// <summary>
+        /// Resets the component.
+        /// </summary>
         private void ResetComponent()
         {
             _messagesToSend = new ConcurrentQueue<Message>();
@@ -210,7 +249,7 @@ namespace _15pl04.Ucc.Commons
         {
             IsRunning = true;
             // time in milliseconds
-            var timeToWait = (int) (Timeout*1000/2);
+            var timeToWait = (int)(Timeout * 1000 / 2);
             while (IsRunning)
             {
                 Message messageToSend = GetStatusMessage();
@@ -319,7 +358,7 @@ namespace _15pl04.Ucc.Commons
                     ProblemInstanceId = computationalThreadStatus.ProblemInstanceId,
                     PartialProblemId = computationalThreadStatus.PartialProblemId,
                     State = computationalThreadStatus.State,
-                    TimeInThisState = (ulong) computationalThreadStatus.TimeSinceLastStateChange.TotalMilliseconds
+                    TimeInThisState = (ulong)computationalThreadStatus.TimeSinceLastStateChange.TotalMilliseconds
                 };
                 threadsStatuses.Add(threadStatus);
             }
