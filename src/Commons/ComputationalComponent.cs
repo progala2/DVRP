@@ -15,7 +15,7 @@ using _15pl04.Ucc.Commons.Messaging.Models.Base;
 namespace _15pl04.Ucc.Commons
 {
     /// <summary>
-    ///     Base class for ComputationalNode and TaskManager.
+    /// Base class of the Computational Node and Task Manager.
     /// </summary>
     public abstract class ComputationalComponent
     {
@@ -27,10 +27,9 @@ namespace _15pl04.Ucc.Commons
         private ManualResetEvent _messagesToSendManualResetEvent;
 
         /// <summary>
-        ///     Creates component that can register to the server.
         /// </summary>
-        /// <param name="threadManager">The thread manager. Cannot be null.</param>
-        /// <param name="serverAddress">The communication server address. Cannot be null.</param>
+        /// <param name="threadManager">Thread manager instance. Cannot be null.</param>
+        /// <param name="serverAddress">The Communication Server address. Cannot be null.</param>
         /// <exception cref="System.ArgumentNullException"></exception>
         protected ComputationalComponent(ThreadManager threadManager, IPEndPoint serverAddress)
             : this(threadManager, serverAddress, null)
@@ -38,11 +37,10 @@ namespace _15pl04.Ucc.Commons
         }
 
         /// <summary>
-        ///     Creates component that can register to the server.
         /// </summary>
-        /// <param name="threadManager">The thread manager. Cannot be null.</param>
-        /// <param name="serverAddress">The communication server address. Cannot be null.</param>
-        /// <param name="taskSolversDirectoryRelativePath">The relative path to directory containging task solvers libraries.</param>
+        /// <param name="threadManager">Thread manager instance. Cannot be null.</param>
+        /// <param name="serverAddress">The Communication Server address. Cannot be null.</param>
+        /// <param name="taskSolversDirectoryRelativePath">Relative path to directory containing task solver libraries.</param>
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
         protected ComputationalComponent(ThreadManager threadManager, IPEndPoint serverAddress,
@@ -65,27 +63,27 @@ namespace _15pl04.Ucc.Commons
         }
 
         /// <summary>
-        ///     The type of component.
+        /// The type of the component.
         /// </summary>
         public abstract ComponentType ComponentType { get; }
 
         /// <summary>
-        ///     The ID assigned by the Communication Server.
+        /// Component ID assigned by the Communication Server.
         /// </summary>
         public ulong Id { get; private set; }
 
         /// <summary>
-        ///     The communication timeout configured on Communication Server (in seconds).
+        /// Communication timeout configured on Communication Server (in seconds).
         /// </summary>
         public uint Timeout { get; private set; }
 
         /// <summary>
-        ///     Informs whether component is running.
+        /// Informs whether component is running.
         /// </summary>
         public bool IsRunning { get; private set; }
 
         /// <summary>
-        ///     The dictionary of TaskSolvers types; the keys are names of problems.
+        /// Dictionary of Task Solver types; keys are problem type names.
         /// </summary>
         public ReadOnlyDictionary<string, Type> TaskSolvers { get; private set; }
 
@@ -98,7 +96,7 @@ namespace _15pl04.Ucc.Commons
         public event EventHandler OnStarted;
 
         /// <summary>
-        ///     Registers component to server and starts work.
+        /// Registers component on the server and starts work.
         /// </summary>
         public void Start()
         {
@@ -122,13 +120,9 @@ namespace _15pl04.Ucc.Commons
         }
 
         /// <summary>
-        ///     Handles each message received from server after registration is completed.
-        ///     So it does not handle RegisterResponseMessage.
+        /// Handles messages received from the Communication Server.
         /// </summary>
-        /// <param name="message">A message to handle. It is received from server.</param>
-        /// <remarks>
-        ///     Here actions can be started using proper method.
-        /// </remarks>
+        /// <param name="message">Message to handle.</param>
         protected abstract void HandleReceivedMessage(Message message);
 
         /// <summary>
@@ -143,19 +137,14 @@ namespace _15pl04.Ucc.Commons
         }
 
         /// <summary>
-        ///     Starts executing action if there is an available idle thread. This method gets information needed for Status
-        ///     messages.
+        /// Starts executing action if there is an available idle thread. This method gets information needed for status messages.
         /// </summary>
         /// <param name="actionToExecute">An action to be executed in new thread. If null no new thread will be started.</param>
-        /// <param name="actionDescription">
-        ///     An information about started action that will be send to server if exception occurs
-        ///     during execution.
-        /// </param>
-        /// <param name="problemType">The name of the type as given by TaskSolver.</param>
+        /// <param name="actionDescription">Information about started action that will be send to server if exception occurs during execution.</param>
+        /// <param name="problemType">The name of the type as given by the Task Solver.</param>
         /// <param name="problemInstanceId">The ID of the problem assigned when client connected.</param>
         /// <param name="partialProblemId">The ID of the task within given problem instance.</param>
         /// <returns>True if thread was successfully started; false otherwise.</returns>
-        /// <returns></returns>
         protected bool StartActionInNewThread(Action actionToExecute, string actionDescription, string problemType,
             ulong? problemInstanceId, ulong? partialProblemId)
         {
@@ -164,6 +153,10 @@ namespace _15pl04.Ucc.Commons
             return started;
         }
 
+        /// <summary>
+        /// Registers the component in the Communication Server.
+        /// </summary>
+        /// <returns>True if successfully registered. False otherwise.</returns>
         protected bool Register()
         {
             // send RegisterMessage and get response
@@ -201,6 +194,7 @@ namespace _15pl04.Ucc.Commons
             return registered;
         }
 
+
         private void ResetComponent()
         {
             _messagesToSend = new ConcurrentQueue<Message>();
@@ -210,7 +204,7 @@ namespace _15pl04.Ucc.Commons
         }
 
         /// <summary>
-        ///     Message processing loop.
+        /// Message processing loop.
         /// </summary>
         private void ProcessMessages()
         {

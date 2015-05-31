@@ -11,10 +11,10 @@ namespace _15pl04.Ucc.Commons
     public static class TaskSolverLoader
     {
         /// <summary>
-        ///     Gets dictionary with names of solvable problems as keys and proper TaskSolvers as values.
+        /// Gets dictionary with names of solvable problems as keys and corresponding Task Solvers as values.
         /// </summary>
         /// <param name="taskSolversDirectoryRelativePath">The relative path of directory to search.</param>
-        /// <returns>A dictionary with names of solvable problems as keys and proper TaskSolvers as values.</returns>
+        /// <returns>Read-only dictionary with names of solvable problems as keys and corresponding Task Solvers as values.</returns>
         /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
         public static ReadOnlyDictionary<string, Type> GetTaskSolversFromRelativePath(
             string taskSolversDirectoryRelativePath)
@@ -25,10 +25,10 @@ namespace _15pl04.Ucc.Commons
         }
 
         /// <summary>
-        ///     Gets dictionary with names of solvable problems as keys and proper TaskSolvers as values.
+        /// Gets dictionary with names of solvable problems as keys and corresponding Task Solvers as values.
         /// </summary>
         /// <param name="taskSolversDirectoryPath">The path of directory to search.</param>
-        /// <returns>A dictionary with names of solvable problems as keys and proper TaskSolvers as values.</returns>
+        /// <returns>Read-only dictionary with names of solvable problems as keys and corresponding Task Solvers as values.</returns>
         /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
         public static ReadOnlyDictionary<string, Type> GetTaskSolversFromPath(string taskSolversDirectoryPath)
         {

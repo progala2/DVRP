@@ -8,24 +8,27 @@ namespace _15pl04.Ucc.Commons
 {
     public class TcpClient
     {
+        /// <summary>
+        /// Main server address.
+        /// </summary>
         public IPEndPoint ServerAddress { get; set; }
-
-#if DEBUG
-        private const int BufferSize = 8;
-#else
+        
         private const int BufferSize = 1024;
-#endif
 
+        /// <summary>
+        /// Main server address.
+        /// </summary>
+        /// <param name="serverAddress"></param>
         public TcpClient(IPEndPoint serverAddress)
         {
             ServerAddress = serverAddress;
         }
 
         /// <summary>
-        ///     Functions send data to server and returns server's respnse
+        /// Send data to the server and returns its response.
         /// </summary>
-        /// <param name="data">data to send</param>
-        /// <returns>data received from host</returns>
+        /// <param name="data">Byte data to send.</param>
+        /// <returns>Marshalled messages from the server.</returns>
         /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TimeoutException">connection to host timed out</exception>
         public byte[] SendData(byte[] data)
         {

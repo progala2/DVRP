@@ -42,7 +42,6 @@
     <Compile Include="Config\ComponentConfigurationSection.cs" />
     <Compile Include="Config\IPEndPointConfigurationElement.cs" />
     <Compile Include="Config\ServerConfigurationSection.cs" />
-    <Compile Include="Logging\LoggerAggregator.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="MessageSchemas.Designer.cs">
       <AutoGen>True</AutoGen>
