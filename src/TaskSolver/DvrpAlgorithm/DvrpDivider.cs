@@ -5,16 +5,16 @@ using System.Linq;
 namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
 {
     /// <summary>
-    /// 
+    /// Class dividing a DVRP.
     /// </summary>
     internal class DvrpDivider
     {
         /// <summary>
-        /// 
+        /// Divide a problem to partial ones.
         /// </summary>
-        /// <param name="dvrpProblem"></param>
-        /// <param name="numberOfParts"></param>
-        /// <returns></returns>
+        /// <param name="dvrpProblem">The problem instance.</param>
+        /// <param name="numberOfParts">How many parts of the problem is needed.</param>
+        /// <returns>Partial problems.</returns>
         public DvrpPartialProblem[] Divide(DvrpProblem dvrpProblem, int numberOfParts)
         {
             // we generate all the partitions
@@ -134,10 +134,10 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         }
 
         /// <summary>
-        /// 
+        /// Compute a Bell number by the triangular method.
         /// </summary>
-        /// <param name="n"></param>
-        /// <returns></returns>
+        /// <param name="n">Which bell number is needed.</param>
+        /// <returns>a Bell number</returns>
         private static ulong TriangularMethodBellNumber(int n)
         {
             var triangle = new Dictionary<long, List<ulong>> {{1, new List<ulong>(new ulong[] {1})}};
@@ -156,12 +156,13 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         }
 
         /// <summary>
-        /// 
+        /// Calculate the number of sets combinations to skip. 
+        /// The numbers from <paramref name="p"/> position to the end of a set should be equal to 0.
         /// </summary>
-        /// <param name="max"></param>
-        /// <param name="p"></param>
-        /// <param name="n"></param>
-        /// <returns></returns>
+        /// <param name="max">The actual max number in a set before <paramref name="p"/> position.</param>
+        /// <param name="p">The position from we want to start skiping combinations.</param>
+        /// <param name="n">The length of a set.</param>
+        /// <returns>The number of sets combinations to skip.</returns>
         private static ulong CalculateCombinations(int max, int p, int n)
         {
             if (p == n - 2)
@@ -174,12 +175,12 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         }
 
         /// <summary>
-        /// 
+        /// Check if the <paramref name="part"/> has zeros from <paramref name="p"/> postion to the end.
         /// </summary>
-        /// <param name="part"></param>
-        /// <param name="p"></param>
-        /// <param name="n"></param>
-        /// <returns></returns>
+        /// <param name="part">The set.</param>
+        /// <param name="p">The position where we start checking.</param>
+        /// <param name="n">The length of a set.</param>
+        /// <returns>if the <paramref name="part"/> has zeros from <paramref name="p"/> postion to the end returns true.</returns>
         private static bool CheckZeros(int[] part, int p, int n)
         {
             for (; p < n; p++)

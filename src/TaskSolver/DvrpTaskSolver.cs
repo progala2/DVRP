@@ -19,7 +19,7 @@ namespace _15pl04.Ucc.TaskSolver
         private readonly IFormatter _formatter = new BinaryFormatter();
 
         /// <summary>
-        /// 
+        /// Constructor.
         /// </summary>
         /// <param name="problemData">Binary serialized string with all information about the problem.
         /// String should be loaded from vrp type of file.</param>
