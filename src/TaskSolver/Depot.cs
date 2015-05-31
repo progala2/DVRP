@@ -24,11 +24,11 @@ namespace _15pl04.Ucc.TaskSolver
         }
 
         /// <summary>
-        /// X location coordinate.
+        /// Position of the depot: X coordinate.
         /// </summary>
         public double X { get; private set; }
         /// <summary>
-        /// Y location coordinate.
+        /// Position of the depot: Y coordinate.
         /// </summary>
         public double Y { get; private set; }
         /// <summary>

@@ -26,11 +26,11 @@ namespace _15pl04.Ucc.TaskSolver
         }
 
         /// <summary>
-        /// X coordinate.
+        /// Position of the client; X coordinate.
         /// </summary>
         public double X { get; private set; }
         /// <summary>
-        /// Y coordinate.
+        /// Position of the client; Y coordinate.
         /// </summary>
         public double Y { get; private set; }
         /// <summary>
