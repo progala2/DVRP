@@ -9,10 +9,16 @@ using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Marshalling
 {
+    /// <summary>
+    /// Class used for (de)serializing messages
+    /// </summary>
     public class MessageSerializer : ISerializer<Message>
     {
         private readonly Dictionary<MessageClass, XmlSerializer> _serializers;
-
+        
+        /// <summary>
+        /// Create message serializer.
+        /// </summary>
         public MessageSerializer()
         {
             var capacity = Enum.GetValues(typeof (MessageClass)).Length;
@@ -22,11 +28,23 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
                 _serializers.Add(type, new XmlSerializer(type.GetMessageType()));
         }
 
+        /// <summary>
+        /// Convert bytes to message
+        /// </summary>
+        /// <param name="buffer">Input bytes to convert</param>
+        /// <returns>Message after conversion.</returns>
         public Message Deserialize(byte[] buffer)
         {
             return Deserialize(buffer, 0, buffer.Length);
         }
 
+        /// <summary>
+        /// Convert bytes part of bytes to message.
+        /// </summary>
+        /// <param name="buffer">Array of bytes to convert.</param>
+        /// <param name="index">Index where to begin reading bytes to convert.</param>
+        /// <param name="count">Number of bytes to convert.</param>
+        /// <returns>Message after conversion.</returns>
         public Message Deserialize(byte[] buffer, int index, int count)
         {
             var type = GetMessageType(buffer, index, count);
@@ -38,6 +56,11 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
             }
         }
 
+        /// <summary>
+        /// Convert message to array of bytes.
+        /// </summary>
+        /// <param name="obj">Message to turn into bytes.</param>
+        /// <returns>Serialized message as raw bytes.</returns>
         public byte[] Serialize(Message obj)
         {
             using (var memStream = new MemoryStream())
@@ -52,6 +75,14 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
             }
         }
 
+        /// <summary>
+        /// Get message type from bytes.
+        /// </summary>
+        /// <param name="buffer">Array of bytes to read message type from.</param>
+        /// <param name="index">Index where to start reading message.</param>
+        /// <param name="count">Length of message in array.</param>
+        /// <returns>Enumerable message class.</returns>
+        /// <exception cref="Exception">Throws when no root element is found.</exception>
         private MessageClass GetMessageType(byte[] buffer, int index, int count)
         {
             using (var memStream = new MemoryStream(buffer, index, count))

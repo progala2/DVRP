@@ -9,10 +9,16 @@ using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Marshalling
 {
+    /// <summary>
+    /// Class for validating messages.
+    /// </summary>
     public class MessageValidator : IXmlValidator<MessageClass>
     {
         private readonly Dictionary<MessageClass, XmlSchemaSet> _schemaSets;
 
+        /// <summary>
+        /// Create message validator.
+        /// </summary>
         public MessageValidator()
         {
             var capacity = Enum.GetValues(typeof (MessageClass)).Length;
@@ -27,6 +33,12 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
             }
         }
 
+        /// <summary>
+        /// Validate if message is consistent with schema.
+        /// </summary>
+        /// <param name="schemaKey">Pattern schema.</param>
+        /// <param name="xml">Xml for comparing.</param>
+        /// <returns>Returns true if is consistent, false otherwise.</returns>
         public bool Validate(MessageClass schemaKey, XDocument xml)
         {
             if (xml == null)
