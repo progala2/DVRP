@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using UCCTaskSolver;
 using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Computations.Base;
@@ -9,36 +8,43 @@ using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.Commons.Utilities;
+using UCCTaskSolver;
 
 namespace _15pl04.Ucc.ComputationalNode
 {
+    /// <summary>
+    ///     The computational node class.
+    /// </summary>
     public sealed class ComputationalNode : ComputationalComponent
     {
         /// <summary>
-        ///     Creates ComputationalNode which looks for task solvers in current directory.
+        ///     Creates a computational node which looks for task solvers in current directory.
         /// </summary>
         /// <param name="threadManager">The thread manager. Cannot be null.</param>
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>        
         public ComputationalNode(ThreadManager threadManager, IPEndPoint serverAddress)
             : base(threadManager, serverAddress)
         {
         }
 
         /// <summary>
-        ///     Creates ComputationalNode.
+        ///     Creates a computational node.
         /// </summary>
         /// <param name="threadManager">The thread manager. Cannot be null.</param>
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
-        /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
+        /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers. If null current directory will be searched for task solvers.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>
+        /// <exception cref="System.IO.DirectoryNotFoundException">TODO</exception>
         public ComputationalNode(ThreadManager threadManager, IPEndPoint serverAddress,
             string taskSolversDirectoryRelativePath)
             : base(threadManager, serverAddress, taskSolversDirectoryRelativePath)
         {
         }
 
+        /// <summary>
+        ///     The type of the component.
+        /// </summary>
         public override ComponentType ComponentType
         {
             get { return ComponentType.ComputationalNode; }
@@ -51,29 +57,38 @@ namespace _15pl04.Ucc.ComputationalNode
         /// <remarks>
         ///     RegisterResponse is handled in base class.
         /// </remarks>
+        /// <exception cref="System.InvalidOperationException">Thrown when received not supported message type.</exception>
         protected override void HandleReceivedMessage(Message message)
         {
             switch (message.MessageType)
             {
                 case MessageClass.NoOperation:
-                    NoOperationMessageHandler((NoOperationMessage) message);
+                    NoOperationMessageHandler((NoOperationMessage)message);
                     break;
                 case MessageClass.SolvePartialProblems:
-                    PartialProblemsMessageHandler((PartialProblemsMessage) message);
+                    PartialProblemsMessageHandler((PartialProblemsMessage)message);
                     break;
                 case MessageClass.Error:
-                    ErrorMessageHandler((ErrorMessage) message);
+                    ErrorMessageHandler((ErrorMessage)message);
                     break;
                 default:
                     throw new InvalidOperationException("Received not supported message type.");
             }
         }
 
+        /// <summary>
+        /// Handler for NoOperationMessage.
+        /// </summary>
+        /// <param name="message">A NoOperationMessage.</param>
         private void NoOperationMessageHandler(NoOperationMessage message)
         {
             // nothing to do, backuping is handled by MessageSender
         }
 
+        /// <summary>
+        /// Handler for PartialProblemsMessage.
+        /// </summary>
+        /// <param name="message">A PartialProblemsMessage.</param>
         /// <exception cref="System.InvalidOperationException">
         ///     Thrown when:
         ///     - problem type can't be solved with this ComputationalNode,
@@ -102,7 +117,7 @@ namespace _15pl04.Ucc.ComputationalNode
                 var started = StartActionInNewThread(() =>
                 {
                     // not sure if TaskSolver can change CommonData during computations so recreate it for each partial problem
-                    var taskSolver = (TaskSolver) Activator.CreateInstance(taskSolverType, message.CommonData);
+                    var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
                     taskSolver.ThrowIfError();
 
                     // measure time using DateTime cause StopWatch is not guaranteed to be thread safe
@@ -135,12 +150,18 @@ namespace _15pl04.Ucc.ComputationalNode
                 }, actionDescription, message.ProblemType, message.ProblemInstanceId, partialProblem.PartialProblemId);
                 if (!started)
                 {
-                    // tragedy, CommunicationServer surprised us like the Spanish Inquisition
                     throw new InvalidOperationException("Received more partial problems than can be currently started.");
                 }
             }
         }
 
+        /// <summary>
+        /// Handler for ErrorMessage.
+        /// </summary>
+        /// <param name="message">An ErrorMessage.</param>
+        /// <exception cref="System.InvalidOperationException">
+        ///     Thrown when <paramref name="message"/> received from server contains information about server exception.
+        /// </exception>
         private void ErrorMessageHandler(ErrorMessage message)
         {
             switch (message.ErrorType)

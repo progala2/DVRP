@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using UCCTaskSolver;
 using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Computations.Base;
@@ -9,36 +8,43 @@ using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.Commons.Utilities;
+using UCCTaskSolver;
 
 namespace _15pl04.Ucc.TaskManager
 {
+    /// <summary>
+    ///     The task manager class.
+    /// </summary>
     public sealed class TaskManager : ComputationalComponent
     {
         /// <summary>
-        ///     Creates TaskManager which looks for task solvers in current directory.
+        ///     Creates a task manager which looks for task solvers in current directory.
         /// </summary>
         /// <param name="threadManager">The thread manager. Cannot be null.</param>
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>
         public TaskManager(ThreadManager threadManager, IPEndPoint serverAddress)
             : base(threadManager, serverAddress)
         {
         }
 
         /// <summary>
-        ///     Creates TaskManager.
+        ///     Creates a task manager.
         /// </summary>
         /// <param name="threadManager">The thread manager. Cannot be null.</param>
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
-        /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
+        /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers. If null current directory will be searched for task solvers.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>
+        /// <exception cref="System.IO.DirectoryNotFoundException">TODO</exception>
         public TaskManager(ThreadManager threadManager, IPEndPoint serverAddress,
             string taskSolversDirectoryRelativePath)
             : base(threadManager, serverAddress, taskSolversDirectoryRelativePath)
         {
         }
 
+        /// <summary>
+        ///     The type of the component.
+        /// </summary>
         public override ComponentType ComponentType
         {
             get { return ComponentType.TaskManager; }
@@ -51,37 +57,46 @@ namespace _15pl04.Ucc.TaskManager
         /// <remarks>
         ///     RegisterResponse is handled in base class.
         /// </remarks>
+        /// <exception cref="System.InvalidOperationException">Thrown when received not supported message type.</exception>
         protected override void HandleReceivedMessage(Message message)
         {
             switch (message.MessageType)
             {
                 case MessageClass.NoOperation:
-                    NoOperationMessageHandler((NoOperationMessage) message);
+                    NoOperationMessageHandler((NoOperationMessage)message);
                     break;
                 case MessageClass.DivideProblem:
-                    DivideProblemMessageHandler((DivideProblemMessage) message);
+                    DivideProblemMessageHandler((DivideProblemMessage)message);
                     break;
                 case MessageClass.Solutions:
-                    SolutionsMessageHandler((SolutionsMessage) message);
+                    SolutionsMessageHandler((SolutionsMessage)message);
                     break;
                 case MessageClass.Error:
-                    ErrorMessageHandler((ErrorMessage) message);
+                    ErrorMessageHandler((ErrorMessage)message);
                     break;
                 default:
                     throw new InvalidOperationException("Received not supported message type.");
             }
         }
 
+        /// <summary>
+        /// Handler for NoOperationMessage.
+        /// </summary>
+        /// <param name="message">A NoOperationMessage.</param>
         private void NoOperationMessageHandler(NoOperationMessage message)
         {
             // nothing to do, backuping is handled by MessageSender
         }
 
+        /// <summary>
+        /// Handler for DivideProblemMessage.
+        /// </summary>
+        /// <param name="message">A DivideProblemMessage.</param>
         /// <exception cref="System.InvalidOperationException">
         ///     Thrown when:
         ///     - message is designated for TaskManger with different ID,
-        ///     - problem type can't be solved with this TaskManger,
-        ///     - dividing problem cannot be started bacause no tasks are available in task pool.
+        ///     - problem type can't be divided with this TaskManager,
+        ///     - dividing the problem cannot be started bacause no threads are available in thread pool.
         /// </exception>
         private void DivideProblemMessageHandler(DivideProblemMessage message)
         {
@@ -102,13 +117,13 @@ namespace _15pl04.Ucc.TaskManager
 
             var actionDescription = string.Format("Dividing problem \"{0}\"(problem instance id={1})",
                 message.ProblemType, message.ProblemInstanceId);
-            // should be started properly cause server sends at most as many tasks to do as count of component's tasks in idle state
+            // should be started properly cause server sends at most as many tasks to do as count of component's threads in idle state
             var started = StartActionInNewThread(() =>
             {
-                var taskSolver = (TaskSolver) Activator.CreateInstance(taskSolverType, message.ProblemData);
+                var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.ProblemData);
                 taskSolver.ThrowIfError();
 
-                var partialProblemsData = taskSolver.DivideProblem((int) message.ComputationalNodes);
+                var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
                 taskSolver.ThrowIfError();
 
                 var partialProblems = new List<PartialProblemsMessage.PartialProblem>(partialProblemsData.GetLength(0));
@@ -116,7 +131,7 @@ namespace _15pl04.Ucc.TaskManager
                 {
                     partialProblems.Add(new PartialProblemsMessage.PartialProblem
                     {
-                        PartialProblemId = (ulong) i,
+                        PartialProblemId = (ulong)i,
                         Data = partialProblemsData[i],
                         TaskManagerId = Id
                     });
@@ -134,12 +149,20 @@ namespace _15pl04.Ucc.TaskManager
             }, actionDescription, message.ProblemType, message.ProblemInstanceId, null);
             if (!started)
             {
-                // tragedy, CommunicationServer surprised us like the Spanish Inquisition
                 throw new InvalidOperationException(
                     "Couldn't divide problem because couldn't start new thread.");
             }
         }
 
+        /// <summary>
+        /// Handler for SolutionsMessage.
+        /// </summary>
+        /// <param name="message">A SolutionsMessage.</param>
+        /// <exception cref="System.InvalidOperationException">
+        ///     Thrown when:
+        ///     - problem type can't be merged with this TaskManager,
+        ///     - merging the problem cannot be started bacause no threads are available in thread pool.
+        /// </exception>
         private void SolutionsMessageHandler(SolutionsMessage message)
         {
             Type taskSolverType;
@@ -152,7 +175,7 @@ namespace _15pl04.Ucc.TaskManager
 
             var actionDescription = string.Format("Merging partial problems \"{0}\"(problem instance id={1})",
                 message.ProblemType, message.ProblemInstanceId);
-            // should be started properly cause server sends at most as many tasks to do as count of component's tasks in idle state
+            // should be started properly cause server sends at most as many tasks to do as count of component's threads in idle state
             var started = StartActionInNewThread(() =>
             {
                 ulong totalComputationsTime = 0;
@@ -171,7 +194,7 @@ namespace _15pl04.Ucc.TaskManager
                     solutionsData[i] = solution.Data;
                 }
 
-                var taskSolver = (TaskSolver) Activator.CreateInstance(taskSolverType, message.CommonData);
+                var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
                 taskSolver.ThrowIfError();
 
                 // measure time using DateTime cause StopWatch is not guaranteed to be thread safe
@@ -180,7 +203,7 @@ namespace _15pl04.Ucc.TaskManager
                 var stop = DateTime.UtcNow;
 
                 taskSolver.ThrowIfError();
-                totalComputationsTime += (ulong) ((stop - start).TotalMilliseconds);
+                totalComputationsTime += (ulong)((stop - start).TotalMilliseconds);
 
                 var finalSolution = new SolutionsMessage.Solution
                 {
@@ -194,19 +217,25 @@ namespace _15pl04.Ucc.TaskManager
                     ProblemType = message.ProblemType,
                     ProblemInstanceId = message.ProblemInstanceId,
                     CommonData = message.CommonData,
-                    Solutions = new List<SolutionsMessage.Solution> {finalSolution}
+                    Solutions = new List<SolutionsMessage.Solution> { finalSolution }
                 };
 
                 EnqueueMessageToSend(finalSolutionMessage);
             }, actionDescription, message.ProblemType, message.ProblemInstanceId, null);
             if (!started)
             {
-                // tragedy, CommunicationServer surprised us like the Spanish Inquisition
                 throw new InvalidOperationException(
                     "Couldn't merge partial solutions because couldn't start new thread.");
             }
         }
 
+        /// <summary>
+        /// Handler for ErrorMessage.
+        /// </summary>
+        /// <param name="message">An ErrorMessage.</param>
+        /// <exception cref="System.InvalidOperationException">
+        ///     Thrown when <paramref name="message"/> received from server contains information about server exception.
+        /// </exception>
         private void ErrorMessageHandler(ErrorMessage message)
         {
             switch (message.ErrorType)
