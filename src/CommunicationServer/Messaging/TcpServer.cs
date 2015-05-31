@@ -30,6 +30,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private volatile bool _isListening;
 
         /// <summary>
+        /// Creates TcpServer instance.
         /// </summary>
         /// <param name="address">Listener address.</param>
         /// <param name="processor">Incoming data processing module.</param>
@@ -132,7 +133,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             if (!_isListening)
                 return;
 
-            var listenerSocket = (Socket) ar.AsyncState;
+            var listenerSocket = (Socket)ar.AsyncState;
             var clientSocket = listenerSocket.EndAccept(ar);
 
             Logger.Trace("Client accepted.");
@@ -151,7 +152,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 var metadata = new TcpDataProviderMetadata
                 {
                     ReceptionTime = DateTime.UtcNow,
-                    SenderAddress = (IPEndPoint) clientSocket.RemoteEndPoint
+                    SenderAddress = (IPEndPoint)clientSocket.RemoteEndPoint
                 };
 
                 _dataProcessor.EnqueueDataToProcess(

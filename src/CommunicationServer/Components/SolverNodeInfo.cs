@@ -11,6 +11,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
     public class SolverNodeInfo : ComponentInfo
     {
         /// <summary>
+        /// Creates SolverNodeInfo instance.
         /// </summary>
         /// <param name="type">Type of the component.</param>
         /// <param name="solvableProblems">Collection of solvable problem types.</param>

@@ -9,7 +9,7 @@ using _15pl04.Ucc.Commons.Messaging.Models.Base;
 namespace _15pl04.Ucc.ComputationalClient
 {
     /// <summary>
-    ///     The computational client class.
+    ///     The computational client class providing sending to the communication server either solve request or solution request and receiving server respone.
     /// </summary>
     public class ComputationalClient
     {
@@ -18,7 +18,8 @@ namespace _15pl04.Ucc.ComputationalClient
         /// <summary>
         ///     Creates a computational client.
         /// </summary>
-        /// <param name="serverAddress">The primary server address. Cannot be null.</param>/// <exception cref="System.ArgumentNullException">Thrown when <paramref name="serverAddress"/> is null.</exception>
+        /// <param name="serverAddress">The primary server address. Cannot be null.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="serverAddress"/> is null.</exception>
         public ComputationalClient(IPEndPoint serverAddress)
         {
             if (serverAddress == null)

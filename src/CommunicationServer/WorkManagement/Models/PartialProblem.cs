@@ -17,6 +17,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
         }
 
         /// <summary>
+        /// Creates PartialProblem instance.
         /// </summary>
         /// <param name="id">ID of the partial problem within a problem instance.</param>
         /// <param name="problem">Corresponding problem instance.</param>
@@ -30,26 +31,32 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
             if (problem.CommonData == null)
                 throw new Exception("Common data in the corresponding problem instance must be set.");
         }
+
         /// <summary>
         /// Current state of the partial problem.
         /// </summary>
         public PartialProblemState State { get; set; }
+
         /// <summary>
         /// ID of the computational node that is currently processing this partial problem. Null if isn't processed.
         /// </summary>
         public ulong? ComputingNodeId { get; set; }
+
         /// <summary>
         /// Corresponding problem instance.
         /// </summary>
         public Problem Problem { get; private set; }
+
         /// <summary>
         /// ID of the partial problem within the corresponding problem instance.
         /// </summary>
         public ulong Id { get; private set; }
+
         /// <summary>
         /// Partial problem's private data.
         /// </summary>
         public byte[] PrivateData { get; private set; }
+
         /// <summary>
         /// Data shared among all partial problems of the same problem instance.
         /// </summary>

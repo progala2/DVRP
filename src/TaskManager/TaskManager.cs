@@ -13,7 +13,7 @@ using UCCTaskSolver;
 namespace _15pl04.Ucc.TaskManager
 {
     /// <summary>
-    ///     The task manager class.
+    ///     The task manager class providing communication with server and both dividing and merging problems using task solvers.
     /// </summary>
     public sealed class TaskManager : ComputationalComponent
     {
@@ -23,6 +23,8 @@ namespace _15pl04.Ucc.TaskManager
         /// <param name="threadManager">The thread manager. Cannot be null.</param>
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// during loading task solvers.</exception>
         public TaskManager(ThreadManager threadManager, IPEndPoint serverAddress)
             : base(threadManager, serverAddress)
         {
@@ -35,7 +37,8 @@ namespace _15pl04.Ucc.TaskManager
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers. If null current directory will be searched for task solvers.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>
-        /// <exception cref="System.IO.DirectoryNotFoundException">TODO</exception>
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// during loading task solvers.</exception>
         public TaskManager(ThreadManager threadManager, IPEndPoint serverAddress,
             string taskSolversDirectoryRelativePath)
             : base(threadManager, serverAddress, taskSolversDirectoryRelativePath)

@@ -19,6 +19,7 @@ namespace _15pl04.Ucc.CommunicationServer
         private readonly IWorkManager _workManager;
 
         /// <summary>
+        /// Creates CommunicationServer instance.
         /// </summary>
         /// <param name="config">Server configuration.</param>
         public CommunicationServer(ServerConfig config)

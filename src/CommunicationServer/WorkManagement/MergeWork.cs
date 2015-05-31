@@ -13,6 +13,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
     internal class MergeWork : Work
     {
         /// <summary>
+        /// Creates MergeWork instance.
         /// </summary>
         /// <param name="assigneeId">ID of the assignee task manager.</param>
         /// <param name="partialSolutions">List of partial solutions to merge into the final one.</param>
