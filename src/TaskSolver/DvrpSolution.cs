@@ -3,7 +3,7 @@
 namespace _15pl04.Ucc.TaskSolver
 {
     /// <summary>
-    /// Class containing necessery information about a DVRP solution.
+    /// Class representing a DVRP solution.
     /// </summary>
     [Serializable]
     public class DvrpSolution
@@ -12,7 +12,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// Constructor.
         /// </summary>
         /// <param name="finalDistance">The best length of the routes.</param>
-        /// <param name="carsRoutes">The routes of the cars.</param>
+        /// <param name="carsRoutes">Cars' routes.</param>
         public DvrpSolution(double finalDistance, int[][] carsRoutes)
         {
             FinalDistance = finalDistance;
@@ -24,7 +24,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// </summary>
         public double FinalDistance { get; private set; }
         /// <summary>
-        /// The routes of the cars.
+        /// Cars' routes.
         /// </summary>
         public int[][] CarsRoutes { get; private set; }
     }

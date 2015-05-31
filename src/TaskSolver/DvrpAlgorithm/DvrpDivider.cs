@@ -5,23 +5,23 @@ using System.Linq;
 namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
 {
     /// <summary>
-    /// Class dividing a DVRP.
+    /// Class dividing a DVRP problem instance.
     /// </summary>
     internal class DvrpDivider
     {
         /// <summary>
-        /// Divide a problem to partial ones.
+        /// Divide the problem into partial problems.
         /// </summary>
-        /// <param name="dvrpProblem">The problem instance.</param>
-        /// <param name="numberOfParts">How many parts of the problem is needed.</param>
-        /// <returns>Partial problems.</returns>
+        /// <param name="dvrpProblem">The problem instance to divide.</param>
+        /// <param name="numberOfParts">How many parts to divide into.</param>
+        /// <returns>Output partial problems.</returns>
         public DvrpPartialProblem[] Divide(DvrpProblem dvrpProblem, int numberOfParts)
         {
             // we generate all the partitions
             // set {{0 0 0 0 0}} represents {{0 1 2 3 4}}
             // set {{0 1 2 3 4}} represents {{0}{1}{2}{3}{4}}
             // set {{0 1 2 1 2}} represents {{0}{1 3}{2 4}}
-            // part - an actual partition 
+            // part - current partition 
             // max[i] = Max{max[i-1], part[i-1]}
             // max[0] = -1
             // example:
@@ -59,7 +59,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                     else
                         max[i] = max[i - 1];
                 }
-                // we check if the last elements of the set are in their actual maximum
+                // we check if the last elements of the set are in their current maximum
                 // for example
                 // 01200345 p = 7
                 // 01200340 p = 6
@@ -134,10 +134,10 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         }
 
         /// <summary>
-        /// Compute a Bell number by the triangular method.
+        /// Compute a Bell number with the triangular method.
         /// </summary>
-        /// <param name="n">Which bell number is needed.</param>
-        /// <returns>a Bell number</returns>
+        /// <param name="n">Which Bell number to generate.</param>
+        /// <returns>Calculated Bell number.</returns>
         private static ulong TriangularMethodBellNumber(int n)
         {
             var triangle = new Dictionary<long, List<ulong>> {{1, new List<ulong>(new ulong[] {1})}};
@@ -159,9 +159,9 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         /// Calculate the number of sets combinations to skip. 
         /// The numbers from <paramref name="p"/> position to the end of a set should be equal to 0.
         /// </summary>
-        /// <param name="max">The actual max number in a set before <paramref name="p"/> position.</param>
-        /// <param name="p">The position from we want to start skiping combinations.</param>
-        /// <param name="n">The length of a set.</param>
+        /// <param name="max">The current maximum number in a set before <paramref name="p"/> position.</param>
+        /// <param name="p">The position from which to start skipping combinations.</param>
+        /// <param name="n">Length of a set.</param>
         /// <returns>The number of sets combinations to skip.</returns>
         private static ulong CalculateCombinations(int max, int p, int n)
         {
@@ -178,9 +178,9 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         /// Check if the <paramref name="part"/> has zeros from <paramref name="p"/> postion to the end.
         /// </summary>
         /// <param name="part">The set.</param>
-        /// <param name="p">The position where we start checking.</param>
-        /// <param name="n">The length of a set.</param>
-        /// <returns>if the <paramref name="part"/> has zeros from <paramref name="p"/> postion to the end returns true.</returns>
+        /// <param name="p">The position from which to start checking.</param>
+        /// <param name="n">Length of the set.</param>
+        /// <returns>True, if the <paramref name="part"/> has zeros from <paramref name="p"/> the end. False otherwise.</returns>
         private static bool CheckZeros(int[] part, int p, int n)
         {
             for (; p < n; p++)

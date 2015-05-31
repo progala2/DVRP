@@ -3,7 +3,7 @@
 namespace _15pl04.Ucc.TaskSolver
 {
     /// <summary>
-    /// Class containing necessery information about a depot station.
+    /// Class containing all necessary information about a depot station.
     /// </summary>
     [Serializable]
     public class Depot
@@ -11,10 +11,10 @@ namespace _15pl04.Ucc.TaskSolver
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="x">X location coordination.</param>
-        /// <param name="y">Y location coordination.</param>
-        /// <param name="startTime">When the depot opens. In minutes.</param>
-        /// <param name="endTime">When the depot closes. In minutes.</param>
+        /// <param name="x">X coordinate.</param>
+        /// <param name="y">Y coordinate.</param>
+        /// <param name="startTime">Time the depot opens; in minutes.</param>
+        /// <param name="endTime">Closing time; in minutes.</param>
         public Depot(double x, double y, double startTime, double endTime)
         {
             X = x;
@@ -24,19 +24,19 @@ namespace _15pl04.Ucc.TaskSolver
         }
 
         /// <summary>
-        /// Location coordination.
+        /// X location coordinate.
         /// </summary>
         public double X { get; private set; }
         /// <summary>
-        /// Location coordination.
+        /// Y location coordinate.
         /// </summary>
         public double Y { get; private set; }
         /// <summary>
-        /// When the depot opens. In minutes.
+        /// Depot opening time; in minutes.
         /// </summary>
         public double StartTime { get; private set; }
         /// <summary>
-        /// When the depot closes. In minutes.
+        /// Depot closing time; in minutes.
         /// </summary>
         public double EndTime { get; private set; }
     }

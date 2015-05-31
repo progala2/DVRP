@@ -10,8 +10,7 @@ using _15pl04.Ucc.TaskSolver.DvrpAlgorithm;
 namespace _15pl04.Ucc.TaskSolver
 {
     /// <summary>
-    /// DvrpTaskSolver is responsible for dividing, solving and merging 
-    /// the Dynamic Vehicles Route Problem
+    /// Class responsible for dividing, solving and merging the Dynamic Vehicles Route Problem.
     /// </summary>
     public class DvrpTaskSolver : UCCTaskSolver.TaskSolver
     {
@@ -21,8 +20,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="problemData">Binary serialized string with all information about the problem.
-        /// String should be loaded from vrp type of file.</param>
+        /// <param name="problemData">Binary data with all information about the problem. String should be loaded from a .vrp file.</param>
         public DvrpTaskSolver(byte[] problemData)
             : base(problemData)
         {
@@ -120,7 +118,7 @@ namespace _15pl04.Ucc.TaskSolver
         }
 
         /// <summary>
-        /// Name of the problem that is solved by the Task Solver.
+        /// Problem type name solvable by this Task Solver.
         /// </summary>
         public override string Name
         {
@@ -128,10 +126,10 @@ namespace _15pl04.Ucc.TaskSolver
         }
 
         /// <summary>
-        /// Divide problem into smaller ones. 
+        /// Divide problem into smaller ones.
         /// </summary>
-        /// <param name="threadCount">the Number of divisions.</param>
-        /// <returns>Binary serialized divisions of the problem.</returns>
+        /// <param name="threadCount">Number of divisions.</param>
+        /// <returns>Binary serialized parts of the problem.</returns>
         public override byte[][] DivideProblem(int threadCount)
         {
             try
@@ -158,10 +156,10 @@ namespace _15pl04.Ucc.TaskSolver
         }
 
         /// <summary>
-        /// Compute the best solution of the given ones.
+        /// Merge partial solutions into the final one.
         /// </summary>
-        /// <param name="solutions">The binary serialized DvrpSolutions <see cref="DvrpSolution"/>.</param>
-        /// <returns>the Binary serialized string with a description of the best solution.</returns>
+        /// <param name="solutions">Binary serialized DVRP solutions <see cref="DvrpSolution"/>.</param>
+        /// <returns>Binary serialized string with a description of the best solution.</returns>
         public override byte[] MergeSolution(byte[][] solutions)
         {
             try
@@ -201,11 +199,11 @@ namespace _15pl04.Ucc.TaskSolver
         }
 
         /// <summary>
-        /// Solve the partial problem with a given timeout.
+        /// Solve a partial problem with a given timeout.
         /// </summary>
-        /// <param name="partialData">The binary serialized DvrpPartialProblem</param>
-        /// <param name="timeout">The maximal time of computing.</param>
-        /// <returns>the Binary serilized DvrpSolution.</returns>
+        /// <param name="partialData">Binary serialized DVRP partial problem data.</param>
+        /// <param name="timeout">Maximum time for computations.</param>
+        /// <returns>Binary serialized solution.</returns>
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
             try

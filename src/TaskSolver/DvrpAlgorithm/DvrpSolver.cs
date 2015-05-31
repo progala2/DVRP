@@ -6,13 +6,13 @@ using System.Linq;
 namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
 {
     /// <summary>
-    /// Solver of a DVRP.
+    /// DVRP problem solver.
     /// </summary>
     internal class DvrpSolver
     {
         /// <summary>
-        ///     index0 - depot
-        ///     index1 - request
+        ///     index 0 - depot
+        ///     index 1 - request
         /// </summary>
         private readonly double[,] _depotDistances;
 
@@ -24,7 +24,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="problem">The problem to solve.</param>
+        /// <param name="problem">The problem instance to solve.</param>
         public DvrpSolver(DvrpProblem problem)
         {
             State = UCCTaskSolver.TaskSolver.TaskSolverState.OK;
@@ -55,15 +55,15 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         }
 
         /// <summary>
-        /// State of the Solver.
+        /// State of the Task Solver.
         /// </summary>
         public UCCTaskSolver.TaskSolver.TaskSolverState State { get; private set; }
 
         /// <summary>
-        /// Solve a  partial DVRP.
+        /// Solves a partial problem.
         /// </summary>
-        /// <param name="partProblem">The problem to solve.</param>
-        /// <param name="timeout">The timeout of computing.</param>
+        /// <param name="partProblem">DVRP partial problem to solve.</param>
+        /// <param name="timeout">Timeout for computations.</param>
         /// <returns>Solution of the given problem.</returns>
         public DvrpSolution Solve(DvrpPartialProblem partProblem, TimeSpan timeout)
         {
@@ -183,7 +183,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         /// <summary>
         /// Approximate the result.
         /// </summary>
-        /// <returns>the aprpoximate result.</returns>
+        /// <returns>Result approximation.</returns>
         public double SolveApproximately()
         {
             //TODO to improve
@@ -196,7 +196,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         }
 
         /// <summary>
-        /// Check if the <paramref name="lowerSet"/> is before the <paramref name="higherSet"/>
+        /// Check if the <paramref name="lowerSet"/> is before the <paramref name="higherSet"/>.
         /// </summary>
         /// <param name="lowerSet">The lower set.</param>
         /// <param name="higherSet">The higher set.</param>
@@ -215,7 +215,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         }
 
         /// <summary>
-        /// Tsp Solver.
+        /// Travelling Salesman Problem solver.
         /// </summary>
         internal class TspSolver
         {
@@ -241,10 +241,10 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             }
 
             /// <summary>
-            /// Solve a TSP.
+            /// Solve a TSP problem.
             /// </summary>
-            /// <param name="listOfCities">the List of the cities to visit.</param>
-            /// <param name="min">The actual best know result.</param>
+            /// <param name="listOfCities">List of the cities to visit.</param>
+            /// <param name="min">Current best known result.</param>
             /// <param name="carRoute">The final car route between cities.</param>
             /// <returns>Length of the route.</returns>
             public double Solve(List<int> listOfCities, double min, out List<int> carRoute)
@@ -264,12 +264,12 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             }
 
             /// <summary>
-            /// Helping function to solve TSP by the reccurance method.
+            /// Helper function to solve TSP recursively.
             /// </summary>
-            /// <param name="distance">the actual route distance.</param>
-            /// <param name="actual">The actual time.</param>
-            /// <param name="carRoute">the actual route.</param>
-            private void RecurenceSolve(double distance, double actual, ref List<int> carRoute)
+            /// <param name="distance">Current route distance.</param>
+            /// <param name="currentTime">Current time.</param>
+            /// <param name="carRoute">Current route.</param>
+            private void RecurenceSolve(double distance, double currentTime, ref List<int> carRoute)
             {
                 if (carRoute.Count == _listOfCities.Count)
                 {
@@ -288,19 +288,19 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                     if (_visited[i])
                         continue;
                     var act = _distances[carRoute.Last(), i] + _dvrpProblem.Requests[i].Duration +
-                              Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - actual, 0);
+                              Math.Max(_dvrpProblem.Requests[i].AvailabilityTime - currentTime, 0);
                     var dist = _distances[carRoute.Last(), i];
-                    actual += act;
+                    currentTime += act;
                     distance += dist;
                     _visited[i] = true;
                     carRoute.Add(i);
                     if (distance < _oneCarDistance)
                     {
-                        RecurenceSolve(distance, actual, ref carRoute);
+                        RecurenceSolve(distance, currentTime, ref carRoute);
                     }
                     carRoute.RemoveAt(carRoute.Count - 1);
                     distance -= dist;
-                    actual -= act;
+                    currentTime -= act;
                     _visited[i] = false;
                 }
             }

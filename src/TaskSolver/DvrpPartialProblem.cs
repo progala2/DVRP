@@ -3,7 +3,7 @@
 namespace _15pl04.Ucc.TaskSolver
 {
     /// <summary>
-    /// Class containing necessery information about a partial DVRP.
+    /// Class containing information about a partial DVRP problem.
     /// </summary>
     [Serializable]
     public class DvrpPartialProblem
@@ -11,9 +11,9 @@ namespace _15pl04.Ucc.TaskSolver
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="setStart">The begining set.</param>
+        /// <param name="setStart">The beginning set.</param>
         /// <param name="approximateResult">Information about the best known approximate result of the problem.</param>
-        /// <param name="numberOfSets">The number of sets</param>
+        /// <param name="numberOfSets">Number of sets.</param>
         /// <param name="setEnd">The ending set.</param>
         public DvrpPartialProblem(int[] setStart, double approximateResult, ulong numberOfSets, int[] setEnd)
         {
@@ -32,7 +32,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// </summary>
         public int[] SetEnd { get; private set; }
         /// <summary>
-        /// The number of sets
+        /// Number of sets.
         /// </summary>
         public ulong NumberOfSets { get; private set; }
         /// <summary>
