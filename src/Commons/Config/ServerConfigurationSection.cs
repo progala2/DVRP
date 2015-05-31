@@ -140,6 +140,9 @@ namespace _15pl04.Ucc.Commons.Config
             return config;
         }
 
+        /// <summary>
+        /// Prints console line usage.
+        /// </summary>
         private static void PrintUsage()
         {
             Console.WriteLine(

@@ -96,6 +96,9 @@ namespace _15pl04.Ucc.Commons.Config
             return config;
         }
 
+        /// <summary>
+        /// Prints console line usage.
+        /// </summary>
         private static void PrintUsage()
         {
             Console.WriteLine("Usage: {0} [-address [IPv4 address or IPv6 address or host name]] [-port [port number]]",

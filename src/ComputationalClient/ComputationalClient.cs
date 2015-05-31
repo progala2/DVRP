@@ -116,6 +116,11 @@ namespace _15pl04.Ucc.ComputationalClient
             return solutionsMessages;
         }
 
+        /// <summary>
+        /// Sends message to server and gets response.
+        /// </summary>
+        /// <param name="message">Message to be send to server.</param>
+        /// <returns>Received messages or null if couldn't get server response.</returns>
         private List<Message> SendMessage(Message message)
         {
             var receivedMessages = _messageSender.Send(message);
@@ -135,6 +140,11 @@ namespace _15pl04.Ucc.ComputationalClient
             return receivedMessages;
         }
 
+        /// <summary>
+        /// Raises event handler if it is not null.
+        /// </summary>
+        /// <param name="eventHandler">Handler to be raised.</param>
+        /// <param name="message">Message to be passed as event event argument.</param>
         private void RaiseEvent(EventHandler<MessageEventArgs> eventHandler, Message message)
         {
             if (eventHandler != null)
@@ -143,6 +153,12 @@ namespace _15pl04.Ucc.ComputationalClient
             }
         }
 
+        /// <summary>
+        /// Raises event handler if it is not null.
+        /// </summary>
+        /// <param name="eventHandler">Handler to be raised.</param>
+        /// <param name="message">Message to be passed as event event argument.</param>
+        /// <param name="exception">Exception to be passed as event event argument.</param>
         private void RaiseEvent(EventHandler<MessageExceptionEventArgs> eventHandler, Message message,
             Exception exception)
         {

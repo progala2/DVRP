@@ -271,9 +271,14 @@ namespace _15pl04.Ucc.Commons
             IsRunning = false;
         }
 
-        private bool ProcessMessage(Message messageToSend)
+        /// <summary>
+        /// Sends message to server and handles repsonse messages.
+        /// </summary>
+        /// <param name="message">Message to be send to server.</param>
+        /// <returns>True if server responded; false otherwise.</returns>
+        private bool ProcessMessage(Message message)
         {
-            var receivedMessages = SendMessage(messageToSend);
+            var receivedMessages = SendMessage(message);
             if (receivedMessages == null)
                 return false;
             foreach (var receivedMessage in receivedMessages)
@@ -283,6 +288,11 @@ namespace _15pl04.Ucc.Commons
             return true;
         }
 
+        /// <summary>
+        /// Sends message to server and gets response.
+        /// </summary>
+        /// <param name="message">Message to be send to server.</param>
+        /// <returns>Received messages or null if couldn't get server response.</returns>
         private List<Message> SendMessage(Message message)
         {
             var receivedMessages = _messageSender.Send(message);
@@ -302,6 +312,10 @@ namespace _15pl04.Ucc.Commons
             return receivedMessages;
         }
 
+        /// <summary>
+        /// Handles message received from server.
+        /// </summary>
+        /// <param name="message">Message received from server.</param>
         private void InternalHandleReceivedMessage(Message message)
         {
             try
@@ -314,6 +328,11 @@ namespace _15pl04.Ucc.Commons
             }
         }
 
+        /// <summary>
+        /// Enqueues ErrorMessage to be send to server. It constains information about exception occured in component.
+        /// </summary>
+        /// <param name="reasonOfException">The user friendly information about exception.</param>
+        /// <param name="exception">Occured exception.</param>
         private void InformServerAboutException(string reasonOfException, Exception exception)
         {
             if (exception == null)
@@ -370,6 +389,10 @@ namespace _15pl04.Ucc.Commons
             return statusMessage;
         }
 
+        /// <summary>
+        /// Raises event handler if it is not null.
+        /// </summary>
+        /// <param name="eventHandler">Handler to be raised.</param>
         private void RaiseEvent(EventHandler eventHandler)
         {
             if (eventHandler != null)
@@ -378,6 +401,11 @@ namespace _15pl04.Ucc.Commons
             }
         }
 
+        /// <summary>
+        /// Raises event handler if it is not null.
+        /// </summary>
+        /// <param name="eventHandler">Handler to be raised.</param>
+        /// <param name="message">Message to be passed as event event argument.</param>
         private void RaiseEvent(EventHandler<MessageEventArgs> eventHandler, Message message)
         {
             if (eventHandler != null)
@@ -386,6 +414,12 @@ namespace _15pl04.Ucc.Commons
             }
         }
 
+        /// <summary>
+        /// Raises event handler if it is not null.
+        /// </summary>
+        /// <param name="eventHandler">Handler to be raised.</param>
+        /// <param name="message">Message to be passed as event event argument.</param>
+        /// <param name="exception">Exception to be passed as event event argument.</param>
         private void RaiseEvent(EventHandler<MessageExceptionEventArgs> eventHandler, Message message,
             Exception exception)
         {
