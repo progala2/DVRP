@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace _15pl04.Ucc.Commons.Computations.Base
 {
     /// <summary>
-    ///     Represents a thread manager which provides starting and cancelling threads.
+    ///     Represents a thread manager which provides starting actions in new threads.
     /// </summary>
     public abstract class ThreadManager
     {
@@ -15,7 +15,7 @@ namespace _15pl04.Ucc.Commons.Computations.Base
         private readonly IReadOnlyCollection<ComputationalThreadStatus> _threadStatuses;
 
         /// <summary>
-        ///     Creates a thread manager which provides starting threads.
+        ///     Creates a thread manager which provides starting actions in new threads.
         /// </summary>
         /// <param name="parallelThreads">The maximum number of threads that could be efficiently run in parallel.</param>
         protected ThreadManager(byte parallelThreads)
@@ -40,7 +40,7 @@ namespace _15pl04.Ucc.Commons.Computations.Base
         }
 
         /// <summary>
-        ///     The information of thread statuses.
+        ///     The information about thread statuses.
         /// </summary>
         public IReadOnlyCollection<ComputationalThreadStatus> ThreadStatuses
         {
@@ -93,6 +93,11 @@ namespace _15pl04.Ucc.Commons.Computations.Base
             return started;
         }
 
+        /// <summary>
+        ///     Tries to start executing action in new thread.
+        /// </summary>
+        /// <param name="actionToExecute">An action to be executed in new thread.</param>
+        /// <returns>True if thread was successfully started; false otherwise.</returns>
         protected abstract bool StartInNewThread(Action actionToExecute);
     }
 }

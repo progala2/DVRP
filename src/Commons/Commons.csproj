@@ -34,11 +34,9 @@
     <Compile Include="Components\ServerInfo.cs" />
     <Compile Include="Components\ThreadStatus.cs" />
     <Compile Include="ComputationalComponent.cs" />
-    <Compile Include="Computations\Base\IThreadManagerFactory.cs" />
     <Compile Include="Computations\Base\ThreadManager.cs" />
     <Compile Include="Computations\ComputationalThreadStatus.cs" />
     <Compile Include="Computations\ThreadPoolThreadManager.cs" />
-    <Compile Include="Computations\ThreadPoolThreadManagerFactory.cs" />
     <Compile Include="Config\ComponentConfigurationSection.cs" />
     <Compile Include="Config\IPEndPointConfigurationElement.cs" />
     <Compile Include="Config\ServerConfigurationSection.cs" />
@@ -134,6 +132,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MessageSchemas.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Computations\Components\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
