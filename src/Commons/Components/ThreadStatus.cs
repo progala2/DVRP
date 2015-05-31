@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace _15pl04.Ucc.Commons.Components
 {
     /// <summary>
-    /// Represents current state of a cluster component's thread.
+    /// Represents current state of a cluster component's thread (as in Status message).
     /// </summary>
     [Serializable]
     [DesignerCategory(@"code")]

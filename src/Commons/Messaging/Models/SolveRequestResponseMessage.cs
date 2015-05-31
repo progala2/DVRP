@@ -6,6 +6,9 @@ using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
+    /// <summary>
+    /// Object representation of the Solve Request message.
+    /// </summary>
     [Serializable]
     [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
@@ -19,12 +22,19 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlElement(Order = 0, ElementName = "Id")]
         public ulong AssignedId { get; set; }
 
+        /// <summary>
+        /// Gets corresponding MessageClass enum value.
+        /// </summary>
         [XmlIgnore]
         public override MessageClass MessageType
         {
             get { return MessageClass.SolveRequestResponse; }
         }
 
+        /// <summary>
+        /// Gets string representation.
+        /// </summary>
+        /// <returns>String value that represents this object.</returns>
         public override string ToString()
         {
             var builder = new StringBuilder(base.ToString());

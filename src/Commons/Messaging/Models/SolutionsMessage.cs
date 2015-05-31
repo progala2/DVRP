@@ -82,6 +82,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             return builder.ToString();
         }
 
+        /// <summary>
+        /// Object representation of a solution as in Solutions message.
+        /// </summary>
         [Serializable]
         [DesignerCategory("code")]
         [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
@@ -112,6 +115,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
                 return Data != null;
             }
 
+            /// <summary>
+            /// Gets string representation.
+            /// </summary>
+            /// <returns>String value that represents this object.</returns>
             public override string ToString()
             {
                 var builder = new StringBuilder();
