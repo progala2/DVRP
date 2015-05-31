@@ -15,10 +15,12 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolutionRequest")]
     public class SolutionRequestMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
-            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
-                "SolutionRequest.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string NoNamespaceSchemaLocation = "SolutionRequest.xsd";
 
+        /// <summary>
+        /// The ID of the problem instance assigned by the server.
+        /// </summary>
         [XmlElement(Order = 0, ElementName = "Id")]
         public ulong ProblemInstanceId { get; set; }
 

@@ -92,6 +92,12 @@ namespace _15pl04.Ucc.Commons.Utilities
             return new IPEndPoint(ipAddress, port);
         }
 
+        /// <summary>
+        /// Get port from string.
+        /// </summary>
+        /// <param name="p">The port as string.</param>
+        /// <returns>The port as int.</returns>
+        /// <exception cref="System.FormatException">Invalid port number.</exception>
         private static int GetPort(string p)
         {
             int port;
@@ -102,12 +108,18 @@ namespace _15pl04.Ucc.Commons.Utilities
             return port;
         }
 
-        private static IPAddress GetIpFromHost(string p)
+        /// <summary>
+        /// Gets IPAddress based on host name or address.
+        /// </summary>
+        /// <param name="hostNameOrAddress">Host name or address.</param>
+        /// <returns>The IPAddress.</returns>
+        /// <exception cref="System.FormatException">Host not found.</exception>
+        private static IPAddress GetIpFromHost(string hostNameOrAddress)
         {
-            var hosts = Dns.GetHostAddresses(p);
+            var hosts = Dns.GetHostAddresses(hostNameOrAddress);
 
             if (hosts == null || hosts.Length == 0)
-                throw new ArgumentException(string.Format("Host not found: {0}", p));
+                throw new ArgumentException(string.Format("Host not found: {0}", hostNameOrAddress));
 
             return hosts[0];
         }

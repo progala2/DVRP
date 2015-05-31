@@ -15,13 +15,18 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Error")]
     public class ErrorMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
-            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
-                "Error.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string NoNamespaceSchemaLocation = "Error.xsd";
 
+        /// <summary>
+        /// The type of error.
+        /// </summary>
         [XmlElement(Order = 0, ElementName = "ErrorMessageType")]
         public ErrorType ErrorType { get; set; }
 
+        /// <summary>
+        /// The information about error.
+        /// </summary>
         [XmlElement(Order = 1, ElementName = "ErrorMessage")]
         public string ErrorText { get; set; }
 

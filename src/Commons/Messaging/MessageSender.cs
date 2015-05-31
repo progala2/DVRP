@@ -97,6 +97,10 @@ namespace _15pl04.Ucc.Commons.Messaging
             return retBytes != null ? messagesReceived : null;
         }
 
+        /// <summary>
+        /// Updates server list.
+        /// </summary>
+        /// <param name="messages">Messages to update server list based on.</param>
         private void UpdateServerList(IList<Message> messages)
         {
             if (messages == null)

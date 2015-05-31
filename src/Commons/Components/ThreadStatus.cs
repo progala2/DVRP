@@ -49,21 +49,37 @@ namespace _15pl04.Ucc.Commons.Components
         [XmlElement(Order = 4)]
         public string ProblemType { get; set; }
 
+        /// <summary>
+        /// Determines whether TimeInThisState property should be serialized.
+        /// </summary>
+        /// <returns>True if TimeInThisState property should be serialized; false otherwise.</returns>
         public bool ShouldSerializeTimeInThisState()
         {
             return TimeInThisState.HasValue;
         }
 
+        /// <summary>
+        /// Determines whether ProblemInstanceId property should be serialized.
+        /// </summary>
+        /// <returns>True if ProblemInstanceId property should be serialized; false otherwise.</returns>
         public bool ShouldSerializeProblemInstanceId()
         {
             return ProblemInstanceId.HasValue;
         }
 
+        /// <summary>
+        /// Determines whether PartialProblemId property should be serialized.
+        /// </summary>
+        /// <returns>True if PartialProblemId property should be serialized; false otherwise.</returns>
         public bool ShouldSerializePartialProblemId()
         {
             return PartialProblemId.HasValue;
         }
 
+        /// <summary>
+        /// Determines whether ProblemType property should be serialized.
+        /// </summary>
+        /// <returns>True if ProblemType property should be serialized; false otherwise.</returns>
         public bool ShouldSerializeProblemType()
         {
             return ProblemType != null;
