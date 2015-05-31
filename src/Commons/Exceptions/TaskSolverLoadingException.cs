@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace _15pl04.Ucc.Commons.Exceptions
 {
     /// <summary>
-    /// Description of NoResponseException
+    /// Represents an exception that occurs during loading task solvers.
     /// </summary>
     public class TaskSolverLoadingException : Exception
     {
