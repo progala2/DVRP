@@ -7,12 +7,18 @@ using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
+    /// <summary>
+    /// Object representation of the Solutions message.
+    /// </summary>
     [Serializable]
     [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Solutions")]
     public class SolutionsMessage : Message
     {
+        /// <summary>
+        /// Possible solution types/states specified by this message.
+        /// </summary>
         [Serializable]
         [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
         public enum SolutionType
@@ -44,6 +50,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlArrayItem("Solution", IsNullable = false)]
         public List<Solution> Solutions { get; set; }
 
+        /// <summary>
+        /// Gets corresponding MessageClass enum value.
+        /// </summary>
         [XmlIgnore]
         public override MessageClass MessageType
         {
@@ -55,6 +64,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             return CommonData != null;
         }
 
+        /// <summary>
+        /// Gets string representation.
+        /// </summary>
+        /// <returns>String value that represents this object.</returns>
         public override string ToString()
         {
             var builder = new StringBuilder(base.ToString());

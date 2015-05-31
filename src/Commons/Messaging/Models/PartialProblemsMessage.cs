@@ -7,6 +7,9 @@ using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.Commons.Messaging.Models
 {
+    /// <summary>
+    /// Object representation of the Partial Problems message.
+    /// </summary>
     [Serializable]
     [DesignerCategory(@"code")]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
@@ -38,6 +41,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlArrayItem("PartialProblem", IsNullable = false)]
         public List<PartialProblem> PartialProblems { get; set; }
 
+        /// <summary>
+        /// Gets corresponding MessageClass enum value.
+        /// </summary>
         [XmlIgnore]
         public override MessageClass MessageType
         {
@@ -49,6 +55,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             return SolvingTimeout.HasValue;
         }
 
+        /// <summary>
+        /// Gets string representation.
+        /// </summary>
+        /// <returns>String value that represents this object.</returns>
         public override string ToString()
         {
             var builder = new StringBuilder(base.ToString());
@@ -66,6 +76,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             return builder.ToString();
         }
 
+        /// <summary>
+        /// Object representation of a partial problem in Partial Problems message.
+        /// </summary>
         [Serializable]
         [DesignerCategory("code")]
         [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
@@ -80,6 +93,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             [XmlElement(ElementName = "NodeID", Order = 2)]
             public ulong TaskManagerId { get; set; }
 
+            /// <summary>
+            /// Gets string representation.
+            /// </summary>
+            /// <returns>String value that represents this object.</returns>
             public override string ToString()
             {
                 var builder = new StringBuilder();
