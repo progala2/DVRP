@@ -16,6 +16,7 @@
         }
 
         /// <summary>
+        /// Creates PartialSolution instance.
         /// </summary>
         /// <param name="partialProblem">Corresponding partial problem.</param>
         /// <param name="data">Solution data.</param>
@@ -28,26 +29,32 @@
             ComputationsTime = computationsTime;
             TimeoutOccured = timeoutOccured;
         }
+
         /// <summary>
         /// Current state of the partial solution.
         /// </summary>
         public PartialSolutionState State { get; set; }
+
         /// <summary>
         /// ID of the task manager that is currently merging this partial solution. Null if isn't being merged.
         /// </summary>
         public ulong? MergingNodeId { get; set; }
+
         /// <summary>
         /// Corresponding partial problem.
         /// </summary>
         public PartialProblem PartialProblem { get; private set; }
+
         /// <summary>
         /// Partial solution data.
         /// </summary>
         public byte[] Data { get; private set; }
+
         /// <summary>
         /// Time of the foregoing computations.
         /// </summary>
         public ulong ComputationsTime { get; private set; }
+
         /// <summary>
         /// True if the computations that generated this partial solution were stopped due to the timeout.
         /// </summary>

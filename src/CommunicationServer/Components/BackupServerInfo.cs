@@ -10,6 +10,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
     public class BackupServerInfo : ComponentInfo
     {
         /// <summary>
+        /// Creates BackupServerInfo instance.
         /// </summary>
         /// <param name="serverInfo">Communication Server specific information.</param>
         /// <param name="numberOfThreads">Number of threads provided by the backup.</param>
@@ -22,6 +23,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         }
 
         /// <summary>
+        /// Creates BackupServerInfo instance.
         /// </summary>
         /// <param name="endPoint">IPEndPoint data of the backup.</param>
         /// <param name="numberOfThreads">Number of threads provided by the backup.</param>

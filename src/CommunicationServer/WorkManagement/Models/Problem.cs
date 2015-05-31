@@ -14,7 +14,9 @@
             BeingDivided,
             AwaitingSolution
         }
+
         /// <summary>
+        /// Creates Problem instance.
         /// </summary>
         /// <param name="id">ID of the problem instance.</param>
         /// <param name="type">Problem class type name.</param>
@@ -27,34 +29,42 @@
             Data = data;
             SolvingTimeout = solvingTimeout;
         }
+
         /// <summary>
         /// Current state of the problem instance.
         /// </summary>
         public ProblemState State { get; set; }
+
         /// <summary>
         /// ID of the task manager that is currently dividing this problem instance. Null if hasn't been divided.
         /// </summary>
         public ulong? DividingNodeId { get; set; }
+
         /// <summary>
         /// Problem class type name.
         /// </summary>
         public string Type { get; private set; }
+
         /// <summary>
         /// Timeout for solving this problem instance.
         /// </summary>
         public ulong SolvingTimeout { get; private set; }
+
         /// <summary>
         /// Problem data as sent by the client.
         /// </summary>
         public byte[] Data { get; private set; }
+
         /// <summary>
         /// Problem data shared among partial problems (null before problem division).
         /// </summary>
         public byte[] CommonData { get; set; }
+
         /// <summary>
         /// ID of the problem instance.
         /// </summary>
         public ulong Id { get; private set; }
+
         /// <summary>
         /// Number of partial problems this problem instance has beed divided into.
         /// </summary>

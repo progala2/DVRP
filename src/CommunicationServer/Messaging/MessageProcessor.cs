@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CSharp.RuntimeBinder;
 using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging.Marshalling;
 using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
@@ -12,6 +11,7 @@ using _15pl04.Ucc.CommunicationServer.Collections;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
 using _15pl04.Ucc.CommunicationServer.Messaging.Base;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
@@ -30,6 +30,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private volatile bool _isProcessing;
 
         /// <summary>
+        /// Creates MessageProcessor instance.
         /// </summary>
         /// <param name="componentOverseer">Component overseer module.</param>
         /// <param name="workManager">Work manager to get work from.</param>
@@ -155,7 +156,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         ErrorType = ErrorType.InvalidOperation,
                         ErrorText = "Computational Server doesn't handle " + msg.MessageType + " message."
                     };
-                    responseMessages = new List<Message> {errorMsg};
+                    responseMessages = new List<Message> { errorMsg };
                     break;
                 }
             }

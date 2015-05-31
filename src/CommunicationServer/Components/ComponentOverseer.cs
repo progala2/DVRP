@@ -23,6 +23,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         private volatile bool _isMonitoring;
 
         /// <summary>
+        /// Creates ComponentOverseer instance.
         /// </summary>
         /// <param name="communicationTimeout">Communication timeout in seconds.</param>
         /// <param name="checkInterval">Communication timeout check interval in seconds.</param>
@@ -73,7 +74,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             ulong id;
             do
             {
-                id = _random.NextUInt64()%100; //TODO this is debug solution
+                id = _random.NextUInt64() % 100; //TODO this is debug solution
                 //id = _random.NextUInt64(); 
             } while (!_registeredComponents.TryAdd(id, component));
 
@@ -156,13 +157,13 @@ namespace _15pl04.Ucc.CommunicationServer.Components
                 while (true)
                 {
                     foreach (var i in _registeredComponents)
-                        if (i.Value.TimestampAge > 1000*CommunicationTimeout)
+                        if (i.Value.TimestampAge > 1000 * CommunicationTimeout)
                             TryDeregister(i.Key);
 
                     if (token.IsCancellationRequested)
                         return;
 
-                    Thread.Sleep((int) (1000*CheckInterval));
+                    Thread.Sleep((int)(1000 * CheckInterval));
                 }
             }, token).Start();
 

@@ -13,6 +13,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
     internal class ComputationWork : Work
     {
         /// <summary>
+        /// Creates ComputationWork instance.
         /// </summary>
         /// <param name="assigneeId">ID of the assignee computational node.</param>
         /// <param name="partialProblems">Assigned partial problems to compute.</param>

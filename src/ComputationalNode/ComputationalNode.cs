@@ -13,7 +13,7 @@ using UCCTaskSolver;
 namespace _15pl04.Ucc.ComputationalNode
 {
     /// <summary>
-    ///     The computational node class.
+    ///     The computational node class providing communication with server and solving partial problems using task solvers.
     /// </summary>
     public sealed class ComputationalNode : ComputationalComponent
     {
@@ -23,6 +23,8 @@ namespace _15pl04.Ucc.ComputationalNode
         /// <param name="threadManager">The thread manager. Cannot be null.</param>
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>        
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// during loading task solvers.</exception>
         public ComputationalNode(ThreadManager threadManager, IPEndPoint serverAddress)
             : base(threadManager, serverAddress)
         {
@@ -35,7 +37,8 @@ namespace _15pl04.Ucc.ComputationalNode
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers. If null current directory will be searched for task solvers.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>
-        /// <exception cref="System.IO.DirectoryNotFoundException">TODO</exception>
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// during loading task solvers.</exception>
         public ComputationalNode(ThreadManager threadManager, IPEndPoint serverAddress,
             string taskSolversDirectoryRelativePath)
             : base(threadManager, serverAddress, taskSolversDirectoryRelativePath)
