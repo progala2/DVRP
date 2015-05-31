@@ -38,9 +38,10 @@ namespace _15pl04.Ucc.ComputationalClient
                 return;
             }
 
-            computationalClient.MessageSendingException += computationalClient_MessageSendingException;
-            computationalClient.MessageReceived += computationalClient_MessageReceived;
             computationalClient.MessageSent += computationalClient_MessageSent;
+            computationalClient.MessageReceived += computationalClient_MessageReceived;
+            computationalClient.MessageSendingException += computationalClient_MessageSendingException;
+            computationalClient.MessageHandlingException += computationalClient_MessageHandlingException;
 
             string line;
             while (true)
@@ -81,7 +82,7 @@ namespace _15pl04.Ucc.ComputationalClient
                         ulong timeout;
                         if (!ulong.TryParse(Console.ReadLine(), out timeout))
                         {
-                            timeout = (ulong) TimeSpan.MaxValue.TotalSeconds;
+                            timeout = (ulong)TimeSpan.MaxValue.TotalSeconds;
                         }
                         Console.WriteLine(@"Problem type (for example 'dvrp'): ");
                         line = Console.ReadLine();
@@ -113,7 +114,7 @@ namespace _15pl04.Ucc.ComputationalClient
                                         using (var mem = new MemoryStream(solutionsMessages[0].Solutions[0].Data))
                                         {
                                             var formatter = new BinaryFormatter();
-                                            problem = (string) formatter.Deserialize(mem);
+                                            problem = (string)formatter.Deserialize(mem);
                                         }
                                         Console.WriteLine(@"Result message: {0}", problem);
                                         break;
@@ -140,6 +141,11 @@ namespace _15pl04.Ucc.ComputationalClient
         }
 
         private static void computationalClient_MessageSendingException(object sender, MessageExceptionEventArgs e)
+        {
+            Logger.Warn(e.Message + "\n" + e.Exception);
+        }
+
+        static void computationalClient_MessageHandlingException(object sender, MessageExceptionEventArgs e)
         {
             Logger.Warn(e.Message + "\n" + e.Exception);
         }

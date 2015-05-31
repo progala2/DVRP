@@ -8,18 +8,43 @@ using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
 namespace _15pl04.Ucc.ComputationalClient
 {
+    /// <summary>
+    ///     The computational client class.
+    /// </summary>
     public class ComputationalClient
     {
         private readonly MessageSender _messageSender;
 
+        /// <summary>
+        ///     Creates a computational client.
+        /// </summary>
+        /// <param name="serverAddress">The primary server address. Cannot be null.</param>/// <exception cref="System.ArgumentNullException">Thrown when <paramref name="serverAddress"/> is null.</exception>
         public ComputationalClient(IPEndPoint serverAddress)
         {
+            if (serverAddress == null)
+                throw new ArgumentNullException("serverAddress");
+
             _messageSender = new MessageSender(serverAddress);
         }
 
+        /// <summary>
+        ///     Event which is raised after successful sending message to the server.
+        /// </summary>
         public event EventHandler<MessageEventArgs> MessageSent;
+
+        /// <summary>
+        ///     Event which is raised after receiving message from the server.
+        /// </summary>
         public event EventHandler<MessageEventArgs> MessageReceived;
+
+        /// <summary>
+        ///     Event which is raised if exception occured during sending message to the server.
+        /// </summary>
         public event EventHandler<MessageExceptionEventArgs> MessageSendingException;
+
+        /// <summary>
+        ///     Event which is raised if exception occured during handling message received from the server.
+        /// </summary>
         public event EventHandler<MessageExceptionEventArgs> MessageHandlingException;
 
         /// <summary>
