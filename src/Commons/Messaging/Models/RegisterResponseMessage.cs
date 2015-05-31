@@ -17,21 +17,32 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "RegisterResponse")]
     public class RegisterResponseMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
-            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
-                "RegisterResponse.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string NoNamespaceSchemaLocation = "RegisterResponse.xsd";
 
+        /// <summary>
+        /// Creates RegisterResponseMessage instance.
+        /// </summary>
         public RegisterResponseMessage()
         {
             BackupServers = new List<ServerInfo>();
         }
 
+        /// <summary>
+        /// The ID assigned by the Communication Server.
+        /// </summary>
         [XmlElement(Order = 0, ElementName = "Id")]
         public ulong AssignedId { get; set; }
 
+        /// <summary>
+        /// The communication timeout configured on Communication Server.
+        /// </summary>
         [XmlElement(Order = 1, ElementName = "Timeout")]
         public uint CommunicationTimeout { get; set; }
 
+        /// <summary>
+        /// The information about backup servers.
+        /// </summary>
         [XmlArray(Order = 2, ElementName = "BackupCommunicationServers")]
         [XmlArrayItem("BackupCommunicationServer")]
         public List<ServerInfo> BackupServers { get; set; }

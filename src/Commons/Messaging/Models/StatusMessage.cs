@@ -17,18 +17,26 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Status")]
     public class StatusMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
-            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
-                "Status.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string NoNamespaceSchemaLocation = "Status.xsd";
 
+        /// <summary>
+        /// Creates StatusMessage instance.
+        /// </summary>
         public StatusMessage()
         {
             Threads = new List<ThreadStatus>();
         }
 
+        /// <summary>
+        /// The ID of node assigned by server.
+        /// </summary>
         [XmlElement(Order = 0, ElementName = "Id")]
         public ulong ComponentId { get; set; }
 
+        /// <summary>
+        /// The list of statuses for different threads.
+        /// </summary>
         [XmlArray(Order = 1)]
         [XmlArrayItem("Thread", IsNullable = false)]
         public List<ThreadStatus> Threads { get; set; }

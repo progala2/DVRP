@@ -16,27 +16,44 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolvePartialProblems")]
     public class PartialProblemsMessage : Message
     {
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation",
-            Namespace = "http://www.w3.org/2001/XMLSchema-instance")] public string NoNamespaceSchemaLocation =
-                "PartialProblems.xsd";
+        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+        public string NoNamespaceSchemaLocation = "PartialProblems.xsd";
 
+        /// <summary>
+        /// Creates PartialProblems instance.
+        /// </summary>
         public PartialProblemsMessage()
         {
             PartialProblems = new List<PartialProblem>();
         }
 
+        /// <summary>
+        /// The problem type name as given by TaskSolver and Client.
+        /// </summary>
         [XmlElement(Order = 0)]
         public string ProblemType { get; set; }
 
+        /// <summary>
+        /// The ID of the problem instance assigned by the server.
+        /// </summary>
         [XmlElement(Order = 1, ElementName = "Id")]
         public ulong ProblemInstanceId { get; set; }
 
+        /// <summary>
+        /// The data to be sent to all Computational Nodes.
+        /// </summary>
         [XmlElement(Order = 2, DataType = "base64Binary")]
         public byte[] CommonData { get; set; }
 
+        /// <summary>
+        /// Optional time limit – set by Client (in ms).
+        /// </summary>
         [XmlElement(Order = 3)]
         public ulong? SolvingTimeout { get; set; }
 
+        /// <summary>
+        /// The partial problems.
+        /// </summary>
         [XmlArray(Order = 4)]
         [XmlArrayItem("PartialProblem", IsNullable = false)]
         public List<PartialProblem> PartialProblems { get; set; }
@@ -50,6 +67,10 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
             get { return MessageClass.SolvePartialProblems; }
         }
 
+        /// <summary>
+        /// Determines whether SolvingTimeout property should be serialized.
+        /// </summary>
+        /// <returns>True if SolvingTimeout property should be serialized; false otherwise.</returns>
         public bool ShouldSerializeSolvingTimeout()
         {
             return SolvingTimeout.HasValue;
@@ -84,12 +105,21 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
         public class PartialProblem
         {
+            /// <summary>
+            /// The Id of subproblem given by TaskManager.
+            /// </summary>
             [XmlElement(ElementName = "TaskId", Order = 0)]
             public ulong PartialProblemId { get; set; }
 
+            /// <summary>
+            /// The Data specific for the given subproblem.
+            /// </summary>
             [XmlElement(DataType = "base64Binary", Order = 1)]
             public byte[] Data { get; set; }
 
+            /// <summary>
+            /// The ID of the TM that is dividing the problem.
+            /// </summary>
             [XmlElement(ElementName = "NodeID", Order = 2)]
             public ulong TaskManagerId { get; set; }
 

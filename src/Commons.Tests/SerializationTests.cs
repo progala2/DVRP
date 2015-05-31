@@ -97,7 +97,7 @@ namespace _15pl04.Ucc.Commons.Tests
             {
                 ComponentType = ComponentType.ComputationalNode,
                 Deregistration = true,
-                IdToDeregister = 5,
+                Id = 5,
                 ParallelThreads = 10,
                 SolvableProblems = new List<string> {"Dvrp"}
             };
