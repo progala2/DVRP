@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace _15pl04.Ucc.Commons.Exceptions
 {
     /// <summary>
-    ///     Description of NoResponseException
+    /// Represents an exception that occurs when there is no response from the server.
     /// </summary>
     public class NoResponseException : Exception
     {

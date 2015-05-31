@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace _15pl04.Ucc.Commons.Exceptions
 {
     /// <summary>
-    ///     Description of TimeoutException
+    /// Represents an exception that occurs when communication timout has been reached.
     /// </summary>
     public class TimeoutException : Exception
     {
