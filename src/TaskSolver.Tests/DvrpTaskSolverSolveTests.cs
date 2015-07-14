@@ -28,6 +28,16 @@ namespace _15pl04.Ucc.TaskSolver.Tests
         }
 
         [TestMethod]
+        public void TestSolvingOkulewiczElevenClients()
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
+            Assert.IsTrue(HelpingFunctionForTests(DvrpProblems.io2_11_plain_a_D, new TimeSpan(1, 0, 0), 4, 721.38, stopwatch));
+            stopwatch.Stop();
+        }
+
+        [TestMethod]
         public void TestSolvingOkulewiczTwelveClients()
         {
             var stopwatch = new Stopwatch();

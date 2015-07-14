@@ -75,6 +75,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\io2_11_plain_a_D.vrp" />
     <None Include="Resources\io2_8_plain_a_D.vrp" />
     <None Include="Resources\okul12D.vrp" />
     <None Include="Resources\okul13D.vrp" />

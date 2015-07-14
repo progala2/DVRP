@@ -63,6 +63,16 @@ namespace _15pl04.Ucc.TaskSolver.Tests {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] io2_11_plain_a_D {
+            get {
+                object obj = ResourceManager.GetObject("io2_11_plain_a_D", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] io2_8_plain_a_D {
             get {
                 object obj = ResourceManager.GetObject("io2_8_plain_a_D", resourceCulture);

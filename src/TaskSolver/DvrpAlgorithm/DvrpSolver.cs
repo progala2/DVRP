@@ -128,7 +128,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
                         listOfRoutes[part[j]].Add(j);
                         cap[part[j]] += (_dvrpProblem.Requests[j].Demand);
                         // The road has to be served in one ride
-                        if (cap[part[j]] > -_dvrpProblem.VehicleCapacity) continue;
+                        if (cap[part[j]] >= -_dvrpProblem.VehicleCapacity) continue;
                         breaking = true;
                         var tmp = Math.Max(max[j], part[j]);
                         for (var k = j + 1; k < part.Length; k++)
