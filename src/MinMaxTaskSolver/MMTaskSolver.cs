@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using UCCTaskSolver;
+using _15pl04.Ucc.TaskSolver;
 
 namespace _15pl04.Ucc.MinMaxTaskSolver
 {
-    public class MmTaskSolver : TaskSolver
+    public class MmTaskSolver : TaskSolver.TaskSolver
     {
         private readonly IFormatter _formatter;
         private readonly MmProblem _minMaxProblem;
 
         public MmTaskSolver(byte[] problemData)
-            : base(problemData)
         {
             _formatter = new BinaryFormatter();
             try
@@ -22,7 +21,7 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
                 {
                     _minMaxProblem = (MmProblem) _formatter.Deserialize(memoryStream);
                 }
-                State = TaskSolverState.OK;
+                State = TaskSolverState.Ok;
             }
             catch (Exception)
             {
@@ -30,15 +29,12 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
             }
         }
 
-        public override string Name
-        {
-            get { return "_15pl04.UCC.MinMax"; }
-        }
+        public override string Name => "_15pl04.UCC.MinMax";
 
         public override byte[][] DivideProblem(int threadCount)
         {
             if (threadCount < 1)
-                throw new ArgumentOutOfRangeException("threadCount");
+                throw new ArgumentOutOfRangeException(nameof(threadCount));
             var partialProblemsNumbers = new List<int>[threadCount];
             for (var i = 0; i < partialProblemsNumbers.Length; i++)
             {

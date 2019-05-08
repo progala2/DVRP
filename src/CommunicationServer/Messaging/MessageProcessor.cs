@@ -56,10 +56,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         /// <summary>
         /// True if the message processor is processing messages. False otherwise.
         /// </summary>
-        public bool IsProcessing
-        {
-            get { return _isProcessing; }
-        }
+        public bool IsProcessing => _isProcessing;
 
         /// <summary>
         /// Enqueues new raw message to process.

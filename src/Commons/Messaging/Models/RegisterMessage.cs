@@ -63,10 +63,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         /// Gets corresponding MessageClass enum value.
         /// </summary>
         [XmlIgnore]
-        public override MessageClass MessageType
-        {
-            get { return MessageClass.Register; }
-        }
+        public override MessageClass MessageType => MessageClass.Register;
 
         /// <summary>
         /// Determines whether Deregistration property should be serialized.

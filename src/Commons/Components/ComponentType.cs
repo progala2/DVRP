@@ -10,9 +10,21 @@ namespace _15pl04.Ucc.Commons.Components
     [XmlType("RegisterType", AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public enum ComponentType
     {
+        /// <summary>
+        /// 
+        /// </summary>
         CommunicationServer = 1,
+        /// <summary>
+        /// 
+        /// </summary>
         ComputationalClient,
+        /// <summary>
+        /// 
+        /// </summary>
         TaskManager,
+        /// <summary>
+        /// 
+        /// </summary>
         ComputationalNode
     }
 }

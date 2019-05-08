@@ -60,9 +60,6 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
         /// <summary>
         /// Data shared among all partial problems of the same problem instance.
         /// </summary>
-        public byte[] CommonData
-        {
-            get { return Problem.CommonData; }
-        }
+        public byte[] CommonData => Problem.CommonData;
     }
 }

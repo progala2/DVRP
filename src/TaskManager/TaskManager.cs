@@ -8,7 +8,6 @@ using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.Commons.Utilities;
-using UCCTaskSolver;
 
 namespace _15pl04.Ucc.TaskManager
 {
@@ -48,10 +47,7 @@ namespace _15pl04.Ucc.TaskManager
         /// <summary>
         ///     The type of the component.
         /// </summary>
-        public override ComponentType ComponentType
-        {
-            get { return ComponentType.TaskManager; }
-        }
+        public override ComponentType ComponentType => ComponentType.TaskManager;
 
         /// <summary>
         ///     Handles any message received from server after registration process completes successfully.
@@ -99,7 +95,7 @@ namespace _15pl04.Ucc.TaskManager
         ///     Thrown when:
         ///     - message is designated for TaskManger with different ID,
         ///     - problem type can't be divided with this TaskManager,
-        ///     - dividing the problem cannot be started bacause no threads are available in thread pool.
+        ///     - dividing the problem cannot be started because no threads are available in thread pool.
         /// </exception>
         private void DivideProblemMessageHandler(DivideProblemMessage message)
         {
@@ -107,23 +103,21 @@ namespace _15pl04.Ucc.TaskManager
             {
                 // shouldn't ever get here - received message for other TaskManager
                 throw new InvalidOperationException(
-                    string.Format("TaskManager with ID={0} received message for TaskManager with ID={1}.", Id,
-                        message.TaskManagerId));
+                    $"TaskManager with ID={Id} received message for TaskManager with ID={message.TaskManagerId}.");
             }
-            Type taskSolverType;
-            if (!TaskSolvers.TryGetValue(message.ProblemType, out taskSolverType))
+
+            if (!TaskSolvers.TryGetValue(message.ProblemType, out var taskSolverType))
             {
                 // shouldn't ever get here - received unsolvable problem
                 throw new InvalidOperationException(
-                    string.Format("\"{0}\" problem type can't be divided with this TaskManager.", message.ProblemType));
+                    $"\"{message.ProblemType}\" problem type can't be divided with this TaskManager.");
             }
 
-            var actionDescription = string.Format("Dividing problem \"{0}\"(problem instance id={1})",
-                message.ProblemType, message.ProblemInstanceId);
+            var actionDescription = $"Dividing problem \"{message.ProblemType}\"(problem instance id={message.ProblemInstanceId})";
             // should be started properly cause server sends at most as many tasks to do as count of component's threads in idle state
             var started = StartActionInNewThread(() =>
             {
-                var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.ProblemData);
+                var taskSolver = (TaskSolver.TaskSolver)Activator.CreateInstance(taskSolverType, message.ProblemData);
                 taskSolver.ThrowIfError();
 
                 var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
@@ -168,16 +162,14 @@ namespace _15pl04.Ucc.TaskManager
         /// </exception>
         private void SolutionsMessageHandler(SolutionsMessage message)
         {
-            Type taskSolverType;
-            if (!TaskSolvers.TryGetValue(message.ProblemType, out taskSolverType))
+            if (!TaskSolvers.TryGetValue(message.ProblemType, out var taskSolverType))
             {
                 // shouldn't ever get here - received unsolvable problem
                 throw new InvalidOperationException(
-                    string.Format("\"{0}\" problem type can't be merged with this TaskManager.", message.ProblemType));
+                    $"\"{message.ProblemType}\" problem type can't be merged with this TaskManager.");
             }
 
-            var actionDescription = string.Format("Merging partial problems \"{0}\"(problem instance id={1})",
-                message.ProblemType, message.ProblemInstanceId);
+            var actionDescription = $"Merging partial problems \"{message.ProblemType}\"(problem instance id={message.ProblemInstanceId})";
             // should be started properly cause server sends at most as many tasks to do as count of component's threads in idle state
             var started = StartActionInNewThread(() =>
             {
@@ -190,14 +182,13 @@ namespace _15pl04.Ucc.TaskManager
 
                     if (solution.Type != SolutionsMessage.SolutionType.Partial)
                         throw new InvalidOperationException(
-                            string.Format("Received non-partial solution({0})(partial problem id={1}).",
-                                solution.Type, solution.PartialProblemId));
+                            $"Received non-partial solution({solution.Type})(partial problem id={solution.PartialProblemId}).");
                     totalComputationsTime += solution.ComputationsTime;
                     timeoutOccured |= solution.TimeoutOccured;
                     solutionsData[i] = solution.Data;
                 }
 
-                var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
+                var taskSolver = (TaskSolver.TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
                 taskSolver.ThrowIfError();
 
                 // measure time using DateTime cause StopWatch is not guaranteed to be thread safe

@@ -10,6 +10,9 @@ using _15pl04.Ucc.Commons.Utilities;
 
 namespace _15pl04.Ucc.ComputationalClient
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Program
     {
         private static readonly ILogger Logger = new ConsoleLogger();
@@ -30,10 +33,9 @@ namespace _15pl04.Ucc.ComputationalClient
             }
             catch (Exception ex)
             {
-                var errorText = string.Format("{0}:{1}", ex.GetType().FullName, ex.Message);
+                var errorText = $"{ex.GetType().FullName}:{ex.Message}";
                 if (ex.InnerException != null)
-                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName,
-                        ex.InnerException.Message);
+                    errorText += $"|({ex.InnerException.GetType().FullName}:{ex.InnerException.Message})";
                 Logger.Error(errorText);
                 return;
             }

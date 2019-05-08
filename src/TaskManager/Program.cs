@@ -29,10 +29,9 @@ namespace _15pl04.Ucc.TaskManager
             }
             catch (Exception ex)
             {
-                var errorText = string.Format("{0}:{1}", ex.GetType().FullName, ex.Message);
+                var errorText = $"{ex.GetType().FullName}:{ex.Message}";
                 if (ex.InnerException != null)
-                    errorText += string.Format("|({0}:{1})", ex.InnerException.GetType().FullName,
-                        ex.InnerException.Message);
+                    errorText += $"|({ex.InnerException.GetType().FullName}:{ex.InnerException.Message})";
                 _logger.Error(errorText);
                 return;
             }
@@ -104,8 +103,7 @@ namespace _15pl04.Ucc.TaskManager
 
         private static string GetMessageExceptionInfo(MessageExceptionEventArgs e)
         {
-            var errorInfo = string.Format(" Message: {0}\n Exception: {1}\n  {2}",
-                e.Message, e.Exception.GetType().FullName, e.Exception.Message);
+            var errorInfo = $" Message: {e.Message}\n Exception: {e.Exception.GetType().FullName}\n  {e.Exception.Message}";
             return errorInfo;
         }
     }

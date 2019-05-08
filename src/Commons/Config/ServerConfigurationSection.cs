@@ -21,8 +21,8 @@ namespace _15pl04.Ucc.Commons.Config
         [ConfigurationProperty(AddressPropertyString), DefaultSettingValue("127.0.0.1")]
         public string Address
         {
-            get { return (string)this[AddressPropertyString]; }
-            set { this[AddressPropertyString] = value; }
+            get => (string)this[AddressPropertyString];
+            set => this[AddressPropertyString] = value;
         }
 
         /// <summary>
@@ -32,8 +32,8 @@ namespace _15pl04.Ucc.Commons.Config
         [IntegerValidator(ExcludeRange = false, MinValue = IPEndPoint.MinPort, MaxValue = IPEndPoint.MaxPort)]
         public int Port
         {
-            get { return (int)this[PortPropertyString]; }
-            set { this[PortPropertyString] = value; }
+            get => (int)this[PortPropertyString];
+            set => this[PortPropertyString] = value;
         }
 
         /// <summary>
@@ -42,8 +42,8 @@ namespace _15pl04.Ucc.Commons.Config
         [ConfigurationProperty(TimeoutPropertyString)]
         public uint Timeout
         {
-            get { return (uint)this[TimeoutPropertyString]; }
-            set { this[TimeoutPropertyString] = value; }
+            get => (uint)this[TimeoutPropertyString];
+            set => this[TimeoutPropertyString] = value;
         }
 
         /// <summary>
@@ -52,8 +52,8 @@ namespace _15pl04.Ucc.Commons.Config
         [ConfigurationProperty(IsBackupPropertyString)]
         public bool IsBackup
         {
-            get { return (bool)this[IsBackupPropertyString]; }
-            set { this[IsBackupPropertyString] = value; }
+            get => (bool)this[IsBackupPropertyString];
+            set => this[IsBackupPropertyString] = value;
         }
 
         /// <summary>
@@ -62,8 +62,8 @@ namespace _15pl04.Ucc.Commons.Config
         [ConfigurationProperty(MasterServerPropertyString, IsRequired = false)]
         public IPEndPointConfigurationElement MasterServer
         {
-            get { return (IPEndPointConfigurationElement)this[MasterServerPropertyString]; }
-            set { this[MasterServerPropertyString] = value; }
+            get => (IPEndPointConfigurationElement)this[MasterServerPropertyString];
+            set => this[MasterServerPropertyString] = value;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace _15pl04.Ucc.Commons.Config
             var config = (ServerConfigurationSection)ConfigurationManager.GetSection(serverConfigurationSectionName);
 
             if (config == null)
-                throw new InvalidOperationException(string.Format("Section {0} does not exists.", serverConfigurationSectionName));
+                throw new InvalidOperationException($"Section {serverConfigurationSectionName} does not exists.");
 
             // possible overriting with command line parameters
             if (commandLineParameters != null && commandLineParameters.Length > 0)

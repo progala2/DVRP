@@ -8,7 +8,6 @@ using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.Commons.Utilities;
-using UCCTaskSolver;
 
 namespace _15pl04.Ucc.ComputationalNode
 {
@@ -48,10 +47,7 @@ namespace _15pl04.Ucc.ComputationalNode
         /// <summary>
         ///     The type of the component.
         /// </summary>
-        public override ComponentType ComponentType
-        {
-            get { return ComponentType.ComputationalNode; }
-        }
+        public override ComponentType ComponentType => ComponentType.ComputationalNode;
 
         /// <summary>
         ///     Handles any message received from server after registration process completes successfully.
@@ -99,13 +95,11 @@ namespace _15pl04.Ucc.ComputationalNode
         /// </exception>
         private void PartialProblemsMessageHandler(PartialProblemsMessage message)
         {
-            Type taskSolverType;
-            if (!TaskSolvers.TryGetValue(message.ProblemType, out taskSolverType))
+            if (!TaskSolvers.TryGetValue(message.ProblemType, out var taskSolverType))
             {
                 // shouldn't ever get here - received unsolvable problem
                 throw new InvalidOperationException(
-                    string.Format("\"{0}\" problem type can't be solved with this ComputationalNode.",
-                        message.ProblemType));
+                    $"\"{message.ProblemType}\" problem type can't be solved with this ComputationalNode.");
             }
             var timeout = message.SolvingTimeout.HasValue
                 ? TimeSpan.FromMilliseconds(message.SolvingTimeout.Value)
@@ -115,12 +109,11 @@ namespace _15pl04.Ucc.ComputationalNode
                 /* each partial problem should be started properly cause server sends at most 
                  * as many partial problems as count of component's tasks in idle state */
                 var actionDescription =
-                    string.Format("Solving partial problem \"{0}\"(problem instance id={1})(partial problem id={2})",
-                        message.ProblemType, message.ProblemInstanceId, partialProblem.PartialProblemId);
+                    $"Solving partial problem \"{message.ProblemType}\"(problem instance id={message.ProblemInstanceId})(partial problem id={partialProblem.PartialProblemId})";
                 var started = StartActionInNewThread(() =>
                 {
                     // not sure if TaskSolver can change CommonData during computations so recreate it for each partial problem
-                    var taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
+                    var taskSolver = (TaskSolver.TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
                     taskSolver.ThrowIfError();
 
                     // measure time using DateTime cause StopWatch is not guaranteed to be thread safe

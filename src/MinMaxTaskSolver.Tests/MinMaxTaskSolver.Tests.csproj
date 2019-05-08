@@ -36,9 +36,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="UCCTaskSolver">
-      <HintPath>..\..\lib\UCCTaskSolver.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -60,6 +57,10 @@
     <ProjectReference Include="..\MinMaxTaskSolver\MinMaxTaskSolver.csproj">
       <Project>{8530bffd-ee0e-4e0f-928d-c4769d770762}</Project>
       <Name>MinMaxTaskSolver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TaskSolver\TaskSolver.csproj">
+      <Project>{5495F07E-3AC5-4B01-B64E-2482B718E5E9}</Project>
+      <Name>TaskSolver</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

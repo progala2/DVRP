@@ -17,8 +17,8 @@ namespace _15pl04.Ucc.Commons.Config
         [ConfigurationProperty(AddressPropertyString), DefaultSettingValue("127.0.0.1")]
         public string Address
         {
-            get { return (string)this[AddressPropertyString]; }
-            set { this[AddressPropertyString] = value; }
+            get => (string)this[AddressPropertyString];
+            set => this[AddressPropertyString] = value;
         }
         /// <summary>
         ///     The port.
@@ -27,8 +27,8 @@ namespace _15pl04.Ucc.Commons.Config
         [IntegerValidator(ExcludeRange = false, MinValue = IPEndPoint.MinPort, MaxValue = IPEndPoint.MaxPort)]
         public int Port
         {
-            get { return (int)this[PortPropertyString]; }
-            set { this[PortPropertyString] = value; }
+            get => (int)this[PortPropertyString];
+            set => this[PortPropertyString] = value;
         }
 
         /// <summary>

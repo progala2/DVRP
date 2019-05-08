@@ -48,10 +48,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <summary>
         /// Type of work to be done (merge).
         /// </summary>
-        public override WorkType Type
-        {
-            get { return WorkType.Merge; }
-        }
+        public override WorkType Type => WorkType.Merge;
 
         /// <summary>
         /// Create solutions message that can be send to a task manager in order to request the merge.

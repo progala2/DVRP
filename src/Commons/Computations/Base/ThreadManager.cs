@@ -34,18 +34,12 @@ namespace _15pl04.Ucc.Commons.Computations.Base
         /// <summary>
         ///     The maximum number of threads that could be efficiently run in parallel.
         /// </summary>
-        public byte ParallelThreads
-        {
-            get { return _parallelThreads; }
-        }
+        public byte ParallelThreads => _parallelThreads;
 
         /// <summary>
         ///     The information about thread statuses.
         /// </summary>
-        public IReadOnlyCollection<ComputationalThreadStatus> ThreadStatuses
-        {
-            get { return _threadStatuses; }
-        }
+        public IReadOnlyCollection<ComputationalThreadStatus> ThreadStatuses => _threadStatuses;
 
         /// <summary>
         ///     Starts executing action if there is an available idle thread. This method gets information needed for Status
@@ -80,8 +74,7 @@ namespace _15pl04.Ucc.Commons.Computations.Base
                 }
                 catch (Exception ex)
                 {
-                    if (actionOnException != null)
-                        actionOnException(ex);
+                    actionOnException?.Invoke(ex);
                 }
                 finally
                 {

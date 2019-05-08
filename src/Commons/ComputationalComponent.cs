@@ -68,7 +68,7 @@ namespace _15pl04.Ucc.Commons
             MessageHandlingException += (s, e) =>
             {
                 if (e != null)
-                    InformServerAboutException(string.Format("Message caused exception: {0}", e.Message), e.Exception);
+                    InformServerAboutException($"Message caused exception: {e.Message}", e.Exception);
             };
         }
 
@@ -337,8 +337,8 @@ namespace _15pl04.Ucc.Commons
         {
             if (exception == null)
                 return;
-            var errorText = string.Format("{0}(id={1})|{2}|Exception type: {3}|Exception message: {4}",
-                ComponentType, Id, reasonOfException, exception.GetType().FullName, exception.Message);
+            var errorText =
+                $"{ComponentType}(id={Id})|{reasonOfException}|Exception type: {exception.GetType().FullName}|Exception message: {exception.Message}";
             var errorMessage = new ErrorMessage
             {
                 ErrorType = ErrorType.ExceptionOccured,
@@ -395,10 +395,7 @@ namespace _15pl04.Ucc.Commons
         /// <param name="eventHandler">Handler to be raised.</param>
         private void RaiseEvent(EventHandler eventHandler)
         {
-            if (eventHandler != null)
-            {
-                eventHandler(this, EventArgs.Empty);
-            }
+            eventHandler?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -408,10 +405,7 @@ namespace _15pl04.Ucc.Commons
         /// <param name="message">Message to be passed as event event argument.</param>
         private void RaiseEvent(EventHandler<MessageEventArgs> eventHandler, Message message)
         {
-            if (eventHandler != null)
-            {
-                eventHandler(this, new MessageEventArgs(message));
-            }
+            eventHandler?.Invoke(this, new MessageEventArgs(message));
         }
 
         /// <summary>
@@ -423,10 +417,7 @@ namespace _15pl04.Ucc.Commons
         private void RaiseEvent(EventHandler<MessageExceptionEventArgs> eventHandler, Message message,
             Exception exception)
         {
-            if (eventHandler != null)
-            {
-                eventHandler(this, new MessageExceptionEventArgs(message, exception));
-            }
+            eventHandler?.Invoke(this, new MessageExceptionEventArgs(message, exception));
         }
     }
 }

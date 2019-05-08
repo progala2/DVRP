@@ -54,10 +54,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         /// <summary>
         /// True if the component overseer is checking for communication timeout. False otherwise.
         /// </summary>
-        public bool IsMonitoring
-        {
-            get { return _isMonitoring; }
-        }
+        public bool IsMonitoring => _isMonitoring;
 
         /// <summary>
         /// Tries to register a cluster component in the system.

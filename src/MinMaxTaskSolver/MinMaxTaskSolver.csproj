@@ -31,9 +31,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="UCCTaskSolver">
-      <HintPath>..\..\lib\UCCTaskSolver.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MMPartialProblem.cs" />
@@ -41,6 +38,12 @@
     <Compile Include="MMSolution.cs" />
     <Compile Include="MMTaskSolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TaskSolver\TaskSolver.csproj">
+      <Project>{5495F07E-3AC5-4B01-B64E-2482B718E5E9}</Project>
+      <Name>TaskSolver</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

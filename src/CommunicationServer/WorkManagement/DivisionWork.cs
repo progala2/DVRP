@@ -38,10 +38,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <summary>
         /// Type of work to be done (division).
         /// </summary>
-        public override WorkType Type
-        {
-            get { return WorkType.Division; }
-        }
+        public override WorkType Type => WorkType.Division;
+
         /// <summary>
         /// Create divide problem message that can be send to a task manager.
         /// </summary>

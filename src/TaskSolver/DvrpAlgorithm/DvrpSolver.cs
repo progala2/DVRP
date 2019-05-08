@@ -27,7 +27,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         /// <param name="problem">The problem instance to solve.</param>
         public DvrpSolver(DvrpProblem problem)
         {
-            State = UCCTaskSolver.TaskSolver.TaskSolverState.OK;
+            State = TaskSolverState.Ok;
             _dvrpProblem = problem;
             var n = _dvrpProblem.Requests.Length;
             _distances = new double[n, n];
@@ -57,7 +57,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
         /// <summary>
         /// State of the Task Solver.
         /// </summary>
-        public UCCTaskSolver.TaskSolver.TaskSolverState State { get; private set; }
+        public TaskSolverState State { get; private set; }
 
         /// <summary>
         /// Solves a partial problem.
@@ -86,7 +86,7 @@ namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
             {
                 if (_timer.Elapsed.TotalSeconds >= timeout.TotalSeconds)
                 {
-                    State = UCCTaskSolver.TaskSolver.TaskSolverState.Timeout;
+                    State = TaskSolverState.Timeout;
                     break;
                 }
                 for (var j = 1; j < n; ++j)

@@ -28,10 +28,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         /// Gets corresponding MessageClass enum value.
         /// </summary>
         [XmlIgnore]
-        public override MessageClass MessageType
-        {
-            get { return MessageClass.SolveRequestResponse; }
-        }
+        public override MessageClass MessageType => MessageClass.SolveRequestResponse;
 
         /// <summary>
         /// Gets string representation.

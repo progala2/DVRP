@@ -15,6 +15,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Error")]
     public class ErrorMessage : Message
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string NoNamespaceSchemaLocation = "Error.xsd";
 
@@ -34,10 +37,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         /// Gets corresponding MessageClass enum value.
         /// </summary>
         [XmlIgnore]
-        public override MessageClass MessageType
-        {
-            get { return MessageClass.Error; }
-        }
+        public override MessageClass MessageType => MessageClass.Error;
 
         /// <summary>
         /// Gets string representation.
@@ -61,8 +61,17 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public enum ErrorType
     {
+        /// <summary>
+        /// 
+        /// </summary>
         UnknownSender,
+        /// <summary>
+        /// 
+        /// </summary>
         InvalidOperation,
+        /// <summary>
+        /// 
+        /// </summary>
         ExceptionOccured
     }
 }

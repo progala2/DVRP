@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using _15pl04.Ucc.Commons.Exceptions;
-using UCCTaskSolver;
 
 namespace _15pl04.Ucc.Commons
 {
@@ -50,7 +49,7 @@ namespace _15pl04.Ucc.Commons
             {
                 throw new TaskSolverLoadingException("Couldn't get files from given directory.", ex);
             }
-            var typeOfTaskSolver = typeof(TaskSolver);
+            var typeOfTaskSolver = typeof(TaskSolver.TaskSolver);
             foreach (var fileName in fileNames)
             {
                 var assembly = Assembly.LoadFile(fileName);
@@ -61,21 +60,21 @@ namespace _15pl04.Ucc.Commons
                     /* NOTE: there's a possibilty of throwing an Exception because TaskSolver has
                      * only one constructor which takes byte[] as parameter and behavior of it can
                      * vary on specific implementation */
-                    TaskSolver taskSolver;
+                    TaskSolver.TaskSolver taskSolver;
                     try
                     {
-                        taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, new byte[0]);
+                        taskSolver = (TaskSolver.TaskSolver)Activator.CreateInstance(taskSolverType, new byte[0]);
                     }
                     catch (Exception)
                     {
                         try
                         {
-                            taskSolver = (TaskSolver)Activator.CreateInstance(taskSolverType, null);
+                            taskSolver = (TaskSolver.TaskSolver)Activator.CreateInstance(taskSolverType, null);
                         }
                         catch (Exception)
                         {
                             throw new TaskSolverLoadingException(
-                                string.Format("Couldn't create instance of {0} to get problem name.", taskSolverType));
+                                $"Couldn't create instance of {taskSolverType} to get problem name.");
                         }
                     }
                     try
@@ -85,12 +84,12 @@ namespace _15pl04.Ucc.Commons
                     catch (ArgumentNullException)
                     {
                         throw new TaskSolverLoadingException(
-                            string.Format("Problem name for {0} task solver is null.", taskSolverType));
+                            $"Problem name for {taskSolverType} task solver is null.");
                     }
                     catch (ArgumentException)
                     {
                         throw new TaskSolverLoadingException(
-                            string.Format("More then one task solver exists for problem: \"{0}\".", taskSolver.Name));
+                            $"More then one task solver exists for problem: \"{taskSolver.Name}\".");
                     }
                 }
             }

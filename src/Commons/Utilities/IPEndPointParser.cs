@@ -51,7 +51,7 @@ namespace _15pl04.Ucc.Commons.Utilities
                 throw new ArgumentException("Endpoint descriptor may not be empty.");
 
             if (defaultPort != -1 && (defaultPort < IPEndPoint.MinPort || defaultPort > IPEndPoint.MaxPort))
-                throw new ArgumentException(string.Format("Invalid default port '{0}'", defaultPort));
+                throw new ArgumentException($"Invalid default port '{defaultPort}'");
 
             var values = endPointString.Split(':');
             IPAddress ipAddress;
@@ -83,11 +83,11 @@ namespace _15pl04.Ucc.Commons.Utilities
             }
             else
             {
-                throw new FormatException(string.Format("Invalid endpoint ipaddress '{0}'", endPointString));
+                throw new FormatException($"Invalid endpoint ipaddress '{endPointString}'");
             }
 
             if (port == -1)
-                throw new ArgumentException(string.Format("No port specified: '{0}'", endPointString));
+                throw new ArgumentException($"No port specified: '{endPointString}'");
 
             return new IPEndPoint(ipAddress, port);
         }
@@ -103,7 +103,7 @@ namespace _15pl04.Ucc.Commons.Utilities
             int port;
 
             if (!int.TryParse(p, out port) || port < IPEndPoint.MinPort || port > IPEndPoint.MaxPort)
-                throw new FormatException(string.Format("Invalid end point port '{0}'", p));
+                throw new FormatException($"Invalid end point port '{p}'");
 
             return port;
         }
@@ -119,7 +119,7 @@ namespace _15pl04.Ucc.Commons.Utilities
             var hosts = Dns.GetHostAddresses(hostNameOrAddress);
 
             if (hosts == null || hosts.Length == 0)
-                throw new ArgumentException(string.Format("Host not found: {0}", hostNameOrAddress));
+                throw new ArgumentException($"Host not found: {hostNameOrAddress}");
 
             return hosts[0];
         }

@@ -48,49 +48,31 @@ namespace _15pl04.Ucc.Commons.Computations
         /// <summary>
         ///     Gets state of this thread.
         /// </summary>
-        public ThreadStatus.ThreadState State
-        {
-            get { return _state; }
-        }
+        public ThreadStatus.ThreadState State => _state;
 
         /// <summary>
         ///     Gets date of the last state change.
         /// </summary>
-        public DateTime LastStateChange
-        {
-            get { return _lastStateChange; }
-        }
+        public DateTime LastStateChange => _lastStateChange;
 
         /// <summary>
         ///     Gets time since last state change.
         /// </summary>
-        public TimeSpan TimeSinceLastStateChange
-        {
-            get { return DateTime.UtcNow - _lastStateChange; }
-        }
+        public TimeSpan TimeSinceLastStateChange => DateTime.UtcNow - _lastStateChange;
 
         /// <summary>
         ///     Gets the ID of the problem assigned when client connected which current computations refer to.
         /// </summary>
-        public ulong? ProblemInstanceId
-        {
-            get { return _problemInstanceId; }
-        }
+        public ulong? ProblemInstanceId => _problemInstanceId;
 
         /// <summary>
         ///     Gets the ID of the task within given problem instance which current computations refer to.
         /// </summary>
-        public ulong? PartialProblemId
-        {
-            get { return _partialProblemId; }
-        }
+        public ulong? PartialProblemId => _partialProblemId;
 
         /// <summary>
         ///     Gets the name of the type as given by TaskSolver which current computations refer to.
         /// </summary>
-        public string ProblemType
-        {
-            get { return _problemType; }
-        }
+        public string ProblemType => _problemType;
     }
 }

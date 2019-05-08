@@ -12,18 +12,22 @@ namespace _15pl04.Ucc.TaskSolver
     /// <summary>
     /// Class responsible for dividing, solving and merging the Dynamic Vehicles Route Problem.
     /// </summary>
-    public class DvrpTaskSolver : UCCTaskSolver.TaskSolver
+    public class DvrpTaskSolver: TaskSolver
     {
         private readonly DvrpProblem _dvrpProblem;
         private readonly IFormatter _formatter = new BinaryFormatter();
 
+        private string ReadLineOrThrow(StreamReader r)
+        {
+            return r.ReadLine() ?? throw new InvalidOperationException("Read Line Can't be null");
+        }
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="problemData">Binary data with all information about the problem. String should be loaded from a .vrp file.</param>
         public DvrpTaskSolver(byte[] problemData)
-            : base(problemData)
         {
+            State = TaskSolverState.Ok;
             try
             {
                 string problem;
@@ -40,17 +44,17 @@ namespace _15pl04.Ucc.TaskSolver
                     for (var i = 0; i < 6; i++)
                         r.ReadLine();
 
-                    var line = r.ReadLine();
+                    var line = ReadLineOrThrow(r);
                     m = reg.Matches(line);
                     var numVisits = int.Parse(m[0].Value);
                     // num_location
                     r.ReadLine();
 
-                    line = r.ReadLine();
+                    line = ReadLineOrThrow(r);
                     m = reg.Matches(line);
                     var numVehicles = int.Parse(m[0].Value);
 
-                    line = r.ReadLine();
+                    line = ReadLineOrThrow(r);
                     m = reg.Matches(line);
                     var capacity = int.Parse(m[0].Value);
 
@@ -59,7 +63,7 @@ namespace _15pl04.Ucc.TaskSolver
                     var demands = new int[numVisits];
                     for (var i = 0; i < demands.Length; i++)
                     {
-                        line = r.ReadLine();
+                        line = ReadLineOrThrow(r);
                         m = reg.Matches(line);
                         demands[i] = int.Parse(m[1].Value);
                     }
@@ -68,7 +72,7 @@ namespace _15pl04.Ucc.TaskSolver
                     var locationCoord = new int[numVisits + 1, 2];
                     for (var i = 0; i < locationCoord.GetLength(0); i++)
                     {
-                        line = r.ReadLine();
+                        line = ReadLineOrThrow(r);
                         m = reg.Matches(line);
                         locationCoord[i, 0] = int.Parse(m[1].Value);
                         locationCoord[i, 1] = int.Parse(m[2].Value);
@@ -79,13 +83,13 @@ namespace _15pl04.Ucc.TaskSolver
                     var durations = new int[numVisits];
                     for (var i = 0; i < demands.Length; i++)
                     {
-                        line = r.ReadLine();
+                        line = ReadLineOrThrow(r);
                         m = reg.Matches(line);
                         durations[i] = int.Parse(m[1].Value);
                     }
                     // header
                     r.ReadLine();
-                    line = r.ReadLine();
+                    line = ReadLineOrThrow(r);
                     m = reg.Matches(line);
                     var depotStart = int.Parse(m[1].Value);
                     var depotEnd = int.Parse(m[2].Value);
@@ -94,7 +98,7 @@ namespace _15pl04.Ucc.TaskSolver
                     var timeAvail = new int[numVisits];
                     for (var i = 0; i < timeAvail.Length; i++)
                     {
-                        line = r.ReadLine();
+                        line = ReadLineOrThrow(r);
                         m = reg.Matches(line);
                         timeAvail[i] = int.Parse(m[1].Value);
                     }
@@ -113,17 +117,13 @@ namespace _15pl04.Ucc.TaskSolver
             catch (Exception ex)
             {
                 Exception = ex;
-                State = TaskSolverState.Error;
             }
         }
 
         /// <summary>
         /// Problem type name solvable by this Task Solver.
         /// </summary>
-        public override string Name
-        {
-            get { return "UCC.Dvrp"; }
-        }
+        public override string Name => "UCC.Dvrp";
 
         /// <summary>
         /// Divide problem into smaller ones.

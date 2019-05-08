@@ -46,10 +46,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <summary>
         /// Type of work to be done (computation).
         /// </summary>
-        public override WorkType Type
-        {
-            get { return WorkType.Computation; }
-        }
+        public override WorkType Type => WorkType.Computation;
+
         /// <summary>
         /// Create partial problems message that can be send to a computational node.
         /// </summary>

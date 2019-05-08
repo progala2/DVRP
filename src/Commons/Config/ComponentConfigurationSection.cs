@@ -17,8 +17,8 @@ namespace _15pl04.Ucc.Commons.Config
         [ConfigurationProperty(PrimaryServerPropertyString)]
         public IPEndPointConfigurationElement PrimaryServer
         {
-            get { return (IPEndPointConfigurationElement)this[PrimaryServerPropertyString]; }
-            set { this[PrimaryServerPropertyString] = value; }
+            get => (IPEndPointConfigurationElement)this[PrimaryServerPropertyString];
+            set => this[PrimaryServerPropertyString] = value;
         }
 
         /// <summary>
@@ -27,8 +27,8 @@ namespace _15pl04.Ucc.Commons.Config
         [ConfigurationProperty(TaskSolversPathPropertyString), DefaultSettingValue("")]
         public string TaskSolversPath
         {
-            get { return (string)this[TaskSolversPathPropertyString]; }
-            set { this[TaskSolversPathPropertyString] = value; }
+            get => (string)this[TaskSolversPathPropertyString];
+            set => this[TaskSolversPathPropertyString] = value;
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace _15pl04.Ucc.Commons.Config
                 (ComponentConfigurationSection)ConfigurationManager.GetSection(componentConfigurationSectionName);
 
             if (config == null)
-                throw new InvalidOperationException(string.Format("Section {0} does not exists.", componentConfigurationSectionName));
+                throw new InvalidOperationException($"Section {componentConfigurationSectionName} does not exists.");
 
             // possible overriting with command line parameters
             if (commandLineParameters != null && commandLineParameters.Length > 0)

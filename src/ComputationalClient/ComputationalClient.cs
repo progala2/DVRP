@@ -147,10 +147,7 @@ namespace _15pl04.Ucc.ComputationalClient
         /// <param name="message">Message to be passed as event event argument.</param>
         private void RaiseEvent(EventHandler<MessageEventArgs> eventHandler, Message message)
         {
-            if (eventHandler != null)
-            {
-                eventHandler(this, new MessageEventArgs(message));
-            }
+            eventHandler?.Invoke(this, new MessageEventArgs(message));
         }
 
         /// <summary>
@@ -162,10 +159,7 @@ namespace _15pl04.Ucc.ComputationalClient
         private void RaiseEvent(EventHandler<MessageExceptionEventArgs> eventHandler, Message message,
             Exception exception)
         {
-            if (eventHandler != null)
-            {
-                eventHandler(this, new MessageExceptionEventArgs(message, exception));
-            }
+            eventHandler?.Invoke(this, new MessageExceptionEventArgs(message, exception));
         }
     }
 }

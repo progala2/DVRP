@@ -4,7 +4,6 @@ using System.Linq;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Utilities;
-using _15pl04.Ucc.Commons.Utilities;
 using _15pl04.Ucc.CommunicationServer.Components;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
@@ -31,10 +30,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <param name="componentOverseer">Component overseer managing components of whom work is scheduled.</param>
         public WorkManager(IComponentOverseer componentOverseer)
         {
-            if (componentOverseer == null)
-                throw new ArgumentNullException();
-
-            _componentOverseer = componentOverseer;
+            _componentOverseer = componentOverseer ?? throw new ArgumentNullException();
             _componentOverseer.Deregistration += OnComponentDeregistration;
 
             _problems = new Dictionary<ulong, Problem>();
@@ -44,7 +40,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         }
 
         /// <summary>
-        /// Event that indicates assignement of computation/division/merge work to an appropriate cluster component.
+        /// Event that indicates assignment of computation/division/merge work to an appropriate cluster component.
         /// </summary>
         public event WorkAssignmentEventHandler WorkAssignment;
 
@@ -97,8 +93,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                         AssigneeId = nodeId,
                         Work = work
                     };
-                    if (WorkAssignment != null)
-                        WorkAssignment(this, e);
+                    WorkAssignment?.Invoke(this, e);
 
                     return true;
                 }
@@ -121,8 +116,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                         AssigneeId = nodeId,
                         Work = work
                     };
-                    if (WorkAssignment != null)
-                        WorkAssignment(this, e);
+                    WorkAssignment?.Invoke(this, e);
 
                     return true;
                 }
@@ -137,7 +131,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
                 var partialProblemsToCompute = _partialProblems.Values.Where(pp =>
                     pp.State == PartialProblem.PartialProblemState.AwaitingComputation
-                    && node.SolvableProblems.Contains(pp.Problem.Type));
+                    && node.SolvableProblems.Contains(pp.Problem.Type)).ToList();
 
                 if (availableThreads == 0 || !partialProblemsToCompute.Any())
                 {
@@ -170,8 +164,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                     AssigneeId = nodeId,
                     Work = work
                 };
-                if (WorkAssignment != null)
-                    WorkAssignment(this, e);
+                WorkAssignment?.Invoke(this, e);
 
                 return true;
             }
@@ -210,14 +203,13 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <summary>
         /// Adds new partial problem to the system.
         /// </summary>
-        /// <param name="problemId">ID of the problem instance this partial problem bleongs to.</param>
+        /// <param name="problemId">ID of the problem instance this partial problem belongs to.</param>
         /// <param name="partialProblemId">ID of the partial problem withing the problem instance.</param>
         /// <param name="privateData">Partial problem private data.</param>
         public void AddPartialProblem(ulong problemId, ulong partialProblemId, byte[] privateData)
         {
             // Make sure the corresponding problem instance exists.
-            Problem problem;
-            if (!_problems.TryGetValue(problemId, out problem))
+            if (!_problems.TryGetValue(problemId, out var problem))
             {
                 Logger.Error("Corresponding problem instance doesn't exist.");
                 return;
@@ -386,7 +378,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Check if all partial solutions are in and set appropriate state.
             var gatheredPartialSolutions = GetPartialSolutions(problemId,
                 PartialSolution.PartialSolutionState.BeingGathered);
-            if ((int)problem.NumberOfParts == gatheredPartialSolutions.Count)
+            if (problem.NumberOfParts != null && (int)problem.NumberOfParts == gatheredPartialSolutions.Count)
             {
                 foreach (var ps in gatheredPartialSolutions)
                     ps.State = PartialSolution.PartialSolutionState.AwaitingMerge;
@@ -401,9 +393,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <returns>Final solution.</returns>
         public Solution GetSolution(ulong problemId)
         {
-            if (_solutions.ContainsKey(problemId))
-                return _solutions[problemId];
-            return null;
+            return _solutions.ContainsKey(problemId) ? _solutions[problemId] : null;
         }
         /// <summary>
         /// Gets problem instance information by ID.
@@ -456,7 +446,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             return nodeId;
         }
         /// <summary>
-        /// Handles component's deregistration by reclaiming all the work it's currently been doing.
+        /// Handles component's de-registration by reclaiming all the work it's currently been doing.
         /// </summary>
         /// <param name="sender">Component overseer that invoked the event.</param>
         /// <param name="e">Information about the deregistration.</param>
@@ -517,18 +507,10 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <returns>Number of threads.</returns>
         private int CountAvailableSolvingThreads(string problemType)
         {
-            var availableThreads = 0;
-
-            foreach (var componentInfo in _componentOverseer.GetComponents(ComponentType.ComputationalNode))
-            {
-                var sn = (SolverNodeInfo)componentInfo;
-                if (!sn.SolvableProblems.Contains(problemType))
-                    continue;
-
-                //availableThreads += sn.NumberOfThreads; // Count all threads.
-                availableThreads += sn.ThreadInfo.Count(ts => ts.State == ThreadStatus.ThreadState.Idle);
-                // OR count only the idle ones.
-            }
+            var availableThreads = _componentOverseer.GetComponents(ComponentType.ComputationalNode)
+                .Cast<SolverNodeInfo>()
+                .Where(sn => sn.SolvableProblems.Contains(problemType))
+                .Select(sn => sn.ThreadInfo.Count(ts => ts.State == ThreadStatus.ThreadState.Idle)).Sum();
 
             // No available threads found be we still need to divide the problem into some parts.
             if (availableThreads == 0)
