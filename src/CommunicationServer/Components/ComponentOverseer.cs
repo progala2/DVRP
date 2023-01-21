@@ -19,7 +19,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         private static readonly ILogger Logger = new ConsoleLogger();
         private readonly Random _random;
         private readonly ConcurrentDictionary<ulong, ComponentInfo> _registeredComponents;
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource? _cancellationTokenSource;
         private volatile bool _isMonitoring;
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         /// <summary>
         /// Invoked on component's deregistration.
         /// </summary>
-        public event DeregisterationEventHandler Deregistration;
+        public event DeregistrationEventHandler? Deregistration;
 
         /// <summary>
         /// True if the component overseer is checking for communication timeout. False otherwise.
@@ -90,8 +90,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         /// <returns>True if succeeded to deregister the component. False otherwise.</returns>
         public bool TryDeregister(ulong componentId)
         {
-            ComponentInfo deregisteredComponent;
-            if (_registeredComponents.TryRemove(componentId, out deregisteredComponent))
+	        if (_registeredComponents.TryRemove(componentId, out var deregisteredComponent))
             {
                 if (Deregistration != null)
                 {
@@ -125,8 +124,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         /// <param name="componentId">ID of the component.</param>
         public void UpdateTimestamp(ulong componentId)
         {
-            ComponentInfo component;
-            if (!_registeredComponents.TryGetValue(componentId, out component))
+	        if (!_registeredComponents.TryGetValue(componentId, out var component))
                 throw new ArgumentException("Timestamp for an unregistered component was requested.");
 
             component.UpdateTimestamp();
@@ -175,11 +173,11 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             if (!_isMonitoring)
                 return;
 
-            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource?.Cancel();
         }
 
         /// <summary>
-        /// Get imformation about all components of specified type.
+        /// Get information about all components of specified type.
         /// </summary>
         /// <param name="type">Type of the cluster component.</param>
         /// <returns>Collection of components data.</returns>
@@ -197,8 +195,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         /// <returns>Component information.</returns>
         public ComponentInfo GetComponent(ulong componentId)
         {
-            ComponentInfo component;
-            if (!_registeredComponents.TryGetValue(componentId, out component))
+	        if (!_registeredComponents.TryGetValue(componentId, out var component))
                 throw new ArgumentException("No component info for specified id exists.");
 
             return component;

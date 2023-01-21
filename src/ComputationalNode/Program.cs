@@ -10,7 +10,7 @@ namespace _15pl04.Ucc.ComputationalNode
 {
     public class Program
     {
-        private static readonly ILogger _logger = new ConsoleLogger();
+        private static readonly ILogger Logger = new ConsoleLogger();
 
         private static void Main(string[] args)
         {
@@ -22,7 +22,7 @@ namespace _15pl04.Ucc.ComputationalNode
                 var serverAddress = IpEndPointParser.Parse(config.PrimaryServer.Address, config.PrimaryServer.Port);
                 var taskSolversDirectoryRelativePath = config.TaskSolversPath;
 
-                _logger.Info("Server address: " + serverAddress);
+                Logger.Info("Server address: " + serverAddress);
 
                 ThreadManager threadManager = new ThreadPoolThreadManager();
                 computationalNode = new ComputationalNode(threadManager, serverAddress, taskSolversDirectoryRelativePath);
@@ -32,7 +32,7 @@ namespace _15pl04.Ucc.ComputationalNode
                 var errorText = $"{ex.GetType().FullName}:{ex.Message}";
                 if (ex.InnerException != null)
                     errorText += $"|({ex.InnerException.GetType().FullName}:{ex.InnerException.Message})";
-                _logger.Error(errorText);
+                Logger.Error(errorText);
                 return;
             }
 
@@ -46,10 +46,10 @@ namespace _15pl04.Ucc.ComputationalNode
             computationalNode.OnStarted += computationalNode_OnStarted;
 
             computationalNode.Start();
-            string line;
+            string? line;
             while (true)
             {
-                line = Console.ReadLine().ToLower();
+                line = Console.ReadLine()?.ToLower();
                 if (line == "stop" || line == "quit" || line == "exit")
                     break;
                 if (line == "start")
@@ -59,48 +59,48 @@ namespace _15pl04.Ucc.ComputationalNode
             }
         }
 
-        private static void computationalNode_OnStarted(object sender, EventArgs e)
+        private static void computationalNode_OnStarted(object? sender, EventArgs? e)
         {
-            _logger.Info("ComputationalNode started.");
+            Logger.Info("ComputationalNode started.");
         }
 
-        private static void computationalNode_OnStarting(object sender, EventArgs e)
+        private static void computationalNode_OnStarting(object? sender, EventArgs? e)
         {
-            _logger.Info("ComputationalNode is starting...");
+            Logger.Info("ComputationalNode is starting...");
         }
 
-        private static void computationalNode_MessageSendingException(object sender, MessageExceptionEventArgs e)
+        private static void computationalNode_MessageSendingException(object? sender, MessageExceptionEventArgs? e)
         {
-            _logger.Error("Message sending exception:\n" + GetMessageExceptionInfo(e));
+            Logger.Error("Message sending exception:\n" + GetMessageExceptionInfo(e));
         }
 
-        private static void computationalNode_MessageHandlingException(object sender, MessageExceptionEventArgs e)
+        private static void computationalNode_MessageHandlingException(object? sender, MessageExceptionEventArgs? e)
         {
-            _logger.Warn("Message handling exception:\n" + GetMessageExceptionInfo(e));
+            Logger.Warn("Message handling exception:\n" + GetMessageExceptionInfo(e));
         }
 
-        private static void computationalNode_MessageEnqueuedToSend(object sender, MessageEventArgs e)
+        private static void computationalNode_MessageEnqueuedToSend(object? sender, MessageEventArgs? e)
         {
             LogMessageInfo("Enqueued to send", e);
         }
 
-        private static void computationalNode_MessageReceived(object sender, MessageEventArgs e)
+        private static void computationalNode_MessageReceived(object? sender, MessageEventArgs? e)
         {
             LogMessageInfo("Received", e);
         }
 
-        private static void computationalNode_MessageSent(object sender, MessageEventArgs e)
+        private static void computationalNode_MessageSent(object? sender, MessageEventArgs? e)
         {
             LogMessageInfo("Sent", e);
         }
 
-        private static void LogMessageInfo(string description, MessageEventArgs e)
+        private static void LogMessageInfo(string description, MessageEventArgs? e)
         {
-            _logger.Info(description + ": [" + e.Message.MessageType + "]");
-            _logger.Debug("\t" + e.Message);
+            Logger.Info(description + ": [" + e.Message.MessageType + "]");
+            Logger.Debug("\t" + e.Message);
         }
 
-        private static string GetMessageExceptionInfo(MessageExceptionEventArgs e)
+        private static string GetMessageExceptionInfo(MessageExceptionEventArgs? e)
         {
             var errorInfo = $" Message: {e.Message}\n Exception: {e.Exception.GetType().FullName}\n  {e.Exception.Message}";
             return errorInfo;

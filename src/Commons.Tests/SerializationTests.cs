@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Messaging.Marshalling;
 using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using Xunit;
 
 namespace _15pl04.Ucc.Commons.Tests
 {
-    [TestClass]
     public class SerializationTests
     {
         private readonly ISerializer<Message> _serializer;
@@ -18,7 +17,7 @@ namespace _15pl04.Ucc.Commons.Tests
             _serializer = new MessageSerializer();
         }
 
-        [TestMethod]
+        [Fact]
         public void DivideProblemMessageXmlIsProperlySerializedAndDeserialized()
         {
             var message = new DivideProblemMessage
@@ -33,10 +32,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (DivideProblemMessage));
+            Assert.IsType<DivideProblemMessage>(deserializedMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void ErrorMessageXmlIsProperlySerializedAndDeserialized()
         {
             var message = new ErrorMessage
@@ -48,10 +47,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (ErrorMessage));
+            Assert.IsType<ErrorMessage>(deserializedMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void NoOperationMessageXmlIsProperlySerializedAndDeserialized()
         {
             var message = new NoOperationMessage
@@ -62,10 +61,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (NoOperationMessage));
+            Assert.IsType<NoOperationMessage>(deserializedMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void PartialProblemsMessageXmlIsProperlySerializedAndDeserialized()
         {
             var pp = new PartialProblemsMessage.PartialProblem
@@ -87,10 +86,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (PartialProblemsMessage));
+            Assert.IsType<PartialProblemsMessage>(deserializedMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void RegisterMessageXmlIsProperlySerializedAndDeserialized()
         {
             var message = new RegisterMessage
@@ -105,10 +104,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (RegisterMessage));
+            Assert.IsType<RegisterMessage>(deserializedMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void RegisterResponseMessageXmlIsProperlySerializedAndDeserialized()
         {
             var si = new ServerInfo
@@ -127,10 +126,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (RegisterResponseMessage));
+            Assert.IsType<RegisterResponseMessage>(deserializedMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void SolutionRequestMessageXmlIsProperlySerializedAndDeserialized()
         {
             var message = new SolutionRequestMessage
@@ -141,10 +140,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (SolutionRequestMessage));
+            Assert.IsType<SolutionRequestMessage>(deserializedMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void SolutionsMessageXmlIsProperlySerializedAndDeserialized()
         {
             var s = new SolutionsMessage.Solution
@@ -167,10 +166,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (SolutionsMessage));
+            Assert.IsType<SolutionsMessage>(deserializedMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void SolveRequestMessageXmlIsProperlySerializedAndDeserialized()
         {
             var message = new SolveRequestMessage
@@ -184,10 +183,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (SolveRequestMessage));
+            Assert.IsType<SolveRequestMessage>(deserializedMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void SolveRequestResponseMessageXmlIsProperlySerializedAndDeserialized()
         {
             var message = new SolveRequestResponseMessage
@@ -198,10 +197,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (SolveRequestResponseMessage));
+            Assert.IsType<SolveRequestResponseMessage>(deserializedMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void StatusMessageXmlIsProperlySerializedAndDeserialized()
         {
             var ts = new ThreadStatus
@@ -222,7 +221,7 @@ namespace _15pl04.Ucc.Commons.Tests
             var serializedMessage = _serializer.Serialize(message);
             var deserializedMessage = _serializer.Deserialize(serializedMessage);
 
-            Assert.IsInstanceOfType(deserializedMessage, typeof (StatusMessage));
+            Assert.IsType<StatusMessage>(deserializedMessage);
         }
     }
 }

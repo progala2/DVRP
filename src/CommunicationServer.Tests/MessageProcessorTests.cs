@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Messaging.Marshalling;
 using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
@@ -12,10 +11,11 @@ using _15pl04.Ucc.CommunicationServer.Messaging;
 using _15pl04.Ucc.CommunicationServer.Messaging.Base;
 using _15pl04.Ucc.CommunicationServer.WorkManagement;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
+using Xunit;
+using ErrorMessage = _15pl04.Ucc.Commons.Messaging.Models.ErrorMessage;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests
 {
-    [TestClass]
     public class MessageProcessorTests
     {
         private readonly IMarshaller<Message> _marshaller;
@@ -35,7 +35,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             _processor = new MessageProcessor(_overseer, _workManager);
         }
 
-        [TestMethod]
+        [Fact]
         public void RegistrationMessageIsAcceptedAndItsCallbackInvoked()
         {
             var waitHandle = new AutoResetEvent(false);
@@ -62,10 +62,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();
 
-            Assert.IsTrue(callbackCalled);
+            Assert.True(callbackCalled);
         }
 
-        [TestMethod]
+        [Fact]
         public void RegistrationMessageIsAcceptedAndRegisterResponseMessageIsPassedBack()
         {
             var waitHandle = new AutoResetEvent(false);
@@ -78,7 +78,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             };
             var rawMsg = _marshaller.Marshall(new Message[] {msg});
 
-            Message outputMessage = null;
+            Message? outputMessage = null;
             ProcessedDataCallback c = response =>
             {
                 outputMessage = _marshaller.Unmarshall(response)[0];
@@ -91,10 +91,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             waitHandle.WaitOne(10000);
             _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof (RegisterResponseMessage));
+            Assert.IsType<RegisterResponseMessage>(outputMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void SolveRequestMessageIsAcceptedAndSolveRequestResponseMessageIsPassedBack()
         {
             var waitHandle = new AutoResetEvent(false);
@@ -119,10 +119,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof (SolveRequestResponseMessage));
+            Assert.IsType<SolveRequestResponseMessage>(outputMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void StatusMessageFromAnUnregisteredComponentReturnsErrorMessage()
         {
             var waitHandle = new AutoResetEvent(false);
@@ -147,10 +147,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof (ErrorMessage));
+            Assert.IsType<ErrorMessage>(outputMessage);
         }
 
-        [TestMethod]
+        [Fact]
         public void StatusMessageFromARegisteredComponentReturnsNoOperationIfThereAreNoTasksPending()
         {
             var waitHandle = new AutoResetEvent(false);
@@ -174,7 +174,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();
 
-            Assert.IsInstanceOfType(outputMessage, typeof (ErrorMessage));
+            Assert.IsType<ErrorMessage>(outputMessage);
         }
     }
 }

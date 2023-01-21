@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.Json;
 using _15pl04.Ucc.Commons.Config;
 using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging;
@@ -45,7 +45,7 @@ namespace _15pl04.Ucc.ComputationalClient
             computationalClient.MessageSendingException += computationalClient_MessageSendingException;
             computationalClient.MessageHandlingException += computationalClient_MessageHandlingException;
 
-            string line;
+            string? line;
             while (true)
             {
                 Console.WriteLine(@"commands: -stop, quit, exit -solve -solution");
@@ -68,12 +68,9 @@ namespace _15pl04.Ucc.ComputationalClient
                         byte[] problemData;
                         try
                         {
-                            using (var memoryStream = new MemoryStream())
-                            {
-                                var formatter = new BinaryFormatter();
-                                formatter.Serialize(memoryStream, File.ReadAllText(line, Encoding.UTF8));
-                                problemData = memoryStream.ToArray();
-                            }
+	                        using var memoryStream = new MemoryStream();
+	                        JsonSerializer.Serialize(memoryStream, File.ReadAllText(line, Encoding.UTF8));
+	                        problemData = memoryStream.ToArray();
                         }
                         catch (Exception)
                         {
@@ -115,8 +112,7 @@ namespace _15pl04.Ucc.ComputationalClient
                                         string problem;
                                         using (var mem = new MemoryStream(solutionsMessages[0].Solutions[0].Data))
                                         {
-                                            var formatter = new BinaryFormatter();
-                                            problem = (string)formatter.Deserialize(mem);
+                                            problem = JsonSerializer.Deserialize<string>(mem);
                                         }
                                         Console.WriteLine(@"Result message: {0}", problem);
                                         break;
@@ -132,24 +128,24 @@ namespace _15pl04.Ucc.ComputationalClient
             }
         }
 
-        private static void computationalClient_MessageSent(object sender, MessageEventArgs e)
+        private static void computationalClient_MessageSent(object? sender, MessageEventArgs? e)
         {
-            Logger.Info(e.Message.ToString());
+            Logger.Info(e?.Message.ToString());
         }
 
-        private static void computationalClient_MessageReceived(object sender, MessageEventArgs e)
+        private static void computationalClient_MessageReceived(object? sender, MessageEventArgs? e)
         {
-            Logger.Info(e.Message.ToString());
+            Logger.Info(e?.Message.ToString());
         }
 
-        private static void computationalClient_MessageSendingException(object sender, MessageExceptionEventArgs e)
+        private static void computationalClient_MessageSendingException(object? sender, MessageExceptionEventArgs? e)
         {
-            Logger.Warn(e.Message + "\n" + e.Exception);
+            Logger.Warn(e?.Message + "\n" + e?.Exception);
         }
 
-        static void computationalClient_MessageHandlingException(object sender, MessageExceptionEventArgs e)
+        static void computationalClient_MessageHandlingException(object? sender, MessageExceptionEventArgs? e)
         {
-            Logger.Warn(e.Message + "\n" + e.Exception);
+            Logger.Warn(e?.Message + "\n" + e?.Exception);
         }
     }
 }

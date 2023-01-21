@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using _15pl04.Ucc.Commons.Exceptions;
 
-namespace _15pl04.Ucc.Commons
+namespace _15pl04.Ucc.TaskSolver
 {
     /// <summary>
     /// Class providing loading task solvers from directory.
@@ -18,10 +18,10 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="taskSolversDirectoryRelativePath">The relative path of directory to search.</param>
         /// <returns>Read-only dictionary with names of solvable problems as keys and corresponding Task Solvers as values.</returns>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         public static ReadOnlyDictionary<string, Type> GetTaskSolversFromRelativePath(
-            string taskSolversDirectoryRelativePath)
+            string? taskSolversDirectoryRelativePath)
         {
             var taskSolversDirectoryPath =
                 Path.GetFullPath(Directory.GetCurrentDirectory() + taskSolversDirectoryRelativePath);
@@ -33,7 +33,7 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="taskSolversDirectoryPath">The path of directory to search.</param>
         /// <returns>Read-only dictionary with names of solvable problems as keys and corresponding Task Solvers as values.</returns>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         public static ReadOnlyDictionary<string, Type> GetTaskSolversFromPath(string taskSolversDirectoryPath)
         {
@@ -49,7 +49,7 @@ namespace _15pl04.Ucc.Commons
             {
                 throw new TaskSolverLoadingException("Couldn't get files from given directory.", ex);
             }
-            var typeOfTaskSolver = typeof(TaskSolver.TaskSolver);
+            var typeOfTaskSolver = typeof(TaskSolver);
             foreach (var fileName in fileNames)
             {
                 var assembly = Assembly.LoadFile(fileName);
@@ -57,19 +57,19 @@ namespace _15pl04.Ucc.Commons
                     assembly.GetTypes().Where(t => typeOfTaskSolver.IsAssignableFrom(t) && !t.IsAbstract);
                 foreach (var taskSolverType in taskSolverTypes)
                 {
-                    /* NOTE: there's a possibilty of throwing an Exception because TaskSolver has
+                    /* NOTE: there's a possibility of throwing an Exception because TaskSolver has
                      * only one constructor which takes byte[] as parameter and behavior of it can
                      * vary on specific implementation */
-                    TaskSolver.TaskSolver taskSolver;
+                    TaskSolver taskSolver;
                     try
                     {
-                        taskSolver = (TaskSolver.TaskSolver)Activator.CreateInstance(taskSolverType, new byte[0]);
+                        taskSolver = (TaskSolver?)Activator.CreateInstance(taskSolverType, Array.Empty<byte>()) ?? throw new ArgumentNullException();
                     }
                     catch (Exception)
                     {
                         try
                         {
-                            taskSolver = (TaskSolver.TaskSolver)Activator.CreateInstance(taskSolverType, null);
+                            taskSolver = (TaskSolver?)Activator.CreateInstance(taskSolverType, null) ?? throw new ArgumentNullException();
                         }
                         catch (Exception)
                         {

@@ -11,13 +11,13 @@ namespace _15pl04.Ucc.TaskSolver
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="setStart">The beginning set.</param>
+        /// <param name="setBegin">The beginning set.</param>
         /// <param name="approximateResult">Information about the best known approximate result of the problem.</param>
         /// <param name="numberOfSets">Number of sets.</param>
         /// <param name="setEnd">The ending set.</param>
-        public DvrpPartialProblem(int[] setStart, double approximateResult, ulong numberOfSets, int[] setEnd)
+        public DvrpPartialProblem(int[] setBegin, double approximateResult, ulong numberOfSets, int[] setEnd)
         {
-            SetBegin = (int[]) setStart.Clone();
+            SetBegin = (int[]) setBegin.Clone();
             ApproximateResult = approximateResult;
             NumberOfSets = numberOfSets;
             SetEnd = (int[])setEnd.Clone();

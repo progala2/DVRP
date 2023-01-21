@@ -50,19 +50,17 @@ namespace _15pl04.Ucc.Commons
                 socket.Send(data);
                 socket.Shutdown(SocketShutdown.Send);
 
-                using (var memory = new MemoryStream(BufferSize))
+                using var memory = new MemoryStream(BufferSize);
+                int bytesRec;
+                while ((bytesRec = socket.Receive(buf)) > 0)
                 {
-                    int bytesRec;
-                    while ((bytesRec = socket.Receive(buf)) > 0)
-                    {
-                        memory.Write(buf, 0, bytesRec);
-                        Debug.WriteLine("Capacity: " + memory.Capacity + " Length: " + memory.Length);
-                    }
-
-                    socket.Shutdown(SocketShutdown.Receive);
-                    socket.Close();
-                    buf = memory.ToArray();
+	                memory.Write(buf, 0, bytesRec);
+	                Debug.WriteLine("Capacity: " + memory.Capacity + " Length: " + memory.Length);
                 }
+
+                socket.Shutdown(SocketShutdown.Receive);
+                socket.Close();
+                buf = memory.ToArray();
             }
             catch (SocketException e)
             {

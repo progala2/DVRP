@@ -3,13 +3,12 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.CommunicationServer.Messaging;
 using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+using Xunit;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests
 {
-    [TestClass]
     public class TcpServerTests
     {
         private readonly TcpServer _server;
@@ -24,17 +23,17 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             _server.StartListening();
         }
 
-        [TestMethod]
+        [Fact]
         public void DataIsEnqueued() //change
         {
             byte[] inputData = {1, 2, 3, 4, 5};
             var outputData = ClientCreateSendAndReceive(inputData);
             var expectedData = new byte[] {5, 4, 3, 2, 1};
 
-            Assert.AreEqual(outputData.Length, expectedData.Length);
+            Assert.Equal(outputData.Length, expectedData.Length);
             for (var i = 0; i < expectedData.Length; i++)
             {
-                Assert.AreEqual(outputData[i], expectedData[i]);
+                Assert.Equal(outputData[i], expectedData[i]);
             }
         }
 

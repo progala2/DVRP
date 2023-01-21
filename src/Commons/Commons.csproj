@@ -1,148 +1,72 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6EE7686F-D191-4151-AD36-B8B7199310F5}</ProjectGuid>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>_15pl04.Ucc.Commons</RootNamespace>
     <AssemblyName>Ucc.Commons</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\..\lib\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\lib\Debug\Ucc.Commons.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>..\..\lib\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Components\ComponentType.cs" />
-    <Compile Include="Components\ServerInfo.cs" />
-    <Compile Include="Components\ThreadStatus.cs" />
-    <Compile Include="ComputationalComponent.cs" />
-    <Compile Include="Computations\Base\ThreadManager.cs" />
-    <Compile Include="Computations\ComputationalThreadStatus.cs" />
-    <Compile Include="Computations\ThreadPoolThreadManager.cs" />
-    <Compile Include="Config\ComponentConfigurationSection.cs" />
-    <Compile Include="Config\IPEndPointConfigurationElement.cs" />
-    <Compile Include="Config\ServerConfigurationSection.cs" />
-    <Compile Include="Exceptions\TaskSolverLoadingException.cs" />
-    <Compile Include="Logging\LogLevel.cs" />
-    <Compile Include="MessageSchemas.Designer.cs">
+    <Compile Update="MessageSchemas.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MessageSchemas.resx</DependentUpon>
     </Compile>
-    <Compile Include="TaskSolverLoader.cs" />
-    <Compile Include="Utilities\DictionaryExtensions.cs" />
-    <Compile Include="Utilities\IPEndPointParser.cs" />
-    <Compile Include="Logging\ConsoleLogger.cs" />
-    <Compile Include="Logging\ILogger.cs" />
-    <Compile Include="Messaging\Marshalling\Base\IMarshaller.cs" />
-    <Compile Include="Messaging\Marshalling\Base\ISerializer.cs" />
-    <Compile Include="Messaging\Marshalling\Base\IXmlValidator.cs" />
-    <Compile Include="Messaging\MessageExceptionEventArgs.cs" />
-    <Compile Include="Exceptions\NoResponseException.cs" />
-    <Compile Include="Messaging\MessageEventArgs.cs" />
-    <Compile Include="Messaging\MessageSender.cs" />
-    <Compile Include="Messaging\Marshalling\MessageValidator.cs" />
-    <Compile Include="Messaging\MessageClass.cs" />
-    <Compile Include="Messaging\Models\DivideProblemMessage.cs" />
-    <Compile Include="Messaging\Models\Base\Message.cs" />
-    <Compile Include="Messaging\Models\NoOperationMessage.cs" />
-    <Compile Include="Messaging\Models\PartialProblemsMessage.cs" />
-    <Compile Include="Messaging\Models\RegisterMessage.cs" />
-    <Compile Include="Messaging\Models\RegisterResponseMessage.cs" />
-    <Compile Include="Messaging\Models\SolutionsMessage.cs" />
-    <Compile Include="Messaging\Models\SolutionRequestMessage.cs" />
-    <Compile Include="Messaging\Models\SolveRequestMessage.cs" />
-    <Compile Include="Messaging\Models\SolveRequestResponseMessage.cs" />
-    <Compile Include="Messaging\Models\ErrorMessage.cs" />
-    <Compile Include="Messaging\Models\StatusMessage.cs" />
-    <Compile Include="Messaging\Marshalling\Marshaller.cs" />
-    <Compile Include="Messaging\Marshalling\MessageSerializer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TcpClient.cs" />
-    <Compile Include="Exceptions\TimeoutException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Utilities\RandomExtensions.cs" />
-    <Compile Include="Utilities\TaskSolverExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\MessageSchemas\DivideProblem.xsd">
+    <None Update="Resources\MessageSchemas\DivideProblem.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\MessageSchemas\Error.xsd">
+    <None Update="Resources\MessageSchemas\Error.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\MessageSchemas\NoOperation.xsd">
+    <None Update="Resources\MessageSchemas\NoOperation.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\MessageSchemas\PartialProblems.xsd">
+    <None Update="Resources\MessageSchemas\PartialProblems.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\MessageSchemas\Register.xsd">
+    <None Update="Resources\MessageSchemas\Register.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\MessageSchemas\RegisterResponse.xsd">
+    <None Update="Resources\MessageSchemas\RegisterResponse.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\MessageSchemas\SolutionRequest.xsd">
+    <None Update="Resources\MessageSchemas\SolutionRequest.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\MessageSchemas\Solutions.xsd">
+    <None Update="Resources\MessageSchemas\Solutions.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\MessageSchemas\SolveRequest.xsd">
+    <None Update="Resources\MessageSchemas\SolveRequest.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\MessageSchemas\SolveRequestResponse.xsd">
+    <None Update="Resources\MessageSchemas\SolveRequestResponse.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\MessageSchemas\Status.xsd">
+    <None Update="Resources\MessageSchemas\Status.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MessageSchemas.resx">
+    <EmbeddedResource Update="MessageSchemas.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MessageSchemas.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TaskSolver\TaskSolver.csproj">
-      <Project>{5495F07E-3AC5-4B01-B64E-2482B718E5E9}</Project>
-      <Name>TaskSolver</Name>
-    </ProjectReference>
+    <Compile Remove="Messaging\MessageProcessor.cs" />
+    <Compile Remove="Messaging\RawMessageQueue.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+  </ItemGroup>
 </Project>

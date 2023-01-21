@@ -34,7 +34,7 @@ namespace _15pl04.Ucc.Commons.Logging
         /// Log INFO level message.
         /// </summary>
         /// <param name="s">Message to log.</param>
-        public void Info(string s)
+        public void Info(string? s)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(GetCallerInfoPrefix() + s);
@@ -56,7 +56,7 @@ namespace _15pl04.Ucc.Commons.Logging
         /// Log ERROR level message.
         /// </summary>
         /// <param name="s">Message to log.</param>
-        public void Error(string s)
+        public void Error(string? s)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(GetCallerInfoPrefix() + s);

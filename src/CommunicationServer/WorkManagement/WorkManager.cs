@@ -21,7 +21,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         private readonly Dictionary<Tuple<ulong, ulong>, PartialProblem> _partialProblems;
         private readonly Dictionary<Tuple<ulong, ulong>, PartialSolution> _partialSolutions;
         private readonly Dictionary<ulong, Problem> _problems;
-        private readonly Random _random = new Random();
+        private readonly Random _random = new ();
         private readonly Dictionary<ulong, Solution> _solutions;
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <param name="node">Node to assign work to.</param>
         /// <param name="work">Assigned work.</param>
         /// <returns>Whether there is any work compatible with the component.</returns>
-        public bool TryAssignWork(SolverNodeInfo node, out Work work)
+        public bool TryAssignWork(SolverNodeInfo node, out Work? work)
         {
             var type = node.ComponentType;
             var nodeId = node.ComponentId.Value;
@@ -328,9 +328,9 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <param name="partialProblemId">ID of the corresponding partial problem.</param>
         /// <param name="data">Partial solution data.</param>
         /// <param name="computationsTime">Time of the foregoing computations.</param>
-        /// <param name="timeoutOccured">Whether timeout stopped the computations.</param>
+        /// <param name="timeoutOccurred">Whether timeout stopped the computations.</param>
         public void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime,
-            bool timeoutOccured)
+            bool timeoutOccurred)
         {
             var pairId = new Tuple<ulong, ulong>(problemId, partialProblemId);
 
@@ -360,7 +360,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             }
 
             // Create partial solution instance.
-            var partialSolution = new PartialSolution(partialProblem, data, computationsTime, timeoutOccured)
+            var partialSolution = new PartialSolution(partialProblem, data, computationsTime, timeoutOccurred)
             {
                 State = PartialSolution.PartialSolutionState.BeingGathered,
                 MergingNodeId = null
@@ -391,7 +391,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// </summary>
         /// <param name="problemId">Problem instance (solution) ID.</param>
         /// <returns>Final solution.</returns>
-        public Solution GetSolution(ulong problemId)
+        public Solution? GetSolution(ulong problemId)
         {
             return _solutions.ContainsKey(problemId) ? _solutions[problemId] : null;
         }
@@ -400,7 +400,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// </summary>
         /// <param name="problemId">Problem instance ID.</param>
         /// <returns>Problem instance.</returns>
-        public Problem GetProblem(ulong problemId)
+        public Problem? GetProblem(ulong problemId)
         {
             if (_problems.ContainsKey(problemId))
                 return _problems[problemId];

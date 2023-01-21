@@ -30,7 +30,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests.Mocks
         }
 
         public void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime,
-            bool timeoutOccured)
+            bool timeoutOccurred)
         {
             throw new NotImplementedException();
         }

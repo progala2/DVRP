@@ -3,23 +3,22 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using Xunit;
 
 namespace _15pl04.Ucc.Commons.Tests
 {
-    [TestClass]
     public class MessageSenderTests
     {
         private const int Port = 9123;
         private const int BufferSize = 2048;
-        private static readonly IPAddress TestIp = new IPAddress(new byte[] {127, 0, 0, 1});
+        private static readonly IPAddress TestIp = new (new byte[] {127, 0, 0, 1});
         private Socket _socket;
 
-        [TestMethod]
+        [Fact]
         public void MessageSenderSendingMessage()
         {
             var sender = new MessageSender(new IPEndPoint(TestIp, Port));
@@ -34,17 +33,17 @@ namespace _15pl04.Ucc.Commons.Tests
 
             var receivedMessage = sender.Send(new List<Message> {message});
 
-            Assert.AreEqual(1, receivedMessage.Count);
-            Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
-            Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
-            Assert.AreEqual(((ErrorMessage) message).ErrorText, ((ErrorMessage) receivedMessage[0]).ErrorText);
-            Assert.AreEqual(((ErrorMessage) message).ErrorType, ((ErrorMessage) receivedMessage[0]).ErrorType);
+            Assert.Single(receivedMessage);
+            Assert.Equal(message.MessageType, receivedMessage[0].MessageType);
+            Assert.Equal(message.MessageType, receivedMessage[0].MessageType);
+            Assert.Equal(((ErrorMessage) message).ErrorText, ((ErrorMessage) receivedMessage[0]).ErrorText);
+            Assert.Equal(((ErrorMessage) message).ErrorType, ((ErrorMessage) receivedMessage[0]).ErrorType);
 
             EndConnection();
             t.Wait();
         }
 
-        [TestMethod]
+        [Fact]
         public void MessageSenderUpdatingBackupServerList()
         {
             var sender = new MessageSender(new IPEndPoint(TestIp, Port));
@@ -66,14 +65,14 @@ namespace _15pl04.Ucc.Commons.Tests
 
             var receivedMessage = sender.Send(new List<Message> {message});
 
-            Assert.AreEqual(1, receivedMessage.Count);
-            Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
-            Assert.AreEqual(message.MessageType, receivedMessage[0].MessageType);
-            Assert.AreEqual(((NoOperationMessage) message).BackupServers.Count,
+            Assert.Equal(1, receivedMessage.Count);
+            Assert.Equal(message.MessageType, receivedMessage[0].MessageType);
+            Assert.Equal(message.MessageType, receivedMessage[0].MessageType);
+            Assert.Equal(((NoOperationMessage) message).BackupServers.Count,
                 ((NoOperationMessage) receivedMessage[0]).BackupServers.Count);
-            Assert.AreEqual(((NoOperationMessage) message).BackupServers[0].IpAddress,
+            Assert.Equal(((NoOperationMessage) message).BackupServers[0].IpAddress,
                 ((NoOperationMessage) receivedMessage[0]).BackupServers[0].IpAddress);
-            Assert.AreEqual(((NoOperationMessage) message).BackupServers[0].Port,
+            Assert.Equal(((NoOperationMessage) message).BackupServers[0].Port,
                 ((NoOperationMessage) receivedMessage[0]).BackupServers[0].Port);
 
 

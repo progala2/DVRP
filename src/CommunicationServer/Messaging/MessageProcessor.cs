@@ -37,7 +37,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         public MessageProcessor(IComponentOverseer componentOverseer, IWorkManager workManager)
         {
             if (componentOverseer == null)
-                throw new ArgumentNullException("IComponentOverseer dependancy is null.");
+                throw new ArgumentNullException(nameof(componentOverseer), "IComponentOverseer dependancy is null.");
             if (workManager == null)
                 throw new ArgumentNullException("IWorkManager dependancy is null.");
 
@@ -91,8 +91,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     if (_inputDataQueue.Count == 0)
                         _processingLock.WaitOne(); // No data available, wait for some.
 
-                    RawDataQueueItem dataToProcess;
-                    _inputDataQueue.TryDequeue(out dataToProcess);
+                    _inputDataQueue.TryDequeue(out var dataToProcess);
                     if (dataToProcess != null)
                         ProcessData(dataToProcess); // Actual processing.
 
@@ -103,8 +102,8 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
             task.ContinueWith(t =>
             {
-                Logger.Error(t.Exception.ToString());
-                Logger.Error(t.Exception.StackTrace);
+                Logger.Error(t.Exception?.ToString());
+                Logger.Error(t.Exception?.StackTrace);
             }, TaskContinuationOptions.OnlyOnFaulted);
 
             task.Start();

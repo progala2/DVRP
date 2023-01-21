@@ -12,7 +12,7 @@ using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
-namespace _15pl04.Ucc.Commons
+namespace _15pl04.Ucc.TaskSolver
 {
     /// <summary>
     /// Base class of the Computational Node and Task Manager.
@@ -20,7 +20,7 @@ namespace _15pl04.Ucc.Commons
     public abstract class ComputationalComponent
     {
         private readonly MessageSender _messageSender;
-        private readonly object _startLock = new object();
+        private readonly object _startLock = new ();
         private readonly ThreadManager _threadManager;
         private Task _messagesProcessingTask;
         private ConcurrentQueue<Message> _messagesToSend;
@@ -34,7 +34,7 @@ namespace _15pl04.Ucc.Commons
         /// <param name="serverAddress">The Communication Server address. Cannot be null.</param>
         /// <exception cref="System.ArgumentNullException">Thrown if either <paramref name="threadManager"/> or
         /// <paramref name="serverAddress"/> is null.</exception>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         protected ComputationalComponent(ThreadManager threadManager, IPEndPoint serverAddress)
             : this(threadManager, serverAddress, null)
@@ -51,10 +51,10 @@ namespace _15pl04.Ucc.Commons
         /// If null current directory will be searched for task solvers.</param>
         /// <exception cref="System.ArgumentNullException">Thrown if either <paramref name="threadManager"/> or
         /// <paramref name="serverAddress"/> is null.</exception>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers from given <paramref name="taskSolversDirectoryRelativePath"/>.</exception>
         protected ComputationalComponent(ThreadManager threadManager, IPEndPoint serverAddress,
-            string taskSolversDirectoryRelativePath)
+            string? taskSolversDirectoryRelativePath)
         {
             if (threadManager == null) throw new ArgumentNullException("threadManager");
             if (serverAddress == null) throw new ArgumentNullException("serverAddress");
@@ -64,6 +64,9 @@ namespace _15pl04.Ucc.Commons
             _threadManager = threadManager;
 
             _messageSender = new MessageSender(serverAddress);
+            _messagesToSend = new ConcurrentQueue<Message>();
+            _messagesProcessingTask = new Task(ProcessMessages);
+            _messagesToSendManualResetEvent = new ManualResetEvent(false);
 
             MessageHandlingException += (s, e) =>
             {
@@ -100,37 +103,37 @@ namespace _15pl04.Ucc.Commons
         /// <summary>
         ///     Event which is raised after enqueuing message to be send to the server.
         /// </summary>
-        public event EventHandler<MessageEventArgs> MessageEnqueuedToSend;
+        public event EventHandler<MessageEventArgs?>? MessageEnqueuedToSend;
 
         /// <summary>
         ///     Event which is raised after successful sending message to the server.
         /// </summary>
-        public event EventHandler<MessageEventArgs> MessageSent;
+        public event EventHandler<MessageEventArgs?>? MessageSent;
 
         /// <summary>
         ///     Event which is raised after receiving message from the server.
         /// </summary>
-        public event EventHandler<MessageEventArgs> MessageReceived;
+        public event EventHandler<MessageEventArgs?>? MessageReceived;
 
         /// <summary>
-        ///     Event which is raised if exception occured during sending message to the server.
+        ///     Event which is raised if exception occurred during sending message to the server.
         /// </summary>
-        public event EventHandler<MessageExceptionEventArgs> MessageSendingException;
+        public event EventHandler<MessageExceptionEventArgs?>? MessageSendingException;
 
         /// <summary>
-        ///     Event which is raised if exception occured during handling message received from the server.
+        ///     Event which is raised if exception occurred during handling message received from the server.
         /// </summary>
-        public event EventHandler<MessageExceptionEventArgs> MessageHandlingException;
+        public event EventHandler<MessageExceptionEventArgs?>? MessageHandlingException;
 
         /// <summary>
         ///     Event which is raised when component is about to start running.
         /// </summary>
-        public event EventHandler OnStarting;
+        public event EventHandler? OnStarting;
 
         /// <summary>
         ///     Event which is raised when component has just started running.
         /// </summary>
-        public event EventHandler OnStarted;
+        public event EventHandler? OnStarted;
 
         /// <summary>
         /// Registers component on the server and starts work.
@@ -207,8 +210,7 @@ namespace _15pl04.Ucc.Commons
             var registered = false;
             foreach (var receivedMessage in receivedMessages)
             {
-                RegisterResponseMessage registerResponseMessage;
-                if ((registerResponseMessage = receivedMessage as RegisterResponseMessage) != null)
+                if (receivedMessage is RegisterResponseMessage registerResponseMessage)
                 {
                     Id = registerResponseMessage.AssignedId;
                     Timeout = registerResponseMessage.CommunicationTimeout;
@@ -252,7 +254,7 @@ namespace _15pl04.Ucc.Commons
             var timeToWait = (int)(Timeout * 1000 / 2);
             while (IsRunning)
             {
-                Message messageToSend = GetStatusMessage();
+                Message? messageToSend = GetStatusMessage();
                 if (!ProcessMessage(messageToSend))
                     break;
 
@@ -293,7 +295,7 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="message">Message to be send to server.</param>
         /// <returns>Received messages or null if couldn't get server response.</returns>
-        private List<Message> SendMessage(Message message)
+        private List<Message>? SendMessage(Message message)
         {
             var receivedMessages = _messageSender.Send(message);
             if (receivedMessages == null)
@@ -329,14 +331,12 @@ namespace _15pl04.Ucc.Commons
         }
 
         /// <summary>
-        /// Enqueues ErrorMessage to be send to server. It constains information about exception occured in component.
+        /// Enqueues ErrorMessage to be send to server. It constains information about exception occurred in component.
         /// </summary>
         /// <param name="reasonOfException">The user friendly information about exception.</param>
         /// <param name="exception">Occured exception.</param>
         private void InformServerAboutException(string reasonOfException, Exception exception)
         {
-            if (exception == null)
-                return;
             var errorText =
                 $"{ComponentType}(id={Id})|{reasonOfException}|Exception type: {exception.GetType().FullName}|Exception message: {exception.Message}";
             var errorMessage = new ErrorMessage
@@ -393,7 +393,7 @@ namespace _15pl04.Ucc.Commons
         /// Raises event handler if it is not null.
         /// </summary>
         /// <param name="eventHandler">Handler to be raised.</param>
-        private void RaiseEvent(EventHandler eventHandler)
+        private void RaiseEvent(EventHandler? eventHandler)
         {
             eventHandler?.Invoke(this, EventArgs.Empty);
         }
@@ -403,7 +403,7 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="eventHandler">Handler to be raised.</param>
         /// <param name="message">Message to be passed as event event argument.</param>
-        private void RaiseEvent(EventHandler<MessageEventArgs> eventHandler, Message message)
+        private void RaiseEvent(EventHandler<MessageEventArgs?>? eventHandler, Message message)
         {
             eventHandler?.Invoke(this, new MessageEventArgs(message));
         }
@@ -414,7 +414,7 @@ namespace _15pl04.Ucc.Commons
         /// <param name="eventHandler">Handler to be raised.</param>
         /// <param name="message">Message to be passed as event event argument.</param>
         /// <param name="exception">Exception to be passed as event event argument.</param>
-        private void RaiseEvent(EventHandler<MessageExceptionEventArgs> eventHandler, Message message,
+        private void RaiseEvent(EventHandler<MessageExceptionEventArgs?>? eventHandler, Message message,
             Exception exception)
         {
             eventHandler?.Invoke(this, new MessageExceptionEventArgs(message, exception));

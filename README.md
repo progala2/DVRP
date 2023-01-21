@@ -1,5 +1,5 @@
 # DVRP
-Implementation of the computing cluster.
+Implementation of the computing cluster for computing the distance constrained vehicle routing problem as fast as possible with possibility to split it among many nodes.
 
 ### Names convention & coding guidelines
 

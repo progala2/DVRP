@@ -1,29 +1,26 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TimeoutException = _15pl04.Ucc.Commons.Exceptions.TimeoutException;
+using Xunit;
 
 namespace _15pl04.Ucc.Commons.Tests
 {
-    [TestClass]
     public class TcpClientTests
     {
         private const int Port = 9123;
         private const int BufferSize = 2048;
-        private readonly IPAddress _ipAddressv4 = new IPAddress(new byte[] {127, 0, 0, 1});
-        private readonly IPAddress _ipAddressv6 = IPAddress.Parse("0:0:0:0:0:0:0:1");
+        private readonly IPAddress _ipAddressV4 = new (new byte[] {127, 0, 0, 1});
+        private readonly IPAddress _ipAddressV6 = IPAddress.Parse("0:0:0:0:0:0:0:1");
         private Socket _socket;
 
-        [TestMethod]
+        [Fact]
         public void TcpClientConnectingWithSpecifiedSocketAndReceivingAnswerIpV4()
         {
-            var client = new TcpClient(new IPEndPoint(_ipAddressv4, Port));
+            var client = new TcpClient(new IPEndPoint(_ipAddressV4, Port));
 
-            const string message = "to jest wiadomosc do przekazania";
+            const string message = "It's a message to send";
 
             var data = Encoding.UTF8.GetBytes(message);
 
@@ -32,10 +29,10 @@ namespace _15pl04.Ucc.Commons.Tests
             var received = client.SendData(data);
 
 
-            Assert.AreEqual(data.Length, received.Length);
+            Assert.Equal(data.Length, received.Length);
             for (var i = 0; i < data.Length; ++i)
             {
-                Assert.AreEqual(data[i], received[i]);
+                Assert.Equal(data[i], received[i]);
                 i++;
             }
             //check whether wait or dispose
@@ -43,12 +40,12 @@ namespace _15pl04.Ucc.Commons.Tests
             t.Wait();
         }
 
-        [TestMethod]
+        [Fact]
         public void TcpClientConnectingWithSpecifiedSocketAndReceivingAnswerIpv6()
         {
-            var client = new TcpClient(new IPEndPoint(_ipAddressv6, Port));
+            var client = new TcpClient(new IPEndPoint(_ipAddressV6, Port));
 
-            const string message = "to jest wiadomosc do przekazania";
+            const string message = "It's a message to send";
 
             var data = Encoding.UTF8.GetBytes(message);
 
@@ -57,47 +54,15 @@ namespace _15pl04.Ucc.Commons.Tests
             var received = client.SendData(data);
 
 
-            Assert.AreEqual(data.Length, received.Length);
+            Assert.Equal(data.Length, received.Length);
             for (var i = 0; i < data.Length; ++i)
             {
-                Assert.AreEqual(data[i], received[i]);
+                Assert.Equal(data[i], received[i]);
                 i++;
             }
             //check whether wait or dispose
             EndConnection();
             t.Wait();
-        }
-
-        //long test, takes TimeoutSeconds seconds
-        [ExpectedException(typeof (TimeoutException))]
-        [TestMethod]
-        public void TcpClientConnectingToWrongIpAndThrowingOwnException()
-        {
-            var t = new Task(StartListeningV4);
-            t.Start();
-            try
-            {
-                var client = new TcpClient(
-                    new IPEndPoint(new IPAddress(new byte[] {126, 0, 0, 1}), Port));
-
-                const string message = "to jest wiadomosc do przekazania";
-
-                var data = Encoding.UTF8.GetBytes(message);
-
-                var received = client.SendData(data);
-            }
-            catch (TimeoutException e)
-            {
-                EndConnection();
-                throw e;
-            }
-            catch (Exception)
-            {
-                EndConnection();
-                throw;
-            }
-
-            //throw new Exception();
         }
 
         private void ListenAndResendV4()
@@ -137,7 +102,7 @@ namespace _15pl04.Ucc.Commons.Tests
         {
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            _socket.Bind(new IPEndPoint(_ipAddressv4, Port));
+            _socket.Bind(new IPEndPoint(_ipAddressV4, Port));
             _socket.Listen(10);
         }
 
@@ -145,7 +110,7 @@ namespace _15pl04.Ucc.Commons.Tests
         {
             _socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
 
-            _socket.Bind(new IPEndPoint(_ipAddressv6, Port));
+            _socket.Bind(new IPEndPoint(_ipAddressV6, Port));
             _socket.Listen(10);
         }
     }

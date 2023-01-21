@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Computations.Base;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.Commons.Utilities;
+using _15pl04.Ucc.TaskSolver;
 
 namespace _15pl04.Ucc.TaskManager
 {
@@ -22,7 +22,7 @@ namespace _15pl04.Ucc.TaskManager
         /// <param name="threadManager">The thread manager. Cannot be null.</param>
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         public TaskManager(ThreadManager threadManager, IPEndPoint serverAddress)
             : base(threadManager, serverAddress)
@@ -36,7 +36,7 @@ namespace _15pl04.Ucc.TaskManager
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers. If null current directory will be searched for task solvers.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         public TaskManager(ThreadManager threadManager, IPEndPoint serverAddress,
             string taskSolversDirectoryRelativePath)
@@ -117,7 +117,7 @@ namespace _15pl04.Ucc.TaskManager
             // should be started properly cause server sends at most as many tasks to do as count of component's threads in idle state
             var started = StartActionInNewThread(() =>
             {
-                var taskSolver = (TaskSolver.TaskSolver)Activator.CreateInstance(taskSolverType, message.ProblemData);
+                var taskSolver = (TaskSolver.TaskSolver?)Activator.CreateInstance(taskSolverType, message.ProblemData) ?? throw new ArgumentNullException();
                 taskSolver.ThrowIfError();
 
                 var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
@@ -188,7 +188,7 @@ namespace _15pl04.Ucc.TaskManager
                     solutionsData[i] = solution.Data;
                 }
 
-                var taskSolver = (TaskSolver.TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
+                var taskSolver = (TaskSolver.TaskSolver?)Activator.CreateInstance(taskSolverType, message.CommonData) ?? throw new ArgumentNullException();
                 taskSolver.ThrowIfError();
 
                 // measure time using DateTime cause StopWatch is not guaranteed to be thread safe

@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.Commons.Messaging
         /// </summary>
         /// <param name="message">Message to send.</param>
         /// <returns>Messages returned or null.</returns>
-        public List<Message> Send(Message message)
+        public List<Message>? Send(Message message)
         {
             return Send(new List<Message> { message });
         }
@@ -50,10 +50,10 @@ namespace _15pl04.Ucc.Commons.Messaging
         /// </summary>
         /// <param name="messages">Messages to send.</param>
         /// <returns>Messages returned or null.</returns>
-        public List<Message> Send(IList<Message> messages)
+        public List<Message>? Send(IList<Message> messages)
         {
             var data = _marshaller.Marshall(messages);
-            byte[] retBytes = null;
+            byte[] retBytes = Array.Empty<byte>();
             bool again;
             do
             {
@@ -94,7 +94,7 @@ namespace _15pl04.Ucc.Commons.Messaging
 
             var messagesReceived = _marshaller.Unmarshall(retBytes);
             UpdateServerList(messagesReceived);
-            return retBytes != null ? messagesReceived : null;
+            return messagesReceived;
         }
 
         /// <summary>
@@ -103,10 +103,7 @@ namespace _15pl04.Ucc.Commons.Messaging
         /// <param name="messages">Messages to update server list based on.</param>
         private void UpdateServerList(IList<Message> messages)
         {
-            if (messages == null)
-                return;
-
-            for (var i = messages.Count - 1; i >= 0; --i)
+	        for (var i = messages.Count - 1; i >= 0; --i)
             {
                 var message = messages[i];
                 switch (message.MessageType)

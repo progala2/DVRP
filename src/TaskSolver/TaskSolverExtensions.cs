@@ -8,7 +8,7 @@ namespace _15pl04.Ucc.Commons.Utilities
     public static class TaskSolverExtensions
     {
         /// <summary>
-        /// Throws an exception occured in task solver if it is in error state.
+        /// Throws an exception occurred in task solver if it is in error state.
         /// </summary>
         /// <param name="taskSolver">Extended task solver instance.</param>
         public static void ThrowIfError(this TaskSolver.TaskSolver taskSolver)

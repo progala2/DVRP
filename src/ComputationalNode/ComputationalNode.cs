@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using _15pl04.Ucc.Commons;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Computations.Base;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.Commons.Utilities;
+using _15pl04.Ucc.TaskSolver;
 
 namespace _15pl04.Ucc.ComputationalNode
 {
@@ -22,7 +22,7 @@ namespace _15pl04.Ucc.ComputationalNode
         /// <param name="threadManager">The thread manager. Cannot be null.</param>
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>        
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         public ComputationalNode(ThreadManager threadManager, IPEndPoint serverAddress)
             : base(threadManager, serverAddress)
@@ -36,7 +36,7 @@ namespace _15pl04.Ucc.ComputationalNode
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers. If null current directory will be searched for task solvers.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occured
+        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         public ComputationalNode(ThreadManager threadManager, IPEndPoint serverAddress,
             string taskSolversDirectoryRelativePath)
@@ -128,7 +128,7 @@ namespace _15pl04.Ucc.ComputationalNode
                         new SolutionsMessage.Solution
                         {
                             PartialProblemId = partialProblem.PartialProblemId,
-                            TimeoutOccured = taskSolver.State == TaskSolver.TaskSolverState.Timeout,
+                            TimeoutOccured = taskSolver.State == TaskSolverState.Timeout,
                             Type = SolutionsMessage.SolutionType.Partial,
                             ComputationsTime = (ulong) (stop - start).TotalMilliseconds,
                             Data = partialProblemSolutionData

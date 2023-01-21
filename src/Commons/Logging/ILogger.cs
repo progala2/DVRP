@@ -19,7 +19,7 @@
         /// Logs INFO level message.
         /// </summary>
         /// <param name="s">Message to log.</param>
-        void Info(string s);
+        void Info(string? s);
         /// <summary>
         /// Logs WARN level message.
         /// </summary>
@@ -29,6 +29,6 @@
         /// Logs ERROR level message.
         /// </summary>
         /// <param name="s">Message to log.</param>
-        void Error(string s);
+        void Error(string? s);
     }
 }

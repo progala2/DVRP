@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.CommunicationServer.Components;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
+using Xunit;
 
 namespace _15pl04.Ucc.CommunicationServer.Tests
 {
-    [TestClass]
     public class ComponentOverseerTests
     {
         private IComponentOverseer _overseer;
 
-        [TestMethod]
+        [Fact]
         public void AllTypesOfNodesAreProperlyRegistered()
         {
             _overseer = new ComponentOverseer(5, 5);
@@ -30,20 +29,20 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             ComponentInfo computationalNode = new SolverNodeInfo(ComponentType.ComputationalNode, solvableProblems, 5);
             ComponentInfo backupServer = new BackupServerInfo(serverInfo, 5);
 
-            Assert.IsNull(taskManager.ComponentId);
-            Assert.IsNull(computationalNode.ComponentId);
-            Assert.IsNull(backupServer.ComponentId);
+            Assert.Null(taskManager.ComponentId);
+            Assert.Null(computationalNode.ComponentId);
+            Assert.Null(backupServer.ComponentId);
 
             _overseer.TryRegister(taskManager);
             _overseer.TryRegister(computationalNode);
             _overseer.TryRegister(backupServer);
 
-            Assert.IsTrue(_overseer.IsRegistered(taskManager.ComponentId.Value));
-            Assert.IsTrue(_overseer.IsRegistered(computationalNode.ComponentId.Value));
-            Assert.IsTrue(_overseer.IsRegistered(backupServer.ComponentId.Value));
+            Assert.True(_overseer.IsRegistered(taskManager.ComponentId.Value));
+            Assert.True(_overseer.IsRegistered(computationalNode.ComponentId.Value));
+            Assert.True(_overseer.IsRegistered(backupServer.ComponentId.Value));
         }
 
-        [TestMethod]
+        [Fact]
         public void NodeIsDeregisteredAfterTimeout()
         {
             uint communicationTimeout = 1;
@@ -62,14 +61,14 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
             stopwatch.Start();
 
-            Assert.IsTrue(_overseer.IsRegistered(computationalNode.ComponentId.Value));
+            Assert.True(_overseer.IsRegistered(computationalNode.ComponentId.Value));
 
             deregistrationEventLock.WaitOne(1000*(int) (communicationTimeout + checkInterval + 1));
 
             stopwatch.Stop();
 
-            Assert.IsFalse(_overseer.IsRegistered(computationalNode.ComponentId.Value));
-            Assert.IsTrue((ulong) stopwatch.ElapsedMilliseconds >= communicationTimeout);
+            Assert.False(_overseer.IsRegistered(computationalNode.ComponentId.Value));
+            Assert.True((ulong) stopwatch.ElapsedMilliseconds >= communicationTimeout);
 
             _overseer.StopMonitoring();
         }

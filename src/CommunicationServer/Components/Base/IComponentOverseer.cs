@@ -9,7 +9,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
     /// </summary>
     /// <param name="sender">Event caller.</param>en
     /// <param name="e">Event args.</param>
-    public delegate void DeregisterationEventHandler(object sender, DeregisterationEventArgs e);
+    public delegate void DeregistrationEventHandler(object sender, DeregisterationEventArgs e);
 
     /// <summary>
     /// Module responsible for monitoring and (de)registering cluster components.
@@ -27,7 +27,7 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
         /// <summary>
         /// Invoked on component's deregistration.
         /// </summary>
-        event DeregisterationEventHandler Deregistration;
+        event DeregistrationEventHandler Deregistration;
         /// <summary>
         /// Tries to register a cluster component in the system.
         /// </summary>

@@ -1,35 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskSolver", "TaskSolver\TaskSolver.csproj", "{5495F07E-3AC5-4B01-B64E-2482B718E5E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskSolver", "TaskSolver\TaskSolver.csproj", "{5495F07E-3AC5-4B01-B64E-2482B718E5E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager", "TaskManager\TaskManager.csproj", "{3A85AA30-CCA4-4672-B350-2C2DA11F3DF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager", "TaskManager\TaskManager.csproj", "{3A85AA30-CCA4-4672-B350-2C2DA11F3DF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalClient", "ComputationalClient\ComputationalClient.csproj", "{B06EA9C0-DD2C-4708-BE91-8A929E66EAD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputationalClient", "ComputationalClient\ComputationalClient.csproj", "{B06EA9C0-DD2C-4708-BE91-8A929E66EAD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServer", "CommunicationServer\CommunicationServer.csproj", "{CA294784-1827-4830-906D-14A160DCD2F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationServer", "CommunicationServer\CommunicationServer.csproj", "{CA294784-1827-4830-906D-14A160DCD2F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalNode", "ComputationalNode\ComputationalNode.csproj", "{69307DB4-5E49-4993-92A8-3A1725964646}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputationalNode", "ComputationalNode\ComputationalNode.csproj", "{69307DB4-5E49-4993-92A8-3A1725964646}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons", "Commons\Commons.csproj", "{6EE7686F-D191-4151-AD36-B8B7199310F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commons", "Commons\Commons.csproj", "{6EE7686F-D191-4151-AD36-B8B7199310F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Tests", "Commons.Tests\Commons.Tests.csproj", "{F80BCC93-8981-40CD-9850-1ADD9A8263E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commons.Tests", "Commons.Tests\Commons.Tests.csproj", "{F80BCC93-8981-40CD-9850-1ADD9A8263E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalClient.Tests", "ComputationalClient.Tests\ComputationalClient.Tests.csproj", "{EF55FEE1-54F5-4735-A7E3-F1E056070F31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Tests", "TaskManager.Tests\TaskManager.Tests.csproj", "{A9C14680-BDFC-4269-8A0E-B4BA360825F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalNode.Tests", "ComputationalNode.Tests\ComputationalNode.Tests.csproj", "{BA5E7492-E03A-44D8-A038-05E3B666BC15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskSolver.Tests", "TaskSolver.Tests\TaskSolver.Tests.csproj", "{4E716288-ACAC-4FCC-A982-DCA1C2A298E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Tests", "TaskManager.Tests\TaskManager.Tests.csproj", "{A9C14680-BDFC-4269-8A0E-B4BA360825F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationServer.Tests", "CommunicationServer.Tests\CommunicationServer.Tests.csproj", "{9858B505-D15B-4C41-B385-22B965AF6313}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskSolver.Tests", "TaskSolver.Tests\TaskSolver.Tests.csproj", "{4E716288-ACAC-4FCC-A982-DCA1C2A298E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinMaxTaskSolver", "MinMaxTaskSolver\MinMaxTaskSolver.csproj", "{8530BFFD-EE0E-4E0F-928D-C4769D770762}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServer.Tests", "CommunicationServer.Tests\CommunicationServer.Tests.csproj", "{9858B505-D15B-4C41-B385-22B965AF6313}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinMaxTaskSolver", "MinMaxTaskSolver\MinMaxTaskSolver.csproj", "{8530BFFD-EE0E-4E0F-928D-C4769D770762}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinMaxTaskSolver.Tests", "MinMaxTaskSolver.Tests\MinMaxTaskSolver.Tests.csproj", "{87FDFEC7-CB2D-4EF9-866C-58DBAF0FE813}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinMaxTaskSolver.Tests", "MinMaxTaskSolver.Tests\MinMaxTaskSolver.Tests.csproj", "{87FDFEC7-CB2D-4EF9-866C-58DBAF0FE813}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,14 +61,6 @@ Global
 		{F80BCC93-8981-40CD-9850-1ADD9A8263E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F80BCC93-8981-40CD-9850-1ADD9A8263E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F80BCC93-8981-40CD-9850-1ADD9A8263E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF55FEE1-54F5-4735-A7E3-F1E056070F31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF55FEE1-54F5-4735-A7E3-F1E056070F31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF55FEE1-54F5-4735-A7E3-F1E056070F31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF55FEE1-54F5-4735-A7E3-F1E056070F31}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BA5E7492-E03A-44D8-A038-05E3B666BC15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA5E7492-E03A-44D8-A038-05E3B666BC15}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA5E7492-E03A-44D8-A038-05E3B666BC15}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA5E7492-E03A-44D8-A038-05E3B666BC15}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9C14680-BDFC-4269-8A0E-B4BA360825F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9C14680-BDFC-4269-8A0E-B4BA360825F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9C14680-BDFC-4269-8A0E-B4BA360825F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -96,5 +84,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3ABE40A8-B70C-4BC5-8A88-AAF76C4CC422}
 	EndGlobalSection
 EndGlobal

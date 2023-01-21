@@ -26,7 +26,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
         /// <param name="node">Node to assign work to.</param>
         /// <param name="work">Assigned work.</param>
         /// <returns>Whether there is any work compatible with the component.</returns>
-        bool TryAssignWork(SolverNodeInfo node, out Work work);
+        bool TryAssignWork(SolverNodeInfo node, out Work? work);
 
         /// <summary>
         /// Adds new problem instance to the system.
@@ -58,22 +58,22 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
         /// <param name="partialProblemId">ID of the corresponding partial problem.</param>
         /// <param name="data">Partial solution data.</param>
         /// <param name="computationsTime">Time of the foregoing computations.</param>
-        /// <param name="timeoutOccured">Whether timeout stopped the computations.</param>
+        /// <param name="timeoutOccurred">Whether timeout stopped the computations.</param>
         void AddPartialSolution(ulong problemId, ulong partialProblemId, byte[] data, ulong computationsTime,
-            bool timeoutOccured);
+            bool timeoutOccurred);
 
         /// <summary>
         /// Gets problem instance information by ID.
         /// </summary>
         /// <param name="problemId">Problem instance ID.</param>
         /// <returns>Problem instance.</returns>
-        Problem GetProblem(ulong problemId);
+        Problem? GetProblem(ulong problemId);
         /// <summary>
         /// Gets final solution data by problem instance ID.
         /// </summary>
         /// <param name="problemId">Problem instance (solution) ID.</param>
         /// <returns>Final solution.</returns>
-        Solution GetSolution(ulong problemId);
+        Solution? GetSolution(ulong problemId);
         /// <summary>
         /// Gets foregoing computations time for the problem instance specified by ID.
         /// </summary>

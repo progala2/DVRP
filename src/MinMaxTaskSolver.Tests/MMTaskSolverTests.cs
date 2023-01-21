@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Text.Json;
 using _15pl04.Ucc.MinMaxTaskSolver;
+using Xunit;
 
 namespace MinMaxTaskSolver.Tests
 {
-    [TestClass]
     public class MmTaskSolverTests
     {
-        [TestMethod]
+        [Fact]
         public void AllComputationsOfMinMaxTaskSolverAreCorrect()
         {
             var numbersCount = 1000*1000;
             var threadsCount = 10;
-
-            var formatter = new BinaryFormatter();
+            
             var rand = new Random();
 
             var stopwatch = new Stopwatch();
@@ -35,13 +33,13 @@ namespace MinMaxTaskSolver.Tests
             var expectedMaximum = numbers.Max();
             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + " expected results found");
 
-            var problem = new MmProblem(numbers);
+            var problem = new MmProblem(numbers.ToArray());
             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
 
             byte[] problemData;
             using (var memoryStream = new MemoryStream())
             {
-                formatter.Serialize(memoryStream, problem);
+                JsonSerializer.Serialize(memoryStream, problem);
                 problemData = memoryStream.ToArray();
             }
             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem serialized");
@@ -64,9 +62,9 @@ namespace MinMaxTaskSolver.Tests
 
             using (var memoryStream = new MemoryStream(finalSolutionData))
             {
-                var finalSolution = (MmSolution) formatter.Deserialize(memoryStream);
-                Assert.AreEqual(finalSolution.Min, expectedMinimum);
-                Assert.AreEqual(finalSolution.Max, expectedMaximum);
+                var finalSolution = JsonSerializer.Deserialize<MmSolution>(memoryStream);
+                Assert.Equal(finalSolution.Min, expectedMinimum);
+                Assert.Equal(finalSolution.Max, expectedMaximum);
             }
             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "final solution deserialized");
 

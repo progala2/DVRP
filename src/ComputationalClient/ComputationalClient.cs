@@ -31,22 +31,22 @@ namespace _15pl04.Ucc.ComputationalClient
         /// <summary>
         ///     Event which is raised after successful sending message to the server.
         /// </summary>
-        public event EventHandler<MessageEventArgs> MessageSent;
+        public event EventHandler<MessageEventArgs?>? MessageSent;
 
         /// <summary>
         ///     Event which is raised after receiving message from the server.
         /// </summary>
-        public event EventHandler<MessageEventArgs> MessageReceived;
+        public event EventHandler<MessageEventArgs>? MessageReceived;
 
         /// <summary>
-        ///     Event which is raised if exception occured during sending message to the server.
+        ///     Event which is raised if exception occurred during sending message to the server.
         /// </summary>
-        public event EventHandler<MessageExceptionEventArgs> MessageSendingException;
+        public event EventHandler<MessageExceptionEventArgs>? MessageSendingException;
 
         /// <summary>
-        ///     Event which is raised if exception occured during handling message received from the server.
+        ///     Event which is raised if exception occurred during handling message received from the server.
         /// </summary>
-        public event EventHandler<MessageExceptionEventArgs> MessageHandlingException;
+        public event EventHandler<MessageExceptionEventArgs>? MessageHandlingException;
 
         /// <summary>
         ///     Sends request for solving the problem.
@@ -70,8 +70,7 @@ namespace _15pl04.Ucc.ComputationalClient
             ulong? problemId = null;
             foreach (var receivedMessage in receivedMessages)
             {
-                SolveRequestResponseMessage solveRequestResponseMessage;
-                if ((solveRequestResponseMessage = receivedMessage as SolveRequestResponseMessage) != null)
+                if (receivedMessage is SolveRequestResponseMessage solveRequestResponseMessage)
                 {
                     problemId = solveRequestResponseMessage.AssignedId;
                 }
@@ -89,7 +88,7 @@ namespace _15pl04.Ucc.ComputationalClient
         /// </summary>
         /// <param name="id">The ID of the problem instance assigned by the server.</param>
         /// <returns>Solutions message(s) or null if server is not responding.</returns>
-        public List<SolutionsMessage> SendSolutionRequest(ulong id)
+        public List<SolutionsMessage>? SendSolutionRequest(ulong id)
         {
             var solutionRequestMessage = new SolutionRequestMessage
             {
@@ -102,8 +101,7 @@ namespace _15pl04.Ucc.ComputationalClient
             var solutionsMessages = new List<SolutionsMessage>();
             foreach (var receivedMessage in receivedMessages)
             {
-                SolutionsMessage solutionsMessage;
-                if ((solutionsMessage = receivedMessage as SolutionsMessage) != null)
+                if (receivedMessage is SolutionsMessage solutionsMessage)
                 {
                     solutionsMessages.Add(solutionsMessage);
                 }
@@ -121,7 +119,7 @@ namespace _15pl04.Ucc.ComputationalClient
         /// </summary>
         /// <param name="message">Message to be send to server.</param>
         /// <returns>Received messages or null if couldn't get server response.</returns>
-        private List<Message> SendMessage(Message message)
+        private List<Message>? SendMessage(Message message)
         {
             var receivedMessages = _messageSender.Send(message);
             if (receivedMessages == null)
@@ -145,7 +143,7 @@ namespace _15pl04.Ucc.ComputationalClient
         /// </summary>
         /// <param name="eventHandler">Handler to be raised.</param>
         /// <param name="message">Message to be passed as event event argument.</param>
-        private void RaiseEvent(EventHandler<MessageEventArgs> eventHandler, Message message)
+        private void RaiseEvent(EventHandler<MessageEventArgs?>? eventHandler, Message message)
         {
             eventHandler?.Invoke(this, new MessageEventArgs(message));
         }
@@ -156,7 +154,7 @@ namespace _15pl04.Ucc.ComputationalClient
         /// <param name="eventHandler">Handler to be raised.</param>
         /// <param name="message">Message to be passed as event event argument.</param>
         /// <param name="exception">Exception to be passed as event event argument.</param>
-        private void RaiseEvent(EventHandler<MessageExceptionEventArgs> eventHandler, Message message,
+        private void RaiseEvent(EventHandler<MessageExceptionEventArgs>? eventHandler, Message message,
             Exception exception)
         {
             eventHandler?.Invoke(this, new MessageExceptionEventArgs(message, exception));

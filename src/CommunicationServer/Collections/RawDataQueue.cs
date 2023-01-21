@@ -34,11 +34,9 @@ namespace _15pl04.Ucc.CommunicationServer.Collections
         /// <param name="metadata">Information about the data and connection.</param>
         /// <param name="callback">Callback that finalizes the connection.</param>
         /// <returns>True if managed to dequeue.</returns>
-        public bool TryDequeue(out byte[] data, out Metadata metadata, out ProcessedDataCallback callback)
+        public bool TryDequeue(out byte[]? data, out Metadata? metadata, out ProcessedDataCallback? callback)
         {
-            RawDataQueueItem item;
-
-            if (TryDequeue(out item))
+	        if (TryDequeue(out var item))
             {
                 data = item.Data;
                 metadata = item.Metadata;

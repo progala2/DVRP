@@ -25,8 +25,8 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private static readonly ILogger Logger = new ConsoleLogger();
         private readonly IDataProcessor _dataProcessor;
         private readonly Socket _listenerSocket;
-        private CancellationTokenSource _cancellationTokenSource;
-        private ManualResetEvent _clientAcceptanceEvent;
+        private CancellationTokenSource? _cancellationTokenSource;
+        private ManualResetEvent? _clientAcceptanceEvent;
         private volatile bool _isListening;
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             if (!_isListening)
                 return;
 
-            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource?.Cancel();
         }
 
         /// <summary>
@@ -128,40 +128,38 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         /// <param name="ar">Data about the socket.</param>
         private void AcceptCallback(IAsyncResult ar)
         {
-            _clientAcceptanceEvent.Set();
+            _clientAcceptanceEvent?.Set();
 
             if (!_isListening)
                 return;
 
-            var listenerSocket = (Socket)ar.AsyncState;
-            var clientSocket = listenerSocket.EndAccept(ar);
+            var listenerSocket = (Socket?)ar.AsyncState;
+            var clientSocket = listenerSocket?.EndAccept(ar) ?? throw new Exception("No Socket!");
 
             Logger.Trace("Client accepted.");
 
             var buffer = new byte[ReadBufferSize];
 
-            using (var memStream = new MemoryStream())
+            using var memStream = new MemoryStream();
+            int bytesRead;
+            do
             {
-                int bytesRead;
-                do
-                {
-                    bytesRead = clientSocket.Receive(buffer);
-                    memStream.Write(buffer, 0, bytesRead);
-                } while (bytesRead > 0);
+	            bytesRead = clientSocket.Receive(buffer);
+	            memStream.Write(buffer, 0, bytesRead);
+            } while (bytesRead > 0);
 
-                var metadata = new TcpDataProviderMetadata
-                {
-                    ReceptionTime = DateTime.UtcNow,
-                    SenderAddress = (IPEndPoint)clientSocket.RemoteEndPoint
-                };
+            var metadata = new TcpDataProviderMetadata
+            {
+	            ReceptionTime = DateTime.UtcNow,
+	            SenderAddress = (IPEndPoint?)clientSocket.RemoteEndPoint ?? throw new Exception("No RemoteEndPoint!")
+            };
 
-                _dataProcessor.EnqueueDataToProcess(
-                    memStream.ToArray(),
-                    metadata,
-                    GenerateResponseCallback(clientSocket));
+            _dataProcessor.EnqueueDataToProcess(
+	            memStream.ToArray(),
+	            metadata,
+	            GenerateResponseCallback(clientSocket));
 
-                Logger.Trace("Client sent " + memStream.Length + " bytes of data.");
-            }
+            Logger.Trace("Client sent " + memStream.Length + " bytes of data.");
         }
     }
 }
