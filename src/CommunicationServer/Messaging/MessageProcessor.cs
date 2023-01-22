@@ -11,6 +11,7 @@ using _15pl04.Ucc.CommunicationServer.Collections;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
 using _15pl04.Ucc.CommunicationServer.Messaging.Base;
 using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
+using IdGen;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
@@ -26,8 +27,9 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private readonly IMarshaller<Message> _marshaller;
         private readonly AutoResetEvent _processingLock;
         private readonly IWorkManager _workManager;
-        private CancellationTokenSource _cancellationTokenSource;
+        private readonly CancellationTokenSource _cancellationTokenSource;
         private volatile bool _isProcessing;
+        private readonly IdGenerator IdGenerator = new (0);
 
         /// <summary>
         /// Creates MessageProcessor instance.
@@ -46,6 +48,8 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
             var serializer = new MessageSerializer();
             var validator = new MessageValidator();
             _marshaller = new Marshaller(serializer, validator);
+
+            _cancellationTokenSource = new CancellationTokenSource();
 
             _componentOverseer = componentOverseer;
             _workManager = workManager;
@@ -78,8 +82,6 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         {
             if (_isProcessing)
                 return;
-
-            _cancellationTokenSource = new CancellationTokenSource();
 
             var token = _cancellationTokenSource.Token;
             token.Register(() => { _isProcessing = false; });
@@ -139,20 +141,18 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                 try
                 {
-                    var metadata = data.Metadata as TcpDataProviderMetadata;
+	                if (data.Metadata is not TcpDataProviderMetadata metadata)
+                    {
+	                    responseMessages = UnsupportedMessage(msg);
+	                    break;
+                    }
                     var response = HandleMessageGeneric(msg, metadata);
                     responseMessages.AddRange(response);
                 }
                 catch (RuntimeBinderException e)
                 {
                     Logger.Debug(e.Message);
-                    Logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
-                    var errorMsg = new ErrorMessage
-                    {
-                        ErrorType = ErrorType.InvalidOperation,
-                        ErrorText = "Computational Server doesn't handle " + msg.MessageType + " message."
-                    };
-                    responseMessages = new List<Message> { errorMsg };
+                    responseMessages = UnsupportedMessage(msg);
                     break;
                 }
             }
@@ -162,6 +162,18 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
             var marshalledResponse = _marshaller.Marshall(responseMessages);
             data.Callback(marshalledResponse);
+        }
+
+        private static List<Message> UnsupportedMessage(Message msg)
+        {
+	        Logger.Warn("Unsupported message type received (" + msg.MessageType + ").");
+	        var errorMsg = new ErrorMessage
+	        {
+		        ErrorType = ErrorType.InvalidOperation,
+		        ErrorText = "Computational Server doesn't handle " + msg.MessageType + " message."
+	        };
+	        List<Message> responseMessages = new() { errorMsg };
+	        return responseMessages;
         }
     }
 }

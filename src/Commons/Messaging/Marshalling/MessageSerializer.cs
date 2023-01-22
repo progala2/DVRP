@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
+using _15pl04.Ucc.Commons.Exceptions;
 using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 
@@ -49,11 +50,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
         {
             var type = GetMessageType(buffer, index, count);
 
-            using (var stream = new MemoryStream(buffer, index, count))
-            {
-                var serializer = _serializers[type];
-                return (Message) serializer.Deserialize(stream);
-            }
+            using var stream = new MemoryStream(buffer, index, count);
+            var serializer = _serializers[type];
+            return (Message?) serializer.Deserialize(stream) ?? throw new ParsingNullException(nameof(buffer));
         }
 
         /// <summary>
@@ -63,16 +62,14 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
         /// <returns>Serialized message as raw bytes.</returns>
         public byte[] Serialize(Message obj)
         {
-            using (var memStream = new MemoryStream())
-            {
-                var serializer = _serializers[obj.MessageType];
+	        using var memStream = new MemoryStream();
+	        var serializer = _serializers[obj.MessageType];
 
-                var namespaces = new XmlSerializerNamespaces();
-                namespaces.Add("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+	        var namespaces = new XmlSerializerNamespaces();
+	        namespaces.Add("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
-                serializer.Serialize(memStream, obj, namespaces);
-                return memStream.ToArray();
-            }
+	        serializer.Serialize(memStream, obj, namespaces);
+	        return memStream.ToArray();
         }
 
         /// <summary>
@@ -83,19 +80,15 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
         /// <param name="count">Length of message in array.</param>
         /// <returns>Enumerable message class.</returns>
         /// <exception cref="Exception">Throws when no root element is found.</exception>
-        private MessageClass GetMessageType(byte[] buffer, int index, int count)
+        private static MessageClass GetMessageType(byte[] buffer, int index, int count)
         {
-            using (var memStream = new MemoryStream(buffer, index, count))
-            {
-                using (var reader = XmlReader.Create(memStream))
-                {
-                    while (reader.Read())
-                        if (reader.NodeType == XmlNodeType.Element)
-                            return Message.GetMessageClassFromString(reader.Name);
+	        using var memStream = new MemoryStream(buffer, index, count);
+	        using var reader = XmlReader.Create(memStream);
+	        while (reader.Read())
+		        if (reader.NodeType == XmlNodeType.Element)
+			        return Message.GetMessageClassFromString(reader.Name);
 
-                    throw new Exception("No root element found.");
-                }
-            }
+	        throw new Exception("No root element found.");
         }
     }
 }

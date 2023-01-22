@@ -23,21 +23,21 @@
         /// <summary>
         /// Corresponding problem instance.
         /// </summary>
-        public Problem Problem { get; private set; }
+        public Problem Problem { get; }
 
         /// <summary>
         /// Final solution data.
         /// </summary>
-        public byte[] Data { get; private set; }
+        public byte[] Data { get; }
 
         /// <summary>
         /// Total computations time.
         /// </summary>
-        public ulong ComputationsTime { get; private set; }
+        public ulong ComputationsTime { get; }
 
         /// <summary>
         /// True if the computations were stopped due to timeout. False otherwise.
         /// </summary>
-        public bool TimeoutOccured { get; private set; }
+        public bool TimeoutOccured { get; }
     }
 }

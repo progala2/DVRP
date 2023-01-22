@@ -9,15 +9,21 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
     /// </summary>
     public abstract class ComponentInfo
     {
-        /// <summary>
-        /// Creates ComponentInfo instance.
-        /// </summary>
-        /// <param name="type">Type of the component.</param>
-        /// <param name="numberOfThreads">Number of threads provided by the component.</param>
-        protected ComponentInfo(ComponentType type, int numberOfThreads)
+	    /// <summary>
+	    /// Creates ComponentInfo instance.
+	    /// </summary>
+	    /// <param name="id"></param>
+	    /// <param name="type">Type of the component.</param>
+	    /// <param name="numberOfThreads">Number of threads provided by the component.</param>
+	    protected ComponentInfo(ulong id, ComponentType type, int numberOfThreads)
         {
             ComponentType = type;
             NumberOfThreads = numberOfThreads;
+            
+            RegistrationTimestamp = DateTime.UtcNow;
+            Timestamp = DateTime.UtcNow;
+
+            ComponentId = id;
         }
 
         /// <summary>
@@ -31,25 +37,25 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
         /// <summary>
         /// ID assigned to the component (null before the assignement).
         /// </summary>
-        public ulong? ComponentId { get; private set; }
+        public ulong ComponentId { get; }
         /// <summary>
         /// Type of the component.
         /// </summary>
-        public ComponentType ComponentType { get; private set; }
+        public ComponentType ComponentType { get; }
         /// <summary>
         /// Number of threads provided by the component.
         /// </summary>
-        public int NumberOfThreads { get; private set; }
+        public int NumberOfThreads { get; }
 
         /// <summary>
         /// Information about threads provided via the Status messages.
         /// </summary>
-        public ICollection<ThreadStatus> ThreadInfo { get; set; }
+        public ICollection<ThreadStatus> ThreadInfo { get; set; } = Array.Empty<ThreadStatus>();
 
         /// <summary>
         /// Date of the registration in Communication Server.
         /// </summary>
-        public DateTime RegistrationTimestamp { get; private set; }
+        public DateTime RegistrationTimestamp { get; }
         /// <summary>
         /// Date of the component's most recent connection with Communication Server.
         /// </summary>
@@ -65,21 +71,6 @@ namespace _15pl04.Ucc.CommunicationServer.Components.Base
                 var diff = DateTime.UtcNow - Timestamp;
                 return (uint)diff.TotalMilliseconds;
             }
-        }
-
-        /// <summary>
-        /// Registers the component within the Communication Server. Assigns ID and sets appropriate timestamps.
-        /// </summary>
-        /// <param name="id">ID to assign.</param>
-        public void Register(ulong id)
-        {
-            if (ComponentId != null)
-                throw new Exception("Component re-register.");
-
-            RegistrationTimestamp = DateTime.UtcNow;
-            Timestamp = DateTime.UtcNow;
-
-            ComponentId = id;
         }
 
         /// <summary>

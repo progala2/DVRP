@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using _15pl04.Ucc.Commons.Exceptions;
 using _15pl04.Ucc.TaskSolver.DvrpAlgorithm;
 
 namespace _15pl04.Ucc.TaskSolver
@@ -31,7 +32,7 @@ namespace _15pl04.Ucc.TaskSolver
                 string problem;
                 using (var mem = new MemoryStream(problemData))
                 {
-                    problem = JsonSerializer.Deserialize<string>(mem) ?? throw new ArgumentNullException();
+                    problem = JsonSerializer.Deserialize<string>(mem) ?? throw new ParsingNullException(nameof(problemData));
                 }
                 var data = Encoding.UTF8.GetBytes(problem);
                 using (var mem = new MemoryStream(data))
@@ -115,6 +116,7 @@ namespace _15pl04.Ucc.TaskSolver
             catch (Exception ex)
             {
                 Exception = ex;
+                _dvrpProblem = new DvrpProblem(0, 0, Array.Empty<Depot>(), Array.Empty<Request>());
             }
         }
 
@@ -128,7 +130,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// </summary>
         /// <param name="threadCount">Number of divisions.</param>
         /// <returns>Binary serialized parts of the problem.</returns>
-        public override byte[][]? DivideProblem(int threadCount)
+        public override byte[][] DivideProblem(int threadCount)
         {
             try
             {
@@ -147,7 +149,7 @@ namespace _15pl04.Ucc.TaskSolver
             {
                 Exception = ex;
                 State = TaskSolverState.Error;
-                return null;
+                throw;
             }
         }
 
@@ -156,7 +158,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// </summary>
         /// <param name="solutions">Binary serialized DVRP solutions <see cref="DvrpSolution"/>.</param>
         /// <returns>Binary serialized string with a description of the best solution.</returns>
-        public override byte[]? MergeSolution(byte[][] solutions)
+        public override byte[] MergeSolution(byte[][] solutions)
         {
             try
             {
@@ -188,7 +190,7 @@ namespace _15pl04.Ucc.TaskSolver
             {
                 Exception = ex;
                 State = TaskSolverState.Error;
-                return null;
+                throw;
             }
         }
 
@@ -198,14 +200,14 @@ namespace _15pl04.Ucc.TaskSolver
         /// <param name="partialData">Binary serialized DVRP partial problem data.</param>
         /// <param name="timeout">Maximum time for computations.</param>
         /// <returns>Binary serialized solution.</returns>
-        public override byte[]? Solve(byte[] partialData, TimeSpan timeout)
+        public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
             try
             {
                 DvrpPartialProblem problem;
                 using (var memoryStream = new MemoryStream(partialData))
                 {
-                    problem = JsonSerializer.Deserialize<DvrpPartialProblem>(memoryStream) ?? throw new ArgumentNullException();
+                    problem = JsonSerializer.Deserialize<DvrpPartialProblem>(memoryStream) ?? throw new ParsingNullException(nameof(partialData));
                 }
                 var solver = new DvrpSolver(_dvrpProblem);
                 using (var memoryStream = new MemoryStream())
@@ -219,7 +221,7 @@ namespace _15pl04.Ucc.TaskSolver
             {
                 Exception = ex;
                 State = TaskSolverState.Error;
-                return null;
+                throw;
             }
         }
     }

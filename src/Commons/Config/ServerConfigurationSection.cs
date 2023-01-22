@@ -98,11 +98,11 @@ namespace _15pl04.Ucc.Commons.Config
                 throw new InvalidOperationException($"Section {serverConfigurationSectionName} does not exists.");
 
             // possible overriting with command line parameters
-            if (commandLineParameters != null && commandLineParameters.Length > 0)
+            if (commandLineParameters is { Length: > 0 })
             {
                 var n = commandLineParameters.Length;
                 var i = 0;
-                Exception exception = null;
+                Exception? exception = null;
                 try
                 {
                     if (n - i >= 2 && commandLineParameters[i].ToLower() == "-port")

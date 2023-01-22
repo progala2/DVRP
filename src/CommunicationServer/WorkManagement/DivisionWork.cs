@@ -17,12 +17,12 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <param name="assigneeId">ID of the assignee task manager.</param>
         /// <param name="problem">Problem instance to divide.</param>
         /// <param name="availableThreads">Number of threads within the system that can solve this type of problem. De facto number of parts to divide into.</param>
-        public DivisionWork(ulong assigneeId, Problem problem, ulong availableThreads)
+        public DivisionWork(ulong assigneeId, Problem problem, ulong availableThreads): base(assigneeId)
         {
             if (problem == null)
                 throw new ArgumentNullException();
 
-            AssigneeId = assigneeId;
+            AssignedId = assigneeId;
             Problem = problem;
 
             Problem.NumberOfParts = availableThreads;
@@ -30,11 +30,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <summary>
         /// Problem instance to divide.
         /// </summary>
-        public Problem Problem { get; private set; }
-        /// <summary>
-        /// ID of the task manager this division work has been assigned to.
-        /// </summary>
-        public override ulong AssigneeId { get; protected set; }
+        public Problem Problem { get; }
         /// <summary>
         /// Type of work to be done (division).
         /// </summary>
@@ -48,11 +44,11 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         {
             var message = new DivideProblemMessage
             {
-                ComputationalNodes = Problem.NumberOfParts.Value,
+                ComputationalNodes = Problem.NumberOfParts,
                 ProblemData = Problem.Data,
                 ProblemInstanceId = Problem.Id,
                 ProblemType = Problem.Type,
-                TaskManagerId = AssigneeId
+                TaskManagerId = AssignedId
             };
 
             return message;

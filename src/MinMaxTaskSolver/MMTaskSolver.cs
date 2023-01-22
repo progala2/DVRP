@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using _15pl04.Ucc.Commons.Exceptions;
 using _15pl04.Ucc.TaskSolver;
 
 namespace _15pl04.Ucc.MinMaxTaskSolver
@@ -16,12 +17,13 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
             {
                 using (var memoryStream = new MemoryStream(problemData))
                 {
-                    _minMaxProblem = JsonSerializer.Deserialize<MmProblem>(memoryStream);
+                    _minMaxProblem = JsonSerializer.Deserialize<MmProblem>(memoryStream) ?? throw new ParsingNullException(nameof(problemData));
                 }
                 State = TaskSolverState.Ok;
             }
             catch (Exception)
             {
+	            _minMaxProblem = new MmProblem(Array.Empty<int>());
                 State = TaskSolverState.Error;
             }
         }
@@ -60,7 +62,7 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
             foreach (var t in solutions)
             {
 	            using var memoryStream = new MemoryStream(t);
-	            var solution = JsonSerializer.Deserialize<MmSolution>(memoryStream);
+	            var solution = JsonSerializer.Deserialize<MmSolution>(memoryStream) ?? throw new ParsingNullException(nameof(solutions));
 	            if (solution.Min < min) min = solution.Min;
 	            if (solution.Max > max) max = solution.Max;
             }
@@ -77,7 +79,7 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
             MmPartialProblem partialProblem;
             using (var memoryStream = new MemoryStream(partialData))
             {
-                partialProblem = JsonSerializer.Deserialize<MmPartialProblem>(memoryStream);
+                partialProblem = JsonSerializer.Deserialize<MmPartialProblem>(memoryStream) ?? throw new ParsingNullException(nameof(partialData));
             }
             var min = int.MaxValue;
             var max = int.MinValue;

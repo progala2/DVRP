@@ -11,8 +11,6 @@ namespace _15pl04.Ucc.Commons.Computations.Base
     {
         private readonly ConcurrentQueue<int> _availableThreads;
         private readonly ComputationalThreadStatus[] _computationalThreadStatuses;
-        private readonly byte _parallelThreads;
-        private readonly IReadOnlyCollection<ComputationalThreadStatus> _threadStatuses;
 
         /// <summary>
         ///     Creates a thread manager which provides starting actions in new threads.
@@ -20,9 +18,9 @@ namespace _15pl04.Ucc.Commons.Computations.Base
         /// <param name="parallelThreads">The maximum number of threads that could be efficiently run in parallel.</param>
         protected ThreadManager(byte parallelThreads)
         {
-            _parallelThreads = parallelThreads;
+            ParallelThreads = parallelThreads;
             _computationalThreadStatuses = new ComputationalThreadStatus[parallelThreads];
-            _threadStatuses = Array.AsReadOnly(_computationalThreadStatuses);
+            ThreadStatuses = Array.AsReadOnly(_computationalThreadStatuses);
             _availableThreads = new ConcurrentQueue<int>();
             for (var i = 0; i < _computationalThreadStatuses.Length; i++)
             {
@@ -34,12 +32,12 @@ namespace _15pl04.Ucc.Commons.Computations.Base
         /// <summary>
         ///     The maximum number of threads that could be efficiently run in parallel.
         /// </summary>
-        public byte ParallelThreads => _parallelThreads;
+        public byte ParallelThreads { get; }
 
         /// <summary>
         ///     The information about thread statuses.
         /// </summary>
-        public IReadOnlyCollection<ComputationalThreadStatus> ThreadStatuses => _threadStatuses;
+        public IReadOnlyCollection<ComputationalThreadStatus> ThreadStatuses { get; }
 
         /// <summary>
         ///     Starts executing action if there is an available idle thread. This method gets information needed for Status
@@ -60,8 +58,7 @@ namespace _15pl04.Ucc.Commons.Computations.Base
             if (actionToExecute == null)
                 return false;
 
-            int threadIndex;
-            if (!_availableThreads.TryDequeue(out threadIndex))
+            if (!_availableThreads.TryDequeue(out var threadIndex))
                 return false;
 
             var started = StartInNewThread(() =>

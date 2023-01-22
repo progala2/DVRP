@@ -16,6 +16,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolvePartialProblems")]
     public class PartialProblemsMessage : Message
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string NoNamespaceSchemaLocation = "PartialProblems.xsd";
 
@@ -43,7 +46,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         /// The data to be sent to all Computational Nodes.
         /// </summary>
         [XmlElement(Order = 2, DataType = "base64Binary")]
-        public byte[] CommonData { get; set; }
+        public byte[]? CommonData { get; set; }
 
         /// <summary>
         /// Optional time limit – set by Client (in ms).

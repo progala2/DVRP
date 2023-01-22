@@ -23,8 +23,17 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
         public enum SolutionType
         {
+            /// <summary>
+            /// 
+            /// </summary>
             Ongoing,
+            /// <summary>
+            /// 
+            /// </summary>
             Partial,
+            /// <summary>
+            /// 
+            /// </summary>
             Final
         }
 
@@ -55,7 +64,7 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
         /// The Common data which was previously sent to all Computational Nodes.
         /// </summary>
         [XmlElement(DataType = "base64Binary", Order = 2)]
-        public byte[] CommonData { get; set; }
+        public byte[]? CommonData { get; set; }
 
         /// <summary>
         /// The solutions.

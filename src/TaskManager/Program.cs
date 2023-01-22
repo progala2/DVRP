@@ -60,42 +60,42 @@ namespace _15pl04.Ucc.TaskManager
             }
         }
 
-        private static void taskManager_OnStarted(object? sender, EventArgs? e)
+        private static void taskManager_OnStarted(object? sender, EventArgs e)
         {
             Logger.Info("TaskManager started.");
         }
 
-        private static void taskManager_OnStarting(object? sender, EventArgs? e)
+        private static void taskManager_OnStarting(object? sender, EventArgs e)
         {
             Logger.Info("TaskManager is starting...");
         }
 
-        private static void taskManager_MessageSendingException(object? sender, MessageExceptionEventArgs? e)
+        private static void taskManager_MessageSendingException(object? sender, MessageExceptionEventArgs e)
         {
             Logger.Error("Message sending exception:\n" + GetMessageExceptionInfo(e));
         }
 
-        private static void taskManager_MessageHandlingException(object? sender, MessageExceptionEventArgs? e)
+        private static void taskManager_MessageHandlingException(object? sender, MessageExceptionEventArgs e)
         {
             Logger.Warn("Message handling exception:\n" + GetMessageExceptionInfo(e));
         }
 
-        private static void taskManager_MessageEnqueuedToSend(object? sender, MessageEventArgs? e)
+        private static void taskManager_MessageEnqueuedToSend(object? sender, MessageEventArgs e)
         {
             LogMessageInfo("Enqueued to send", e);
         }
 
-        private static void taskManager_MessageReceived(object? sender, MessageEventArgs? e)
+        private static void taskManager_MessageReceived(object? sender, MessageEventArgs e)
         {
             LogMessageInfo("Received", e);
         }
 
-        private static void taskManager_MessageSent(object? sender, MessageEventArgs? e)
+        private static void taskManager_MessageSent(object? sender, MessageEventArgs e)
         {
             LogMessageInfo("Sent", e);
         }
 
-        private static void LogMessageInfo(string description, MessageEventArgs? e)
+        private static void LogMessageInfo(string description, MessageEventArgs e)
         {
             Logger.Info(description + ": [" + e.Message.MessageType + "]");
             Logger.Debug("\t" + e.Message);

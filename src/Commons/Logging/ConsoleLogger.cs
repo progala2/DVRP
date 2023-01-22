@@ -67,13 +67,13 @@ namespace _15pl04.Ucc.Commons.Logging
         /// Gets information about caller class and method as string.
         /// </summary>
         /// <returns>Log message prefix.</returns>
-        private string GetCallerInfoPrefix()
+        private static string GetCallerInfoPrefix()
         {
             var frame = new StackFrame(2);
             var method = frame.GetMethod();
 
-            var className = method.DeclaringType.Name;
-            var methodName = method.Name;
+            var className = method?.DeclaringType?.Name;
+            var methodName = method?.Name;
 
             return "[" + className + "/" + methodName + "]::";
         }

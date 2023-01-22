@@ -62,7 +62,7 @@ namespace MinMaxTaskSolver.Tests
 
             using (var memoryStream = new MemoryStream(finalSolutionData))
             {
-                var finalSolution = JsonSerializer.Deserialize<MmSolution>(memoryStream);
+                var finalSolution = JsonSerializer.Deserialize<MmSolution>(memoryStream) ?? throw new Exception();
                 Assert.Equal(finalSolution.Min, expectedMinimum);
                 Assert.Equal(finalSolution.Max, expectedMaximum);
             }

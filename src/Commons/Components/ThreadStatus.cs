@@ -47,7 +47,7 @@ namespace _15pl04.Ucc.Commons.Components
         /// Type of the currently processed problem.
         /// </summary>
         [XmlElement(Order = 4)]
-        public string ProblemType { get; set; }
+        public string? ProblemType { get; set; }
 
         /// <summary>
         /// Determines whether TimeInThisState property should be serialized.

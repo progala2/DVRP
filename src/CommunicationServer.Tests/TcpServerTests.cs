@@ -48,18 +48,16 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             socket.Send(dataToSend);
             socket.Shutdown(SocketShutdown.Send);
 
-            using (var memory = new MemoryStream(bufferSize))
+            using var memory = new MemoryStream(bufferSize);
+            int bytesRec;
+            while ((bytesRec = socket.Receive(buffer)) > 0)
             {
-                int bytesRec;
-                while ((bytesRec = socket.Receive(buffer)) > 0)
-                {
-                    memory.Write(buffer, 0, bytesRec);
-                }
-
-                socket.Shutdown(SocketShutdown.Receive);
-                socket.Close();
-                buffer = memory.ToArray();
+	            memory.Write(buffer, 0, bytesRec);
             }
+
+            socket.Shutdown(SocketShutdown.Receive);
+            socket.Close();
+            buffer = memory.ToArray();
             return buffer;
         }
 

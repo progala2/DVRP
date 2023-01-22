@@ -9,13 +9,14 @@ namespace _15pl04.Ucc.CommunicationServer.Components
     /// </summary>
     public class BackupServerInfo : ComponentInfo
     {
-        /// <summary>
-        /// Creates BackupServerInfo instance.
-        /// </summary>
-        /// <param name="serverInfo">Communication Server specific information.</param>
-        /// <param name="numberOfThreads">Number of threads provided by the backup.</param>
-        public BackupServerInfo(ServerInfo serverInfo, int numberOfThreads)
-            : base(ComponentType.CommunicationServer, numberOfThreads)
+	    /// <summary>
+	    /// Creates BackupServerInfo instance.
+	    /// </summary>
+	    /// <param name="id"></param>
+	    /// <param name="serverInfo">Communication Server specific information.</param>
+	    /// <param name="numberOfThreads">Number of threads provided by the backup.</param>
+	    public BackupServerInfo(ulong id, ServerInfo serverInfo, int numberOfThreads)
+            : base(id, ComponentType.CommunicationServer, numberOfThreads)
         {
             Address = new IPEndPoint(
                 IPAddress.Parse(serverInfo.IpAddress),
@@ -25,10 +26,11 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         /// <summary>
         /// Creates BackupServerInfo instance.
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="endPoint">IPEndPoint data of the backup.</param>
         /// <param name="numberOfThreads">Number of threads provided by the backup.</param>
-        public BackupServerInfo(IPEndPoint endPoint, int numberOfThreads)
-            : base(ComponentType.CommunicationServer, numberOfThreads)
+        public BackupServerInfo(ulong id, IPEndPoint endPoint, int numberOfThreads)
+            : base(id, ComponentType.CommunicationServer, numberOfThreads)
         {
             Address = endPoint;
         }
@@ -36,6 +38,6 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         /// <summary>
         /// Backup server's address.
         /// </summary>
-        public IPEndPoint Address { get; private set; }
+        public IPEndPoint Address { get; }
     }
 }

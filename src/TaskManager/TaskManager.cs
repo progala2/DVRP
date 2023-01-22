@@ -6,7 +6,6 @@ using _15pl04.Ucc.Commons.Computations.Base;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using _15pl04.Ucc.Commons.Utilities;
 using _15pl04.Ucc.TaskSolver;
 
 namespace _15pl04.Ucc.TaskManager
@@ -121,7 +120,6 @@ namespace _15pl04.Ucc.TaskManager
                 taskSolver.ThrowIfError();
 
                 var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
-                taskSolver.ThrowIfError();
 
                 var partialProblems = new List<PartialProblemsMessage.PartialProblem>(partialProblemsData.GetLength(0));
                 for (var i = 0; i < partialProblemsData.GetLength(0); i++)
@@ -195,8 +193,7 @@ namespace _15pl04.Ucc.TaskManager
                 var start = DateTime.UtcNow;
                 var finalSolutionData = taskSolver.MergeSolution(solutionsData);
                 var stop = DateTime.UtcNow;
-
-                taskSolver.ThrowIfError();
+                
                 totalComputationsTime += (ulong)((stop - start).TotalMilliseconds);
 
                 var finalSolution = new SolutionsMessage.Solution

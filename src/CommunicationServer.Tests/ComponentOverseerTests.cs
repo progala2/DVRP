@@ -10,12 +10,10 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 {
     public class ComponentOverseerTests
     {
-        private IComponentOverseer _overseer;
-
-        [Fact]
+	    [Fact]
         public void AllTypesOfNodesAreProperlyRegistered()
         {
-            _overseer = new ComponentOverseer(5, 5);
+            var overseer = new ComponentOverseer(5, 5);
 
             var solvableProblems = new List<string> {"dvrp"};
 
@@ -25,21 +23,17 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
                 Port = 9135
             };
 
-            ComponentInfo taskManager = new SolverNodeInfo(ComponentType.TaskManager, solvableProblems, 5);
-            ComponentInfo computationalNode = new SolverNodeInfo(ComponentType.ComputationalNode, solvableProblems, 5);
-            ComponentInfo backupServer = new BackupServerInfo(serverInfo, 5);
+            ComponentInfo taskManager = new SolverNodeInfo(1, ComponentType.TaskManager, solvableProblems, 5);
+            ComponentInfo computationalNode = new SolverNodeInfo(2, ComponentType.ComputationalNode, solvableProblems, 5);
+            ComponentInfo backupServer = new BackupServerInfo(3, serverInfo, 5);
 
-            Assert.Null(taskManager.ComponentId);
-            Assert.Null(computationalNode.ComponentId);
-            Assert.Null(backupServer.ComponentId);
+            overseer.TryRegister(taskManager);
+            overseer.TryRegister(computationalNode);
+            overseer.TryRegister(backupServer);
 
-            _overseer.TryRegister(taskManager);
-            _overseer.TryRegister(computationalNode);
-            _overseer.TryRegister(backupServer);
-
-            Assert.True(_overseer.IsRegistered(taskManager.ComponentId.Value));
-            Assert.True(_overseer.IsRegistered(computationalNode.ComponentId.Value));
-            Assert.True(_overseer.IsRegistered(backupServer.ComponentId.Value));
+            Assert.True(overseer.IsRegistered(taskManager.ComponentId));
+            Assert.True(overseer.IsRegistered(computationalNode.ComponentId));
+            Assert.True(overseer.IsRegistered(backupServer.ComponentId));
         }
 
         [Fact]
@@ -50,27 +44,27 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             var stopwatch = new Stopwatch();
             var deregistrationEventLock = new AutoResetEvent(false);
 
-            _overseer = new ComponentOverseer(communicationTimeout, checkInterval);
-            _overseer.Deregistration += (o, e) => { deregistrationEventLock.Set(); };
-            _overseer.StartMonitoring();
+            var overseer = new ComponentOverseer(communicationTimeout, checkInterval);
+            overseer.Deregistration += (o, e) => { deregistrationEventLock.Set(); };
+            overseer.StartMonitoring();
 
             var solvableProblems = new List<string> {"dvrp"};
 
-            ComponentInfo computationalNode = new SolverNodeInfo(ComponentType.ComputationalNode, solvableProblems, 5);
-            _overseer.TryRegister(computationalNode);
+            ComponentInfo computationalNode = new SolverNodeInfo(1, ComponentType.ComputationalNode, solvableProblems, 5);
+            overseer.TryRegister(computationalNode);
 
             stopwatch.Start();
 
-            Assert.True(_overseer.IsRegistered(computationalNode.ComponentId.Value));
+            Assert.True(overseer.IsRegistered(computationalNode.ComponentId));
 
             deregistrationEventLock.WaitOne(1000*(int) (communicationTimeout + checkInterval + 1));
 
             stopwatch.Stop();
 
-            Assert.False(_overseer.IsRegistered(computationalNode.ComponentId.Value));
+            Assert.False(overseer.IsRegistered(computationalNode.ComponentId));
             Assert.True((ulong) stopwatch.ElapsedMilliseconds >= communicationTimeout);
 
-            _overseer.StopMonitoring();
+            overseer.StopMonitoring();
         }
     }
 }

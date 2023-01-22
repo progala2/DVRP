@@ -37,7 +37,7 @@ namespace _15pl04.Ucc.CommunicationServer
         /// <summary>
         /// Server configuration.
         /// </summary>
-        public ServerConfig Config { get; private set; }
+        public ServerConfig Config { get; }
 
         /// <summary>
         /// Starts all modules of the server.

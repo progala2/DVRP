@@ -38,36 +38,42 @@
         /// <summary>
         /// ID of the task manager that is currently dividing this problem instance. Null if hasn't been divided.
         /// </summary>
-        public ulong? DividingNodeId { get; set; }
+        public ulong DividingNodeId { get; set; }
 
         /// <summary>
         /// Problem class type name.
         /// </summary>
-        public string Type { get; private set; }
+        public string Type { get; }
 
         /// <summary>
         /// Timeout for solving this problem instance.
         /// </summary>
-        public ulong SolvingTimeout { get; private set; }
+        public ulong SolvingTimeout { get; }
 
         /// <summary>
         /// Problem data as sent by the client.
         /// </summary>
-        public byte[] Data { get; private set; }
+        public byte[] Data { get; }
 
         /// <summary>
         /// Problem data shared among partial problems (null before problem division).
         /// </summary>
-        public byte[] CommonData { get; set; }
+        public byte[]? CommonData { get; set; }
 
         /// <summary>
         /// ID of the problem instance.
         /// </summary>
-        public ulong Id { get; private set; }
+        public ulong Id { get; }
 
         /// <summary>
-        /// Number of partial problems this problem instance has beed divided into.
+        /// Number of partial problems this problem instance has been divided into.
         /// </summary>
-        public ulong? NumberOfParts { get; set; }
+        public ulong NumberOfParts { get; set; }
+
+        public void AwaitDivision()
+        {
+	        State = ProblemState.AwaitingDivision;
+	        DividingNodeId = 0;
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using _15pl04.Ucc.Commons.Exceptions;
 
 namespace _15pl04.Ucc.TaskSolver.Tests
 {
@@ -111,7 +112,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests
             bool result;
             using (var memoryStream = new MemoryStream(finalSolutionData))
             {
-                var finalSolution = JsonSerializer.Deserialize<string>(memoryStream);
+                var finalSolution = JsonSerializer.Deserialize<string>(memoryStream) ?? throw new ParsingNullException(nameof(finalSolutionData));
                 Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + finalSolution);
                 var reg = new Regex(@"[-+]?\d+([,.]\d+)?");
                 MatchCollection m;

@@ -45,21 +45,21 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
         /// <summary>
         /// Corresponding problem instance.
         /// </summary>
-        public Problem Problem { get; private set; }
+        public Problem Problem { get; }
 
         /// <summary>
         /// ID of the partial problem within the corresponding problem instance.
         /// </summary>
-        public ulong Id { get; private set; }
+        public ulong Id { get; }
 
         /// <summary>
         /// Partial problem's private data.
         /// </summary>
-        public byte[] PrivateData { get; private set; }
+        public byte[] PrivateData { get; }
 
         /// <summary>
         /// Data shared among all partial problems of the same problem instance.
         /// </summary>
-        public byte[] CommonData => Problem.CommonData;
+        public byte[]? CommonData => Problem.CommonData;
     }
 }

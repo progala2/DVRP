@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using _15pl04.Ucc.Commons.Config;
+using _15pl04.Ucc.Commons.Exceptions;
 using _15pl04.Ucc.Commons.Logging;
 using _15pl04.Ucc.Commons.Messaging;
 using _15pl04.Ucc.Commons.Messaging.Models;
@@ -45,12 +46,11 @@ namespace _15pl04.Ucc.ComputationalClient
             computationalClient.MessageSendingException += computationalClient_MessageSendingException;
             computationalClient.MessageHandlingException += computationalClient_MessageHandlingException;
 
-            string? line;
             while (true)
             {
                 Console.WriteLine(@"commands: -stop, quit, exit -solve -solution");
 
-                line = Console.ReadLine();
+                var line = Console.ReadLine();
                 if (line != null) line = line.ToLower();
                 else continue;
 
@@ -78,8 +78,7 @@ namespace _15pl04.Ucc.ComputationalClient
                             continue;
                         }
                         Console.WriteLine(@"Timeout in seconds: ");
-                        ulong timeout;
-                        if (!ulong.TryParse(Console.ReadLine(), out timeout))
+                        if (!ulong.TryParse(Console.ReadLine(), out var timeout))
                         {
                             timeout = (ulong)TimeSpan.MaxValue.TotalSeconds;
                         }
@@ -96,11 +95,10 @@ namespace _15pl04.Ucc.ComputationalClient
                         break;
                     case "solution":
                         Console.Write(@"Enter problem id: ");
-                        ulong id;
-                        if (ulong.TryParse(Console.ReadLine(), out id))
+                        if (ulong.TryParse(Console.ReadLine(), out var id))
                         {
                             var solutionsMessages = computationalClient.SendSolutionRequest(id);
-                            if (solutionsMessages != null && solutionsMessages.Count > 0)
+                            if (solutionsMessages is { Count: > 0 })
                             {
                                 switch (solutionsMessages[0].Solutions[0].Type)
                                 {
@@ -112,7 +110,7 @@ namespace _15pl04.Ucc.ComputationalClient
                                         string problem;
                                         using (var mem = new MemoryStream(solutionsMessages[0].Solutions[0].Data))
                                         {
-                                            problem = JsonSerializer.Deserialize<string>(mem);
+                                            problem = JsonSerializer.Deserialize<string>(mem) ?? throw new ParsingNullException(nameof(solutionsMessages));
                                         }
                                         Console.WriteLine(@"Result message: {0}", problem);
                                         break;
@@ -128,24 +126,24 @@ namespace _15pl04.Ucc.ComputationalClient
             }
         }
 
-        private static void computationalClient_MessageSent(object? sender, MessageEventArgs? e)
+        private static void computationalClient_MessageSent(object? sender, MessageEventArgs e)
         {
-            Logger.Info(e?.Message.ToString());
+            Logger.Info(e.Message.ToString());
         }
 
-        private static void computationalClient_MessageReceived(object? sender, MessageEventArgs? e)
+        private static void computationalClient_MessageReceived(object? sender, MessageEventArgs e)
         {
-            Logger.Info(e?.Message.ToString());
+            Logger.Info(e.Message.ToString());
         }
 
-        private static void computationalClient_MessageSendingException(object? sender, MessageExceptionEventArgs? e)
+        private static void computationalClient_MessageSendingException(object? sender, MessageExceptionEventArgs e)
         {
-            Logger.Warn(e?.Message + "\n" + e?.Exception);
+            Logger.Warn(e.Message + "\n" + e.Exception);
         }
 
-        static void computationalClient_MessageHandlingException(object? sender, MessageExceptionEventArgs? e)
+        static void computationalClient_MessageHandlingException(object? sender, MessageExceptionEventArgs e)
         {
-            Logger.Warn(e?.Message + "\n" + e?.Exception);
+            Logger.Warn(e.Message + "\n" + e.Exception);
         }
     }
 }

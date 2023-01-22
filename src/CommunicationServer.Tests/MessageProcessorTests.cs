@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Messaging.Marshalling;
@@ -57,7 +58,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             };
 
             _processor.StartProcessing();
-            _processor.EnqueueDataToProcess(rawMsg, null, c);
+            _processor.EnqueueDataToProcess(rawMsg, new Metadata(), c);
 
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();
@@ -86,7 +87,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             };
 
             _processor.StartProcessing();
-            _processor.EnqueueDataToProcess(rawMsg, null, c);
+            _processor.EnqueueDataToProcess(rawMsg, new Metadata(), c);
 
             waitHandle.WaitOne(10000);
             _processor.StopProcessing();
@@ -101,12 +102,12 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
 
             var msg = new SolveRequestMessage
             {
-                ProblemData = new byte[0],
+                ProblemData = Array.Empty<byte>(),
                 ProblemType = "dvrp"
             };
             var rawMsg = _marshaller.Marshall(new Message[] {msg});
 
-            Message outputMessage = null;
+            Message? outputMessage = null;
             ProcessedDataCallback c = response =>
             {
                 outputMessage = _marshaller.Unmarshall(response)[0];
@@ -114,7 +115,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             };
 
             _processor.StartProcessing();
-            _processor.EnqueueDataToProcess(rawMsg, null, c);
+            _processor.EnqueueDataToProcess(rawMsg, new Metadata(), c);
 
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();
@@ -134,7 +135,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             };
             var rawMsg = _marshaller.Marshall(new Message[] {msg});
 
-            Message outputMessage = null;
+            Message? outputMessage = null;
             ProcessedDataCallback c = response =>
             {
                 outputMessage = _marshaller.Unmarshall(response)[0];
@@ -142,7 +143,7 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             };
 
             _processor.StartProcessing();
-            _processor.EnqueueDataToProcess(rawMsg, null, c);
+            _processor.EnqueueDataToProcess(rawMsg, new Metadata(), c);
 
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();
@@ -162,14 +163,14 @@ namespace _15pl04.Ucc.CommunicationServer.Tests
             };
             var rawMsg = _marshaller.Marshall(new Message[] {msg});
 
-            Message outputMessage = null;
+            Message? outputMessage = null;
             ProcessedDataCallback c = response =>
             {
                 outputMessage = _marshaller.Unmarshall(response)[0];
                 waitHandle.Set();
             };
             _processor.StartProcessing();
-            _processor.EnqueueDataToProcess(rawMsg, null, c);
+            _processor.EnqueueDataToProcess(rawMsg, new Metadata(), c);
 
             waitHandle.WaitOne(5000);
             _processor.StopProcessing();

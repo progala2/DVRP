@@ -70,8 +70,7 @@ namespace _15pl04.Ucc.TaskSolver
 
             MessageHandlingException += (s, e) =>
             {
-                if (e != null)
-                    InformServerAboutException($"Message caused exception: {e.Message}", e.Exception);
+	            InformServerAboutException($"Message caused exception: {e.Message}", e.Exception);
             };
         }
 
@@ -98,32 +97,32 @@ namespace _15pl04.Ucc.TaskSolver
         /// <summary>
         /// Dictionary of Task Solver types; keys are problem type names.
         /// </summary>
-        public ReadOnlyDictionary<string, Type> TaskSolvers { get; private set; }
+        public ReadOnlyDictionary<string, Type> TaskSolvers { get; }
 
         /// <summary>
         ///     Event which is raised after enqueuing message to be send to the server.
         /// </summary>
-        public event EventHandler<MessageEventArgs?>? MessageEnqueuedToSend;
+        public event EventHandler<MessageEventArgs>? MessageEnqueuedToSend;
 
         /// <summary>
         ///     Event which is raised after successful sending message to the server.
         /// </summary>
-        public event EventHandler<MessageEventArgs?>? MessageSent;
+        public event EventHandler<MessageEventArgs>? MessageSent;
 
         /// <summary>
         ///     Event which is raised after receiving message from the server.
         /// </summary>
-        public event EventHandler<MessageEventArgs?>? MessageReceived;
+        public event EventHandler<MessageEventArgs>? MessageReceived;
 
         /// <summary>
         ///     Event which is raised if exception occurred during sending message to the server.
         /// </summary>
-        public event EventHandler<MessageExceptionEventArgs?>? MessageSendingException;
+        public event EventHandler<MessageExceptionEventArgs>? MessageSendingException;
 
         /// <summary>
         ///     Event which is raised if exception occurred during handling message received from the server.
         /// </summary>
-        public event EventHandler<MessageExceptionEventArgs?>? MessageHandlingException;
+        public event EventHandler<MessageExceptionEventArgs>? MessageHandlingException;
 
         /// <summary>
         ///     Event which is raised when component is about to start running.
@@ -403,7 +402,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// </summary>
         /// <param name="eventHandler">Handler to be raised.</param>
         /// <param name="message">Message to be passed as event event argument.</param>
-        private void RaiseEvent(EventHandler<MessageEventArgs?>? eventHandler, Message message)
+        private void RaiseEvent(EventHandler<MessageEventArgs>? eventHandler, Message message)
         {
             eventHandler?.Invoke(this, new MessageEventArgs(message));
         }
@@ -414,7 +413,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// <param name="eventHandler">Handler to be raised.</param>
         /// <param name="message">Message to be passed as event event argument.</param>
         /// <param name="exception">Exception to be passed as event event argument.</param>
-        private void RaiseEvent(EventHandler<MessageExceptionEventArgs?>? eventHandler, Message message,
+        private void RaiseEvent(EventHandler<MessageExceptionEventArgs>? eventHandler, Message message,
             Exception exception)
         {
             eventHandler?.Invoke(this, new MessageExceptionEventArgs(message, exception));

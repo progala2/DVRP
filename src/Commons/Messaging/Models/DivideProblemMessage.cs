@@ -15,6 +15,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "DivideProblem")]
     public class DivideProblemMessage : Message
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string NoNamespaceSchemaLocation = "DivideProblem.xsd";
 

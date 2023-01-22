@@ -43,21 +43,21 @@
         /// <summary>
         /// Corresponding partial problem.
         /// </summary>
-        public PartialProblem PartialProblem { get; private set; }
+        public PartialProblem PartialProblem { get; }
 
         /// <summary>
         /// Partial solution data.
         /// </summary>
-        public byte[] Data { get; private set; }
+        public byte[] Data { get; }
 
         /// <summary>
         /// Time of the foregoing computations.
         /// </summary>
-        public ulong ComputationsTime { get; private set; }
+        public ulong ComputationsTime { get; }
 
         /// <summary>
         /// True if the computations that generated this partial solution were stopped due to the timeout.
         /// </summary>
-        public bool TimeoutOccured { get; private set; }
+        public bool TimeoutOccured { get; }
     }
 }

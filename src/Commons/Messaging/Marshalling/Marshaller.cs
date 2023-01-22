@@ -55,6 +55,9 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
                     break;
 
                 var xmlDoc = XDocument.Parse(xmlString);
+                if (xmlDoc.Root is null)
+	                throw new ArgumentNullException();
+
                 var msgClass = Message.GetMessageClassFromString(xmlDoc.Root.Name.LocalName);
                 _validator.Validate(msgClass, xmlDoc);
 
@@ -79,23 +82,19 @@ namespace _15pl04.Ucc.Commons.Messaging.Marshalling
             if (messages == null)
                 throw new ArgumentNullException();
 
-            using (var memStream = new MemoryStream())
+            using var memStream = new MemoryStream();
+            if (messages.Count > 0)
             {
-                if (messages.Count > 0)
-                {
-                    MessageClass type;
-                    for (var i = 0; i < messages.Count; ++i)
-                    {
-                        type = messages[i].MessageType;
-                        var data = _serializer.Serialize(messages[i]);
-                        memStream.Write(data, 0, data.Length);
+	            for (var i = 0; i < messages.Count; ++i)
+	            {
+		            var data = _serializer.Serialize(messages[i]);
+		            memStream.Write(data, 0, data.Length);
 
-                        if (i != messages.Count - 1)
-                            memStream.WriteByte(23);
-                    }
-                }
-                return memStream.ToArray();
+		            if (i != messages.Count - 1)
+			            memStream.WriteByte(23);
+	            }
             }
+            return memStream.ToArray();
         }
     }
 }

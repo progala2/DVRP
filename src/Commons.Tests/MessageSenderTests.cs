@@ -33,6 +33,7 @@ namespace _15pl04.Ucc.Commons.Tests
 
             var receivedMessage = sender.Send(new List<Message> {message});
 
+            Assert.NotNull(receivedMessage);
             Assert.Single(receivedMessage);
             Assert.Equal(message.MessageType, receivedMessage[0].MessageType);
             Assert.Equal(message.MessageType, receivedMessage[0].MessageType);
@@ -65,7 +66,8 @@ namespace _15pl04.Ucc.Commons.Tests
 
             var receivedMessage = sender.Send(new List<Message> {message});
 
-            Assert.Equal(1, receivedMessage.Count);
+            Assert.NotNull(receivedMessage);
+            Assert.Single( receivedMessage);
             Assert.Equal(message.MessageType, receivedMessage[0].MessageType);
             Assert.Equal(message.MessageType, receivedMessage[0].MessageType);
             Assert.Equal(((NoOperationMessage) message).BackupServers.Count,

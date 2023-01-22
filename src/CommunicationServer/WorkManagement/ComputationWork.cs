@@ -17,7 +17,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// </summary>
         /// <param name="assigneeId">ID of the assignee computational node.</param>
         /// <param name="partialProblems">Assigned partial problems to compute.</param>
-        public ComputationWork(ulong assigneeId, IList<PartialProblem> partialProblems)
+        public ComputationWork(ulong assigneeId, IList<PartialProblem> partialProblems): base(assigneeId)
         {
             if (partialProblems == null)
                 throw new ArgumentNullException();
@@ -33,16 +33,11 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             }
 
             PartialProblems = new List<PartialProblem>(partialProblems);
-            AssigneeId = assigneeId;
         }
         /// <summary>
         /// Assigned partial problems to compute. All must belong to the same problem instance.
         /// </summary>
-        public List<PartialProblem> PartialProblems { get; private set; }
-        /// <summary>
-        /// ID of the task manager this computational node has been assigned to.
-        /// </summary>
-        public override ulong AssigneeId { get; protected set; }
+        public List<PartialProblem> PartialProblems { get; }
         /// <summary>
         /// Type of work to be done (computation).
         /// </summary>
@@ -62,7 +57,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                 {
                     Data = pp.PrivateData,
                     PartialProblemId = pp.Id,
-                    TaskManagerId = pp.Problem.DividingNodeId.Value
+                    TaskManagerId = pp.Problem.DividingNodeId
                 };
                 msgPartialProblems.Add(msgPp);
             }

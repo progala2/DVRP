@@ -42,7 +42,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// <summary>
         /// Event that indicates assignment of computation/division/merge work to an appropriate cluster component.
         /// </summary>
-        public event WorkAssignmentEventHandler WorkAssignment;
+        public event WorkAssignmentEventHandler? WorkAssignment;
 
         /// <summary>
         /// Removes final solution from the system.
@@ -63,7 +63,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         public bool TryAssignWork(SolverNodeInfo node, out Work? work)
         {
             var type = node.ComponentType;
-            var nodeId = node.ComponentId.Value;
+            var nodeId = node.ComponentId;
 
             if (type == ComponentType.TaskManager)
             {
@@ -88,11 +88,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
                     work = new MergeWork(nodeId, solutionsToAssign);
 
-                    var e = new WorkAssignmentEventArgs
-                    {
-                        AssigneeId = nodeId,
-                        Work = work
-                    };
+                    var e = new WorkAssignmentEventArgs(work, nodeId);
                     WorkAssignment?.Invoke(this, e);
 
                     return true;
@@ -110,12 +106,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                     var availableThreads = CountAvailableSolvingThreads(problemToDivide.Type);
 
                     work = new DivisionWork(nodeId, problemToDivide, (ulong)availableThreads);
-
-                    var e = new WorkAssignmentEventArgs
-                    {
-                        AssigneeId = nodeId,
-                        Work = work
-                    };
+                    
+                    var e = new WorkAssignmentEventArgs(work, nodeId);
                     WorkAssignment?.Invoke(this, e);
 
                     return true;
@@ -159,11 +151,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
 
                 work = new ComputationWork(nodeId, problemsToAssign);
 
-                var e = new WorkAssignmentEventArgs
-                {
-                    AssigneeId = nodeId,
-                    Work = work
-                };
+                var e = new WorkAssignmentEventArgs(work, nodeId);
+
                 WorkAssignment?.Invoke(this, e);
 
                 return true;
@@ -188,11 +177,8 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             } while (_problems.ContainsKey(id));
 
             // Create problem instance.
-            var problem = new Problem(id, type, data, solvingTimeout)
-            {
-                State = Problem.ProblemState.AwaitingDivision,
-                DividingNodeId = null
-            };
+            var problem = new Problem(id, type, data, solvingTimeout);
+            problem.AwaitDivision();
 
             // Add problem to the set.
             _problems.Add(id, problem);
@@ -223,7 +209,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             }
 
             // Make sure the corresponding problem's property 'NumberOfParts' is set to a positive integer.
-            if (!problem.NumberOfParts.HasValue || problem.NumberOfParts < 1)
+            if (problem.NumberOfParts < 1)
             {
                 Logger.Error("Corresponding problem's 'NumberOfParts' property is not a positive integer.");
                 return;
@@ -378,7 +364,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
             // Check if all partial solutions are in and set appropriate state.
             var gatheredPartialSolutions = GetPartialSolutions(problemId,
                 PartialSolution.PartialSolutionState.BeingGathered);
-            if (problem.NumberOfParts != null && (int)problem.NumberOfParts == gatheredPartialSolutions.Count)
+            if ((int)problem.NumberOfParts == gatheredPartialSolutions.Count)
             {
                 foreach (var ps in gatheredPartialSolutions)
                     ps.State = PartialSolution.PartialSolutionState.AwaitingMerge;
@@ -454,50 +440,56 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         {
             var componentType = e.Component.ComponentType;
 
-            if (componentType == ComponentType.CommunicationServer)
+            switch (componentType)
             {
-                var backup = e.Component as BackupServerInfo;
+	            case ComponentType.CommunicationServer:
+	            {
+		            var backup = e.Component as BackupServerInfo;
 
-                throw new NotImplementedException();
-                // TODO implement
-            }
-            if (componentType == ComponentType.TaskManager)
-            {
-                var component = e.Component as SolverNodeInfo;
+		            throw new NotImplementedException();
+		            // TODO implement
+	            }
+	            case ComponentType.TaskManager:
+	            {
+		            var component = (SolverNodeInfo)e.Component;
 
-                var problemsBeingDivided = _problems.Values.Where(p =>
-                    p.DividingNodeId == component.ComponentId
-                    && p.State == Problem.ProblemState.BeingDivided);
+		            var problemsBeingDivided = _problems.Values.Where(p =>
+			            p.DividingNodeId == component.ComponentId
+			            && p.State == Problem.ProblemState.BeingDivided);
 
-                foreach (var p in problemsBeingDivided)
-                {
-                    p.DividingNodeId = null;
-                    p.State = Problem.ProblemState.AwaitingDivision;
-                }
+		            foreach (var p in problemsBeingDivided)
+		            {
+                        p.AwaitDivision();
+		            }
 
-                var partialSolutionsBeingMerged = _partialSolutions.Values.Where(ps =>
-                    ps.MergingNodeId == component.ComponentId
-                    && ps.State == PartialSolution.PartialSolutionState.BeingMerged);
+		            var partialSolutionsBeingMerged = _partialSolutions.Values.Where(ps =>
+			            ps.MergingNodeId == component.ComponentId
+			            && ps.State == PartialSolution.PartialSolutionState.BeingMerged);
 
-                foreach (var ps in partialSolutionsBeingMerged)
-                {
-                    ps.MergingNodeId = null;
-                    ps.State = PartialSolution.PartialSolutionState.AwaitingMerge;
-                }
-            }
-            else if (componentType == ComponentType.ComputationalNode)
-            {
-                var component = e.Component as SolverNodeInfo;
+		            foreach (var ps in partialSolutionsBeingMerged)
+		            {
+			            ps.MergingNodeId = null;
+			            ps.State = PartialSolution.PartialSolutionState.AwaitingMerge;
+		            }
 
-                var partialProblemsBeingComputed = _partialProblems.Values.Where(pp =>
-                    pp.ComputingNodeId == component.ComponentId
-                    && pp.State == PartialProblem.PartialProblemState.BeingComputed);
+		            break;
+	            }
+	            case ComponentType.ComputationalNode:
+	            {
+		            var component = (SolverNodeInfo)e.Component;
 
-                foreach (var pp in partialProblemsBeingComputed)
-                {
-                    pp.ComputingNodeId = null;
-                    pp.State = PartialProblem.PartialProblemState.AwaitingComputation;
-                }
+		            var partialProblemsBeingComputed = _partialProblems.Values.Where(pp =>
+			            pp.ComputingNodeId == component.ComponentId
+			            && pp.State == PartialProblem.PartialProblemState.BeingComputed);
+
+		            foreach (var pp in partialProblemsBeingComputed)
+		            {
+			            pp.ComputingNodeId = null;
+			            pp.State = PartialProblem.PartialProblemState.AwaitingComputation;
+		            }
+
+		            break;
+	            }
             }
         }
         /// <summary>

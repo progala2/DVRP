@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using _15pl04.Ucc.Commons.Components;
 using _15pl04.Ucc.Commons.Logging;
-using _15pl04.Ucc.Commons.Utilities;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
 
 namespace _15pl04.Ucc.CommunicationServer.Components
@@ -17,7 +16,6 @@ namespace _15pl04.Ucc.CommunicationServer.Components
     internal class ComponentOverseer : IComponentOverseer
     {
         private static readonly ILogger Logger = new ConsoleLogger();
-        private readonly Random _random;
         private readonly ConcurrentDictionary<ulong, ComponentInfo> _registeredComponents;
         private CancellationTokenSource? _cancellationTokenSource;
         private volatile bool _isMonitoring;
@@ -30,7 +28,6 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         public ComponentOverseer(uint communicationTimeout, uint checkInterval)
         {
             _registeredComponents = new ConcurrentDictionary<ulong, ComponentInfo>();
-            _random = new Random();
 
             CommunicationTimeout = communicationTimeout;
             CheckInterval = checkInterval;
@@ -39,12 +36,12 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         /// <summary>
         /// Communication timeout check interval in seconds.
         /// </summary>
-        public uint CheckInterval { get; private set; }
+        public uint CheckInterval { get; }
 
         /// <summary>
         /// Communication timeout in seconds.
         /// </summary>
-        public uint CommunicationTimeout { get; private set; }
+        public uint CommunicationTimeout { get; }
 
         /// <summary>
         /// Invoked on component's deregistration.
@@ -65,20 +62,10 @@ namespace _15pl04.Ucc.CommunicationServer.Components
         {
             if (component == null)
                 throw new ArgumentNullException();
-            if (component.ComponentId != null)
-                throw new Exception("Registering component with id already assigned.");
+            
+            _registeredComponents.TryAdd(component.ComponentId, component);
 
-            ulong id;
-            do
-            {
-                id = _random.NextUInt64() % 100; //TODO this is debug solution
-                //id = _random.NextUInt64(); 
-            } while (!_registeredComponents.TryAdd(id, component));
-
-            Logger.Info("Registering " + component.ComponentType +
-                        " (id: " + id + ").");
-
-            component.Register(id);
+            Logger.Info($"Registering {component.ComponentType} (id: {component.ComponentId}).");
 
             return true;
         }
@@ -94,8 +81,8 @@ namespace _15pl04.Ucc.CommunicationServer.Components
             {
                 if (Deregistration != null)
                 {
-                    Logger.Info("Deregistering " + deregisteredComponent.ComponentType +
-                                " (id: " + deregisteredComponent.ComponentId + ").");
+                    Logger.Info(
+	                    $"Deregistering {deregisteredComponent.ComponentType} (id: {deregisteredComponent.ComponentId}).");
 
                     var args = new DeregisterationEventArgs
                     {

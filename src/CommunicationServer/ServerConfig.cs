@@ -12,8 +12,27 @@ namespace _15pl04.Ucc.CommunicationServer
         /// </summary>
         public enum ServerMode
         {
+            /// <summary>
+            /// 
+            /// </summary>
             Primary = 1,
+            /// <summary>
+            /// 
+            /// </summary>
             Backup = 2
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
+        /// <param name="communicationTimeout"></param>
+        public ServerConfig(ServerMode mode, IPEndPoint address, uint communicationTimeout)
+        {
+	        Mode = mode;
+	        Address = address;
+	        CommunicationTimeout = communicationTimeout;
         }
 
         /// <summary>

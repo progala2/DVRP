@@ -19,19 +19,15 @@ namespace _15pl04.Ucc.ComputationalClient
         ///     Creates a computational client.
         /// </summary>
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="serverAddress"/> is null.</exception>
         public ComputationalClient(IPEndPoint serverAddress)
         {
-            if (serverAddress == null)
-                throw new ArgumentNullException("serverAddress");
-
-            _messageSender = new MessageSender(serverAddress);
+	        _messageSender = new MessageSender(serverAddress);
         }
 
         /// <summary>
         ///     Event which is raised after successful sending message to the server.
         /// </summary>
-        public event EventHandler<MessageEventArgs?>? MessageSent;
+        public event EventHandler<MessageEventArgs>? MessageSent;
 
         /// <summary>
         ///     Event which is raised after receiving message from the server.
@@ -143,7 +139,7 @@ namespace _15pl04.Ucc.ComputationalClient
         /// </summary>
         /// <param name="eventHandler">Handler to be raised.</param>
         /// <param name="message">Message to be passed as event event argument.</param>
-        private void RaiseEvent(EventHandler<MessageEventArgs?>? eventHandler, Message message)
+        private void RaiseEvent(EventHandler<MessageEventArgs>? eventHandler, Message message)
         {
             eventHandler?.Invoke(this, new MessageEventArgs(message));
         }

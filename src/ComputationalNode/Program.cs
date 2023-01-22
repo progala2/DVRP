@@ -59,48 +59,48 @@ namespace _15pl04.Ucc.ComputationalNode
             }
         }
 
-        private static void computationalNode_OnStarted(object? sender, EventArgs? e)
+        private static void computationalNode_OnStarted(object? sender, EventArgs e)
         {
             Logger.Info("ComputationalNode started.");
         }
 
-        private static void computationalNode_OnStarting(object? sender, EventArgs? e)
+        private static void computationalNode_OnStarting(object? sender, EventArgs e)
         {
             Logger.Info("ComputationalNode is starting...");
         }
 
-        private static void computationalNode_MessageSendingException(object? sender, MessageExceptionEventArgs? e)
+        private static void computationalNode_MessageSendingException(object? sender, MessageExceptionEventArgs e)
         {
             Logger.Error("Message sending exception:\n" + GetMessageExceptionInfo(e));
         }
 
-        private static void computationalNode_MessageHandlingException(object? sender, MessageExceptionEventArgs? e)
+        private static void computationalNode_MessageHandlingException(object? sender, MessageExceptionEventArgs e)
         {
             Logger.Warn("Message handling exception:\n" + GetMessageExceptionInfo(e));
         }
 
-        private static void computationalNode_MessageEnqueuedToSend(object? sender, MessageEventArgs? e)
+        private static void computationalNode_MessageEnqueuedToSend(object? sender, MessageEventArgs e)
         {
             LogMessageInfo("Enqueued to send", e);
         }
 
-        private static void computationalNode_MessageReceived(object? sender, MessageEventArgs? e)
+        private static void computationalNode_MessageReceived(object? sender, MessageEventArgs e)
         {
             LogMessageInfo("Received", e);
         }
 
-        private static void computationalNode_MessageSent(object? sender, MessageEventArgs? e)
+        private static void computationalNode_MessageSent(object? sender, MessageEventArgs e)
         {
             LogMessageInfo("Sent", e);
         }
 
-        private static void LogMessageInfo(string description, MessageEventArgs? e)
+        private static void LogMessageInfo(string description, MessageEventArgs e)
         {
             Logger.Info(description + ": [" + e.Message.MessageType + "]");
             Logger.Debug("\t" + e.Message);
         }
 
-        private static string GetMessageExceptionInfo(MessageExceptionEventArgs? e)
+        private static string GetMessageExceptionInfo(MessageExceptionEventArgs e)
         {
             var errorInfo = $" Message: {e.Message}\n Exception: {e.Exception.GetType().FullName}\n  {e.Exception.Message}";
             return errorInfo;

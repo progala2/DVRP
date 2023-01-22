@@ -17,7 +17,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
         /// </summary>
         /// <param name="assigneeId">ID of the assignee task manager.</param>
         /// <param name="partialSolutions">List of partial solutions to merge into the final one.</param>
-        public MergeWork(ulong assigneeId, IList<PartialSolution> partialSolutions)
+        public MergeWork(ulong assigneeId, IList<PartialSolution> partialSolutions): base(assigneeId)
         {
             if (partialSolutions == null || partialSolutions.Count == 0)
                 throw new ArgumentException();
@@ -31,19 +31,14 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement
                     throw new ArgumentException("All partial solutions must belong to the same problem instance.");
             }
 
-            AssigneeId = assigneeId;
+            AssignedId = assigneeId;
             PartialSolutions = new List<PartialSolution>(partialSolutions);
         }
 
         /// <summary>
         /// List of partial solutions to merge.
         /// </summary>
-        public List<PartialSolution> PartialSolutions { get; private set; }
-
-        /// <summary>
-        /// ID of the task manager this merge work has been assigned to.
-        /// </summary>
-        public override ulong AssigneeId { get; protected set; }
+        public List<PartialSolution> PartialSolutions { get; }
 
         /// <summary>
         /// Type of work to be done (merge).

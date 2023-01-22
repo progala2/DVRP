@@ -18,18 +18,13 @@ namespace _15pl04.Ucc.CommunicationServer
                 var timeout = config.Timeout;
                 var isBackup = config.IsBackup;
 
-                IPEndPoint masterServerAddress;
+                /*IPEndPoint masterServerAddress;
                 if (isBackup)
-                    masterServerAddress = IpEndPointParser.Parse(config.MasterServer.Address, config.MasterServer.Port);
+                    masterServerAddress = IpEndPointParser.Parse(config.MasterServer.Address, config.MasterServer.Port);*/
 
                 //_logger.Info("Server address: " + serverAddress);
 
-                var serverConfig = new ServerConfig
-                {
-                    Mode = isBackup ? ServerConfig.ServerMode.Backup : ServerConfig.ServerMode.Primary,
-                    Address = serverAddress,
-                    CommunicationTimeout = timeout
-                };
+                var serverConfig = new ServerConfig(isBackup ? ServerConfig.ServerMode.Backup : ServerConfig.ServerMode.Primary, serverAddress, timeout);
 
                 communicationServer = new CommunicationServer(serverConfig);
             }

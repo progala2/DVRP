@@ -20,6 +20,6 @@ namespace _15pl04.Ucc.Commons.Messaging
         /// <summary>
         /// The message which is event argument.
         /// </summary>
-        public Message Message { get; private set; }
+        public Message Message { get; }
     }
 }

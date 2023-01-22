@@ -8,16 +8,49 @@ namespace _15pl04.Ucc.Commons.Messaging
     /// </summary>
     public enum MessageClass
     {
+        /// <summary>
+        /// 
+        /// </summary>
         DivideProblem,
+        /// <summary>
+        /// 
+        /// </summary>
         Error,
+        /// <summary>
+        /// 
+        /// </summary>
         NoOperation,
+        /// <summary>
+        /// 
+        /// </summary>
         SolvePartialProblems,
+        /// <summary>
+        /// 
+        /// </summary>
         Register,
+        /// <summary>
+        /// 
+        /// </summary>
         RegisterResponse,
+        /// <summary>
+        /// 
+        /// </summary>
         SolutionRequest,
+        /// <summary>
+        /// 
+        /// </summary>
         Solutions,
+        /// <summary>
+        /// 
+        /// </summary>
         SolveRequest,
+        /// <summary>
+        /// 
+        /// </summary>
         SolveRequestResponse,
+        /// <summary>
+        /// 
+        /// </summary>
         Status
     }
 

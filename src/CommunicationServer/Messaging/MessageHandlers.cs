@@ -5,7 +5,7 @@ using _15pl04.Ucc.Commons.Messaging.Models;
 using _15pl04.Ucc.Commons.Messaging.Models.Base;
 using _15pl04.Ucc.CommunicationServer.Components;
 using _15pl04.Ucc.CommunicationServer.Components.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
+using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
 
 namespace _15pl04.Ucc.CommunicationServer.Messaging
 {
@@ -32,7 +32,6 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private List<Message> HandleMessage(RegisterMessage msg, TcpDataProviderMetadata metadata)
         {
             ComponentInfo componentInfo;
-
             switch (msg.ComponentType)
             {
                 case ComponentType.CommunicationServer:
@@ -41,24 +40,23 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                         IpAddress = metadata.SenderAddress.Address.ToString(),
                         Port = (ushort) metadata.SenderAddress.Port
                     };
-                    componentInfo = new BackupServerInfo(serverInfo, msg.ParallelThreads);
+                    componentInfo = new BackupServerInfo((ulong)IdGenerator.CreateId(), serverInfo, msg.ParallelThreads);
                     break;
 
                 case ComponentType.ComputationalNode:
                 case ComponentType.TaskManager:
-                    componentInfo = new SolverNodeInfo(msg.ComponentType, msg.SolvableProblems, msg.ParallelThreads);
+                    componentInfo = new SolverNodeInfo((ulong)IdGenerator.CreateId(), msg.ComponentType, msg.SolvableProblems, msg.ParallelThreads);
                     break;
 
                 default:
-                    throw new InvalidOperationException("Invalid component type registration (" + msg.ComponentType +
-                                                        ").");
+                    throw new InvalidOperationException("Invalid component type registration (" + msg.ComponentType + ").");
             }
 
             _componentOverseer.TryRegister(componentInfo);
 
             var responseMsg = new RegisterResponseMessage
             {
-                AssignedId = componentInfo.ComponentId.Value,
+                AssignedId = componentInfo.ComponentId,
                 BackupServers = CreateBackupList(),
                 CommunicationTimeout = _componentOverseer.CommunicationTimeout
             };
@@ -99,8 +97,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     case ComponentType.ComputationalNode:
                     case ComponentType.TaskManager:
                     {
-                        Work work;
-                        _workManager.TryAssignWork((SolverNodeInfo) component, out work);
+	                    _workManager.TryAssignWork((SolverNodeInfo) component, out var work);
 
                         if (work != null)
                             responses.Add(work.CreateMessage());
@@ -211,7 +208,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         private List<Message> HandleMessage(PartialProblemsMessage msg, TcpDataProviderMetadata metadata)
         {
             var responses = new List<Message>();
-
+            Problem? problem;
             var senderId = _workManager.GetProcessingNodeId(msg.ProblemInstanceId);
 
             if (!senderId.HasValue)
@@ -225,7 +222,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                 responses.Add(errorMsg);
             }
-            else if (!_componentOverseer.IsRegistered(senderId.Value))
+            else if (!_componentOverseer.IsRegistered(senderId.Value) || _componentOverseer.GetComponent(senderId.Value) is not SolverNodeInfo component)
             {
                 Logger.Warn("The component is not registered (id: " + senderId + ").");
                 var errorMsg = new ErrorMessage
@@ -236,11 +233,20 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                 responses.Add(errorMsg);
             }
+            else if ((problem = _workManager.GetProblem(msg.ProblemInstanceId)) == null)
+            {
+	            Logger.Warn("The problem is not registered (id: " + msg.ProblemInstanceId + ").");
+	            var errorMsg = new ErrorMessage
+	            {
+		            ErrorType = ErrorType.UnknownSender,
+		            ErrorText = "Problem unregistered."
+	            };
+
+	            responses.Add(errorMsg);
+            }
             else
             {
-                _componentOverseer.UpdateTimestamp(senderId.Value);
-
-                var problem = _workManager.GetProblem(msg.ProblemInstanceId);
+	            _componentOverseer.UpdateTimestamp(senderId.Value);
 
                 if (problem.CommonData != null)
                     Logger.Warn("Common data shouldn't be set.");
@@ -249,10 +255,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                 foreach (var pp in msg.PartialProblems)
                     _workManager.AddPartialProblem(msg.ProblemInstanceId, pp.PartialProblemId, pp.Data);
 
-
-                var component = _componentOverseer.GetComponent(senderId.Value) as SolverNodeInfo;
-                Work work;
-                _workManager.TryAssignWork(component, out work);
+                _workManager.TryAssignWork(component, out var work);
 
                 if (work != null)
                     responses.Add(work.CreateMessage());
@@ -265,7 +268,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
         }
 
         /// <summary>
-        /// Handle solutios message.
+        /// Handle solutions message.
         /// </summary>
         /// <param name="msg">Solutions message.</param>
         /// <param name="metadata">Information about data and the TCP connection it came from.</param>
@@ -287,7 +290,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
 
                 responses.Add(errorMsg);
             }
-            else if (!_componentOverseer.IsRegistered(senderId.Value))
+            else if (!_componentOverseer.IsRegistered(senderId.Value) || _componentOverseer.GetComponent(senderId.Value) is not SolverNodeInfo component)
             {
                 Logger.Warn("The component is not registered (id: " + senderId.Value + ").");
                 var errorMsg = new ErrorMessage
@@ -329,9 +332,7 @@ namespace _15pl04.Ucc.CommunicationServer.Messaging
                     }
                 }
 
-                var component = _componentOverseer.GetComponent(senderId.Value) as SolverNodeInfo;
-                Work work;
-                _workManager.TryAssignWork(component, out work);
+                _workManager.TryAssignWork(component, out var work);
 
                 if (work != null)
                     responses.Add(work.CreateMessage());

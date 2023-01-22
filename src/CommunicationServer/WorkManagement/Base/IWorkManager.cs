@@ -5,7 +5,7 @@ using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
 namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
 {
     /// <summary>
-    /// Handles work assignement event.
+    /// Handles work assignment event.
     /// </summary>
     /// <param name="sender">Event caller.</param>
     /// <param name="e">Event arguments.</param>
@@ -17,7 +17,7 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
     internal interface IWorkManager
     {
         /// <summary>
-        /// Event that indicates assignement of computation/division/merge work to an appropriate cluster component.
+        /// Event that indicates assignment of computation/division/merge work to an appropriate cluster component.
         /// </summary>
         event WorkAssignmentEventHandler WorkAssignment;
         /// <summary>
@@ -99,7 +99,18 @@ namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
     /// </summary>
     public class WorkAssignmentEventArgs : EventArgs
     {
-        /// <summary>
+	    /// <summary>
+	    /// 
+	    /// </summary>
+	    /// <param name="work"></param>
+	    /// <param name="assigneeId"></param>
+	    public WorkAssignmentEventArgs(Work work, ulong assigneeId)
+	    {
+		    Work = work;
+		    AssigneeId = assigneeId;
+	    }
+
+	    /// <summary>
         /// Assigned work.
         /// </summary>
         public Work Work { get; set; }

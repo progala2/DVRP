@@ -113,7 +113,7 @@ namespace _15pl04.Ucc.ComputationalNode
                 var started = StartActionInNewThread(() =>
                 {
                     // not sure if TaskSolver can change CommonData during computations so recreate it for each partial problem
-                    var taskSolver = (TaskSolver.TaskSolver)Activator.CreateInstance(taskSolverType, message.CommonData);
+                    var taskSolver = (TaskSolver.TaskSolver?)Activator.CreateInstance(taskSolverType, message.CommonData) ?? throw new ArgumentNullException(nameof(taskSolverType));
                     taskSolver.ThrowIfError();
 
                     // measure time using DateTime cause StopWatch is not guaranteed to be thread safe
@@ -125,7 +125,7 @@ namespace _15pl04.Ucc.ComputationalNode
 
                     var solutions = new List<SolutionsMessage.Solution>
                     {
-                        new SolutionsMessage.Solution
+                        new ()
                         {
                             PartialProblemId = partialProblem.PartialProblemId,
                             TimeoutOccured = taskSolver.State == TaskSolverState.Timeout,
