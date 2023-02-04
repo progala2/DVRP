@@ -9,7 +9,7 @@ using Dvrp.Ucc.Commons.Messaging.Models.Base;
 namespace Dvrp.Ucc.Commons.Messaging.Models
 {
     /// <summary>
-    /// Object representation of the No Oper message.
+    /// Object representation of the No Operation message.
     /// </summary>
     [Serializable]
     [DesignerCategory(@"code")]
@@ -17,6 +17,9 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "NoOperation")]
     public class NoOperationMessage : Message
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string NoNamespaceSchemaLocation = "NoOperation.xsd";
 
@@ -51,7 +54,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
 
             builder.Append(" BackupServers{");
             builder.Append(string.Join(",", BackupServers));
-            builder.Append("}");
+            builder.Append('}');
 
             return builder.ToString();
         }

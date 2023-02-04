@@ -15,6 +15,9 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolveRequest")]
     public class SolveRequestMessage : Message
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string NoNamespaceSchemaLocation = "SolveRequest.xsd";
 
@@ -22,7 +25,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
         /// The name of the type as given by TaskSolver.
         /// </summary>
         [XmlElement(Order = 0)]
-        public string ProblemType { get; set; }
+        public string? ProblemType { get; set; }
 
         /// <summary>
         /// The optional time restriction for solving the problem (in ms).
@@ -34,7 +37,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
         /// The serialized problem data.
         /// </summary>
         [XmlElement(Order = 2, ElementName = "Data", DataType = "base64Binary")]
-        public byte[] ProblemData { get; set; }
+        public byte[]? ProblemData { get; set; }
 
         /// <summary>
         /// The ID of the problem instance assigned by the server.

@@ -11,6 +11,7 @@ using Xunit;
 
 namespace Dvrp.Ucc.Commons.Tests
 {
+    [Collection("localhost")]
     public class MessageSenderTests
     {
         private const int Port = 9123;

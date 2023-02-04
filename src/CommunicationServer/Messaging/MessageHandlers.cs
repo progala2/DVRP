@@ -18,7 +18,7 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
         /// <param name="msg">Received message.</param>
         /// <param name="metadata">Information about data and the TCP connection it came from.</param>
         /// <returns>List of response messages.</returns>
-        private List<Message> HandleMessageGeneric<T>(T msg, TcpDataProviderMetadata metadata) where T : Message
+        private List<Message> HandleMessageGeneric<T>(T msg, TcpDataProviderMetadata? metadata) where T : Message
         {
             return HandleMessage((dynamic) msg, metadata);
         }
@@ -29,12 +29,12 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
         /// <param name="msg">Register message.</param>
         /// <param name="metadata">Information about data and the TCP connection it came from.</param>
         /// <returns>List of response messages.</returns>
-        private List<Message> HandleMessage(RegisterMessage msg, TcpDataProviderMetadata metadata)
+        private List<Message> HandleMessage(RegisterMessage msg, TcpDataProviderMetadata? metadata)
         {
             ComponentInfo componentInfo;
             switch (msg.ComponentType)
             {
-                case ComponentType.CommunicationServer:
+                case ComponentType.CommunicationServer when metadata is not null:
                     var serverInfo = new ServerInfo
                     {
                         IpAddress = metadata.SenderAddress.Address.ToString(),
@@ -48,6 +48,7 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
                     componentInfo = new SolverNodeInfo((ulong)IdGenerator.CreateId(), msg.ComponentType, msg.SolvableProblems, msg.ParallelThreads);
                     break;
 
+                case ComponentType.ComputationalClient:
                 default:
                     throw new InvalidOperationException("Invalid component type registration (" + msg.ComponentType + ").");
             }

@@ -17,6 +17,9 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Status")]
     public class StatusMessage : Message
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string NoNamespaceSchemaLocation = "Status.xsd";
 
@@ -59,7 +62,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
 
             builder.Append(" Threads{");
             builder.Append(string.Join(",", Threads));
-            builder.Append("}");
+            builder.Append('}');
 
             return builder.ToString();
         }

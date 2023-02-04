@@ -38,12 +38,7 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
         /// <param name="workManager">Work manager to get work from.</param>
         public MessageProcessor(IComponentOverseer componentOverseer, IWorkManager workManager)
         {
-            if (componentOverseer == null)
-                throw new ArgumentNullException(nameof(componentOverseer), "IComponentOverseer dependancy is null.");
-            if (workManager == null)
-                throw new ArgumentNullException("IWorkManager dependancy is null.");
-
-            _inputDataQueue = new RawDataQueue();
+			_inputDataQueue = new RawDataQueue();
 
             var serializer = new MessageSerializer();
             var validator = new MessageValidator();
@@ -51,8 +46,8 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
 
             _cancellationTokenSource = new CancellationTokenSource();
 
-            _componentOverseer = componentOverseer;
-            _workManager = workManager;
+            _componentOverseer = componentOverseer ?? throw new ArgumentNullException(nameof(componentOverseer));
+            _workManager = workManager ?? throw new ArgumentNullException(nameof(workManager));
 
             _processingLock = new AutoResetEvent(false);
         }
@@ -141,12 +136,7 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
 
                 try
                 {
-	                if (data.Metadata is not TcpDataProviderMetadata metadata)
-                    {
-	                    responseMessages = UnsupportedMessage(msg);
-	                    break;
-                    }
-                    var response = HandleMessageGeneric(msg, metadata);
+                    var response = HandleMessageGeneric(msg, data.Metadata as TcpDataProviderMetadata);
                     responseMessages.AddRange(response);
                 }
                 catch (RuntimeBinderException e)

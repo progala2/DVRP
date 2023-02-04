@@ -8,22 +8,25 @@ namespace Dvrp.Ucc.Commons.Exceptions
     /// </summary>
     public class TaskSolverLoadingException : Exception
     {
-        public TaskSolverLoadingException()
+	    /// <inheritdoc />
+	    public TaskSolverLoadingException()
         {
         }
 
-        public TaskSolverLoadingException(string message)
+	    /// <inheritdoc />
+	    public TaskSolverLoadingException(string message)
             : base(message)
         {
         }
 
-        public TaskSolverLoadingException(string message, Exception innerException)
+	    /// <inheritdoc />
+	    public TaskSolverLoadingException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
-        // This constructor is needed for serialization.
-        protected TaskSolverLoadingException(SerializationInfo info, StreamingContext context)
+	    /// <inheritdoc />
+	    protected TaskSolverLoadingException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

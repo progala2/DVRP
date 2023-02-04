@@ -5,6 +5,9 @@ using Dvrp.Ucc.Commons.Utilities;
 
 namespace Dvrp.Ucc.CommunicationServer
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Program
     {
         private static void Main(string[] args)

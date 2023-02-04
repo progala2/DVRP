@@ -8,7 +8,20 @@ namespace Dvrp.Ucc.CommunicationServer.Collections
     /// </summary>
     public class RawDataQueueItem
     {
-        /// <summary>
+	    /// <summary>
+	    /// 
+	    /// </summary>
+	    /// <param name="data"></param>
+	    /// <param name="metadata"></param>
+	    /// <param name="callback"></param>
+	    public RawDataQueueItem(byte[] data, Metadata metadata, ProcessedDataCallback callback)
+	    {
+		    Data = data;
+		    Metadata = metadata;
+		    Callback = callback;
+	    }
+
+	    /// <summary>
         /// Byte data received from the client.
         /// </summary>
         public byte[] Data { get; set; }
@@ -58,12 +71,7 @@ namespace Dvrp.Ucc.CommunicationServer.Collections
         /// <param name="callback">Callback that finalizes the connection.</param>
         public void Enqueue(byte[] data, Metadata metadata, ProcessedDataCallback callback)
         {
-            var item = new RawDataQueueItem
-            {
-                Data = data,
-                Metadata = metadata,
-                Callback = callback
-            };
+            var item = new RawDataQueueItem(data: data, metadata: metadata, callback: callback);
 
             Enqueue(item);
         }

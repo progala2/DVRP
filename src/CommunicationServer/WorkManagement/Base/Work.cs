@@ -35,8 +35,17 @@ namespace Dvrp.Ucc.CommunicationServer.WorkManagement.Base
 	/// </summary>
 	public enum WorkType
 	{
+		/// <summary>
+		/// 
+		/// </summary>
 		Division = 1,
+		/// <summary>
+		/// 
+		/// </summary>
 		Computation,
+		/// <summary>
+		/// 
+		/// </summary>
 		Merge
 	}
 }

@@ -37,6 +37,9 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
             Final
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string NoNamespaceSchemaLocation = "Solutions.xsd";
 
@@ -52,7 +55,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
         /// The problem type name as given by TaskSolver and Client.
         /// </summary>
         [XmlElement(Order = 0)]
-        public string ProblemType { get; set; }
+        public string? ProblemType { get; set; }
 
         /// <summary>
         /// The ID of the problem instance assigned by the server.
@@ -101,7 +104,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
 
             builder.Append(" Solutions{");
             builder.Append(string.Join(",", Solutions));
-            builder.Append("}");
+            builder.Append('}');
 
             return builder.ToString();
         }
@@ -133,7 +136,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
             public SolutionType Type { get; set; }
 
             /// <summary>
-            /// Total amount of time used by all threads in system for computing the solution / during the ongoingcomputations (in ms).
+            /// Total amount of time used by all threads in system for computing the solution / during the ongoing computations (in ms).
             /// </summary>
             [XmlElement(Order = 3)]
             public ulong ComputationsTime { get; set; }
@@ -142,7 +145,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
             /// The solution data.
             /// </summary>
             [XmlElement(Order = 4, DataType = "base64Binary")]
-            public byte[] Data { get; set; }
+            public byte[]? Data { get; set; }
 
             /// <summary>
             /// Determines whether PartialProblemId property should be serialized.

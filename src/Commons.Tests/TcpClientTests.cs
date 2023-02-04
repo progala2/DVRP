@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Dvrp.Ucc.Commons.Tests
 {
+	[Collection("localhost")]
     public class TcpClientTests
     {
         private const int Port = 9123;

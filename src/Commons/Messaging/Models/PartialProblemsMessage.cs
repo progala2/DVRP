@@ -92,7 +92,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
 
             builder.Append(" PartialProblems{");
             builder.Append(string.Join(",", PartialProblems));
-            builder.Append("}");
+            builder.Append('}');
 
             return builder.ToString();
         }

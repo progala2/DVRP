@@ -17,6 +17,9 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Register")]
     public class RegisterMessage : Message
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
         public string NoNamespaceSchemaLocation = "Register.xsd";
 
@@ -106,7 +109,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
 
                 builder.Append(" SolvableProblems{");
                 builder.Append(string.Join(",", SolvableProblems));
-                builder.Append("}");
+                builder.Append('}');
             }
             return builder.ToString();
         }

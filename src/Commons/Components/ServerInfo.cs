@@ -33,7 +33,7 @@ namespace Dvrp.Ucc.Commons.Components
             var builder = new StringBuilder();
 
             builder.Append(IpAddress);
-            builder.Append(":");
+            builder.Append(':');
             builder.Append(Port.ToString("0000"));
 
             return builder.ToString();

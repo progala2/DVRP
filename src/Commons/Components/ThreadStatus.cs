@@ -20,7 +20,13 @@ namespace Dvrp.Ucc.Commons.Components
         [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
         public enum ThreadState
         {
+            /// <summary>
+            /// 
+            /// </summary>
             Idle,
+            /// <summary>
+            /// 
+            /// </summary>
             Busy
         }
         /// <summary>

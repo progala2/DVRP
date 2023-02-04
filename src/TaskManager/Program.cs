@@ -8,6 +8,9 @@ using Dvrp.Ucc.Commons.Utilities;
 
 namespace Dvrp.Ucc.TaskManager
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Program
     {
         private static readonly ILogger Logger = new ConsoleLogger();
