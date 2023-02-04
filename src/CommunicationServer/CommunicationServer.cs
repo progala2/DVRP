@@ -16,7 +16,6 @@ namespace Dvrp.Ucc.CommunicationServer
         private readonly IComponentOverseer _componentOverseer;
         private readonly IDataProcessor _msgProcessor;
         private readonly TcpServer _tcpServer;
-        private readonly IWorkManager _workManager;
 
         /// <summary>
         /// Creates CommunicationServer instance.
@@ -29,8 +28,8 @@ namespace Dvrp.Ucc.CommunicationServer
             Config = config;
 
             _componentOverseer = new ComponentOverseer(Config.CommunicationTimeout, ComponentOverseerCheckInterval);
-            _workManager = new WorkManager(_componentOverseer);
-            _msgProcessor = new MessageProcessor(_componentOverseer, _workManager);
+            IWorkManager workManager = new WorkManager(_componentOverseer);
+            _msgProcessor = new MessageProcessor(_componentOverseer, workManager);
             _tcpServer = new TcpServer(Config.Address, _msgProcessor);
         }
 

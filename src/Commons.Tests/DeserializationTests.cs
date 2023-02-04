@@ -1,140 +1,212 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using Dvrp.Ucc.Commons.Components;
 using Dvrp.Ucc.Commons.Messaging.Marshalling;
-using Dvrp.Ucc.Commons.Messaging.Marshalling.Base;
 using Dvrp.Ucc.Commons.Messaging.Models;
-using Dvrp.Ucc.Commons.Messaging.Models.Base;
 using Xunit;
 
 namespace Dvrp.Ucc.Commons.Tests
 {
-    public class DeserializationTests
-    {
-        private readonly ISerializer<Message> _serializer;
+	public class JsonSerializationTests
+	{
+        
+		private readonly Marshaller _serializer;
+		public JsonSerializationTests()
+		{
+			_serializer = new Marshaller();
+		}
 
-        public DeserializationTests()
-        {
-            _serializer = new MessageSerializer();
-        }
+		[Fact]
+		public void DivideProblemMessageXmlIsProperlyDeserialized()
+		{
+			var msg = new DivideProblemMessage("problemType", 1, new byte[] { 1, 2, 3 }, 1, 1);
+            var obj = _serializer.Serialize(msg);
 
-        [Fact]
-        public void DivideProblemMessageXmlIsProperlyDeserialized()
-        {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.DivideProblem);
+			var output = _serializer.Deserialize(obj);
 
-            var output = _serializer.Deserialize(input);
-
-            Assert.IsType<DivideProblemMessage>(output);
-            Assert.IsNotType<StatusMessage>(output);
-        }
+			Assert.IsType<DivideProblemMessage>(output[0]);
+			Assert.IsNotType<StatusMessage>(output[0]);
+		}
 
         [Fact]
         public void ErrorMessageXmlIsProperlyDeserialized()
         {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.Error);
+            var message = new ErrorMessage
+            {
+                ErrorText = "error text example",
+                ErrorType = ErrorType.ExceptionOccured
+            };
+            var input = _serializer.Serialize(message);
 
             var output = _serializer.Deserialize(input);
 
-            Assert.IsType<ErrorMessage>(output);
-            Assert.IsNotType<StatusMessage>(output);
+            Assert.IsType<ErrorMessage>(output[0]);
+            Assert.IsNotType<StatusMessage>(output[0]);
         }
 
-        [Fact]
-        public void NoOperationMessageXmlIsProperlyDeserialized()
-        {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.NoOperation);
+		[Fact]
+		public void NoOperationMessageXmlIsProperlyDeserialized()
+		{
+			var message = new NoOperationMessage
+			{
+				BackupServers = new List<ServerInfo>()
+			};
+			var input = _serializer.Serialize(message);
 
-            var output = _serializer.Deserialize(input);
+			var output = _serializer.Deserialize(input);
 
-            Assert.IsType<NoOperationMessage>(output);
-            Assert.IsNotType<StatusMessage>(output);
-        }
+			Assert.IsType<NoOperationMessage>(output[0]);
+			Assert.IsNotType<StatusMessage>(output[0]);
+		}
 
-        [Fact]
-        public void PartialProblemsMessageXmlIsProperlyDeserialized()
-        {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.PartialProblems);
+		[Fact]
+		public void PartialProblemsMessageXmlIsProperlyDeserialized()
+		{
+			var pp = new PartialProblemsMessage.PartialProblem(5, new byte[] { 1, 2, 3 }, 10);
 
-            var output = _serializer.Deserialize(input);
+			var message = new PartialProblemsMessage("Dvrp")
+			{
+				CommonData = new byte[] { 1, 2, 3, 4, 5 },
+				PartialProblems = new List<PartialProblemsMessage.PartialProblem> { pp },
+				ProblemInstanceId = 15,
+				SolvingTimeout = 20
+			};
+			var input = _serializer.Serialize(message);
 
-            Assert.IsType<PartialProblemsMessage>(output);
-            Assert.IsNotType<StatusMessage>(output);
-        }
+			var output = _serializer.Deserialize(input);
 
-        [Fact]
-        public void RegisterMessageXmlIsProperlyDeserialized()
-        {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.Register);
+			Assert.IsType<PartialProblemsMessage>(output[0]);
+			Assert.IsNotType<StatusMessage>(output[0]);
+		}
 
-            var output = _serializer.Deserialize(input);
+		[Fact]
+		public void RegisterMessageXmlIsProperlyDeserialized()
+		{
+			var message = new RegisterMessage
+			{
+				ComponentType = ComponentType.ComputationalNode,
+				Deregistration = true,
+				Id = 5,
+				ParallelThreads = 10,
+				SolvableProblems = new List<string> { "Dvrp" }
+			};
+			var input = _serializer.Serialize(message);
 
-            Assert.IsType<RegisterMessage>(output);
-            Assert.IsNotType<StatusMessage>(output);
-        }
+			var output = _serializer.Deserialize(input);
 
-        [Fact]
-        public void RegisterResponseMessageXmlIsProperlyDeserialized()
-        {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.RegisterResponse);
+			Assert.IsType<RegisterMessage>(output[0]);
+			Assert.IsNotType<StatusMessage>(output[0]);
+		}
 
-            var output = _serializer.Deserialize(input);
+		[Fact]
+		public void RegisterResponseMessageXmlIsProperlyDeserialized()
+		{
+			var si = new ServerInfo("192.168.1.0", 9001);
 
-            Assert.IsType<RegisterResponseMessage>(output);
-            Assert.IsNotType<StatusMessage>(output);
-        }
+			var message = new RegisterResponseMessage
+			{
+				AssignedId = 5,
+				BackupServers = new List<ServerInfo> { si },
+				CommunicationTimeout = 50
+			};
+			var input = _serializer.Serialize(message);
 
-        [Fact]
-        public void SolutionRequestMessageXmlIsProperlyDeserialized()
-        {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.SolutionRequest);
+			var output = _serializer.Deserialize(input);
 
-            var output = _serializer.Deserialize(input);
+			Assert.IsType<RegisterResponseMessage>(output[0]);
+			Assert.IsNotType<StatusMessage>(output[0]);
+		}
 
-            Assert.IsType<SolutionRequestMessage>(output);
-            Assert.IsNotType<StatusMessage>(output);
-        }
+		[Fact]
+		public void SolutionRequestMessageXmlIsProperlyDeserialized()
+		{
+			var message = new SolutionRequestMessage
+			{
+				ProblemInstanceId = 5
+			};
+			var input = _serializer.Serialize(message);
 
-        [Fact]
-        public void SolutionsMessageXmlIsProperlyDeserialized()
-        {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.Solutions);
+			var output = _serializer.Deserialize(input);
 
-            var output = _serializer.Deserialize(input);
+			Assert.IsType<SolutionRequestMessage>(output[0]);
+			Assert.IsNotType<StatusMessage>(output[0]);
+		}
 
-            Assert.IsType<SolutionsMessage>(output);
-            Assert.IsNotType<StatusMessage>(output);
-        }
+		[Fact]
+		public void SolutionsMessageXmlIsProperlyDeserialized()
+		{
+			var s = new SolutionsMessage.Solution
+			{
+				ComputationsTime = 5,
+				Data = new byte[] { 1, 2, 3 },
+				PartialProblemId = 10,
+				TimeoutOccured = true,
+				Type = SolutionsMessage.SolutionType.Final
+			};
 
-        [Fact]
-        public void SolveRequestMessageXmlIsProperlyDeserialized()
-        {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.SolveRequest);
+			var message = new SolutionsMessage("Dvrp")
+			{
+				CommonData = new byte[] { 1, 2, 3 },
+				ProblemInstanceId = 5,
+				Solutions = new List<SolutionsMessage.Solution> { s }
+			};
+			var input = _serializer.Serialize(message);
 
-            var output = _serializer.Deserialize(input);
+			var output = _serializer.Deserialize(input);
 
-            Assert.IsType<SolveRequestMessage>(output);
-            Assert.IsNotType<StatusMessage>(output);
-        }
+			Assert.IsType<SolutionsMessage>(output[0]);
+			Assert.IsNotType<StatusMessage>(output[0]);
+		}
 
-        [Fact]
-        public void SolveRequestResponseMessageXmlIsProperlyDeserialized()
-        {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.SolveRequestResponse);
+		[Fact]
+		public void SolveRequestMessageXmlIsProperlyDeserialized()
+		{
+			var message = new SolveRequestMessage("Dvrp", new byte[] { 1, 2, 3 }, 1, 1);
+			var input = _serializer.Serialize(message);
 
-            var output = _serializer.Deserialize(input);
+			var output = _serializer.Deserialize(input);
 
-            Assert.IsType<SolveRequestResponseMessage>(output);
-            Assert.IsNotType<StatusMessage>(output);
-        }
+			Assert.IsType<SolveRequestMessage>(output[0]);
+			Assert.IsNotType<StatusMessage>(output[0]);
+		}
 
-        [Fact]
-        public void StatusMessageXmlIsProperlyDeserialized()
-        {
-            var input = Encoding.UTF8.GetBytes(XmlMessages.Status);
+		[Fact]
+		public void SolveRequestResponseMessageXmlIsProperlyDeserialized()
+		{
+			var message = new SolveRequestResponseMessage
+			{
+				AssignedId = 5
+			};
+			var input = _serializer.Serialize(message);
 
-            var output = _serializer.Deserialize(input);
+			var output = _serializer.Deserialize(input);
 
-            Assert.IsType<StatusMessage>(output);
-            Assert.IsNotType<RegisterMessage>(output);
-        }
-    }
+			Assert.IsType<SolveRequestResponseMessage>(output[0]);
+			Assert.IsNotType<StatusMessage>(output[0]);
+		}
+
+		[Fact]
+		public void StatusMessageXmlIsProperlyDeserialized()
+		{
+			var ts = new ThreadStatus
+			{
+				PartialProblemId = 5,
+				ProblemInstanceId = 10,
+				ProblemType = "Dvrp",
+				State = ThreadStatus.ThreadState.Busy,
+				TimeInThisState = 50
+			};
+
+			var message = new StatusMessage
+			{
+				ComponentId = 5,
+				Threads = new List<ThreadStatus> { ts }
+			};
+			var input = _serializer.Serialize(message);
+
+			var output = _serializer.Deserialize(input);
+
+			Assert.IsType<StatusMessage>(output[0]);
+			Assert.IsNotType<RegisterMessage>(output[0]);
+		}
+	}
 }

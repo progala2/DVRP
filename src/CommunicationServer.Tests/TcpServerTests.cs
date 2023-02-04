@@ -11,16 +11,15 @@ namespace Dvrp.Ucc.CommunicationServer.Tests
 {
     public class TcpServerTests
     {
-        private readonly TcpServer _server;
-        private readonly IPEndPoint _serverAddress;
+	    private readonly IPEndPoint _serverAddress;
 
         public TcpServerTests()
         {
-            _serverAddress = new IPEndPoint(new IPAddress(new byte[] {127, 0, 0, 1}), 9123);
-            // _serverAddress = new IPEndPoint(IPAddress.Any, 9123);
+	        _serverAddress = new IPEndPoint(new IPAddress(new byte[] {127, 0, 0, 1}), 9123);
 
-            _server = new TcpServer(_serverAddress, new MockProcessor());
-            _server.StartListening();
+	        // _serverAddress = new IPEndPoint(IPAddress.Any, 9123);
+	        var server = new TcpServer(_serverAddress, new MockProcessor());
+            server.StartListening();
         }
 
         [Fact]

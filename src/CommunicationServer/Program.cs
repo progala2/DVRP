@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using Dvrp.Ucc.Commons.Config;
 using Dvrp.Ucc.Commons.Utilities;
 
@@ -31,12 +30,12 @@ namespace Dvrp.Ucc.CommunicationServer
 
                 communicationServer = new CommunicationServer(serverConfig);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                var errorText = $"{ex.GetType().FullName}:{ex.Message}";
-                if (ex.InnerException != null)
-                    errorText += $"|({ex.InnerException.GetType().FullName}:{ex.InnerException.Message})";
-                //_logger.Error(errorText);
+                // var errorText = $"{ex.GetType().FullName}:{ex.Message}";
+                // if (ex.InnerException != null)
+                //    errorText += $"|({ex.InnerException.GetType().FullName}:{ex.InnerException.Message})";
+                // _logger.Error(errorText);
                 return;
             }
 

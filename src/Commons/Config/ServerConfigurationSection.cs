@@ -60,9 +60,9 @@ namespace Dvrp.Ucc.Commons.Config
         ///     The master server address.
         /// </summary>
         [ConfigurationProperty(MasterServerPropertyString, IsRequired = false)]
-        public IPEndPointConfigurationElement MasterServer
+        public IpEndPointConfigurationElement MasterServer
         {
-            get => (IPEndPointConfigurationElement)this[MasterServerPropertyString];
+            get => (IpEndPointConfigurationElement)this[MasterServerPropertyString];
             set => this[MasterServerPropertyString] = value;
         }
 
@@ -105,9 +105,9 @@ namespace Dvrp.Ucc.Commons.Config
                 Exception? exception = null;
                 try
                 {
-                    if (n - i >= 2 && commandLineParameters[i].ToLower() == "-port")
+                    if (n >= 2 && commandLineParameters[i].ToLower() == "-port")
                     {
-                        config.Port = int.Parse(commandLineParameters[i + 1]);
+                        config.Port = int.Parse(commandLineParameters[1]);
                         i += 2;
                     }
                     if (n - i >= 5

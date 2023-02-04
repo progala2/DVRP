@@ -11,9 +11,9 @@ namespace Dvrp.Ucc.TaskSolver
         /// Throws an exception occurred in task solver if it is in error state.
         /// </summary>
         /// <param name="taskSolver">Extended task solver instance.</param>
-        public static void ThrowIfError(this Ucc.TaskSolver.TaskSolver taskSolver)
+        public static void ThrowIfError(this TaskSolver taskSolver)
         {
-            if (taskSolver.State == Ucc.TaskSolver.TaskSolverState.Error)
+            if (taskSolver.State == TaskSolverState.Error)
                 throw taskSolver.Exception ?? new Exception("Unidentified error in task solver.");
         }
     }

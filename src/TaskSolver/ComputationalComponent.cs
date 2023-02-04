@@ -68,7 +68,7 @@ namespace Dvrp.Ucc.TaskSolver
             _messagesProcessingTask = new Task(ProcessMessages);
             _messagesToSendManualResetEvent = new ManualResetEvent(false);
 
-            MessageHandlingException += (s, e) =>
+            MessageHandlingException += (_, e) =>
             {
 	            InformServerAboutException($"Message caused exception: {e.Message}", e.Exception);
             };
@@ -294,7 +294,7 @@ namespace Dvrp.Ucc.TaskSolver
         /// </summary>
         /// <param name="message">Message to be send to server.</param>
         /// <returns>Received messages or null if couldn't get server response.</returns>
-        private List<Message>? SendMessage(Message message)
+        private Message[]? SendMessage(Message message)
         {
             var receivedMessages = _messageSender.Send(message);
             if (receivedMessages == null)

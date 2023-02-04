@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using Dvrp.Ucc.Commons.Messaging.Models.Base;
 
@@ -44,36 +45,33 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
         public string NoNamespaceSchemaLocation = "Solutions.xsd";
 
         /// <summary>
-        /// Creates SoultionsMessage instance.
+        /// Creates SolutionsMessage instance.
         /// </summary>
-        public SolutionsMessage()
+        public SolutionsMessage(string problemType)
         {
-            Solutions = new List<Solution>();
+	        ProblemType = problemType;
+	        Solutions = new List<Solution>();
         }
 
         /// <summary>
         /// The problem type name as given by TaskSolver and Client.
         /// </summary>
-        [XmlElement(Order = 0)]
-        public string? ProblemType { get; set; }
+        public string ProblemType { get; set; }
 
         /// <summary>
         /// The ID of the problem instance assigned by the server.
         /// </summary>
-        [XmlElement(Order = 1, ElementName = "Id")]
+        [JsonPropertyName("Id")]
         public ulong ProblemInstanceId { get; set; }
 
         /// <summary>
         /// The Common data which was previously sent to all Computational Nodes.
         /// </summary>
-        [XmlElement(DataType = "base64Binary", Order = 2)]
         public byte[]? CommonData { get; set; }
 
         /// <summary>
         /// The solutions.
         /// </summary>
-        [XmlArray(Order = 3)]
-        [XmlArrayItem("Solution", IsNullable = false)]
         public List<Solution> Solutions { get; set; }
 
         /// <summary>
@@ -113,39 +111,33 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
         /// Object representation of a solution as in Solutions message.
         /// </summary>
         [Serializable]
-        [DesignerCategory("code")]
-        [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
         public class Solution
         {
             /// <summary>
             /// The id of subproblem given by TaskManager – no TaskId for final/merged solution.
             /// </summary>
-            [XmlElement(Order = 0, ElementName = "TaskId")]
+            [JsonPropertyName("TaskId")]
             public ulong? PartialProblemId { get; set; }
 
             /// <summary>
             /// The indicator that the computations ended because of timeout.
             /// </summary>
-            [XmlElement(Order = 1)]
             public bool TimeoutOccured { get; set; }
 
             /// <summary>
             /// The information about the status of result (Partial/Final) or status of computations (Ongoing).
             /// </summary>
-            [XmlElement(Order = 2)]
             public SolutionType Type { get; set; }
 
             /// <summary>
             /// Total amount of time used by all threads in system for computing the solution / during the ongoing computations (in ms).
             /// </summary>
-            [XmlElement(Order = 3)]
             public ulong ComputationsTime { get; set; }
 
             /// <summary>
             /// The solution data.
             /// </summary>
-            [XmlElement(Order = 4, DataType = "base64Binary")]
-            public byte[]? Data { get; set; }
+            public byte[] Data { get; set; } = null!; // if wrong message the xml parser will fail?
 
             /// <summary>
             /// Determines whether PartialProblemId property should be serialized.
@@ -154,15 +146,6 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
             public bool ShouldSerializePartialProblemId()
             {
                 return PartialProblemId.HasValue;
-            }
-
-            /// <summary>
-            /// Determines whether Data property should be serialized.
-            /// </summary>
-            /// <returns>True if Data property should be serialized; false otherwise.</returns>
-            public bool ShouldSerializeData()
-            {
-                return Data != null;
             }
 
             /// <summary>

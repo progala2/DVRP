@@ -68,11 +68,10 @@ namespace Dvrp.Ucc.CommunicationServer.WorkManagement
 
             var problem = PartialSolutions[0].PartialProblem.Problem;
 
-            var message = new SolutionsMessage
+            var message = new SolutionsMessage(problem.Type)
             {
                 CommonData = problem.CommonData,
                 ProblemInstanceId = problem.Id,
-                ProblemType = problem.Type,
                 Solutions = msgPartialSolutions
             };
 

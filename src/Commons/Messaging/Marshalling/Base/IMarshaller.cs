@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Dvrp.Ucc.Commons.Messaging.Marshalling.Base
+﻿namespace Dvrp.Ucc.Commons.Messaging.Marshalling.Base
 {
     /// <summary>
     /// Interface for converting data between type T and bytes.
@@ -9,16 +7,16 @@ namespace Dvrp.Ucc.Commons.Messaging.Marshalling.Base
     public interface IMarshaller<T>
     {
         /// <summary>
-        /// Converrt bytes to List of T type.
+        /// Convert bytes to List of T type.
         /// </summary>
         /// <param name="rawData">Raw bytes.</param>
         /// <returns>List of type T items after conversion.</returns>
-        List<T> Unmarshall(byte[] rawData);
+        T[] Deserialize(byte[] rawData);
         /// <summary>
         /// Convert items T to bytes.
         /// </summary>
         /// <param name="data">Items for processing.</param>
         /// <returns>Bytes after conversion.</returns>
-        byte[] Marshall(IList<T> data);
+        byte[] Serialize(params T[] data);
     }
 }

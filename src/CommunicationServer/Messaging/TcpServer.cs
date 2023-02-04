@@ -67,19 +67,19 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
 
             new Task(() =>
             {
-                while (true)
-                {
-                    try
-                    {
-                        _clientAcceptanceEvent.Reset();
-                        _listenerSocket.BeginAccept(AcceptCallback, _listenerSocket);
-                        _clientAcceptanceEvent.WaitOne();
-                    }
-                    catch (Exception)
-                    {
-                        // *crickets*
-                    }
-                }
+	            while (true)
+	            {
+		            try
+		            {
+			            _clientAcceptanceEvent.Reset();
+			            _listenerSocket.BeginAccept(AcceptCallback, _listenerSocket);
+			            _clientAcceptanceEvent.WaitOne();
+		            }
+		            catch (Exception)
+		            {
+			            // *crickets*
+		            }
+	            }
             }, token).Start();
 
             _isListening = true;
@@ -148,10 +148,9 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
 	            memStream.Write(buffer, 0, bytesRead);
             } while (bytesRead > 0);
 
-            var metadata = new TcpDataProviderMetadata
+            var metadata = new TcpDataProviderMetadata((IPEndPoint?)clientSocket.RemoteEndPoint ?? throw new Exception("No RemoteEndPoint!"))
             {
-	            ReceptionTime = DateTime.UtcNow,
-	            SenderAddress = (IPEndPoint?)clientSocket.RemoteEndPoint ?? throw new Exception("No RemoteEndPoint!")
+	            ReceptionTime = DateTime.UtcNow
             };
 
             _dataProcessor.EnqueueDataToProcess(

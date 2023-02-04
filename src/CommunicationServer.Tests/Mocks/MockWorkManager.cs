@@ -7,7 +7,7 @@ namespace Dvrp.Ucc.CommunicationServer.Tests.Mocks
 {
     internal class MockWorkManager : IWorkManager
     {
-        public event WorkAssignmentEventHandler WorkAssignment;
+        public event WorkAssignmentEventHandler? WorkAssignment;
 
         public bool TryAssignWork(SolverNodeInfo node, out Work work)
         {

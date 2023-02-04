@@ -31,7 +31,7 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
         /// The information about error.
         /// </summary>
         [XmlElement(Order = 1, ElementName = "ErrorMessage")]
-        public string ErrorText { get; set; }
+        public string? ErrorText { get; set; }
 
         /// <summary>
         /// Gets corresponding MessageClass enum value.

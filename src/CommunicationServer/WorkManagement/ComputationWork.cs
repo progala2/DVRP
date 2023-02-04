@@ -53,23 +53,17 @@ namespace Dvrp.Ucc.CommunicationServer.WorkManagement
 
             foreach (var pp in PartialProblems)
             {
-                var msgPp = new PartialProblemsMessage.PartialProblem
-                {
-                    Data = pp.PrivateData,
-                    PartialProblemId = pp.Id,
-                    TaskManagerId = pp.Problem.DividingNodeId
-                };
+	            var msgPp = new PartialProblemsMessage.PartialProblem(pp.Id, pp.PrivateData, pp.Problem.DividingNodeId);
                 msgPartialProblems.Add(msgPp);
             }
 
             var problem = PartialProblems[0].Problem;
 
-            var message = new PartialProblemsMessage
+            var message = new PartialProblemsMessage(problem.Type)
             {
                 CommonData = problem.CommonData,
                 PartialProblems = msgPartialProblems,
                 ProblemInstanceId = problem.Id,
-                ProblemType = problem.Type,
                 SolvingTimeout = problem.SolvingTimeout
             };
 

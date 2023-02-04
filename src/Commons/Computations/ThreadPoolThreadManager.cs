@@ -24,7 +24,7 @@ namespace Dvrp.Ucc.Commons.Computations
         /// <returns>True if thread was successfully started; false otherwise.</returns>
         protected override bool StartInNewThread(Action actionToExecute)
         {
-            return ThreadPool.QueueUserWorkItem(arg => actionToExecute());
+            return ThreadPool.QueueUserWorkItem(_ => actionToExecute());
         }
     }
 }

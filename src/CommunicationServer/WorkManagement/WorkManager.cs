@@ -288,7 +288,7 @@ namespace Dvrp.Ucc.CommunicationServer.WorkManagement
             _problems.Remove(problemId);
 
             // Perform cleanup if any partial problem/solution related to the problem, is left.
-            _partialProblems.RemoveAll((tuple, pp) =>
+            _partialProblems.RemoveAll((tuple, _) =>
             {
                 if (tuple.Item1 != problemId)
                     return false;
@@ -296,7 +296,7 @@ namespace Dvrp.Ucc.CommunicationServer.WorkManagement
                 Logger.Warn("Found a partial problem left out during the clean-up.");
                 return true;
             });
-            _partialSolutions.RemoveAll((tuple, ps) =>
+            _partialSolutions.RemoveAll((tuple, _) =>
             {
                 if (tuple.Item1 != problemId)
                     return false;

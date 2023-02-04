@@ -84,10 +84,7 @@ namespace Dvrp.Ucc.CommunicationServer.Components
                     Logger.Info(
 	                    $"Deregistering {deregisteredComponent.ComponentType} (id: {deregisteredComponent.ComponentId}).");
 
-                    var args = new DeregisterationEventArgs
-                    {
-                        Component = deregisteredComponent
-                    };
+                    var args = new DeregisterationEventArgs(deregisteredComponent);
                     Deregistration(this, args);
                 }
                 return true;

@@ -29,7 +29,7 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
         private readonly IWorkManager _workManager;
         private readonly CancellationTokenSource _cancellationTokenSource;
         private volatile bool _isProcessing;
-        private readonly IdGenerator IdGenerator = new (0);
+        private readonly IdGenerator _idGenerator = new (0);
 
         /// <summary>
         /// Creates MessageProcessor instance.
@@ -39,10 +39,8 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
         public MessageProcessor(IComponentOverseer componentOverseer, IWorkManager workManager)
         {
 			_inputDataQueue = new RawDataQueue();
-
-            var serializer = new MessageSerializer();
-            var validator = new MessageValidator();
-            _marshaller = new Marshaller(serializer, validator);
+            
+            _marshaller = new Marshaller();
 
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -127,7 +125,7 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
         /// <param name="data">Dequeued data.</param>
         private void ProcessData(RawDataQueueItem data)
         {
-            var messages = _marshaller.Unmarshall(data.Data);
+            var messages = _marshaller.Deserialize(data.Data);
             var responseMessages = new List<Message>();
 
             foreach (var msg in messages)
@@ -150,7 +148,7 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
             foreach (var msgToSend in responseMessages)
                 Logger.Trace("Sending " + msgToSend.MessageType + " message.");
 
-            var marshalledResponse = _marshaller.Marshall(responseMessages);
+            var marshalledResponse = _marshaller.Serialize(responseMessages.ToArray());
             data.Callback(marshalledResponse);
         }
 

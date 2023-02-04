@@ -15,9 +15,9 @@ namespace Dvrp.Ucc.Commons.Config
         ///     The address of the primary server.
         /// </summary>
         [ConfigurationProperty(PrimaryServerPropertyString)]
-        public IPEndPointConfigurationElement PrimaryServer
+        public IpEndPointConfigurationElement PrimaryServer
         {
-            get => (IPEndPointConfigurationElement)this[PrimaryServerPropertyString];
+            get => (IpEndPointConfigurationElement)this[PrimaryServerPropertyString];
             set => this[PrimaryServerPropertyString] = value;
         }
 
@@ -63,7 +63,7 @@ namespace Dvrp.Ucc.Commons.Config
             if (config == null)
                 throw new InvalidOperationException($"Section {componentConfigurationSectionName} does not exists.");
 
-            // possible overriting with command line parameters
+            // possible overwriting with command line parameters
             if (commandLineParameters is { Length: > 0 })
             {
                 var n = commandLineParameters.Length;
@@ -71,9 +71,9 @@ namespace Dvrp.Ucc.Commons.Config
                 Exception? exception = null;
                 try
                 {
-                    if (n - i >= 2 && commandLineParameters[i].ToLower() == "-address")
+                    if (n >= 2 && commandLineParameters[i].ToLower() == "-address")
                     {
-                        config.PrimaryServer.Address = commandLineParameters[i + 1];
+                        config.PrimaryServer.Address = commandLineParameters[1];
                         i += 2;
                     }
                     if (n - i >= 2 && commandLineParameters[i].ToLower() == "-port")

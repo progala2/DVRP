@@ -58,7 +58,7 @@ namespace Dvrp.Ucc.CommunicationServer.Components.Base
         /// <returns>Component information.</returns>
         ComponentInfo GetComponent(ulong componentId);
         /// <summary>
-        /// Get imformation about all components of specified type.
+        /// Get information about all components of specified type.
         /// </summary>
         /// <param name="type">Type of the cluster component.</param>
         /// <returns>Collection of components data.</returns>
@@ -79,8 +79,17 @@ namespace Dvrp.Ucc.CommunicationServer.Components.Base
     public class DeregisterationEventArgs : EventArgs
     {
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="component"></param>
+	    public DeregisterationEventArgs(ComponentInfo component)
+	    {
+		    Component = component;
+	    }
+
+	    /// <summary>
         /// Information about the deregistered component.
         /// </summary>
-        public ComponentInfo Component { get; set; }
+        public ComponentInfo Component { get; }
     }
 }

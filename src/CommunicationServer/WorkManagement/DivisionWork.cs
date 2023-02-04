@@ -1,5 +1,4 @@
-﻿using System;
-using Dvrp.Ucc.Commons.Messaging.Models;
+﻿using Dvrp.Ucc.Commons.Messaging.Models;
 using Dvrp.Ucc.Commons.Messaging.Models.Base;
 using Dvrp.Ucc.CommunicationServer.WorkManagement.Base;
 using Dvrp.Ucc.CommunicationServer.WorkManagement.Models;
@@ -19,10 +18,7 @@ namespace Dvrp.Ucc.CommunicationServer.WorkManagement
         /// <param name="availableThreads">Number of threads within the system that can solve this type of problem. De facto number of parts to divide into.</param>
         public DivisionWork(ulong assigneeId, Problem problem, ulong availableThreads): base(assigneeId)
         {
-            if (problem == null)
-                throw new ArgumentNullException();
-
-            AssignedId = assigneeId;
+	        AssignedId = assigneeId;
             Problem = problem;
 
             Problem.NumberOfParts = availableThreads;
@@ -42,14 +38,8 @@ namespace Dvrp.Ucc.CommunicationServer.WorkManagement
         /// <returns>Divide problem message.</returns>
         public override Message CreateMessage()
         {
-            var message = new DivideProblemMessage
-            {
-                ComputationalNodes = Problem.NumberOfParts,
-                ProblemData = Problem.Data,
-                ProblemInstanceId = Problem.Id,
-                ProblemType = Problem.Type,
-                TaskManagerId = AssignedId
-            };
+	        var message = new DivideProblemMessage(Problem.Type, Problem.Id, Problem.Data, Problem.NumberOfParts,
+		        AssignedId);
 
             return message;
         }

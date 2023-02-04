@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace Dvrp.Ucc.Commons.Components
 {
@@ -9,19 +7,26 @@ namespace Dvrp.Ucc.Commons.Components
     /// Server-specific information.
     /// </summary>
     [Serializable]
-    [DesignerCategory(@"code")]
-    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class ServerInfo
     {
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <param name="port"></param>
+	    public ServerInfo(string ipAddress, ushort port)
+	    {
+		    IpAddress = ipAddress;
+		    Port = port;
+	    }
+
+	    /// <summary>
         /// Server IP address.
         /// </summary>
-        [XmlAttribute("address", DataType = "anyURI")]
         public string IpAddress { get; set; }
         /// <summary>
         /// Listening port.
         /// </summary>
-        [XmlAttribute("port")]
         public ushort Port { get; set; }
 
         /// <summary>

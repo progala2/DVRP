@@ -6,7 +6,7 @@ namespace Dvrp.Ucc.Commons.Config
     /// <summary>
     ///     Configuration element representing end point address.
     /// </summary>
-    public class IPEndPointConfigurationElement : ConfigurationElement
+    public class IpEndPointConfigurationElement : ConfigurationElement
     {
         private const string AddressPropertyString = "address";
         private const string PortPropertyString = "port";

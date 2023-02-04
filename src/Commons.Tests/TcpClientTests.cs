@@ -14,7 +14,7 @@ namespace Dvrp.Ucc.Commons.Tests
         private const int BufferSize = 2048;
         private readonly IPAddress _ipAddressV4 = new (new byte[] {127, 0, 0, 1});
         private readonly IPAddress _ipAddressV6 = IPAddress.Parse("0:0:0:0:0:0:0:1");
-        private Socket _socket;
+        private Socket _socket = null!;
 
         [Fact]
         public void TcpClientConnectingWithSpecifiedSocketAndReceivingAnswerIpV4()

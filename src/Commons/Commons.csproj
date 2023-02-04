@@ -15,13 +15,6 @@
     <OutputPath>..\..\lib\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="MessageSchemas.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MessageSchemas.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Update="Resources\MessageSchemas\DivideProblem.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -55,12 +48,6 @@
     <None Update="Resources\MessageSchemas\Status.xsd">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="MessageSchemas.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MessageSchemas.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Messaging\MessageProcessor.cs" />

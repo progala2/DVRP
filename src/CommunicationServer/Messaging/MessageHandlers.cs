@@ -35,17 +35,13 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
             switch (msg.ComponentType)
             {
                 case ComponentType.CommunicationServer when metadata is not null:
-                    var serverInfo = new ServerInfo
-                    {
-                        IpAddress = metadata.SenderAddress.Address.ToString(),
-                        Port = (ushort) metadata.SenderAddress.Port
-                    };
-                    componentInfo = new BackupServerInfo((ulong)IdGenerator.CreateId(), serverInfo, msg.ParallelThreads);
+                    var serverInfo = new ServerInfo(metadata.SenderAddress.Address.ToString(), (ushort) metadata.SenderAddress.Port);
+                    componentInfo = new BackupServerInfo((ulong)_idGenerator.CreateId(), serverInfo, msg.ParallelThreads);
                     break;
 
                 case ComponentType.ComputationalNode:
                 case ComponentType.TaskManager:
-                    componentInfo = new SolverNodeInfo((ulong)IdGenerator.CreateId(), msg.ComponentType, msg.SolvableProblems, msg.ParallelThreads);
+                    componentInfo = new SolverNodeInfo((ulong)_idGenerator.CreateId(), msg.ComponentType, msg.SolvableProblems, msg.ParallelThreads);
                     break;
 
                 case ComponentType.ComputationalClient:
@@ -163,11 +159,10 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
                     Type = SolutionsMessage.SolutionType.Final
                 };
 
-                response = new SolutionsMessage
+                response = new SolutionsMessage(problem.Type)
                 {
                     CommonData = problem.CommonData,
                     ProblemInstanceId = problem.Id,
-                    ProblemType = problem.Type,
                     Solutions = new List<SolutionsMessage.Solution> {msgSolution}
                 };
             }
@@ -180,11 +175,10 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
                     Type = SolutionsMessage.SolutionType.Ongoing
                 };
 
-                response = new SolutionsMessage
+                response = new SolutionsMessage(problem.Type)
                 {
                     CommonData = problem.CommonData,
                     ProblemInstanceId = problem.Id,
-                    ProblemType = problem.Type,
                     Solutions = new List<SolutionsMessage.Solution> {msgSolution}
                 };
             }
@@ -386,11 +380,7 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
             foreach (var componentInfo in backupServers)
             {
                 var bs = (BackupServerInfo) componentInfo;
-                var backupInfo = new ServerInfo
-                {
-                    IpAddress = bs.Address.Address.ToString(),
-                    Port = (ushort) bs.Address.Port
-                };
+                var backupInfo = new ServerInfo(bs.Address.Address.ToString(), (ushort) bs.Address.Port);
 
                 backupInfoToSend.Add(backupInfo);
             }

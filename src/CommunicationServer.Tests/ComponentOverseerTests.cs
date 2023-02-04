@@ -17,11 +17,7 @@ namespace Dvrp.Ucc.CommunicationServer.Tests
 
             var solvableProblems = new List<string> {"dvrp"};
 
-            var serverInfo = new ServerInfo
-            {
-                IpAddress = "127.0.0.1",
-                Port = 9135
-            };
+            var serverInfo = new ServerInfo("127.0.0.1",9135);
 
             ComponentInfo taskManager = new SolverNodeInfo(1, ComponentType.TaskManager, solvableProblems, 5);
             ComponentInfo computationalNode = new SolverNodeInfo(2, ComponentType.ComputationalNode, solvableProblems, 5);
@@ -45,7 +41,7 @@ namespace Dvrp.Ucc.CommunicationServer.Tests
             var deregistrationEventLock = new AutoResetEvent(false);
 
             var overseer = new ComponentOverseer(communicationTimeout, checkInterval);
-            overseer.Deregistration += (o, e) => { deregistrationEventLock.Set(); };
+            overseer.Deregistration += (_, _) => { deregistrationEventLock.Set(); };
             overseer.StartMonitoring();
 
             var solvableProblems = new List<string> {"dvrp"};

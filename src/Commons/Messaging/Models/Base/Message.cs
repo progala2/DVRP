@@ -1,44 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Dvrp.Ucc.Commons.Messaging.Models.Base
 {
     /// <summary>
     /// Base abstract class for all messages used in the system.
     /// </summary>
+    [JsonDerivedType(typeof(DivideProblemMessage), (int)MessageClass.DivideProblem)]
+    [JsonDerivedType(typeof(ErrorMessage), (int)MessageClass.Error)]
+    [JsonDerivedType(typeof(NoOperationMessage), (int)MessageClass.NoOperation)]
+    [JsonDerivedType(typeof(RegisterMessage), (int)MessageClass.Register)]
+    [JsonDerivedType(typeof(RegisterResponseMessage), (int)MessageClass.RegisterResponse)]
+    [JsonDerivedType(typeof(SolutionRequestMessage), (int)MessageClass.SolutionRequest)]
+    [JsonDerivedType(typeof(SolutionsMessage), (int)MessageClass.Solutions)]
+    [JsonDerivedType(typeof(PartialProblemsMessage), (int)MessageClass.SolvePartialProblems)]
+    [JsonDerivedType(typeof(SolveRequestMessage), (int)MessageClass.SolveRequest)]
+    [JsonDerivedType(typeof(SolveRequestResponseMessage), (int)MessageClass.SolveRequestResponse)]
+    [JsonDerivedType(typeof(StatusMessage), (int)MessageClass.Status)]
     public abstract class Message
     {
-        /// <summary>
-        /// Dictionary that allows mapping from string to MessageClass enum value.
-        /// </summary>
-        private static readonly Dictionary<string, MessageClass> MessageTypes;
-
-        static Message()
-        {
-            var capacity = Enum.GetValues(typeof (MessageClass)).Length;
-            MessageTypes = new Dictionary<string, MessageClass>(capacity);
-
-            foreach (var type in Enum.GetValues(typeof (MessageClass)).Cast<MessageClass>())
-                MessageTypes.Add(type.ToString(), type);
-        }
-
-        /// <summary>
+	    /// <summary>
         /// Gets corresponding MessageClass enum value.
         /// </summary>
-        [XmlIgnore]
+        [JsonIgnore]
         public abstract MessageClass MessageType { get; }
-
-        /// <summary>
-        /// Casts strings to MessageClass values.
-        /// </summary>
-        /// <param name="str">String to cast.</param>
-        /// <returns>Corresponding MessageClass enum value.</returns>
-        public static MessageClass GetMessageClassFromString(string str)
-        {
-            return MessageTypes[str];
-        }
 
         /// <summary>
         /// Gets string representation.

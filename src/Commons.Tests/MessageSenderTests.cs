@@ -17,7 +17,7 @@ namespace Dvrp.Ucc.Commons.Tests
         private const int Port = 9123;
         private const int BufferSize = 2048;
         private static readonly IPAddress TestIp = new (new byte[] {127, 0, 0, 1});
-        private Socket _socket;
+        private Socket _socket = null!;
 
         [Fact]
         public void MessageSenderSendingMessage()
@@ -32,7 +32,7 @@ namespace Dvrp.Ucc.Commons.Tests
             var t = new Task(ListenAndResend);
             t.Start();
 
-            var receivedMessage = sender.Send(new List<Message> {message});
+            var receivedMessage = sender.Send(new [] {message});
 
             Assert.NotNull(receivedMessage);
             Assert.Single(receivedMessage);
@@ -51,11 +51,7 @@ namespace Dvrp.Ucc.Commons.Tests
             var sender = new MessageSender(new IPEndPoint(TestIp, Port));
             var backupServers = new List<ServerInfo>
             {
-                new ServerInfo
-                {
-                    IpAddress = "123.123.123.123",
-                    Port = 9876
-                }
+	            new ("123.123.123.123", 9876)
             };
             Message message = new NoOperationMessage
             {
@@ -65,7 +61,7 @@ namespace Dvrp.Ucc.Commons.Tests
             var t = new Task(ListenAndResend);
             t.Start();
 
-            var receivedMessage = sender.Send(new List<Message> {message});
+            var receivedMessage = sender.Send(new [] {message});
 
             Assert.NotNull(receivedMessage);
             Assert.Single( receivedMessage);

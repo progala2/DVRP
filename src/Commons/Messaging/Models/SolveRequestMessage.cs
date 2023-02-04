@@ -1,7 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Text;
-using System.Xml.Serialization;
+using System.Text.Json.Serialization;
 using Dvrp.Ucc.Commons.Messaging.Models.Base;
 
 namespace Dvrp.Ucc.Commons.Messaging.Models
@@ -10,45 +9,44 @@ namespace Dvrp.Ucc.Commons.Messaging.Models
     /// Object representation of the Solve Request message.
     /// </summary>
     [Serializable]
-    [DesignerCategory(@"code")]
-    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolveRequest")]
     public class SolveRequestMessage : Message
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        [XmlAttribute(AttributeName = "noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-        public string NoNamespaceSchemaLocation = "SolveRequest.xsd";
+        ///
+	    public SolveRequestMessage(string problemType, byte[] problemData, ulong? solvingTimeout = null,
+	        ulong? problemInstanceId = null)
+	    {
+		    ProblemType = problemType;
+		    SolvingTimeout = solvingTimeout;
+		    ProblemData = problemData;
+		    ProblemInstanceId = problemInstanceId;
+	    }
 
-        /// <summary>
+	    /// <summary>
         /// The name of the type as given by TaskSolver.
         /// </summary>
-        [XmlElement(Order = 0)]
-        public string? ProblemType { get; set; }
+        public string ProblemType { get; set; }
 
         /// <summary>
         /// The optional time restriction for solving the problem (in ms).
         /// </summary>
-        [XmlElement(Order = 1)]
         public ulong? SolvingTimeout { get; set; }
 
         /// <summary>
         /// The serialized problem data.
         /// </summary>
-        [XmlElement(Order = 2, ElementName = "Data", DataType = "base64Binary")]
-        public byte[]? ProblemData { get; set; }
+        [JsonPropertyName("Data")]
+        public byte[] ProblemData { get; set; }
 
         /// <summary>
         /// The ID of the problem instance assigned by the server.
         /// </summary>
-        [XmlElement(Order = 3, ElementName = "Id")]
+        [JsonPropertyName("Id")]
         public ulong? ProblemInstanceId { get; set; }
 
         /// <summary>
         /// Gets corresponding MessageClass enum value.
         /// </summary>
-        [XmlIgnore]
+        [JsonIgnore]
         public override MessageClass MessageType => MessageClass.SolveRequest;
 
         /// <summary>

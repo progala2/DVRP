@@ -53,12 +53,7 @@ namespace Dvrp.Ucc.ComputationalClient
         /// <returns>The ID of the problem instance assigned by the server or null if server is not responding.</returns>
         public ulong? SendSolveRequest(string problemType, byte[] data, ulong? solvingTimeout)
         {
-            var solveRequestMessage = new SolveRequestMessage
-            {
-                ProblemType = problemType,
-                ProblemData = data,
-                SolvingTimeout = solvingTimeout
-            };
+            var solveRequestMessage = new SolveRequestMessage(problemType, data, solvingTimeout);
             var receivedMessages = SendMessage(solveRequestMessage);
             if (receivedMessages == null)
                 return null;
@@ -115,7 +110,7 @@ namespace Dvrp.Ucc.ComputationalClient
         /// </summary>
         /// <param name="message">Message to be send to server.</param>
         /// <returns>Received messages or null if couldn't get server response.</returns>
-        private List<Message>? SendMessage(Message message)
+        private Message[]? SendMessage(Message message)
         {
             var receivedMessages = _messageSender.Send(message);
             if (receivedMessages == null)

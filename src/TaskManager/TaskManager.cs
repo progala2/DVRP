@@ -124,17 +124,11 @@ namespace Dvrp.Ucc.TaskManager
                 var partialProblems = new List<PartialProblemsMessage.PartialProblem>(partialProblemsData.GetLength(0));
                 for (var i = 0; i < partialProblemsData.GetLength(0); i++)
                 {
-                    partialProblems.Add(new PartialProblemsMessage.PartialProblem
-                    {
-                        PartialProblemId = (ulong)i,
-                        Data = partialProblemsData[i],
-                        TaskManagerId = Id
-                    });
+                    partialProblems.Add(new PartialProblemsMessage.PartialProblem((ulong)i,partialProblemsData[i],Id));
                 }
 
-                var partialProblemsMessage = new PartialProblemsMessage
+                var partialProblemsMessage = new PartialProblemsMessage(message.ProblemType)
                 {
-                    ProblemType = message.ProblemType,
                     ProblemInstanceId = message.ProblemInstanceId,
                     CommonData = message.ProblemData,
                     PartialProblems = partialProblems
@@ -156,7 +150,7 @@ namespace Dvrp.Ucc.TaskManager
         /// <exception cref="System.InvalidOperationException">
         ///     Thrown when:
         ///     - problem type can't be merged with this TaskManager,
-        ///     - merging the problem cannot be started bacause no threads are available in thread pool.
+        ///     - merging the problem cannot be started because no threads are available in thread pool.
         /// </exception>
         private void SolutionsMessageHandler(SolutionsMessage message)
         {
@@ -203,9 +197,8 @@ namespace Dvrp.Ucc.TaskManager
                     TimeoutOccured = timeoutOccured,
                     Data = finalSolutionData
                 };
-                var finalSolutionMessage = new SolutionsMessage
+                var finalSolutionMessage = new SolutionsMessage(message.ProblemType)
                 {
-                    ProblemType = message.ProblemType,
                     ProblemInstanceId = message.ProblemInstanceId,
                     CommonData = message.CommonData,
                     Solutions = new List<SolutionsMessage.Solution> { finalSolution }

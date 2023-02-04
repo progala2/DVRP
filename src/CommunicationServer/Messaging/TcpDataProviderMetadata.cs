@@ -9,8 +9,17 @@ namespace Dvrp.Ucc.CommunicationServer.Messaging
     public class TcpDataProviderMetadata : Metadata
     {
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="senderAddress"></param>
+	    public TcpDataProviderMetadata(IPEndPoint senderAddress)
+	    {
+		    SenderAddress = senderAddress;
+	    }
+
+	    /// <summary>
         /// Address of the end point that sent the data.
         /// </summary>
-        public IPEndPoint SenderAddress { get; set; }
+        public IPEndPoint SenderAddress { get; private set; }
     }
 }

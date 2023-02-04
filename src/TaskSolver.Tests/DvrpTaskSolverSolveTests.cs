@@ -14,7 +14,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
     public class DvrpTaskSolverSolveTests
     {
 	    [Fact]
-        public void TestSolvingOkulewiczSimpleProblem()
+        public void TestSolvingSimpleProblem()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -25,7 +25,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
         }
 
         [Fact]
-        public void TestSolvingOkulewiczElevenClients()
+        public void TestSolvingElevenClients()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -35,7 +35,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
         }
 
         [Fact]
-        public void TestSolvingOkulewiczTwelveClients()
+        public void TestSolvingTwelveClients()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -45,7 +45,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
         }
 
         [Fact]
-        public void TestSolvingOkulewiczThirteenClients()
+        public void TestSolvingThirteenClients()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -55,7 +55,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
         }
 
         [Fact]
-        public void TestSolvingOkulewiczFourteenClients()
+        public void TestSolvingFourteenClients()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -76,7 +76,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
         }
 
         private bool HelpingFunctionForTests(byte[] problem, TimeSpan timeout, int threadsCount,
-            double expectectedResult, Stopwatch stopwatch)
+            double expectedResult, Stopwatch stopwatch)
         {
              Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem serialized");
 
@@ -117,7 +117,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
                 var reg = new Regex(@"[-+]?\d+([,.]\d+)?");
                 MatchCollection m;
                 m = reg.Matches(finalSolution);
-                result = Math.Abs(Math.Round((double)new decimal(double.Parse(m[0].Value)), 2) - expectectedResult) < double.Epsilon;
+                result = Math.Abs(Math.Round((double)new decimal(double.Parse(m[0].Value)), 2) - expectedResult) < double.Epsilon;
             }
             Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final solution deserialized");
 

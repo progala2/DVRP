@@ -6,7 +6,6 @@ using Dvrp.Ucc.Commons.Computations.Base;
 using Dvrp.Ucc.Commons.Messaging;
 using Dvrp.Ucc.Commons.Messaging.Models;
 using Dvrp.Ucc.Commons.Messaging.Models.Base;
-using Dvrp.Ucc.Commons.Utilities;
 using Dvrp.Ucc.TaskSolver;
 
 namespace Dvrp.Ucc.ComputationalNode
@@ -134,9 +133,8 @@ namespace Dvrp.Ucc.ComputationalNode
                             Data = partialProblemSolutionData
                         }
                     };
-                    var solutionsMessage = new SolutionsMessage
+                    var solutionsMessage = new SolutionsMessage(message.ProblemType)
                     {
-                        ProblemType = message.ProblemType,
                         ProblemInstanceId = message.ProblemInstanceId,
                         CommonData = message.CommonData,
                         Solutions = solutions

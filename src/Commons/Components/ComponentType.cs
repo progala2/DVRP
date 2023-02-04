@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Xml.Serialization;
 
 namespace Dvrp.Ucc.Commons.Components
 {
@@ -7,7 +6,6 @@ namespace Dvrp.Ucc.Commons.Components
     /// Type of the cluster component.
     /// </summary>
     [Serializable]
-    [XmlType("RegisterType", AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public enum ComponentType
     {
         /// <summary>

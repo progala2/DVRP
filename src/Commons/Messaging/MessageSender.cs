@@ -27,32 +27,30 @@ namespace Dvrp.Ucc.Commons.Messaging
         {
             _servers = new List<ServerInfo>();
             _tcpClient = new TcpClient(serverAddress);
-
-            var validator = new MessageValidator();
-            var serializer = new MessageSerializer();
-            _marshaller = new Marshaller(serializer, validator);
+            
+            _marshaller = new Marshaller();
         }
 
         /// <summary>
-        ///     Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to
+        ///     Sends messages and returns messages received. Returns null if neither primary nor backup servers answered or due to
         ///     other exception.
         /// </summary>
         /// <param name="message">Message to send.</param>
         /// <returns>Messages returned or null.</returns>
-        public List<Message>? Send(Message message)
+        public Message[]? Send(Message message)
         {
-            return Send(new List<Message> { message });
+            return Send(new Message[] { message });
         }
 
         /// <summary>
-        ///     Sends messages and returns messages received. Retruns null if neither primary nor backup servers answered or due to
+        ///     Sends messages and returns messages received. Returns null if neither primary nor backup servers answered or due to
         ///     other exception.
         /// </summary>
         /// <param name="messages">Messages to send.</param>
         /// <returns>Messages returned or null.</returns>
-        public List<Message>? Send(IList<Message> messages)
+        public Message[]? Send(Message[] messages)
         {
-            var data = _marshaller.Marshall(messages);
+            var data = _marshaller.Serialize(messages);
             byte[] retBytes = Array.Empty<byte>();
             bool again;
             do
@@ -92,7 +90,7 @@ namespace Dvrp.Ucc.Commons.Messaging
             } while (again);
 
 
-            var messagesReceived = _marshaller.Unmarshall(retBytes);
+            var messagesReceived = _marshaller.Deserialize(retBytes);
             UpdateServerList(messagesReceived);
             return messagesReceived;
         }
