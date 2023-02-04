@@ -1,7 +1,7 @@
 ﻿using System.Configuration;
 using System.Net;
 
-namespace _15pl04.Ucc.Commons.Config
+namespace Dvrp.Ucc.Commons.Config
 {
     /// <summary>
     ///     Configuration element representing end point address.

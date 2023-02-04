@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace _15pl04.Ucc.MinMaxTaskSolver
+namespace Dvrp.Ucc.MinMaxTaskSolver
 {
     [Serializable]
     public class MmSolution

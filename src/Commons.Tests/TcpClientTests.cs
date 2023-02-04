@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace _15pl04.Ucc.Commons.Tests
+namespace Dvrp.Ucc.Commons.Tests
 {
     public class TcpClientTests
     {

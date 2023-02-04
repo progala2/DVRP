@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
-    <RootNamespace>_15pl04.Ucc.TaskManager.Tests</RootNamespace>
+    <RootNamespace>Dvrp.Ucc.TaskManager.Tests</RootNamespace>
     <AssemblyName>Ucc.TaskManager.Tests</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

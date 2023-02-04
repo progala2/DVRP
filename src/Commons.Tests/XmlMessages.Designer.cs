@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace _15pl04.Ucc.Commons.Tests {
+namespace Dvrp.Ucc.Commons.Tests {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.Commons.Tests {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("_15pl04.Ucc.Commons.Tests.XmlMessages", typeof(XmlMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dvrp.Ucc.Commons.Tests.XmlMessages", typeof(XmlMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

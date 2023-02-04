@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
-    <RootNamespace>_15pl04.Ucc.CommunicationServer</RootNamespace>
+    <RootNamespace>Dvrp.Ucc.CommunicationServer</RootNamespace>
     <AssemblyName>Ucc.CommunicationServer</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

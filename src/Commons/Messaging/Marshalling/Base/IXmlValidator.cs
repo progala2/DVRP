@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace _15pl04.Ucc.Commons.Messaging.Marshalling.Base
+namespace Dvrp.Ucc.Commons.Messaging.Marshalling.Base
 {
     /// <summary>
     /// Interface to validate with xml schema.

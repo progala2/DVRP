@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace _15pl04.Ucc.Commons.Exceptions
+namespace Dvrp.Ucc.Commons.Exceptions
 {
     /// <summary>
     /// Represents an exception that occurs when there is no response from the server.

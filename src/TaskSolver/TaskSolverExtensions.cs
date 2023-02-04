@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace _15pl04.Ucc.TaskSolver
+namespace Dvrp.Ucc.TaskSolver
 {
     /// <summary>
     /// Extension methods for the TaskSolve class.

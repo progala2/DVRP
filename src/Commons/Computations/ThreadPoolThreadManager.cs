@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using _15pl04.Ucc.Commons.Computations.Base;
+using Dvrp.Ucc.Commons.Computations.Base;
 
-namespace _15pl04.Ucc.Commons.Computations
+namespace Dvrp.Ucc.Commons.Computations
 {
     /// <summary>
     ///     Represents a thread manager which provides starting actions in new threads from thread pool.

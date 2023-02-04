@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace _15pl04.Ucc.Commons.Computations.Base
+namespace Dvrp.Ucc.Commons.Computations.Base
 {
     /// <summary>
     ///     Represents a thread manager which provides starting actions in new threads.

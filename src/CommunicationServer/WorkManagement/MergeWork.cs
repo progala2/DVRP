@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.CommunicationServer.WorkManagement.Base;
+using Dvrp.Ucc.CommunicationServer.WorkManagement.Models;
 
-namespace _15pl04.Ucc.CommunicationServer.WorkManagement
+namespace Dvrp.Ucc.CommunicationServer.WorkManagement
 {
     /// <summary>
     /// Class representing merge work assignable to a task manager.

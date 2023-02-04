@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Configuration;
 
-namespace _15pl04.Ucc.Commons.Config
+namespace Dvrp.Ucc.Commons.Config
 {
     /// <summary>
     ///     Configuration section for components connecting to the server.

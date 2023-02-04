@@ -3,11 +3,11 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using _15pl04.Ucc.CommunicationServer.Messaging;
-using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+using Dvrp.Ucc.CommunicationServer.Messaging;
+using Dvrp.Ucc.CommunicationServer.Messaging.Base;
 using Xunit;
 
-namespace _15pl04.Ucc.CommunicationServer.Tests
+namespace Dvrp.Ucc.CommunicationServer.Tests
 {
     public class TcpServerTests
     {

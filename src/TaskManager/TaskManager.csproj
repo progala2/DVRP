@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
-    <RootNamespace>_15pl04.Ucc.TaskManager</RootNamespace>
+    <RootNamespace>Dvrp.Ucc.TaskManager</RootNamespace>
     <AssemblyName>Ucc.TaskManager</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

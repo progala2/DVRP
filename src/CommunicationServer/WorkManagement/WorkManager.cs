@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.Commons.Logging;
-using _15pl04.Ucc.Commons.Utilities;
-using _15pl04.Ucc.CommunicationServer.Components;
-using _15pl04.Ucc.CommunicationServer.Components.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
+using Dvrp.Ucc.Commons.Components;
+using Dvrp.Ucc.Commons.Logging;
+using Dvrp.Ucc.Commons.Utilities;
+using Dvrp.Ucc.CommunicationServer.Components;
+using Dvrp.Ucc.CommunicationServer.Components.Base;
+using Dvrp.Ucc.CommunicationServer.WorkManagement.Base;
+using Dvrp.Ucc.CommunicationServer.WorkManagement.Models;
 
-namespace _15pl04.Ucc.CommunicationServer.WorkManagement
+namespace Dvrp.Ucc.CommunicationServer.WorkManagement
 {
     /// <summary>
     /// Module responsible for storing information about problems/computations and assigning them to compatible cluster components.

@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using _15pl04.Ucc.Commons.Exceptions;
+using Dvrp.Ucc.Commons.Exceptions;
 
-namespace _15pl04.Ucc.TaskSolver
+namespace Dvrp.Ucc.TaskSolver
 {
     /// <summary>
     /// Class providing loading task solvers from directory.
@@ -18,7 +18,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// </summary>
         /// <param name="taskSolversDirectoryRelativePath">The relative path of directory to search.</param>
         /// <returns>Read-only dictionary with names of solvable problems as keys and corresponding Task Solvers as values.</returns>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
+        /// <exception cref="Dvrp.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         public static ReadOnlyDictionary<string, Type> GetTaskSolversFromRelativePath(
             string? taskSolversDirectoryRelativePath)
@@ -33,7 +33,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// </summary>
         /// <param name="taskSolversDirectoryPath">The path of directory to search.</param>
         /// <returns>Read-only dictionary with names of solvable problems as keys and corresponding Task Solvers as values.</returns>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
+        /// <exception cref="Dvrp.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         public static ReadOnlyDictionary<string, Type> GetTaskSolversFromPath(string taskSolversDirectoryPath)
         {

@@ -4,10 +4,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using _15pl04.Ucc.Commons.Logging;
-using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+using Dvrp.Ucc.Commons.Logging;
+using Dvrp.Ucc.CommunicationServer.Messaging.Base;
 
-namespace _15pl04.Ucc.CommunicationServer.Messaging
+namespace Dvrp.Ucc.CommunicationServer.Messaging
 {
     /// <summary>
     /// Accepts TCP clients, schedules incoming data processing and passes response.

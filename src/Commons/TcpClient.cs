@@ -2,9 +2,9 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using _15pl04.Ucc.Commons.Exceptions;
+using Dvrp.Ucc.Commons.Exceptions;
 
-namespace _15pl04.Ucc.Commons
+namespace Dvrp.Ucc.Commons
 {
     /// <summary>
     /// Class allowing direct sending data and receiving response from hosts.
@@ -32,7 +32,7 @@ namespace _15pl04.Ucc.Commons
         /// </summary>
         /// <param name="data">Byte data to send.</param>
         /// <returns>Marshalled messages from the server.</returns>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TimeoutException">Connection to host timed out.</exception>
+        /// <exception cref="Dvrp.Ucc.Commons.Exceptions.TimeoutException">Connection to host timed out.</exception>
         public byte[] SendData(byte[] data)
         {
             var buf = new byte[BufferSize];

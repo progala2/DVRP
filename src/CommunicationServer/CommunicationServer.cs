@@ -1,11 +1,11 @@
-﻿using _15pl04.Ucc.CommunicationServer.Components;
-using _15pl04.Ucc.CommunicationServer.Components.Base;
-using _15pl04.Ucc.CommunicationServer.Messaging;
-using _15pl04.Ucc.CommunicationServer.Messaging.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
+﻿using Dvrp.Ucc.CommunicationServer.Components;
+using Dvrp.Ucc.CommunicationServer.Components.Base;
+using Dvrp.Ucc.CommunicationServer.Messaging;
+using Dvrp.Ucc.CommunicationServer.Messaging.Base;
+using Dvrp.Ucc.CommunicationServer.WorkManagement;
+using Dvrp.Ucc.CommunicationServer.WorkManagement.Base;
 
-namespace _15pl04.Ucc.CommunicationServer
+namespace Dvrp.Ucc.CommunicationServer
 {
     /// <summary>
     /// Main communication server class.

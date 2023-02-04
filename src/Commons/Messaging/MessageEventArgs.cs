@@ -1,7 +1,7 @@
 ﻿using System;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
 
-namespace _15pl04.Ucc.Commons.Messaging
+namespace Dvrp.Ucc.Commons.Messaging
 {
     /// <summary>
     /// Represents the event arguments containing message.

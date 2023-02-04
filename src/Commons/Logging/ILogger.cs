@@ -1,4 +1,4 @@
-﻿namespace _15pl04.Ucc.Commons.Logging
+﻿namespace Dvrp.Ucc.Commons.Logging
 {
     /// <summary>
     /// Allows to log messages with a different level.

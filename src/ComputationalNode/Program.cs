@@ -1,12 +1,12 @@
 ﻿using System;
-using _15pl04.Ucc.Commons.Computations;
-using _15pl04.Ucc.Commons.Computations.Base;
-using _15pl04.Ucc.Commons.Config;
-using _15pl04.Ucc.Commons.Logging;
-using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Utilities;
+using Dvrp.Ucc.Commons.Computations;
+using Dvrp.Ucc.Commons.Computations.Base;
+using Dvrp.Ucc.Commons.Config;
+using Dvrp.Ucc.Commons.Logging;
+using Dvrp.Ucc.Commons.Messaging;
+using Dvrp.Ucc.Commons.Utilities;
 
-namespace _15pl04.Ucc.ComputationalNode
+namespace Dvrp.Ucc.ComputationalNode
 {
     public class Program
     {

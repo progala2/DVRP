@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace _15pl04.Ucc.TaskSolver
+namespace Dvrp.Ucc.TaskSolver
 {
     /// <summary>
     /// Class containing necessary information about a DVRP problem instance.

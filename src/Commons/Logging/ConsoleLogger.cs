@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace _15pl04.Ucc.Commons.Logging
+namespace Dvrp.Ucc.Commons.Logging
 {
     /// <summary>
     /// Prints logger messages on the console in an appropriate color.

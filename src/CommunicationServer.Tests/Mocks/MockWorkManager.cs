@@ -1,9 +1,9 @@
 ﻿using System;
-using _15pl04.Ucc.CommunicationServer.Components;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
+using Dvrp.Ucc.CommunicationServer.Components;
+using Dvrp.Ucc.CommunicationServer.WorkManagement.Base;
+using Dvrp.Ucc.CommunicationServer.WorkManagement.Models;
 
-namespace _15pl04.Ucc.CommunicationServer.Tests.Mocks
+namespace Dvrp.Ucc.CommunicationServer.Tests.Mocks
 {
     internal class MockWorkManager : IWorkManager
     {

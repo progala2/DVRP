@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.Commons.Messaging.Marshalling;
-using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using _15pl04.Ucc.CommunicationServer.Components;
-using _15pl04.Ucc.CommunicationServer.Components.Base;
-using _15pl04.Ucc.CommunicationServer.Messaging;
-using _15pl04.Ucc.CommunicationServer.Messaging.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
+using Dvrp.Ucc.Commons.Components;
+using Dvrp.Ucc.Commons.Messaging.Marshalling;
+using Dvrp.Ucc.Commons.Messaging.Marshalling.Base;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.CommunicationServer.Components;
+using Dvrp.Ucc.CommunicationServer.Components.Base;
+using Dvrp.Ucc.CommunicationServer.Messaging;
+using Dvrp.Ucc.CommunicationServer.Messaging.Base;
+using Dvrp.Ucc.CommunicationServer.WorkManagement;
+using Dvrp.Ucc.CommunicationServer.WorkManagement.Base;
 using Xunit;
-using ErrorMessage = _15pl04.Ucc.Commons.Messaging.Models.ErrorMessage;
+using ErrorMessage = Dvrp.Ucc.Commons.Messaging.Models.ErrorMessage;
 
-namespace _15pl04.Ucc.CommunicationServer.Tests
+namespace Dvrp.Ucc.CommunicationServer.Tests
 {
     public class MessageProcessorTests
     {

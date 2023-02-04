@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using _15pl04.Ucc.Commons.Exceptions;
-using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.Commons.Exceptions;
+using Dvrp.Ucc.Commons.Messaging;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
 
-namespace _15pl04.Ucc.ComputationalClient
+namespace Dvrp.Ucc.ComputationalClient
 {
     /// <summary>
     ///     The computational client class providing sending to the communication server either solve request or solution request and receiving server respone.

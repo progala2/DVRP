@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace _15pl04.Ucc.Commons.Components
+namespace Dvrp.Ucc.Commons.Components
 {
     /// <summary>
     /// Server-specific information.

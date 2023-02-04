@@ -1,8 +1,8 @@
 ﻿using System.Net;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.CommunicationServer.Components.Base;
+using Dvrp.Ucc.Commons.Components;
+using Dvrp.Ucc.CommunicationServer.Components.Base;
 
-namespace _15pl04.Ucc.CommunicationServer.Components
+namespace Dvrp.Ucc.CommunicationServer.Components
 {
     /// <summary>
     /// Information about backup server.

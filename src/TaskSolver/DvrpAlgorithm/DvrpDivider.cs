@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
+namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 {
     /// <summary>
     /// Class dividing a DVRP problem instance.

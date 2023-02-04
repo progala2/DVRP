@@ -3,13 +3,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.Commons.Components;
+using Dvrp.Ucc.Commons.Messaging;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
 using Xunit;
 
-namespace _15pl04.Ucc.Commons.Tests
+namespace Dvrp.Ucc.Commons.Tests
 {
     public class MessageSenderTests
     {

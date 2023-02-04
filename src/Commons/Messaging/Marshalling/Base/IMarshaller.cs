@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace _15pl04.Ucc.Commons.Messaging.Marshalling.Base
+namespace Dvrp.Ucc.Commons.Messaging.Marshalling.Base
 {
     /// <summary>
     /// Interface for converting data between type T and bytes.

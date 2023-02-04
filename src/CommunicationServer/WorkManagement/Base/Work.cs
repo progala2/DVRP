@@ -1,6 +1,6 @@
-﻿using _15pl04.Ucc.Commons.Messaging.Models.Base;
+﻿using Dvrp.Ucc.Commons.Messaging.Models.Base;
 
-namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Base
+namespace Dvrp.Ucc.CommunicationServer.WorkManagement.Base
 {
 	/// <summary>
 	/// Abstract class representing computation work assignable to the cluster component.

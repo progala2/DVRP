@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net;
 
-namespace _15pl04.Ucc.Commons.Utilities
+namespace Dvrp.Ucc.Commons.Utilities
 {
     /// <summary>
     /// Provides converting IP end point representation to an instance of System.Net.IPEndPoint class.

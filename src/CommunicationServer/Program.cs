@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
-using _15pl04.Ucc.Commons.Config;
-using _15pl04.Ucc.Commons.Utilities;
+using Dvrp.Ucc.Commons.Config;
+using Dvrp.Ucc.Commons.Utilities;
 
-namespace _15pl04.Ucc.CommunicationServer
+namespace Dvrp.Ucc.CommunicationServer
 {
     public class Program
     {

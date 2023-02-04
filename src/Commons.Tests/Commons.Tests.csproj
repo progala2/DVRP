@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <RootNamespace>_15pl04.Ucc.Commons.Tests</RootNamespace>
+    <RootNamespace>Dvrp.Ucc.Commons.Tests</RootNamespace>
     <AssemblyName>Ucc.Commons.Tests</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

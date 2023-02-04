@@ -1,8 +1,8 @@
 ﻿using System.Net.Sockets;
-using _15pl04.Ucc.Commons.Utilities;
+using Dvrp.Ucc.Commons.Utilities;
 using Xunit;
 
-namespace _15pl04.Ucc.Commons.Tests
+namespace Dvrp.Ucc.Commons.Tests
 {
     public class IpEndPointParserTests
     {

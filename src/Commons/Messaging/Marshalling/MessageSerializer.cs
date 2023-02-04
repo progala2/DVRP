@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
-using _15pl04.Ucc.Commons.Exceptions;
-using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.Commons.Exceptions;
+using Dvrp.Ucc.Commons.Messaging.Marshalling.Base;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
 
-namespace _15pl04.Ucc.Commons.Messaging.Marshalling
+namespace Dvrp.Ucc.Commons.Messaging.Marshalling
 {
     /// <summary>
     /// Class used for (de)serializing messages

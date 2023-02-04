@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using _15pl04.Ucc.CommunicationServer.Components;
-using _15pl04.Ucc.CommunicationServer.Components.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Models;
+using Dvrp.Ucc.Commons.Components;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.CommunicationServer.Components;
+using Dvrp.Ucc.CommunicationServer.Components.Base;
+using Dvrp.Ucc.CommunicationServer.WorkManagement.Models;
 
-namespace _15pl04.Ucc.CommunicationServer.Messaging
+namespace Dvrp.Ucc.CommunicationServer.Messaging
 {
     internal partial class MessageProcessor
     {

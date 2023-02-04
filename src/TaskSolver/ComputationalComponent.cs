@@ -5,14 +5,14 @@ using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.Commons.Computations.Base;
-using _15pl04.Ucc.Commons.Exceptions;
-using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.Commons.Components;
+using Dvrp.Ucc.Commons.Computations.Base;
+using Dvrp.Ucc.Commons.Exceptions;
+using Dvrp.Ucc.Commons.Messaging;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
 
-namespace _15pl04.Ucc.TaskSolver
+namespace Dvrp.Ucc.TaskSolver
 {
     /// <summary>
     /// Base class of the Computational Node and Task Manager.
@@ -34,7 +34,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// <param name="serverAddress">The Communication Server address. Cannot be null.</param>
         /// <exception cref="System.ArgumentNullException">Thrown if either <paramref name="threadManager"/> or
         /// <paramref name="serverAddress"/> is null.</exception>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
+        /// <exception cref="Dvrp.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         protected ComputationalComponent(ThreadManager threadManager, IPEndPoint serverAddress)
             : this(threadManager, serverAddress, null)
@@ -51,7 +51,7 @@ namespace _15pl04.Ucc.TaskSolver
         /// If null current directory will be searched for task solvers.</param>
         /// <exception cref="System.ArgumentNullException">Thrown if either <paramref name="threadManager"/> or
         /// <paramref name="serverAddress"/> is null.</exception>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
+        /// <exception cref="Dvrp.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers from given <paramref name="taskSolversDirectoryRelativePath"/>.</exception>
         protected ComputationalComponent(ThreadManager threadManager, IPEndPoint serverAddress,
             string? taskSolversDirectoryRelativePath)

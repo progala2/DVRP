@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using _15pl04.Ucc.MinMaxTaskSolver;
+using Dvrp.Ucc.MinMaxTaskSolver;
 using Xunit;
 
 namespace MinMaxTaskSolver.Tests

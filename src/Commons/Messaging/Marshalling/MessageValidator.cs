@@ -5,9 +5,9 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
+using Dvrp.Ucc.Commons.Messaging.Marshalling.Base;
 
-namespace _15pl04.Ucc.Commons.Messaging.Marshalling
+namespace Dvrp.Ucc.Commons.Messaging.Marshalling
 {
     /// <summary>
     /// Class for validating messages.

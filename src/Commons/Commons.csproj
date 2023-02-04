@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
-    <RootNamespace>_15pl04.Ucc.Commons</RootNamespace>
+    <RootNamespace>Dvrp.Ucc.Commons</RootNamespace>
     <AssemblyName>Ucc.Commons</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

@@ -1,7 +1,7 @@
 ﻿using System.Net;
-using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+using Dvrp.Ucc.CommunicationServer.Messaging.Base;
 
-namespace _15pl04.Ucc.CommunicationServer.Messaging
+namespace Dvrp.Ucc.CommunicationServer.Messaging
 {
     /// <summary>
     /// Information about received data and TCP end point that provided it.

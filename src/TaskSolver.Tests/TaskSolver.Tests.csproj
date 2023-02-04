@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <RootNamespace>_15pl04.Ucc.TaskSolver.Tests</RootNamespace>
+    <RootNamespace>Dvrp.Ucc.TaskSolver.Tests</RootNamespace>
     <AssemblyName>Ucc.TaskSolver.Tests</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

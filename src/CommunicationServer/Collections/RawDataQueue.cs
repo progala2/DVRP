@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
-using _15pl04.Ucc.CommunicationServer.Messaging.Base;
+using Dvrp.Ucc.CommunicationServer.Messaging.Base;
 
-namespace _15pl04.Ucc.CommunicationServer.Collections
+namespace Dvrp.Ucc.CommunicationServer.Collections
 {
     /// <summary>
     /// Data structure representing data received from a cluster client.

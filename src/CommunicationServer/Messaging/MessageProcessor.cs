@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using _15pl04.Ucc.Commons.Logging;
-using _15pl04.Ucc.Commons.Messaging.Marshalling;
-using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using _15pl04.Ucc.CommunicationServer.Collections;
-using _15pl04.Ucc.CommunicationServer.Components.Base;
-using _15pl04.Ucc.CommunicationServer.Messaging.Base;
-using _15pl04.Ucc.CommunicationServer.WorkManagement.Base;
+using Dvrp.Ucc.Commons.Logging;
+using Dvrp.Ucc.Commons.Messaging.Marshalling;
+using Dvrp.Ucc.Commons.Messaging.Marshalling.Base;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.CommunicationServer.Collections;
+using Dvrp.Ucc.CommunicationServer.Components.Base;
+using Dvrp.Ucc.CommunicationServer.Messaging.Base;
+using Dvrp.Ucc.CommunicationServer.WorkManagement.Base;
 using IdGen;
 using Microsoft.CSharp.RuntimeBinder;
 
-namespace _15pl04.Ucc.CommunicationServer.Messaging
+namespace Dvrp.Ucc.CommunicationServer.Messaging
 {
     /// <summary>
     /// Module responsible for processing and generating output for incoming messages.

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using _15pl04.Ucc.Commons.Exceptions;
-using _15pl04.Ucc.TaskSolver;
+using Dvrp.Ucc.Commons.Exceptions;
+using Dvrp.Ucc.TaskSolver;
 
-namespace _15pl04.Ucc.MinMaxTaskSolver
+namespace Dvrp.Ucc.MinMaxTaskSolver
 {
     public class MmTaskSolver : TaskSolver.TaskSolver
     {
@@ -28,7 +28,7 @@ namespace _15pl04.Ucc.MinMaxTaskSolver
             }
         }
 
-        public override string Name => "_15pl04.UCC.MinMax";
+        public override string Name => "Dvrp.UCC.MinMax";
 
         public override byte[][] DivideProblem(int threadCount)
         {

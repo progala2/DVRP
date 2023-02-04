@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using _15pl04.Ucc.Commons.Exceptions;
-using _15pl04.Ucc.TaskSolver.DvrpAlgorithm;
+using Dvrp.Ucc.Commons.Exceptions;
+using Dvrp.Ucc.TaskSolver.DvrpAlgorithm;
 
-namespace _15pl04.Ucc.TaskSolver
+namespace Dvrp.Ucc.TaskSolver
 {
     /// <summary>
     /// Class responsible for dividing, solving and merging the Dynamic Vehicles Route Problem.

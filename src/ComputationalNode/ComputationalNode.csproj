@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
-    <RootNamespace>_15pl04.Ucc.ComputationalNode</RootNamespace>
+    <RootNamespace>Dvrp.Ucc.ComputationalNode</RootNamespace>
     <AssemblyName>Ucc.ComputationalNode</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

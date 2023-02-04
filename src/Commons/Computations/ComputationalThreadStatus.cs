@@ -1,7 +1,7 @@
 ﻿using System;
-using _15pl04.Ucc.Commons.Components;
+using Dvrp.Ucc.Commons.Components;
 
-namespace _15pl04.Ucc.Commons.Computations
+namespace Dvrp.Ucc.Commons.Computations
 {
     /// <summary>
     ///     Represents a readonly status of thread in ComputationalNode or TaskManager.

@@ -7,9 +7,9 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using _15pl04.Ucc.Commons.Exceptions;
+using Dvrp.Ucc.Commons.Exceptions;
 
-namespace _15pl04.Ucc.TaskSolver.Tests
+namespace Dvrp.Ucc.TaskSolver.Tests
 {
     public class DvrpTaskSolverSolveTests
     {

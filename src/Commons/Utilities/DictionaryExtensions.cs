@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace _15pl04.Ucc.Commons.Utilities
+namespace Dvrp.Ucc.Commons.Utilities
 {
     /// <summary>
     /// Extension methods for a generic dictionary.

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace _15pl04.Ucc.Commons {
+namespace Dvrp.Ucc.Commons {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.Commons {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("_15pl04.Ucc.Commons.MessageSchemas", typeof(MessageSchemas).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dvrp.Ucc.Commons.MessageSchemas", typeof(MessageSchemas).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -88,7 +88,7 @@ namespace _15pl04.Ucc.Commons {
         ///&lt;!-- Another case when Error message is used is when an exception occures on a component (TM or CN)
         ///to inform the CS or the client to inform about the exception that occurred on the CS  --&gt;
         ///&lt;xs:schema attributeFormDefault=&quot;unqualified&quot; elementFormDefault=&quot;qualified&quot;
-        ///      [rest of string was truncated]&quot;;.
+        ///    [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Error {
             get {

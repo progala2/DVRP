@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace _15pl04.Ucc.CommunicationServer.Messaging.Base
+namespace Dvrp.Ucc.CommunicationServer.Messaging.Base
 {
     /// <summary>
     /// Invoked after processing client's data and generating a response.

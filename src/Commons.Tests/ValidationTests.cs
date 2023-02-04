@@ -1,10 +1,10 @@
 ﻿using System.Xml.Linq;
-using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Marshalling;
-using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
+using Dvrp.Ucc.Commons.Messaging;
+using Dvrp.Ucc.Commons.Messaging.Marshalling;
+using Dvrp.Ucc.Commons.Messaging.Marshalling.Base;
 using Xunit;
 
-namespace _15pl04.Ucc.Commons.Tests
+namespace Dvrp.Ucc.Commons.Tests
 {
     public class ValidationTests
     {

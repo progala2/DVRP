@@ -1,4 +1,4 @@
-﻿namespace _15pl04.Ucc.CommunicationServer.WorkManagement.Models
+﻿namespace Dvrp.Ucc.CommunicationServer.WorkManagement.Models
 {
     /// <summary>
     /// Contains data and metadata concerning a final solution.

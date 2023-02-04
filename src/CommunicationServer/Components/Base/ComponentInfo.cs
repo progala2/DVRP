@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using _15pl04.Ucc.Commons.Components;
+using Dvrp.Ucc.Commons.Components;
 
-namespace _15pl04.Ucc.CommunicationServer.Components.Base
+namespace Dvrp.Ucc.CommunicationServer.Components.Base
 {
     /// <summary>
     /// Information about cluster component.

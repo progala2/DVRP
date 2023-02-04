@@ -2,14 +2,14 @@
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using _15pl04.Ucc.Commons.Config;
-using _15pl04.Ucc.Commons.Exceptions;
-using _15pl04.Ucc.Commons.Logging;
-using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Utilities;
+using Dvrp.Ucc.Commons.Config;
+using Dvrp.Ucc.Commons.Exceptions;
+using Dvrp.Ucc.Commons.Logging;
+using Dvrp.Ucc.Commons.Messaging;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Utilities;
 
-namespace _15pl04.Ucc.ComputationalClient
+namespace Dvrp.Ucc.ComputationalClient
 {
     /// <summary>
     /// 

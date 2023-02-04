@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace _15pl04.Ucc.TaskSolver.DvrpAlgorithm
+namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 {
     /// <summary>
     /// DVRP problem solver.

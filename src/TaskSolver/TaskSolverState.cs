@@ -1,4 +1,4 @@
-﻿namespace _15pl04.Ucc.TaskSolver
+﻿namespace Dvrp.Ucc.TaskSolver
 {
     /// <summary>
     /// 

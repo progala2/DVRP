@@ -1,7 +1,7 @@
 ﻿using System;
-using _15pl04.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models;
 
-namespace _15pl04.Ucc.Commons.Messaging
+namespace Dvrp.Ucc.Commons.Messaging
 {
     /// <summary>
     /// Describes possible message types.

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.Commons.Computations.Base;
-using _15pl04.Ucc.Commons.Messaging;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using _15pl04.Ucc.Commons.Utilities;
-using _15pl04.Ucc.TaskSolver;
+using Dvrp.Ucc.Commons.Components;
+using Dvrp.Ucc.Commons.Computations.Base;
+using Dvrp.Ucc.Commons.Messaging;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.Commons.Utilities;
+using Dvrp.Ucc.TaskSolver;
 
-namespace _15pl04.Ucc.ComputationalNode
+namespace Dvrp.Ucc.ComputationalNode
 {
     /// <summary>
     ///     The computational node class providing communication with server and solving partial problems using task solvers.
@@ -22,7 +22,7 @@ namespace _15pl04.Ucc.ComputationalNode
         /// <param name="threadManager">The thread manager. Cannot be null.</param>
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>        
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
+        /// <exception cref="Dvrp.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         public ComputationalNode(ThreadManager threadManager, IPEndPoint serverAddress)
             : base(threadManager, serverAddress)
@@ -36,7 +36,7 @@ namespace _15pl04.Ucc.ComputationalNode
         /// <param name="serverAddress">The primary server address. Cannot be null.</param>
         /// <param name="taskSolversDirectoryRelativePath">The relative path to directory with task solvers. If null current directory will be searched for task solvers.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="threadManager"/> or <paramref name="serverAddress"/> is null.</exception>
-        /// <exception cref="_15pl04.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
+        /// <exception cref="Dvrp.Ucc.Commons.Exceptions.TaskSolverLoadingException">Thrown when exception occurred
         /// during loading task solvers.</exception>
         public ComputationalNode(ThreadManager threadManager, IPEndPoint serverAddress,
             string taskSolversDirectoryRelativePath)

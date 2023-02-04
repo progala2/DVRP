@@ -3,8 +3,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
-    <RootNamespace>_15pl04.Ucc.MinMaxTaskSolver</RootNamespace>
-    <AssemblyName>_15pl04.Ucc.MinMaxTaskSolver</AssemblyName>
+    <RootNamespace>Dvrp.Ucc.MinMaxTaskSolver</RootNamespace>
+    <AssemblyName>Dvrp.Ucc.MinMaxTaskSolver</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

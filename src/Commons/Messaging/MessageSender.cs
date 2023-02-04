@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.Commons.Messaging.Marshalling;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
-using _15pl04.Ucc.Commons.Utilities;
-using TimeoutException = _15pl04.Ucc.Commons.Exceptions.TimeoutException;
+using Dvrp.Ucc.Commons.Components;
+using Dvrp.Ucc.Commons.Messaging.Marshalling;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.Commons.Utilities;
+using TimeoutException = Dvrp.Ucc.Commons.Exceptions.TimeoutException;
 
-namespace _15pl04.Ucc.Commons.Messaging
+namespace Dvrp.Ucc.Commons.Messaging
 {
     /// <summary>
     /// The class providing sending messages to server and getting response messages from that server.

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.CommunicationServer.Components;
-using _15pl04.Ucc.CommunicationServer.Components.Base;
+using Dvrp.Ucc.Commons.Components;
+using Dvrp.Ucc.CommunicationServer.Components;
+using Dvrp.Ucc.CommunicationServer.Components.Base;
 using Xunit;
 
-namespace _15pl04.Ucc.CommunicationServer.Tests
+namespace Dvrp.Ucc.CommunicationServer.Tests
 {
     public class ComponentOverseerTests
     {

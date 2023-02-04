@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using _15pl04.Ucc.Commons.Components;
-using _15pl04.Ucc.Commons.Logging;
-using _15pl04.Ucc.CommunicationServer.Components.Base;
+using Dvrp.Ucc.Commons.Components;
+using Dvrp.Ucc.Commons.Logging;
+using Dvrp.Ucc.CommunicationServer.Components.Base;
 
-namespace _15pl04.Ucc.CommunicationServer.Components
+namespace Dvrp.Ucc.CommunicationServer.Components
 {
     /// <summary>
     /// Module responsible for monitoring and (de)registering cluster components.

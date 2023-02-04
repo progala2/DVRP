@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
-using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.Commons.Messaging.Marshalling.Base;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
 
-namespace _15pl04.Ucc.Commons.Messaging.Marshalling
+namespace Dvrp.Ucc.Commons.Messaging.Marshalling
 {
     /// <summary>
     /// Class converting raw byte data to messages and inverse.

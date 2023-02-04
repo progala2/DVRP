@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace _15pl04.Ucc.Commons.Utilities
+namespace Dvrp.Ucc.Commons.Utilities
 {
     /// <summary>
     /// Extension methods for the Random class.

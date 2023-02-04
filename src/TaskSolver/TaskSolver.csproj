@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
-    <RootNamespace>_15pl04.Ucc.TaskSolver</RootNamespace>
+    <RootNamespace>Dvrp.Ucc.TaskSolver</RootNamespace>
     <AssemblyName>Ucc.TaskSolver</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

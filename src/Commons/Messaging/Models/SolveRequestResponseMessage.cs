@@ -2,9 +2,9 @@
 using System.ComponentModel;
 using System.Text;
 using System.Xml.Serialization;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
 
-namespace _15pl04.Ucc.Commons.Messaging.Models
+namespace Dvrp.Ucc.Commons.Messaging.Models
 {
     /// <summary>
     /// Object representation of the Solve Request message.

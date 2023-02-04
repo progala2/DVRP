@@ -1,11 +1,11 @@
 ﻿using System.Text;
-using _15pl04.Ucc.Commons.Messaging.Marshalling;
-using _15pl04.Ucc.Commons.Messaging.Marshalling.Base;
-using _15pl04.Ucc.Commons.Messaging.Models;
-using _15pl04.Ucc.Commons.Messaging.Models.Base;
+using Dvrp.Ucc.Commons.Messaging.Marshalling;
+using Dvrp.Ucc.Commons.Messaging.Marshalling.Base;
+using Dvrp.Ucc.Commons.Messaging.Models;
+using Dvrp.Ucc.Commons.Messaging.Models.Base;
 using Xunit;
 
-namespace _15pl04.Ucc.Commons.Tests
+namespace Dvrp.Ucc.Commons.Tests
 {
     public class DeserializationTests
     {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace _15pl04.Ucc.TaskSolver.Tests {
+namespace Dvrp.Ucc.TaskSolver.Tests {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace _15pl04.Ucc.TaskSolver.Tests {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("_15pl04.Ucc.TaskSolver.Tests.DvrpProblems", typeof(DvrpProblems).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dvrp.Ucc.TaskSolver.Tests.DvrpProblems", typeof(DvrpProblems).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
