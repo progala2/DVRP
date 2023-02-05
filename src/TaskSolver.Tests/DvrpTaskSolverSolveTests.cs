@@ -8,17 +8,25 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dvrp.Ucc.Commons.Exceptions;
+using Xunit.Abstractions;
 
 namespace Dvrp.Ucc.TaskSolver.Tests
 {
-    public class DvrpTaskSolverSolveTests
+	public class DvrpTaskSolverSolveTests
     {
+	    private readonly ITestOutputHelper _testOutputHelper;
+
+	    public DvrpTaskSolverSolveTests(ITestOutputHelper testOutputHelper)
+	    {
+		    _testOutputHelper = testOutputHelper;
+	    }
+
 	    [Fact]
         public void TestSolvingSimpleProblem()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
+            _testOutputHelper.WriteLine(stopwatch.ElapsedTicks + ": " + "problem created ");
             Assert.True(HelpingFunctionForTests(DvrpProblems.io2_8_plain_a_D, new TimeSpan(1, 0, 0), 2, 680.09,
                 stopwatch));
             stopwatch.Stop();
@@ -29,7 +37,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
+            _testOutputHelper.WriteLine(stopwatch.ElapsedTicks + ": " + "problem created ");
             Assert.True(HelpingFunctionForTests(DvrpProblems.io2_11_plain_a_D, new TimeSpan(1, 0, 0), 4, 721.38, stopwatch));
             stopwatch.Stop();
         }
@@ -39,7 +47,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
+            _testOutputHelper.WriteLine(stopwatch.ElapsedTicks + ": " + "problem created ");
             Assert.True(HelpingFunctionForTests(DvrpProblems.okul12D, new TimeSpan(1, 0, 0), 4, 976.27, stopwatch));
             stopwatch.Stop();
         }
@@ -49,7 +57,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
+            _testOutputHelper.WriteLine(stopwatch.ElapsedTicks + ": " + "problem created ");
             Assert.True(HelpingFunctionForTests(DvrpProblems.okul13D, new TimeSpan(1, 0, 0), 4, 1154.38, stopwatch));
             stopwatch.Stop();
         }
@@ -59,7 +67,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "problem created ");
+            _testOutputHelper.WriteLine(stopwatch.ElapsedTicks + ": " + "problem created ");
             Assert.True(HelpingFunctionForTests(DvrpProblems.okul14D, new TimeSpan(1, 0, 0), 4, 948.59, stopwatch));
             stopwatch.Stop();
         }
@@ -70,7 +78,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem created ");
+            _testOutputHelper.WriteLine(stopwatch.ElapsedTicks + ": " + "problem created ");
             HelpingFunctionForTests(DvrpProblems.okul17D, new TimeSpan(0, 0, 3), 4, 44, stopwatch);
             stopwatch.Stop();
         }

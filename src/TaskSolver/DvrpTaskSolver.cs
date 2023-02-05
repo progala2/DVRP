@@ -134,8 +134,7 @@ namespace Dvrp.Ucc.TaskSolver
         {
             try
             {
-                var divider = new DvrpDivider();
-                var problems = divider.Divide(_dvrpProblem, threadCount);
+                var problems = DvrpDivider.Divide(_dvrpProblem, threadCount);
                 var result = new byte[threadCount][];
                 for (var i = 0; i < threadCount; ++i)
                 {

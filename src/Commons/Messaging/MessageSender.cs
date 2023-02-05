@@ -51,7 +51,7 @@ namespace Dvrp.Ucc.Commons.Messaging
         public Message[]? Send(Message[] messages)
         {
             var data = _marshaller.Serialize(messages);
-            byte[] retBytes = Array.Empty<byte>();
+            var retBytes = Array.Empty<byte>();
             bool again;
             do
             {
