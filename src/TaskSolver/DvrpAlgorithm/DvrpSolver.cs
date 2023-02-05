@@ -142,7 +142,7 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 				if (breaking)
 					continue;
 				double distance = 0;
-				var carsRoutes = new List<int>[_dvrpProblem.VehicleCount];
+				var carsRoutes = new List<int>?[_dvrpProblem.VehicleCount];
 				for (var j = 0; j < listOfRoutes.Count; ++j)
 				{
 					distance += _tspSolver.Solve(listOfRoutes[j], min, out carsRoutes[j]);
@@ -165,7 +165,10 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 				min = distance;
 				for (var j = 0; j < _dvrpProblem.VehicleCount; j++)
 				{
-					resultCarsRoutes[j] = new List<int>(carsRoutes[j]);
+					if (carsRoutes[j] is null)
+						resultCarsRoutes[j] = new List<int>();
+					else
+						resultCarsRoutes[j] = carsRoutes[j]!;
 				}
 			}
 			var routes = new int[_dvrpProblem.VehicleCount][];

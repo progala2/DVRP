@@ -86,7 +86,7 @@ namespace Dvrp.Ucc.TaskSolver.Tests
         private bool HelpingFunctionForTests(byte[] problem, TimeSpan timeout, int threadsCount,
             double expectedResult, Stopwatch stopwatch)
         {
-             Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem serialized");
+	        _testOutputHelper.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem serialized");
 
             byte[] problemData;
             using (var memoryStream = new MemoryStream())
@@ -96,8 +96,8 @@ namespace Dvrp.Ucc.TaskSolver.Tests
             }
             var taskSolver = new DvrpTaskSolver(problemData);
             var partialProblemsData = taskSolver.DivideProblem(threadsCount);
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem divided; threadsCount=" +
-                            threadsCount);
+            _testOutputHelper.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problem divided; threadsCount=" +
+                                        threadsCount);
 
             var tasks = new List<Task<byte[]>>(threadsCount);
             foreach (var partialProblemData in partialProblemsData)
@@ -112,22 +112,22 @@ namespace Dvrp.Ucc.TaskSolver.Tests
                 tasks[^1].Start();
             }
             Task.WaitAll(tasks.ToArray());
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "partial solutions solved");
+            _testOutputHelper.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "partial solutions solved");
 
             var finalSolutionData = taskSolver.MergeSolution(tasks.Select(task => task.Result).ToArray());
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problems merged");
+            _testOutputHelper.WriteLine(stopwatch.ElapsedMilliseconds/1000.0 + ": " + "problems merged");
 
             bool result;
             using (var memoryStream = new MemoryStream(finalSolutionData))
             {
                 var finalSolution = JsonSerializer.Deserialize<string>(memoryStream) ?? throw new ParsingNullException(nameof(finalSolutionData));
-                Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + finalSolution);
+                _testOutputHelper.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + finalSolution);
                 var reg = new Regex(@"[-+]?\d+([,.]\d+)?");
                 MatchCollection m;
                 m = reg.Matches(finalSolution);
                 result = Math.Abs(Math.Round((double)new decimal(double.Parse(m[0].Value)), 2) - expectedResult) < double.Epsilon;
             }
-            Debug.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final solution deserialized");
+            _testOutputHelper.WriteLine(stopwatch.ElapsedMilliseconds / 1000.0 + ": " + "final solution deserialized");
 
             return result;
         }
