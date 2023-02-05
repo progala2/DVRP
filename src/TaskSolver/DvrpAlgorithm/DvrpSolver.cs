@@ -51,7 +51,7 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 					_depotDistances[i, j] = Math.Sqrt(dx * dx + dy * dy);
 				}
 			}
-			_tspSolver = new TspSolver(this);
+			_tspSolver = new TspSolverWithCache(this);
 		}
 
 		/// <summary>
@@ -82,7 +82,7 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 			_timer.Reset();
 			_timer.Start();
 			// let's check all the partitions
-			for (ulong i = 0; IsLowerSet(part, partProblem.SetEnd); ++i)
+			while (IsLowerSet(part, partProblem.SetEnd))
 			{
 				if (_timer.Elapsed.TotalSeconds >= timeout.TotalSeconds)
 				{
@@ -145,12 +145,12 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 				var carsRoutes = new List<int>?[_dvrpProblem.VehicleCount];
 				for (var j = 0; j < listOfRoutes.Count; ++j)
 				{
-					distance += _tspSolver.Solve(listOfRoutes[j], min, out carsRoutes[j]);
+					distance += _tspSolver.Solve(new HashSet<int>(listOfRoutes[j]), out carsRoutes[j]);
 					if (distance < min) continue;
 					var k = 0;
 					for (var l = 0; l <= j; l++)
 					{
-						k = Math.Max(listOfRoutes[l][listOfRoutes[l].Count - 1], k);
+						k = Math.Max(listOfRoutes[l][^1], k);
 					}
 
 					var tmp = Math.Max(max[k], part[k]);
@@ -201,7 +201,7 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 		/// <param name="lowerSet">The lower set.</param>
 		/// <param name="higherSet">The higher set.</param>
 		/// <returns>True if the <paramref name="lowerSet"/> is before <paramref name="higherSet"/>.</returns>
-		private bool IsLowerSet(int[] lowerSet, int[] higherSet)
+		private static bool IsLowerSet(int[] lowerSet, int[] higherSet)
 		{
 			for (var i = 0; i < lowerSet.Length; i++)
 			{
@@ -215,8 +215,49 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 		}
 
 		/// <summary>
-		/// Traveling Salesman Problem solver.
+		/// Traveling Salesman Problem solver with results caching.
 		/// </summary>
+		internal class TspSolverWithCache: TspSolver
+		{
+			private readonly Dictionary<HashSet<int>, (double, List<int>)> _bestRoutes = new(new CitiesComparer());
+
+			/// <summary>
+			/// Constructor.
+			/// </summary>
+			/// <param name="solver">The root class.</param>
+			public TspSolverWithCache(DvrpSolver solver): base(solver)
+			{
+			}
+
+			/// <summary>
+			/// Solve a TSP problem.
+			/// </summary>
+			/// <param name="listOfCities">List of the cities to visit.</param>
+			/// <param name="carRoute">The final car route between cities.</param>
+			/// <returns>Length of the route.</returns>
+			public override double Solve(HashSet<int> listOfCities, out List<int> carRoute)
+			{
+				if (_bestRoutes.TryGetValue(listOfCities, out var val))
+				{
+					carRoute = val.Item2;
+					return val.Item1;
+				}
+
+				base.Solve(listOfCities, out carRoute);
+				_bestRoutes.Add(listOfCities, (OneCarDistance, carRoute));
+
+				return OneCarDistance;
+			}
+
+			private class CitiesComparer : IEqualityComparer<HashSet<int>>
+			{
+				public bool Equals(HashSet<int>? x, HashSet<int>? y)
+					=> ReferenceEquals(x, y) || (x is not null && y is not null && x.SetEquals(y));
+
+				public int GetHashCode(HashSet<int> obj) => obj.Aggregate(HashCode.Combine);
+			}
+		}
+		
 		internal class TspSolver
 		{
 			private readonly double[,] _depotDistances;
@@ -224,7 +265,7 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 			private readonly DvrpProblem _dvrpProblem;
 			private readonly bool[] _visited;
 			private List<int> _carFinalRoute = new();
-			private double _oneCarDistance;
+			protected double OneCarDistance { get; private set; }
 
 			/// <summary>
 			/// Constructor.
@@ -243,12 +284,11 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 			/// Solve a TSP problem.
 			/// </summary>
 			/// <param name="listOfCities">List of the cities to visit.</param>
-			/// <param name="min">Current best known result.</param>
 			/// <param name="carRoute">The final car route between cities.</param>
 			/// <returns>Length of the route.</returns>
-			public double Solve(List<int> listOfCities, double min, out List<int> carRoute)
+			public virtual double Solve(HashSet<int> listOfCities, out List<int> carRoute)
 			{
-				_oneCarDistance = min;
+				OneCarDistance = double.MaxValue;
 				foreach (var city in listOfCities)
 				{
 					_visited[city] = true;
@@ -258,7 +298,7 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 					_visited[city] = false;
 				}
 				carRoute = _carFinalRoute;
-				return _oneCarDistance;
+				return OneCarDistance;
 			}
 
 			/// <summary>
@@ -276,12 +316,13 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 						_depotDistances[0, carRoute.Last()] > _dvrpProblem.Depots[0].EndTime)
 						return;
 					distance += _depotDistances[0, carRoute.Last()];
-					if (!(distance < _oneCarDistance)) return;
+					if (!(distance < OneCarDistance)) return;
 
 					_carFinalRoute = new List<int>(carRoute);
-					_oneCarDistance = distance;
+					OneCarDistance = distance;
 					return;
 				}
+
 				foreach (var i in listOfCities)
 				{
 					if (_visited[i])
@@ -293,7 +334,7 @@ namespace Dvrp.Ucc.TaskSolver.DvrpAlgorithm
 					distance += dist;
 					_visited[i] = true;
 					carRoute.Add(i);
-					if (distance < _oneCarDistance)
+					if (distance < OneCarDistance)
 					{
 						RecurrentSolve(distance, currentTime, ref carRoute, listOfCities);
 					}
